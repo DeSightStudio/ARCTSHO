@@ -1,0 +1,42 @@
+@font-face {
+    font-family: 'Cormorant Garamond';
+    src: url('CormorantGaramond-Light.eot');
+    src: local('Cormorant Garamond Light'), local('CormorantGaramond-Light'),
+        url('CormorantGaramond-Light.eot?#iefix') format('embedded-opentype'),
+        url('CormorantGaramond-Light.woff2') format('woff2'),
+        url('CormorantGaramond-Light.woff') format('woff'),
+        url('CormorantGaramond-Light.ttf') format('truetype'),
+        url('CormorantGaramond-Light.svg#CormorantGaramond-Light') format('svg');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Cormorant Garamond';
+    src: url('CormorantGaramond-Regular.eot');
+    src: local('Cormorant Garamond Regular'), local('CormorantGaramond-Regular'),
+        url('CormorantGaramond-Regular.eot?#iefix') format('embedded-opentype'),
+        url('CormorantGaramond-Regular.woff2') format('woff2'),
+        url('CormorantGaramond-Regular.woff') format('woff'),
+        url('CormorantGaramond-Regular.ttf') format('truetype'),
+        url('CormorantGaramond-Regular.svg#CormorantGaramond-Regular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Cormorant Garamond';
+    src: url('CormorantGaramond-Bold.eot');
+    src: local('Cormorant Garamond Bold'), local('CormorantGaramond-Bold'),
+        url('CormorantGaramond-Bold.eot?#iefix') format('embedded-opentype'),
+        url('CormorantGaramond-Bold.woff2') format('woff2'),
+        url('CormorantGaramond-Bold.woff') format('woff'),
+        url('CormorantGaramond-Bold.ttf') format('truetype'),
+        url('CormorantGaramond-Bold.svg#CormorantGaramond-Bold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+

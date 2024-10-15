@@ -1,0 +1,471 @@
+/*
+ 
+    TABLE OF CONTENTS
+    ---------------------------
+
+	1. Font-Size Mixing including REM calculation
+	2. Transitions
+	3. Transform
+	4. Cross browser opacity
+	5. Clearfixing
+	6. Visually hide an element
+    7. Media queries / breakpoints
+    8. Vertical centering
+    9. Border radius
+    10. Text Shadow
+    11. Box Shadow
+    12. Box sizing
+    
+*/
+
+// ================================================
+// >>>> Colors (Main)
+// ================================================
+
+/* ============================================================================ */
+/* :::::::::::::::: 1. Font-Size Mixing including REM calculation ::::::::::::: */
+/* ============================================================================ */
+
+@function calculateRem($size) {
+  $remSize: $size / 16px;
+  @return $remSize * 1rem;
+}
+
+@mixin font-size($size) {
+  font-size: $size;
+  font-size: calculateRem($size);
+}
+
+/*** USAGE OF "Font-Size Mixing including REM calculation": 
+	
+	p { 
+		@include font-size(14px);
+	}
+	
+***/
+
+/* ============================================================================ */
+/* ::::::::::::::::::::::::::::::: 2. Transitions ::::::::::::::::::::::::::::: */
+/* ============================================================================ */
+
+@mixin transition($args...) {
+  -webkit-transition: $args;
+  -moz-transition: $args;
+  -ms-transition: $args;
+  -o-transition: $args;
+  transition: $args;
+}
+
+/*** USAGE OF "Transitions": 
+	
+	p {
+		@include transition(color .3s ease);
+	}
+	
+***/
+
+/* ============================================================================ */
+/* ::::::::::::::::::::::::::::::: 3. Transform ::::::::::::::::::::::::::::: */
+/* ============================================================================ */
+
+@mixin transform($args...) {
+  -webkit-transform: translate($args);
+  -moz-transform: translate($args);
+  -ms-transform: translate($args);
+  -o-transform: translate($args);
+  transform: translate($args);
+}
+
+/*** USAGE OF "Transitions": 
+	
+	p {
+		@include transition(color .3s ease);
+	}
+	
+***/
+
+/* ============================================================================ */
+/* :::::::::::::::::::::::::: 4. Cross browser opacity :::::::::::::::::::::::: */
+/* ============================================================================ */
+
+@mixin opacity($opacity) {
+  opacity: $opacity !important;
+  $opacity-ie: $opacity * 100 !important;
+  filter: alpha(opacity=$opacity-ie) !important; //IE8
+}
+
+/*** USAGE OF "Cross browser opacity": 
+	
+	p {
+		@include opacity(0.8);
+	}
+	
+***/
+
+/* ============================================================================ */
+/* ::::::::::::::::::::::::::::::: 5. Clearfixing ::::::::::::::::::::::::::::: */
+/* ============================================================================ */
+
+%clearfix {
+  *zoom: 1;
+  &:before, &:after {
+    content: " ";
+    display: table;
+  }
+  &:after {
+    clear: both;
+  }
+}
+
+/*** USAGE OF "Clearfixing": 
+	
+	p {
+		@extend %clearfix;
+	}
+	
+***/
+
+/* ============================================================================ */
+/* ::::::::::::::::::::::::: 6. Visually hide an element :::::::::::::::::::::: */
+/* ============================================================================ */
+
+%visuallyhidden {
+  margin: -1px;
+  padding: 0;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip: rect(0, 0, 0, 0);
+  position: absolute;
+}
+
+.visually-hidden {
+  @extend %visuallyhidden;
+}
+
+/*** USAGE OF "Visually hidden": 
+	
+	<b class="visually-hidden">Lorem Ipsum</b>
+	
+***/
+
+/* ============================================================================ */
+/* :::::::::::::::::::::::: 7. Media queries / breakpoints :::::::::::::::::::: */
+/* ============================================================================ */
+
+// Define the breakpoints
+$breakpoint-x-small: 580px;
+$breakpoint-small: 768px;
+$breakpoint-med-small: 990px;
+$breakpoint-med: 1025px;
+$breakpoint-large: 1140px;
+$breakpoint-x-large: 1240px;
+$breakpoint-xx-large: 1400px;
+
+@mixin screen($size, $type: max, $pixels: $breakpoint-x-small) {
+  @if $size == 'x-small' {
+    @media screen and ($type + -width: $breakpoint-x-small) {
+        @content;
+    }
+  }
+  @else if $size == 'small' {
+    @media screen and ($type + -width: $breakpoint-small) {
+        @content;
+    }
+  }
+  @else if $size == 'med-small' {
+    @media screen and ($type + -width: $breakpoint-med-small) {
+        @content;
+    }
+  }
+  @else if $size == 'med' {
+    @media screen and ($type + -width: $breakpoint-med) {
+        @content;
+    }
+  }
+ @else if $size == 'large' {
+    @media screen and ($type + -width: $breakpoint-large) {
+        @content;
+    }
+  }
+  @else if $size == 'x-large' {
+    @media screen and ($type + -width: $breakpoint-x-large) {
+        @content;
+    }
+  }
+  @else if $size == 'xx-large' {
+    @media screen and ($type + -width: $breakpoint-xx-large) {
+        @content;
+    }
+  }
+  @else {
+    @content;
+  }
+}
+
+/*** USAGE OF "Media queries / breakpoints": 
+	
+	.foo {
+		@include screen(large) {
+			width: 20%;
+		}
+		@include screen(med) {
+			width: 40%;
+		}
+		@include screen(med-small) {
+			width: 60%;
+		}
+		@include screen(small) {
+			width: 80%;
+		}
+	}
+	
+***/
+
+/* ============================================================================ */
+/* ::::::::::::::::::::::::::: 8. Vertical centering :::::::::::::::::::::::::: */
+/* ============================================================================ */
+
+@mixin center-vertically {
+	position: absolute;
+	top: 50%;
+	-webkit-transform: translateY(-50%);
+	-ms-transform: translateY(-50%);
+	transform: translateY(-50%);
+}
+
+/*** USAGE OF "Vertical centering": 
+	
+	p {
+		@include center-vertically;
+	}
+	
+***/
+
+/* ============================================================================ */
+/* :::::::::::::::::::::::::::::: 9. Border Radius :::::::::::::::::::::::::::: */
+/* ============================================================================ */
+
+@mixin border-radius($topLeft, $topRight, $bottomRight, $bottomLeft) {
+    -webkit-border-radius: $topLeft $topRight $bottomRight $bottomLeft;
+    -moz-border-radius: $topLeft $topRight $bottomRight $bottomLeft;
+    -ms-border-radius: $topLeft $topRight $bottomRight $bottomLeft;
+    -o-border-radius: $topLeft $topRight $bottomRight $bottomLeft;
+    border-radius: $topLeft $topRight $bottomRight $bottomLeft;
+}
+
+/*** USAGE OF "Vertical centering": 
+	
+	p {
+		@include border-radius(6px, 4px, 4px, 6px);
+	}
+	
+***/
+
+/* ============================================================================ */
+/* ::::::::::::::::::::::::::::::: 10. Text Shadow ::::::::::::::::::::::::::::: */
+/* ============================================================================ */
+
+@mixin text-shadow($horizOffset, $vertOffset, $blur, $color) {
+    -webkit-text-shadow: $horizOffset $vertOffset $blur $color;
+    -moz-text-shadow: $horizOffset $vertOffset $blur $color;
+    -ms-text-shadow: $horizOffset $vertOffset $blur $color; /* IE 10+ */
+    -o-text-shadow: $horizOffset $vertOffset $blur $color;
+    text-shadow: $horizOffset $vertOffset $blur $color;
+}
+
+/*** USAGE OF "Vertical centering": 
+	
+	p {
+		@include text-shadow(0, 3px, 3px, #333);
+	}
+	
+***/
+
+/* ============================================================================ */
+/* ::::::::::::::::::::::::::::::: 11. Box Shadow ::::::::::::::::::::::::::::: */
+/* ============================================================================ */
+
+@mixin box-shadow($top, $left, $blur, $color, $inset: false) {
+  @if $inset {
+    -webkit-box-shadow:inset $top $left $blur $color;
+    -moz-box-shadow:inset $top $left $blur $color;
+    box-shadow:inset $top $left $blur $color;
+  } @else {
+    -webkit-box-shadow: $top $left $blur $color;
+    -moz-box-shadow: $top $left $blur $color;
+    box-shadow: $top $left $blur $color;
+  }
+}
+
+/*** USAGE OF "Box Shadow": 
+	
+	p {
+		@include box-shadow(0, 3px, 7px, rgba(0, 0, 0, 0.1));
+	}
+	
+***/
+
+/* ============================================================================ */
+/* ::::::::::::::::::::::::::::::: 12. Box sizing ::::::::::::::::::::::::::::: */
+/* ============================================================================ */
+
+@mixin box-sizing($type) {
+	-webkit-box-sizing:$type;
+	-moz-box-sizing:$type;
+	box-sizing:$type;
+}
+
+/*** USAGE OF "Box sizing": 
+	
+	p {
+		@include box-sizing(border-box);
+	}
+	
+***/
+
+/* ============================================================================ */
+/* :::::::::::::::::::::::::: 13. Background gradient ::::::::::::::::::::::::: */
+/* ============================================================================ */
+
+@mixin diagonal-gradient($color1, $color2){
+  ///* Old browsers - Fallback to flat color */
+  background: $color1;
+  ///* FF3.6+ */
+  background: -moz-linear-gradient(45deg, $color1 0%, $color1 50%, $color2 51%, $color2 100%);
+  ///* Chrome,Safari4+ */
+  background: -webkit-gradient(linear, left bottom, right top, color-stop(0%,$color1), color-stop(50%,$color1), color-stop(51%,$color2), color-stop(100%,$color2));
+  ///* Chrome10+,Safari5.1+ */
+  background: -webkit-linear-gradient(45deg, $color1 0%,$color1 50%,$color2 51%,$color2 100%);
+  ///* Opera 11.10+ */
+  background: -o-linear-gradient(45deg, $color1 0%,$color1 50%,$color2 51%,$color2 100%);
+  ///* IE10+ */
+  background: -ms-linear-gradient(45deg, $color1 0%,$color1 50%,$color2 51%,$color2 100%);
+  ///* W3C */
+  background: linear-gradient(45deg, $color1 0%,$color1 50%,$color2 51%,$color2 100%);
+  ///* IE6-9 fallback on horizontal gradient */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=1 );
+}
+
+/*** USAGE OF "Background gradient": 
+	
+	p {
+		@include diagonal-gradient($light-grey, $gray);
+	}
+	
+***/
+
+/* ============================================================================ */
+/* ::::::::::::::::::::::::::::: 14. Form Elements :::::::::::::::::::::::::::: */
+/* ============================================================================ */
+
+%formlabel-standard {
+	@include transition(all .3s ease);
+	font-family: 'Helvetica Neue' !important;
+	font-style: normal !important;
+	font-weight: bold;
+	text-transform: uppercase;
+	margin: 0 0 5px 0;
+	text-align: left;
+	display: block;
+	max-height: none;
+	line-height: 1.75 !important;
+	font-size: .75rem;
+	font-weight: bold;
+	position: relative;
+	span {
+		font-size: .75rem;
+		font-weight: bold;
+		@include screen(small) {
+			display: block !important;
+			margin: 5px 0 !important;
+		}
+	}
+	.required {
+		font-size: 0rem !important;
+		position: absolute;
+		right: -9px;
+		top: 26px;
+		cursor: auto !important;
+		&:after, &::after {
+			@include fa-icon;
+			@extend .fas;
+			content: fa-content($fa-var-certificate) !important;
+			font-family: "Font Awesome 6 Sharp" !important;
+			font-size: .75rem !important;
+			z-index: 999;
+			position: absolute !important;
+			right: 0px !important;
+			top: 50%;
+			font-weight: bold;
+			@include transform(0%, -50%);
+			@include transition(all .3s ease);
+		}
+	}
+}
+
+%forminput-submit {
+	@include border-radius(5px, 5px, 5px, 5px);
+	cursor: pointer !important;
+	background-color: $colorBlue !important;
+	background-image: none !important;
+	border: 1px solid transparent !important;
+	color: $colorWhite !important;
+	padding: 1.4em 1.7em !important;
+	line-height: 1 !important;
+	@include box-sizing(border-box);
+	font-weight: 500 !important;
+	text-align: center !important;
+	display: inline-block;
+	height: auto !important;
+	min-height: 0px !important;
+	@include transition(all .3s ease);
+	* {
+		padding: 0px !important;
+		margin: 0px !important;
+	}
+	span {
+		padding: 0px !important;
+		margin: 0px !important;
+	}
+	&:hover {
+		background-color: darken($colorBlue, 10%) !important;
+	}
+	&.disabled {
+		background: $colorLightGrey !important;
+	}
+	&.btn--tertiary {
+		@include border-radius(100%, 100%, 100%, 100%);
+		padding: 10px 14px !important;
+		border: 1px solid $colorLightGrey !important;
+		color: $colorLightGrey !important;
+		background-color: $colorWhite !important;
+		line-height: 1.42 !important;
+		&:hover {
+			background: $colorBlue !important;
+			color: $colorWhite !important;
+			border: 1px solid $colorBlue !important;
+		}
+	}
+}
+
+/* ============================================================================ */
+/* :::::::::::::::::::::::::::: 15. Scale of Element :::::::::::::::::::::::::: */
+/* ============================================================================ */
+
+@mixin scale($factor) {
+	zoom: $factor; /* IE */
+	-moz-transform: scale($factor); /* Firefox */
+	-o-transform: scale($factor); /* Opera */
+	-webkit-transform: scale($factor); /* Safari And Chrome */
+	transform: scale($factor); /* Standard Property */
+}
+
+/*** USAGE OF "Scale of Element": 
+	
+	p {
+		@include scale(2);
+	}
+	
+***/

@@ -1,0 +1,49 @@
+* {
+	outline: none !important;
+}
+
+a {
+	&:hover {
+		text-decoration: none !important;
+	}
+}
+
+.clearfix {
+	@extend %clearfix;
+}
+
+img {
+	image-rendering: -moz-crisp-edges !important;         /* Firefox */
+	image-rendering:   -o-crisp-edges !important;         /* Opera */
+	image-rendering: -webkit-optimize-contrast !important;/* Webkit (non-standard naming) */
+	image-rendering: crisp-edges !important;
+	-ms-interpolation-mode: nearest-neighbor !important;  /* IE (non-standard property) */
+}
+
+.alignment-left {
+	text-align: left !important;
+	* {
+		text-align: left !important;
+	}
+}
+
+.alignment-center {
+	text-align: center !important;
+	* {
+		text-align: center !important;
+	}
+}
+
+.alignment-right {
+	text-align: right !important;
+	* {
+		text-align: right !important;
+	}
+}
+
+.alignment-justify {
+	text-align: justify !important;
+	* {
+		text-align: justify !important;
+	}
+}
