@@ -360,96 +360,6 @@ $breakpoint-xx-large: 1400px;
 /* ::::::::::::::::::::::::::::: 14. Form Elements :::::::::::::::::::::::::::: */
 /* ============================================================================ */
 
-%formlabel-standard {
-	@include transition(all .3s ease);
-	font-family: 'Helvetica Neue' !important;
-	font-style: normal !important;
-	font-weight: bold;
-	text-transform: uppercase;
-	margin: 0 0 5px 0;
-	text-align: left;
-	display: block;
-	max-height: none;
-	line-height: 1.75 !important;
-	font-size: .75rem;
-	font-weight: bold;
-	position: relative;
-	span {
-		font-size: .75rem;
-		font-weight: bold;
-		@include screen(small) {
-			display: block !important;
-			margin: 5px 0 !important;
-		}
-	}
-	.required {
-		font-size: 0rem !important;
-		position: absolute;
-		right: -9px;
-		top: 26px;
-		cursor: auto !important;
-		&:after, &::after {
-			@include fa-icon;
-			@extend .fas;
-			content: fa-content($fa-var-certificate) !important;
-			font-family: "Font Awesome 6 Sharp" !important;
-			font-size: .75rem !important;
-			z-index: 999;
-			position: absolute !important;
-			right: 0px !important;
-			top: 50%;
-			font-weight: bold;
-			@include transform(0%, -50%);
-			@include transition(all .3s ease);
-		}
-	}
-}
-
-%forminput-submit {
-	@include border-radius(5px, 5px, 5px, 5px);
-	cursor: pointer !important;
-	background-color: $colorBlue !important;
-	background-image: none !important;
-	border: 1px solid transparent !important;
-	color: $colorWhite !important;
-	padding: 1.4em 1.7em !important;
-	line-height: 1 !important;
-	@include box-sizing(border-box);
-	font-weight: 500 !important;
-	text-align: center !important;
-	display: inline-block;
-	height: auto !important;
-	min-height: 0px !important;
-	@include transition(all .3s ease);
-	* {
-		padding: 0px !important;
-		margin: 0px !important;
-	}
-	span {
-		padding: 0px !important;
-		margin: 0px !important;
-	}
-	&:hover {
-		background-color: darken($colorBlue, 10%) !important;
-	}
-	&.disabled {
-		background: $colorLightGrey !important;
-	}
-	&.btn--tertiary {
-		@include border-radius(100%, 100%, 100%, 100%);
-		padding: 10px 14px !important;
-		border: 1px solid $colorLightGrey !important;
-		color: $colorLightGrey !important;
-		background-color: $colorWhite !important;
-		line-height: 1.42 !important;
-		&:hover {
-			background: $colorBlue !important;
-			color: $colorWhite !important;
-			border: 1px solid $colorBlue !important;
-		}
-	}
-}
-
 /* ============================================================================ */
 /* :::::::::::::::::::::::::::: 15. Scale of Element :::::::::::::::::::::::::: */
 /* ============================================================================ */
@@ -466,6 +376,88 @@ $breakpoint-xx-large: 1400px;
 	
 	p {
 		@include scale(2);
+	}
+	
+***/
+
+/* ============================================================================ */
+/* :::::::::::::::::::::::::::::: 16. Input Styles :::::::::::::::::::::::::::: */
+/* ============================================================================ */
+
+@mixin input-style($border-color: #ccc, $border-radius: 4px, $padding: 10px) {
+  border: 1px solid $border-color;
+  border-radius: $border-radius;
+  padding: $padding;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+
+  &:focus {
+    border-color: darken($border-color, 10%);
+    outline: none;
+  }
+}
+
+/*** USAGE OF "Input Styles": 
+	
+	input {
+		@include input-style();
+	}
+	
+***/
+
+/* ============================================================================ */
+/* :::::::::::::::::::::::::::::: 17. Button Styles ::::::::::::::::::::::::::: */
+/* ============================================================================ */
+
+@mixin button-style($bg-color: #007bff, $color: #fff, $border-radius: 4px) {
+  background-color: $bg-color;
+  color: $color;
+  border: none;
+  border-radius: $border-radius;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: darken($bg-color, 10%);
+  }
+
+  &:disabled {
+    background-color: lighten($bg-color, 30%);
+    cursor: not-allowed;
+  }
+}
+
+/*** USAGE OF "Button Styles": 
+	
+	button {
+		@include button-style();
+	}
+	
+***/
+
+/* ============================================================================ */
+/* :::::::::::::::::::::::::::::: 18. Form Styles :::::::::::::::::::::::::::: */
+/* ============================================================================ */
+
+@mixin form-style($margin: 20px 0) {
+  margin: $margin;
+
+  input, textarea, select {
+    @include input-style();
+    margin-bottom: 10px;
+    width: 100%;
+  }
+
+  button {
+    @include button-style();
+  }
+}
+
+/*** USAGE OF "Form Styles": 
+	
+	form {
+		@include form-style();
 	}
 	
 ***/
