@@ -15,11 +15,9 @@
               <div class="category-details">
                 <h2>{{ collection.title }}</h2>
                 <p>{{ collection.description }}</p>
-                {% capture learn_more_text %}
-                  {% render 'translation' with 'sections.collection_slider.learn_more' %}
-                {% endcapture %}
-
-                <a href="{{ collection.url }}" class="category-link">{{ learn_more_text | strip }} &rarr;</a>
+                <a href="{{ collection.url }}" class="category-link">
+                  {{- 'sections.collection_slider.learn_more' | t }} &rarr;</a
+                >
               </div>
             </div>
           </div>
