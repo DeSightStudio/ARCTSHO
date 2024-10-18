@@ -283,6 +283,9 @@
         "many": "{{ count }} articoli"
       }
     },
+    "collection_slider": {
+      "learn_more": "Scopri di più"
+    },
     "cart": {
       "title": "Il tuo carrello",
       "caption": "Articoli nel carrello",

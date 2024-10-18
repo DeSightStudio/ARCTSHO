@@ -282,6 +282,9 @@
         "other": "{{ count }} Artikel"
       }
     },
+    "collection_slider": {
+      "learn_more": "Mehr erfahren"
+    },
     "cart": {
       "title": "Dein Warenkorb",
       "caption": "Artikel im Warenkorb",

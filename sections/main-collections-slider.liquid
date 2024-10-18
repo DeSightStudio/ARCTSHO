@@ -1,0 +1,79 @@
+<div id="collection-slider">
+  <div class="slider-container">
+    {% for block in section.blocks %}
+      {% assign collection = collections[block.settings.collection] %}
+      {% if collection != blank %}
+        <div class="slider-item">
+          <div class="slider-background" style="background-image: url('{{ collection.image | img_url: 'master' }}');">
+            <div class="slider-content">
+              <div class="category-image">
+                <img
+                  src="{{ collection.metafields.custom.cutout_image | img_url: 'master' }}"
+                  alt="{{ collection.title }}"
+                >
+              </div>
+              <div class="category-details">
+                <h2>{{ collection.title }}</h2>
+                <p>{{ collection.description }}</p>
+                {% capture learn_more_text %}
+                  {% render 'translation' with 'sections.collection_slider.learn_more' %}
+                {% endcapture %}
+
+                <a href="{{ collection.url }}" class="category-link">{{ learn_more_text | strip }} &rarr;</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Collection Slider",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "layout",
+      "options": [
+        {
+          "value": "full_bleed",
+          "label": "Full Bleed"
+        },
+        {
+          "value": "grid",
+          "label": "Grid"
+        }
+      ],
+      "default": "full_bleed",
+      "label": "Layout"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Kollektion",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Kollektion auswählen"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection Slider",
+      "blocks": [
+        {
+          "type": "collection"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
