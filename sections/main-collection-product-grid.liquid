@@ -56,14 +56,21 @@
                   aria-describedby="a11y-refresh-page-message"
                 >
                   {%- for option in collection.sort_options -%}
-                    <option
-                      value="{{ option.value | escape }}"
-                      {% if option.value == sort_by %}
-                        selected="selected"
-                      {% endif %}
-                    >
-                      {{ option.name | escape }}
-                    </option>
+                    {% unless option.value contains 'title-ascending'
+                      or option.value contains 'best-selling'
+                      or option.value contains 'title-descending'
+                      or option.value contains 'featured'
+                      or option.value contains 'manual'
+                    %}
+                      <option
+                        value="{{ option.value | escape }}"
+                        {% if option.value == sort_by %}
+                          selected="selected"
+                        {% endif %}
+                      >
+                        {{ option.name | escape }}
+                      </option>
+                    {% endunless %}
                   {%- endfor -%}
                 </select>
                 <span class="svg-wrapper">
@@ -203,10 +210,10 @@
     {
       "type": "range",
       "id": "products_per_page",
-      "min": 8,
-      "max": 36,
-      "step": 4,
-      "default": 16,
+      "min": 12,
+      "max": 960,
+      "step": 12,
+      "default": 24,
       "label": "t:sections.main-collection-product-grid.settings.products_per_page.label"
     },
     {
