@@ -9,6 +9,23 @@
  */
 {
   "sections": {
+    "main_collections_slider_JkUqct": {
+      "type": "main-collections-slider",
+      "blocks": {
+        "collection_6xPRfN": {
+          "type": "collection",
+          "settings": {
+            "collection": "gear"
+          }
+        }
+      },
+      "block_order": [
+        "collection_6xPRfN"
+      ],
+      "settings": {
+        "layout": "full_bleed"
+      }
+    },
     "rich_text_4JVx9H": {
       "type": "rich-text",
       "blocks": {
@@ -26,7 +43,7 @@
       "settings": {
         "desktop_content_position": "center",
         "content_alignment": "center",
-        "color_scheme": "",
+        "color_scheme": "scheme-1",
         "full_width": true,
         "padding_top": 40,
         "padding_bottom": 52
@@ -41,25 +58,67 @@
             "collection": "tusks"
           }
         },
+        "featured_collection_4EKGm7": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "bark-offcuts"
+          }
+        },
+        "featured_collection_rAL9Gn": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "gear"
+          }
+        },
         "featured_collection_FCdkgK": {
           "type": "featured_collection",
           "settings": {
-            "collection": "bark"
+            "collection": "bark-offcuts"
+          }
+        },
+        "featured_collection_krmUUX": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "handcrafted-jewellery"
           }
         },
         "featured_collection_rq4Y86": {
           "type": "featured_collection",
           "settings": {
-            "collection": "offcuts"
+            "collection": "men"
           }
         },
         "featured_collection_PfBKC6": {
           "type": "featured_collection",
           "settings": {
-            "collection": ""
+            "collection": "mammoth-molar"
           }
         },
         "featured_collection_DizKEf": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "collector-s-pieces"
+          }
+        },
+        "featured_collection_hrxhNQ": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "training"
+          }
+        },
+        "featured_collection_nYCHaw": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "stabilized-ivory"
+          }
+        },
+        "featured_collection_Cigaz7": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "scales"
+          }
+        },
+        "featured_collection_Wk47ay": {
           "type": "featured_collection",
           "settings": {
             "collection": ""
@@ -68,10 +127,17 @@
       },
       "block_order": [
         "featured_collection_GDXkm8",
+        "featured_collection_4EKGm7",
+        "featured_collection_rAL9Gn",
         "featured_collection_FCdkgK",
+        "featured_collection_krmUUX",
         "featured_collection_rq4Y86",
         "featured_collection_PfBKC6",
-        "featured_collection_DizKEf"
+        "featured_collection_DizKEf",
+        "featured_collection_hrxhNQ",
+        "featured_collection_nYCHaw",
+        "featured_collection_Cigaz7",
+        "featured_collection_Wk47ay"
       ],
       "settings": {
         "title": "Collections",
@@ -311,6 +377,7 @@
     }
   },
   "order": [
+    "main_collections_slider_JkUqct",
     "rich_text_4JVx9H",
     "collection_list_T3GMNp",
     "multicolumn_Xd7Rwn",
