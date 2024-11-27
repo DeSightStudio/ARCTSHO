@@ -18,58 +18,47 @@
           "type": "shopify://apps/forms/blocks/inline/8744a304-fcb1-4347-b211-bb6b4759a76a",
           "settings": {
             "form_id": "208319",
-            "text_color": "#202020",
+            "text_color": "#ffffff",
             "button_background_color": "#202020",
-            "button_label_color": "#FFFFFF",
-            "links_color": "#1878B9",
-            "errors_color": "#E02229",
-            "text_alignment": "center",
-            "form_alignment": "center",
+            "button_label_color": "#ffffff",
+            "links_color": "#1878b9",
+            "errors_color": "#e02229",
+            "text_alignment": "left",
+            "form_alignment": "flex-start",
             "padding_top": 0,
             "padding_bottom": 0,
             "padding_right": 0,
             "padding_left": 0
           }
         },
-        "text_KFpwRE": {
-          "type": "text",
+        "brand_information_ccRY3g": {
+          "type": "brand_information",
           "settings": {
-            "heading": "Heading",
-            "subtext": "<p>Share contact information, store details, and brand content with your customers.</p>"
+            "show_social": true
           }
         }
       },
       "block_order": [
         "forms_inline_6DT3Tb",
-        "text_KFpwRE"
+        "brand_information_ccRY3g"
       ],
       "settings": {
-        "color_scheme": "scheme-1",
+        "color_scheme": "scheme-548c10fa-37f3-441f-92f9-890ada330aca",
         "newsletter_enable": false,
         "newsletter_heading": "Subscribe to our emails",
-        "enable_follow_on_shop": true,
-        "show_social": true,
-        "enable_country_selector": true,
-        "enable_language_selector": true,
-        "payment_enable": true,
+        "enable_follow_on_shop": false,
+        "show_social": false,
+        "enable_country_selector": false,
+        "enable_language_selector": false,
+        "payment_enable": false,
         "show_policy": false,
         "margin_top": 0,
-        "padding_top": 36,
-        "padding_bottom": 36
-      }
-    },
-    "custom_liquid_bGtx9D": {
-      "type": "custom-liquid",
-      "settings": {
-        "custom_liquid": "",
-        "color_scheme": "",
-        "padding_top": 40,
-        "padding_bottom": 52
+        "padding_top": 0,
+        "padding_bottom": 0
       }
     }
   },
   "order": [
-    "footer",
-    "custom_liquid_bGtx9D"
+    "footer"
   ]
 }
