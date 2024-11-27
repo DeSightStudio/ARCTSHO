@@ -29,46 +29,41 @@
       {% endif %}
     {%- endif -%}
 
-    {%- assign exhibitions = metaobjects.exhibition_calendar.values -%}
-    {%- assign sorted_exhibitions = exhibitions | sort: 'from-date' -%}
+    {% assign sortedExhibitions = shop.metaobjects.exhibition_calendar.values | sort: 'from_date' %}
 
     <div class="exhibition-calendar__grid">
-      {%- for exhibition in sorted_exhibitions -%}
-        {%- if exhibition.is_active.value -%}
+      {% for exhibition in sortedExhibitions %}
+        {% if exhibition.is_active %}
           <div class="exhibition-calendar__item">
             <div class="exhibition-calendar__icon">
               {% render 'icon-exhibition' %}
             </div>
             <div class="exhibition-calendar__content">
               <div class="exhibition-calendar__dates">
-                {%- if exhibition['from-date'].value != blank and exhibition['to-date'].value != blank -%}
-                  {{ exhibition['from-date'].value | date: '%d - %d %B' }}
-                  {{ exhibition['to-date'].value | date: '%Y' }}
-                {%- elsif exhibition['from-date'].value != blank -%}
-                  {{ exhibition['from-date'].value | date: '%B %Y' }}
-                {%- endif -%}
+                {% if exhibition['from-date'] and exhibition['to-date'] %}
+                  {{ exhibition['from-date'] | date: '%-d' }} - {{ exhibition['to-date'] | date: '%-d %B %Y' }}
+                {% elsif exhibition['from-date'] %}
+                  {{ exhibition['from-date'] | date: '%B %Y' }}
+                {% endif %}
               </div>
 
               <div class="exhibition-calendar__location">
-                {{ exhibition.location.value | escape }}
+                {{ exhibition.location }}
               </div>
 
-              {%- if exhibition.link_to_exhibition.value != blank -%}
-                <a
-                  href="{{ exhibition.link_to_exhibition.value }}"
-                  class="exhibition-calendar__link link underlined-link"
-                >
-                  {{ exhibition.exhibiton_name.value | escape }}
+              {% if exhibition.link_to_exhibition != blank %}
+                <a href="{{ exhibition.link_to_exhibition }}" class="exhibition-calendar__link link underlined-link">
+                  {{ exhibition.exhibiton_name }}
                 </a>
-              {%- else -%}
+              {% else %}
                 <div class="exhibition-calendar__name">
-                  {{ exhibition.exhibiton_name.value | escape }}
+                  {{ exhibition.exhibiton_name }}
                 </div>
-              {%- endif -%}
+              {% endif %}
             </div>
           </div>
-        {%- endif -%}
-      {%- endfor -%}
+        {% endif %}
+      {% endfor %}
     </div>
   </div>
 </div>

@@ -457,13 +457,19 @@
         "headline_styling": "Headline with Icon Light"
       }
     },
-    "custom_liquid_W63Epj": {
-      "type": "custom-liquid",
+    "exhibition_calendar_AEgfAn": {
+      "type": "exhibition-calendar",
       "settings": {
-        "custom_liquid": "CAL",
-        "color_scheme": "",
-        "padding_top": 40,
-        "padding_bottom": 52
+        "title": "Exhibition Calendar",
+        "heading_size": "h1",
+        "headline_styling": "Headline Default",
+        "use_arrow_divider": false,
+        "arrow_width": 50,
+        "arrow_position": "bottom",
+        "arrow_color": "#000000",
+        "padding_top": 36,
+        "padding_bottom": 36,
+        "color_scheme": "background-1"
       }
     },
     "rich_text_gDrqaE": {
@@ -522,7 +528,7 @@
     "multicolumn_tm3H6G",
     "rich_text_GRHWnF",
     "rich_text_temTj7",
-    "custom_liquid_W63Epj",
+    "exhibition_calendar_AEgfAn",
     "rich_text_gDrqaE",
     "featured_blog_PFtg7a"
   ]
