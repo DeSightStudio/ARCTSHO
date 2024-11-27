@@ -1,0 +1,233 @@
+{{ 'section-exhibition-calendar.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="exhibition-calendar color-{{ section.settings.color_scheme }} gradient{% if section.settings.full_width %} exhibition-calendar--full-width{% endif %} section-{{ section.id }}-padding">
+  <div class="exhibition-calendar__wrapper page-width">
+    {%- if section.settings.title != blank -%}
+      <h2
+        class="exhibition-calendar__heading {{ section.settings.heading_size }} {{ section.settings.headline_styling | handleize }}"
+        {{ block.shopify_attributes }}
+      >
+        {{ section.settings.title | escape }}
+      </h2>
+
+      {% if section.settings.use_arrow_divider %}
+        <div class="arrow-divider"></div>
+      {% endif %}
+    {%- endif -%}
+
+    {%- assign exhibitions = metaobjects.exhibition_calendar.values -%}
+    {%- assign sorted_exhibitions = exhibitions | sort: 'from-date' -%}
+
+    <div class="exhibition-calendar__grid">
+      {%- for exhibition in sorted_exhibitions -%}
+        {%- if exhibition.is_active.value -%}
+          <div class="exhibition-calendar__item">
+            <div class="exhibition-calendar__icon">
+              {% render 'icon-exhibition' %}
+            </div>
+            <div class="exhibition-calendar__content">
+              <div class="exhibition-calendar__dates">
+                {%- if exhibition['from-date'].value != blank and exhibition['to-date'].value != blank -%}
+                  {{ exhibition['from-date'].value | date: '%d - %d %B' }}
+                  {{ exhibition['to-date'].value | date: '%Y' }}
+                {%- elsif exhibition['from-date'].value != blank -%}
+                  {{ exhibition['from-date'].value | date: '%B %Y' }}
+                {%- endif -%}
+              </div>
+
+              <div class="exhibition-calendar__location">
+                {{ exhibition.location.value | escape }}
+              </div>
+
+              {%- if exhibition.link_to_exhibition.value != blank -%}
+                <a
+                  href="{{ exhibition.link_to_exhibition.value }}"
+                  class="exhibition-calendar__link link underlined-link"
+                >
+                  {{ exhibition.exhibiton_name.value | escape }}
+                </a>
+              {%- else -%}
+                <div class="exhibition-calendar__name">
+                  {{ exhibition.exhibiton_name.value | escape }}
+                </div>
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Exhibition Calendar",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "default": "Exhibition Calendar",
+      "label": "Heading"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "Small"
+        },
+        {
+          "value": "h1",
+          "label": "Large"
+        },
+        {
+          "value": "h0",
+          "label": "Extra large"
+        }
+      ],
+      "default": "h1",
+      "label": "Heading size"
+    },
+    {
+      "type": "header",
+      "content": "Headline Options"
+    },
+    {
+      "type": "select",
+      "id": "headline_styling",
+      "options": [
+        {
+          "value": "Headline Default",
+          "label": "Headline Default"
+        },
+        {
+          "value": "Headline with Icon Light",
+          "label": "Headline with Icon Light"
+        },
+        {
+          "value": "Headline Icon Dark",
+          "label": "Headline Icon Dark"
+        }
+      ],
+      "default": "Headline Default",
+      "label": "Headline Styling"
+    },
+    {
+      "type": "header",
+      "content": "Divider Options"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_arrow_divider",
+      "label": "Use Arrow Divider",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "arrow_width",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Arrow Divider Width",
+      "default": 50
+    },
+    {
+      "type": "select",
+      "id": "arrow_position",
+      "options": [
+        {
+          "value": "top",
+          "label": "Top"
+        },
+        {
+          "value": "bottom",
+          "label": "Bottom"
+        }
+      ],
+      "default": "bottom",
+      "label": "Arrow Position"
+    },
+    {
+      "type": "color",
+      "id": "arrow_color",
+      "label": "Arrow Color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "options": [
+        {
+          "value": "accent-1",
+          "label": "t:sections.all.colors.accent_1.label"
+        },
+        {
+          "value": "accent-2",
+          "label": "t:sections.all.colors.accent_2.label"
+        },
+        {
+          "value": "background-1",
+          "label": "t:sections.all.colors.background_1.label"
+        },
+        {
+          "value": "background-2",
+          "label": "t:sections.all.colors.background_2.label"
+        },
+        {
+          "value": "inverse",
+          "label": "t:sections.all.colors.inverse.label"
+        }
+      ],
+      "default": "background-1",
+      "label": "t:sections.all.colors.label"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Exhibition Calendar"
+    }
+  ]
+}
+{% endschema %}
