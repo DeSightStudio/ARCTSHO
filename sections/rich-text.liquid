@@ -14,30 +14,38 @@
   }
 
   {% if section.settings.use_arrow_divider %}
-    .arrow-divider {
+  .arrow-divider {
       width: {{ section.settings.arrow_width }}%;
       height: 2px;
-      position: relative;
       background: {{ section.settings.arrow_color }};
+      position: relative;
       margin: 20px auto;
-    }
+      display: block !important;
+  }
 
-    .arrow-divider:after {
+  .arrow-divider::before {
       content: '';
       position: absolute;
-      width: 10px;
-      height: 10px;
-      border-right: 2px solid {{ section.settings.arrow_color }};
+      left: 0px; /* Abstand links */
+      top: 50%;
+      transform: translateY(-50%) rotate(45deg); /* Drehung für linken Pfeil */
+      width: 12px;
+      height: 12px;
+      border-left: 2px solid {{ section.settings.arrow_color }};
       border-bottom: 2px solid {{ section.settings.arrow_color }};
-      transform: rotate(45deg);
-      {% if section.settings.arrow_position == 'bottom' %}
-        bottom: -6px;
-      {% else %}
-        top: -6px;
-        transform: rotate(225deg);
-      {% endif %}
-      left: calc(50% - 5px);
-    }
+  }
+
+  .arrow-divider::after {
+      content: '';
+      position: absolute;
+      right: 0px; /* Abstand rechts */
+      top: 50%;
+      transform: translateY(-50%) rotate(45deg); /* Drehung für rechten Pfeil */
+      width: 12px;
+      height: 12px;
+      border-right: 2px solid {{ section.settings.arrow_color }};
+      border-top: 2px solid {{ section.settings.arrow_color }};
+  }
   {% endif %}
 {%- endstyle -%}
 
