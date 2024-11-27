@@ -8,21 +8,16 @@
  * ------------------------------------------------------------
  */
 {
-  "sections": {
-    "main": {
-      "type": "main-blog",
-      "settings": {
-        "layout": "grid",
-        "show_image": true,
-        "image_height": "large",
-        "show_date": false,
-        "show_author": false,
-        "padding_top": 36,
-        "padding_bottom": 36
-      }
-    }
+  "parent": "header-group.json",
+  "context": {
+    "market": "eu"
   },
-  "order": [
-    "main"
-  ]
+  "sections": {
+    "header": {
+      "settings": {
+        "enable_country_selector": false
+      },
+      "blocks": {}
+    }
+  }
 }

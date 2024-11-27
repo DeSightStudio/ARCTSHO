@@ -9,45 +9,208 @@
  */
 {
   "sections": {
+    "image_banner_VTaJVW": {
+      "type": "image-banner",
+      "blocks": {
+        "heading_JwhMXk": {
+          "type": "heading",
+          "settings": {
+            "heading": "{{ article.title }}",
+            "heading_size": "h0"
+          }
+        }
+      },
+      "block_order": [
+        "heading_JwhMXk"
+      ],
+      "settings": {
+        "image": "{{ article.image }}",
+        "image_overlay_opacity": 60,
+        "image_height": "medium",
+        "desktop_content_position": "middle-center",
+        "show_text_box": false,
+        "desktop_content_alignment": "center",
+        "color_scheme": "scheme-548c10fa-37f3-441f-92f9-890ada330aca",
+        "image_behavior": "ambient",
+        "mobile_content_alignment": "center",
+        "stack_images_on_mobile": true,
+        "show_text_below": false
+      }
+    },
     "main": {
       "type": "main-article",
       "blocks": {
-        "featured_image": {
-          "type": "featured_image",
-          "settings": {
-            "image_height": "adapt"
-          }
-        },
-        "title": {
-          "type": "title",
-          "settings": {
-            "blog_show_date": true,
-            "blog_show_author": false
-          }
+        "content": {
+          "type": "content",
+          "settings": {}
         },
         "share": {
           "type": "share",
           "settings": {
             "share_label": "Share"
           }
-        },
-        "content": {
-          "type": "content",
+        }
+      },
+      "block_order": [
+        "content",
+        "share"
+      ],
+      "settings": {}
+    },
+    "rich_text_9THtfW": {
+      "type": "rich-text",
+      "blocks": {
+        "heading_NAQTd6": {
+          "type": "heading",
           "settings": {
+            "heading": "Other Articles",
+            "heading_size": "h0"
           }
         }
       },
       "block_order": [
-        "featured_image",
-        "title",
-        "share",
-        "content"
+        "heading_NAQTd6"
       ],
       "settings": {
+        "desktop_content_position": "center",
+        "content_alignment": "center",
+        "color_scheme": "",
+        "full_width": true,
+        "padding_top": 40,
+        "padding_bottom": 52,
+        "use_arrow_divider": false,
+        "arrow_width": 50,
+        "arrow_position": "bottom",
+        "arrow_color": "#000000",
+        "headline_styling": "Headline Icon Light"
+      }
+    },
+    "featured_blog_YmPF76": {
+      "type": "featured-blog",
+      "settings": {
+        "heading": "",
+        "heading_size": "h1",
+        "blog": "news",
+        "post_limit": 3,
+        "columns_desktop": 3,
+        "color_scheme": "",
+        "show_image": true,
+        "show_date": false,
+        "show_author": false,
+        "show_view_all": false,
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "collection_list_EnLiFU": {
+      "type": "collection-list",
+      "blocks": {
+        "featured_collection_Uwdp6p": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "gear"
+          }
+        },
+        "featured_collection_UkTYgB": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "bark-offcuts"
+          }
+        },
+        "featured_collection_Lhefbw": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "collector-s-pieces"
+          }
+        },
+        "featured_collection_MDUWjg": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "handcrafted-jewellery"
+          }
+        },
+        "featured_collection_j8jVXY": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "mammoth-molar"
+          }
+        },
+        "featured_collection_NbQVkV": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "offcuts"
+          }
+        },
+        "featured_collection_i6aJWK": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "men"
+          }
+        },
+        "featured_collection_yX9UnD": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "scales"
+          }
+        },
+        "featured_collection_eAzhwL": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "training"
+          }
+        },
+        "featured_collection_73WMAw": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "stabilized-ivory"
+          }
+        },
+        "featured_collection_mt8EVL": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "tusks"
+          }
+        },
+        "featured_collection_3T3KdE": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "all-products"
+          }
+        }
+      },
+      "block_order": [
+        "featured_collection_Uwdp6p",
+        "featured_collection_UkTYgB",
+        "featured_collection_Lhefbw",
+        "featured_collection_MDUWjg",
+        "featured_collection_j8jVXY",
+        "featured_collection_NbQVkV",
+        "featured_collection_i6aJWK",
+        "featured_collection_yX9UnD",
+        "featured_collection_eAzhwL",
+        "featured_collection_73WMAw",
+        "featured_collection_mt8EVL",
+        "featured_collection_3T3KdE"
+      ],
+      "settings": {
+        "title": "Our Mammoth Ivory Selection",
+        "heading_size": "h1",
+        "image_ratio": "square",
+        "columns_desktop": 6,
+        "color_scheme": "",
+        "show_view_all": false,
+        "columns_mobile": "2",
+        "swipe_on_mobile": false,
+        "padding_top": 36,
+        "padding_bottom": 36
       }
     }
   },
   "order": [
-    "main"
+    "image_banner_VTaJVW",
+    "main",
+    "rich_text_9THtfW",
+    "featured_blog_YmPF76",
+    "collection_list_EnLiFU"
   ]
 }
