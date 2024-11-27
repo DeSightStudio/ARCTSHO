@@ -259,7 +259,7 @@
         "swipe_on_mobile": false,
         "padding_top": 36,
         "padding_bottom": 36,
-        "styling": "Shopify Default"
+        "styling": "Arctic Headline"
       }
     },
     "multicolumn_GWRcrR": {
@@ -268,8 +268,8 @@
         "column_zVryXj": {
           "type": "column",
           "settings": {
-            "title": "Column",
-            "text": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
+            "title": "",
+            "text": "<p>Our mammoth ivory comes with relevant paperwork, including a German Certificate of Origin. We also have the non-CITES confirmation: Clearance Certificate.</p>",
             "link_label": "",
             "link": ""
           }
@@ -277,8 +277,8 @@
         "column_kNLTpk": {
           "type": "column",
           "settings": {
-            "title": "Column",
-            "text": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
+            "title": "",
+            "text": "<p>We are a German family business who has specialized in the worldwide trade of Siberian mammoth ivory (<em>Mammuthus primigenius</em>) for over 20 years.</p>",
             "link_label": "",
             "link": ""
           }
@@ -286,8 +286,8 @@
         "column_FRj483": {
           "type": "column",
           "settings": {
-            "title": "Column",
-            "text": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
+            "title": "",
+            "text": "<p>Our mammoth ivory is sourced and imported to Germany in an ethical manner. We strictly comply with all regulatory requirements and inspect every piece to ensure the highest quality.</p>",
             "link_label": "",
             "link": ""
           }
@@ -299,56 +299,49 @@
         "column_FRj483"
       ],
       "settings": {
-        "title": "Multicolumn",
+        "title": "",
         "heading_size": "h1",
         "image_width": "full",
         "image_ratio": "adapt",
         "columns_desktop": 3,
         "column_alignment": "left",
-        "background_style": "primary",
-        "button_label": "Button label",
+        "background_style": "none",
+        "button_label": "",
         "button_link": "",
-        "color_scheme": "",
+        "color_scheme": "scheme-5",
         "columns_mobile": "1",
         "swipe_on_mobile": false,
         "padding_top": 36,
         "padding_bottom": 36,
-        "styling": "Shopify Default"
+        "styling": "Arctic Content"
       }
     },
-    "multicolumn_Mz9E64": {
-      "type": "multicolumn",
+    "rich_text_kPrC3p": {
+      "type": "rich-text",
       "blocks": {
-        "column_Mmbf3q": {
-          "type": "column",
+        "heading_87YFjQ": {
+          "type": "heading",
           "settings": {
-            "image": "shopify://shop_images/tusks.png",
-            "title": "Column",
-            "text": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
-            "link_label": "",
-            "link": ""
+            "heading": "We provide fast, tracked and insured worldwide shipping.",
+            "heading_size": "h1"
           }
         }
       },
       "block_order": [
-        "column_Mmbf3q"
+        "heading_87YFjQ"
       ],
       "settings": {
-        "title": "Multicolumn",
-        "heading_size": "h1",
-        "image_width": "full",
-        "image_ratio": "adapt",
-        "columns_desktop": 3,
-        "column_alignment": "center",
-        "background_style": "primary",
-        "button_label": "Button label",
-        "button_link": "",
-        "color_scheme": "scheme-1",
-        "columns_mobile": "1",
-        "swipe_on_mobile": false,
-        "padding_top": 36,
-        "padding_bottom": 36,
-        "styling": "Shopify Default"
+        "desktop_content_position": "center",
+        "content_alignment": "center",
+        "color_scheme": "scheme-5",
+        "full_width": true,
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "use_arrow_divider": true,
+        "arrow_width": 100,
+        "arrow_position": "top",
+        "arrow_color": "#05470a",
+        "headline_styling": "Headline Default"
       }
     },
     "multicolumn_tm3H6G": {
@@ -357,8 +350,9 @@
         "column_rBbQLy": {
           "type": "column",
           "settings": {
-            "title": "Column",
-            "text": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
+            "image": "shopify://shop_images/Exclusivity_a1feb77c-df64-4eda-8fd2-8d67db65bd0d.png",
+            "title": "Exclusivity",
+            "text": "<ul><li>Exquisite colours</li><li>Unique character</li><li>Ancient aura</li><li>Magnificent structure</li><li>Luxurious material</li></ul>",
             "link_label": "",
             "link": ""
           }
@@ -366,8 +360,9 @@
         "column_9fcck4": {
           "type": "column",
           "settings": {
-            "title": "Column",
-            "text": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
+            "image": "shopify://shop_images/Reliability_1931e281-3b2a-499b-9f1a-eb7a0aa673a7.png",
+            "title": "Reliability",
+            "text": "<ul><li>Official certification</li><li>Immediate availability</li><li>Personal consultation</li><li>Competent assistance</li><li>Privileged access</li></ul>",
             "link_label": "",
             "link": ""
           }
@@ -375,8 +370,9 @@
         "column_6YiAQa": {
           "type": "column",
           "settings": {
-            "title": "Column",
-            "text": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
+            "image": "shopify://shop_images/Quality_0820f447-f7f7-4b9b-9d40-76bf226572f1.png",
+            "title": "Quality",
+            "text": "<ul><li>Custom-projects</li><li>Tailored service</li><li>Quick responses</li><li>Efficient processes</li><li>On-site inspection</li></ul>",
             "link_label": "",
             "link": ""
           }
@@ -388,21 +384,86 @@
         "column_6YiAQa"
       ],
       "settings": {
-        "title": "Multicolumn",
+        "title": "",
         "heading_size": "h1",
         "image_width": "full",
         "image_ratio": "adapt",
         "columns_desktop": 3,
         "column_alignment": "left",
-        "background_style": "primary",
-        "button_label": "Button label",
+        "background_style": "none",
+        "button_label": "",
         "button_link": "",
-        "color_scheme": "",
+        "color_scheme": "scheme-5",
         "columns_mobile": "1",
         "swipe_on_mobile": false,
         "padding_top": 36,
         "padding_bottom": 36,
         "styling": "Shopify Default"
+      }
+    },
+    "rich_text_GRHWnF": {
+      "type": "rich-text",
+      "blocks": {
+        "heading_hb7bgk": {
+          "type": "heading",
+          "settings": {
+            "heading": "Mammoth ivory is a prehistoric echo of our natural history.It is to be treasured and looked after for the next generation.",
+            "heading_size": "h1"
+          }
+        }
+      },
+      "block_order": [
+        "heading_hb7bgk"
+      ],
+      "settings": {
+        "desktop_content_position": "center",
+        "content_alignment": "center",
+        "color_scheme": "scheme-548c10fa-37f3-441f-92f9-890ada330aca",
+        "full_width": true,
+        "padding_top": 40,
+        "padding_bottom": 52,
+        "use_arrow_divider": false,
+        "arrow_width": 50,
+        "arrow_position": "bottom",
+        "arrow_color": "#000000",
+        "headline_styling": "Headline Default"
+      }
+    },
+    "rich_text_temTj7": {
+      "type": "rich-text",
+      "blocks": {
+        "heading_YVHwzV": {
+          "type": "heading",
+          "settings": {
+            "heading": "Exhibition calendar",
+            "heading_size": "h1"
+          }
+        }
+      },
+      "block_order": [
+        "heading_YVHwzV"
+      ],
+      "settings": {
+        "desktop_content_position": "center",
+        "content_alignment": "center",
+        "color_scheme": "",
+        "full_width": true,
+        "padding_top": 40,
+        "padding_bottom": 52,
+        "use_arrow_divider": false,
+        "arrow_width": 50,
+        "arrow_position": "bottom",
+        "arrow_color": "#000000",
+        "headline_styling": "Headline with Icon Light"
+      }
+    },
+    "custom_liquid_W63Epj": {
+      "type": "custom-liquid",
+      "settings": {
+        "custom_liquid": "CAL",
+        "color_scheme": "",
+        "padding_top": 40,
+        "padding_bottom": 52
       }
     },
     "rich_text_gDrqaE": {
@@ -433,15 +494,6 @@
         "headline_styling": "Headline with Icon Light"
       }
     },
-    "custom_liquid_W63Epj": {
-      "type": "custom-liquid",
-      "settings": {
-        "custom_liquid": "CAL",
-        "color_scheme": "",
-        "padding_top": 40,
-        "padding_bottom": 52
-      }
-    },
     "featured_blog_PFtg7a": {
       "type": "featured-blog",
       "settings": {
@@ -466,10 +518,12 @@
     "collection_list_T3GMNp",
     "multicolumn_Xd7Rwn",
     "multicolumn_GWRcrR",
-    "multicolumn_Mz9E64",
+    "rich_text_kPrC3p",
     "multicolumn_tm3H6G",
-    "rich_text_gDrqaE",
+    "rich_text_GRHWnF",
+    "rich_text_temTj7",
     "custom_liquid_W63Epj",
+    "rich_text_gDrqaE",
     "featured_blog_PFtg7a"
   ]
 }
