@@ -12,6 +12,33 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+
+  {% if section.settings.use_arrow_divider %}
+    .arrow-divider {
+      width: {{ section.settings.arrow_width }}%;
+      height: 2px;
+      position: relative;
+      background: {{ section.settings.arrow_color }};
+      margin: 20px auto;
+    }
+
+    .arrow-divider:after {
+      content: '';
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-right: 2px solid {{ section.settings.arrow_color }};
+      border-bottom: 2px solid {{ section.settings.arrow_color }};
+      transform: rotate(45deg);
+      {% if section.settings.arrow_position == 'bottom' %}
+        bottom: -6px;
+      {% else %}
+        top: -6px;
+        transform: rotate(225deg);
+      {% endif %}
+      left: calc(50% - 5px);
+    }
+  {% endif %}
 {%- endstyle -%}
 
 <div class="isolate{% unless section.settings.full_width %} page-width{% endunless %}">
@@ -31,6 +58,9 @@
               >
                 {{ block.settings.heading }}
               </h2>
+              {% if section.settings.use_arrow_divider %}
+                <div class="arrow-divider"></div>
+              {% endif %}
             {%- when 'caption' -%}
               <p
                 class="rich-text__caption {{ block.settings.text_style }} {{ block.settings.text_style }}--{{ block.settings.text_size }}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
@@ -179,6 +209,48 @@
       "unit": "px",
       "label": "t:sections.all.padding.padding_bottom",
       "default": 52
+    },
+    {
+      "type": "header",
+      "content": "Divider Options"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_arrow_divider",
+      "label": "Use Arrow Divider",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "arrow_width",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Arrow Divider Width",
+      "default": 50
+    },
+    {
+      "type": "select",
+      "id": "arrow_position",
+      "options": [
+        {
+          "value": "top",
+          "label": "Top"
+        },
+        {
+          "value": "bottom",
+          "label": "Bottom"
+        }
+      ],
+      "default": "bottom",
+      "label": "Arrow Position"
+    },
+    {
+      "type": "color",
+      "id": "arrow_color",
+      "label": "Arrow Color",
+      "default": "#000000"
     }
   ],
   "blocks": [
