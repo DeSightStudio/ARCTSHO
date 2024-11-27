@@ -116,7 +116,12 @@
         "color_scheme": "scheme-1",
         "full_width": true,
         "padding_top": 40,
-        "padding_bottom": 52
+        "padding_bottom": 52,
+        "use_arrow_divider": false,
+        "arrow_width": 50,
+        "arrow_position": "bottom",
+        "arrow_color": "#000000",
+        "headline_styling": "Headline Default"
       }
     },
     "collection_list_T3GMNp": {
@@ -253,7 +258,8 @@
         "columns_mobile": "1",
         "swipe_on_mobile": false,
         "padding_top": 36,
-        "padding_bottom": 36
+        "padding_bottom": 36,
+        "styling": "Shopify Default"
       }
     },
     "multicolumn_GWRcrR": {
@@ -306,7 +312,8 @@
         "columns_mobile": "1",
         "swipe_on_mobile": false,
         "padding_top": 36,
-        "padding_bottom": 36
+        "padding_bottom": 36,
+        "styling": "Shopify Default"
       }
     },
     "multicolumn_Mz9E64": {
@@ -340,7 +347,8 @@
         "columns_mobile": "1",
         "swipe_on_mobile": false,
         "padding_top": 36,
-        "padding_bottom": 36
+        "padding_bottom": 36,
+        "styling": "Shopify Default"
       }
     },
     "multicolumn_tm3H6G": {
@@ -393,7 +401,8 @@
         "columns_mobile": "1",
         "swipe_on_mobile": false,
         "padding_top": 36,
-        "padding_bottom": 36
+        "padding_bottom": 36,
+        "styling": "Shopify Default"
       }
     },
     "rich_text_gDrqaE": {
@@ -402,7 +411,7 @@
         "heading_pNjTPD": {
           "type": "heading",
           "settings": {
-            "heading": "Talk about your brand",
+            "heading": "Articles",
             "heading_size": "h1"
           }
         }
@@ -416,7 +425,12 @@
         "color_scheme": "",
         "full_width": true,
         "padding_top": 40,
-        "padding_bottom": 52
+        "padding_bottom": 52,
+        "use_arrow_divider": true,
+        "arrow_width": 100,
+        "arrow_position": "top",
+        "arrow_color": "#05470a",
+        "headline_styling": "Headline with Icon Light"
       }
     },
     "custom_liquid_W63Epj": {
@@ -431,14 +445,14 @@
     "featured_blog_PFtg7a": {
       "type": "featured-blog",
       "settings": {
-        "heading": "Blog posts",
+        "heading": "",
         "heading_size": "h1",
-        "blog": "",
+        "blog": "news",
         "post_limit": 3,
         "columns_desktop": 3,
-        "color_scheme": "",
+        "color_scheme": "scheme-1",
         "show_image": true,
-        "show_date": true,
+        "show_date": false,
         "show_author": false,
         "show_view_all": true,
         "padding_top": 36,
