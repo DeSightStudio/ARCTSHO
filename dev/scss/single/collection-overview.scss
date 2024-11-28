@@ -1,0 +1,25 @@
+#ProductGridContainer {
+    .collection {
+        #product-grid {
+            .grid__item {
+                .card-wrapper {
+                    .card {
+                        position: relative;
+                        .card__inner {
+
+                        }
+                        .card__content {
+                            &.static {
+                                display: block;
+                                position: absolute;
+                            }
+                            &.hover {
+                                display: none;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -5,13 +5,10 @@ header {
     @include screen(med-small) {
         padding: 10px 1.5rem !important;
     }
-    .header__heading {
+    .header__heading-link {
         padding: 10px 40px !important;
         @include screen(med-small) {
             padding: 0px !important;
-        }
-        .header__headling-link {
-            padding: .5em 0px !important;
         }
     }
     .header__icons {

@@ -1,7 +1,7 @@
 .shopify-section {
-    .blog {
-        .blog__posts {
-           .article {
+    .blog, .main-blog {
+        .blog__posts, .blog-articles {
+           .article, .blog-articles__article {
             @include border-radius(20px, 20px, 0, 0);
             .card {
                 @include border-radius(20px, 20px, 0, 0);

@@ -7,4 +7,9 @@
         color: $mainColorDark;
         font-size: $fontSizeMedium;
     }
+    .article-template__back {
+        max-width: calc(100% - 40px) !important;
+        width: 980px;
+        margin: 30px auto 10px auto;
+    }
 }
