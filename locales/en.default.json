@@ -527,5 +527,9 @@
       "send_on": "YYYY-MM-DD",
       "send_on_label": "Send on (optional)"
     }
+  },
+  "collections": {
+    "products_available_html": "{{ count }} Products available",
+    "product_available_html": "{{ count }} Product available"
   }
 }
