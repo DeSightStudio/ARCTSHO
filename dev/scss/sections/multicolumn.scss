@@ -84,7 +84,7 @@
                     margin: 0px 0px 0px 0px;
                     p {
                         font-family: 'Cormorant Garamond';
-                        color: $mainColor;
+                        color: $mainColorDark;
                         font-size: $fontSizeMedium;
                         text-align: center;
                     }
@@ -104,11 +104,10 @@
             }
             .multicolumn-card__info {
                 h3 {
-                    font-family: 'Copperplate';
+                    font-family: 'Cormorant Garamond';
                     color: $mainColor;
                     font-size: $fontSizeLarge;
                     margin: 0px 0px 0px 0px;
-                    font-weight: 100;
                     @include screen(med-small) {
                         font-size: $fontSizeMedium;
                     }
@@ -117,7 +116,7 @@
                     margin: 0px 0px 0px 0px;
                     p {
                         font-family: 'Cormorant Garamond';
-                        color: $mainColor;
+                        color: $mainColorDark;
                         font-size: $fontSizeMedium;
                         text-align: center;
                     }
@@ -131,7 +130,7 @@
                             list-style-type: none;
                             margin-left: 5px;
                             font-family: 'Cormorant Garamond';
-                            color: $mainColor;
+                            color: $mainColorDark;
                             font-size: $fontSizeRegular;
                             &:before {
                                 font-family: "Font Awesome 6 Pro";

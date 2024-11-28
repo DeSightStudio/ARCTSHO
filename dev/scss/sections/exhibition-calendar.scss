@@ -1,3 +1,120 @@
 .exhibition-calendar {
-  
+  .exhibition-calendar__wrapper {
+    .exhibition-calendar__heading {
+      &.headline-icon-light, &.headline-icon-dark {
+        position: relative;
+        padding: 30px 0 0 0;
+        font-family: 'Copperplate';
+        color: $mainColor;
+        font-weight: 100;
+        font-size: $fontSizeMedium*2;
+        text-align: center;
+        z-index: 1;
+        @include screen(med-small) {
+          padding: 40px 0 0 0;
+          font-size: $fontSizeLarge;
+        }
+        &:before {
+          display: block;
+          width: 92px;
+          height: 88px;
+          content: ' ';
+          position: absolute;
+          z-index: -1;
+          top: 0px;
+          left: 50%;
+          -webkit-transform: translateX(-50%);
+          -ms-transform: translateX(-50%);
+          transform: translateX(-50%);
+        }
+      }
+      &.headline-icon-light {
+        &:before {
+          background: url('headline-icon_light.png') transparent no-repeat center top;
+        }
+      }
+      &.headline-icon-dark {
+        &:before {
+          background: url('headline-icon_dark.png') transparent no-repeat center top;
+        }
+      }
+    }
+    .exhibition-calendar__grid {
+      width: 980px;
+      max-width: calc(100% - 40px);
+      margin: 25px auto;
+      @include screen(med-small) {
+        margin: 60px auto 0px auto;
+      }
+      .exhibition-calendar__item {
+        padding: 30px 0 30px 150px;
+        @include screen(med-small) {
+          padding: 100px 0px 50px 0px;
+          text-align: center;
+        }
+        position: relative;
+        &:before {
+          display: block;
+          width: 92px;
+          height: 88px;
+          content: ' ';
+          position: absolute;
+          z-index: 1;
+          top: 50%;
+          left: 0%;
+          -webkit-transform: translateY(-50%);
+          -ms-transform: translateY(-50%);
+          transform: translateY(-50%);
+          background: url('headline-icon_dark.png') transparent no-repeat center top;
+          @include screen(med-small) {
+            top: 0px;
+            left: 50%;
+            -webkit-transform: translateY(0%);
+            -ms-transform: translateY(0%);
+            transform: translateY(0%);
+            -webkit-transform: translateX(-50%);
+            -ms-transform: translateX(-50%);
+            transform: translateX(-50%);
+          }
+        }
+        .exhibition-calendar__content {
+          display: flex;
+          @include screen(med-small) {
+            display: block;
+          }
+          .exhibition-calendar__content__left {
+            flex: 0 0 300px;
+            @include screen(med-small) {
+              display: block;
+            }
+            .exhibition-calendar__dates {
+              font-family: 'Copperplate';
+              color: $mainColorDark;
+              font-weight: 100;
+              font-size: $fontSizeRegular;
+            }
+            .exhibition-calendar__location {
+              font-family: 'Copperplate';
+              color: $grayColor;
+              font-weight: 100;
+              font-size: $fontSizeRegular;
+            }
+          }
+          .exhibition-calendar__content__right {
+            flex: 1 1 auto;
+            @include screen(med-small) {
+              display: block;
+            }
+            .exhibition-calendar__link {
+              font-family: 'Cormorant Garamond';
+              color: $mainColor;
+              font-size: $fontSizeMedium;
+              font-weight: bold;
+              font-weight: 700;
+            }
+          }
+        }
+      }
+    }
+  }
 }

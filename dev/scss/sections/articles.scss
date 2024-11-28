@@ -1,0 +1,41 @@
+.shopify-section {
+    .blog {
+        .blog__posts {
+           .article {
+            @include border-radius(20px, 20px, 0, 0);
+            .card {
+                @include border-radius(20px, 20px, 0, 0);
+                .card__inner {
+                    @include border-radius(20px, 20px, 0, 0);
+                    * {
+                        @include border-radius(20px, 20px, 0, 0);
+                    }
+                    .card__content {
+                        display: none;
+                    }
+                }
+                .card__content {
+                    background-color: $accentLight;
+                    .card__information {
+                        .card__heading {
+                            font-family: 'Cormorant Garamond';
+                            color: $mainColor;
+                            font-size: $fontSizeLarge;
+                            margin: 0px 0px 0px 0px;
+                            @include screen(med-small) {
+                                font-size: $fontSizeMedium;
+                            }
+                        }
+                        .article-card__excerpt {
+                            font-family: 'Cormorant Garamond';
+                            color: $mainColorDark;
+                            font-size: $fontSizeRegular;
+                            margin: 15px 0px 0px 0px;
+                        }
+                    }
+                }
+            }
+           } 
+        }
+    }
+}

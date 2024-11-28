@@ -424,8 +424,8 @@
         "padding_bottom": 52,
         "use_arrow_divider": false,
         "arrow_width": 50,
-        "arrow_position": "bottom",
-        "arrow_color": "#000000",
+        "arrow_position": "top",
+        "arrow_color": "#ffffff",
         "headline_styling": "Headline Default Background"
       }
     },
@@ -434,7 +434,7 @@
       "settings": {
         "title": "Exhibition Calendar",
         "heading_size": "h1",
-        "headline_styling": "Headline Default",
+        "headline_styling": "Headline Icon Light",
         "use_arrow_divider": false,
         "arrow_width": 50,
         "arrow_position": "bottom",
@@ -469,7 +469,7 @@
         "arrow_width": 100,
         "arrow_position": "top",
         "arrow_color": "#05470a",
-        "headline_styling": "Headline with Icon Light"
+        "headline_styling": "Headline Icon Light"
       }
     },
     "featured_blog_PFtg7a": {
