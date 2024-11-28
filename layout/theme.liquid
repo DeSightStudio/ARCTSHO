@@ -303,6 +303,19 @@
     ></script>
     <script src="{{ 'dist.js' | asset_url }}" defer="defer"></script>
     {{ 'dist.css' | asset_url | stylesheet_tag }}
+
+    {%- if content_for_layout contains 'collection-slider' -%}
+      <!-- Slick Slider CSS -->
+      <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css">
+      <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css">
+
+      <!-- Slick Slider JS -->
+      <script
+        type="text/javascript"
+        src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"
+        defer
+      ></script>
+    {%- endif -%}
   </head>
 
   <body class="gradient{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">

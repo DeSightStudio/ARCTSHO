@@ -63,6 +63,9 @@
                 e.preventDefault();
                 smoothScroll($(this).attr('href'));
             });
+
+            // Slick Slider Initialization
+            initializeSlickSlider();
         }
 
         // Document ready
@@ -71,3 +74,20 @@
         });
     });
 })(jQuery);
+
+// Slick Slider Initialization
+function initializeSlickSlider() {
+    if ($('#collection-slider').length > 0) {
+        $('#collection-slider .slider-container').slick({
+            dots: false,
+            infinite: true,
+            speed: 300,
+            slidesToShow: 1,
+            adaptiveHeight: true,
+            slidesToScroll: 1,
+            adaptiveHeight: true,
+            prevArrow:"<span class='slickNavPrev'><i class='fa-thin fa-chevron-left'></i></span>",
+			nextArrow:"<span class='slickNavNext'><i class='fa-thin fa-chevron-right'></i></span>"
+        });
+    }
+}

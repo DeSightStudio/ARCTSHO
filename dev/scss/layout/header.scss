@@ -1,0 +1,46 @@
+header {
+    padding: 0px !important;
+    max-width: 100% !important;
+    @include box-shadow(0, 4px, 15px, rgba(0, 0, 0, 0.185));
+    @include screen(med-small) {
+        padding: 10px 1.5rem !important;
+    }
+    .header__heading {
+        padding: 10px 40px !important;
+        @include screen(med-small) {
+            padding: 0px !important;
+        }
+        .header__headling-link {
+            padding: .5em 0px !important;
+        }
+    }
+    .header__icons {
+        padding: 0 40px !important;
+        @include screen(med-small) {
+            padding: 0px !important;
+        }
+    }
+    .header__inline-menu {
+        margin: 0 0 -1px 0 !important;
+        padding: 12px 40px !important;
+        background-color: $whiteColor !important;
+        .list-menu {
+            li {
+                a {
+                    padding: 10px;
+                    @include screen(xx-large) {
+                        padding: 10px 6px;
+                    }
+                    span {
+                        color: $mainColor;
+                        font-family: 'Cormorant Garamond';
+                        font-size: $fontSizeMedium;
+                        @include screen(xx-large) {
+                            font-size: $fontSizeRegular;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

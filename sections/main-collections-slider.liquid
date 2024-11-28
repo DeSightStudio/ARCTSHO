@@ -5,12 +5,14 @@
       {% if collection != blank %}
         <div class="slider-item">
           <div class="slider-background" style="background-image: url('{{ collection.image | img_url: 'master' }}');">
-            <div class="slider-content">
+            <div class="slider-content page-width">
               <div class="category-image">
-                <img
-                  src="{{ collection.metafields.custom.cutout_image | img_url: 'master' }}"
-                  alt="{{ collection.title }}"
-                >
+                <a href="{{ collection.url }}" class="category-link">
+                  <img
+                    src="{{ collection.metafields.custom.cutout_image | img_url: 'master' }}"
+                    alt="{{ collection.title }}"
+                  >
+                </a>
               </div>
               <div class="category-details">
                 <h2>{{ collection.title }}</h2>
