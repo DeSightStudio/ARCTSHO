@@ -1,0 +1,38 @@
+.banner {
+    .banner__media {
+
+    }
+    .banner__content {
+        .banner__box {
+            max-width: 100% !important;
+            width: 980px;
+            .banner__heading {
+                position: relative;
+                padding: 100px 0 0 0;
+                font-family: 'Copperplate';
+                color: $whiteColor;
+                font-weight: 100;
+                font-size: $fontSizeLarge*2;
+                text-align: center;
+                z-index: 1;
+                @include screen(med-small) {
+                    font-size: $fontSizeLarge;
+                }
+                &:before {
+                    display: block;
+                    width: 92px;
+                    height: 88px;
+                    content: ' ';
+                    position: absolute;
+                    z-index: -1;
+                    top: 0px;
+                    left: 50%;
+                    -webkit-transform: translateX(-50%);
+                    -ms-transform: translateX(-50%);
+                    transform: translateX(-50%);
+                    background: url('headline-icon_light.png') transparent no-repeat center top;
+                }
+            }
+        }
+    }
+}

@@ -34,7 +34,7 @@ header {
                     span {
                         color: $mainColor;
                         font-family: 'Cormorant Garamond';
-                        font-size: $fontSizeMedium;
+                        font-size: $fontSizeLarge/1.625;
                         @include screen(xx-large) {
                             font-size: $fontSizeRegular;
                         }

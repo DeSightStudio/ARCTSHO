@@ -9,8 +9,37 @@
  */
 {
   "sections": {
+    "image_banner_jfejw4": {
+      "type": "image-banner",
+      "blocks": {
+        "heading_ndpDRJ": {
+          "type": "heading",
+          "settings": {
+            "heading": "{{ collection.title }}",
+            "heading_size": "h1"
+          }
+        }
+      },
+      "block_order": [
+        "heading_ndpDRJ"
+      ],
+      "settings": {
+        "image": "{{ collection.image }}",
+        "image_overlay_opacity": 60,
+        "image_height": "medium",
+        "desktop_content_position": "middle-center",
+        "show_text_box": false,
+        "desktop_content_alignment": "center",
+        "color_scheme": "scheme-548c10fa-37f3-441f-92f9-890ada330aca",
+        "image_behavior": "ambient",
+        "mobile_content_alignment": "center",
+        "stack_images_on_mobile": false,
+        "show_text_below": false
+      }
+    },
     "banner": {
       "type": "main-collection-banner",
+      "disabled": true,
       "settings": {
         "show_collection_description": true,
         "show_collection_image": true,
@@ -39,6 +68,7 @@
     }
   },
   "order": [
+    "image_banner_jfejw4",
     "banner",
     "product-grid"
   ]

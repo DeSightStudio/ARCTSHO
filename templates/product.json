@@ -91,7 +91,12 @@
         "color_scheme": "",
         "full_width": true,
         "padding_top": 40,
-        "padding_bottom": 52
+        "padding_bottom": 52,
+        "use_arrow_divider": false,
+        "arrow_width": 50,
+        "arrow_position": "bottom",
+        "arrow_color": "#000000",
+        "headline_styling": "Headline Default"
       }
     },
     "related-products": {
@@ -99,8 +104,8 @@
       "settings": {
         "heading": "You may also like",
         "heading_size": "h2",
-        "products_to_show": 9,
-        "columns_desktop": 3,
+        "products_to_show": 10,
+        "columns_desktop": 5,
         "color_scheme": "scheme-1",
         "image_ratio": "square",
         "image_shape": "default",

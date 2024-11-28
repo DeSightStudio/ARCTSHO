@@ -34,6 +34,9 @@ img {
 	&:hover {
 		background-color: $mainColorDark;
 	}
+	&:before, &:after {
+		display: none !important;
+	}
 }
 
 .alignment-left {

@@ -1,0 +1,10 @@
+.article-template {
+    .article-template__content {
+        max-width: calc(100% - 40px) !important;
+        width: 980px;
+        margin: 0 auto;
+        font-family: 'Cormorant Garamond';
+        color: $mainColorDark;
+        font-size: $fontSizeMedium;
+    }
+}
