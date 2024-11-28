@@ -1,0 +1,94 @@
+.multicolumn {
+    &.arcticheadline {
+        .multicolumn-card {
+            .multicolumn-card__image-wrapper {
+                .media {
+                    padding: 0px !important;
+                    img {
+                        height: 150px;
+                        width: auto;
+                        position: relative !important;
+                    }
+                }
+            }
+            .multicolumn-card__info {
+                h3 {
+                    font-family: 'Copperplate';
+                    color: $mainColor;
+                    font-size: $fontSizeLarge;
+                    margin: 0px 0px 0px 0px;
+                    font-weight: 100;
+                    @include screen(med-small) {
+                        font-size: $fontSizeMedium;
+                    }
+                }
+                .rte {
+                    margin: 0px 0px 0px 0px;
+                    p {
+                        position: relative;
+                        font-family: 'Cormorant Garamond';
+                        color: $grayColorDark;
+                        font-size: $fontSizeMedium;
+                        font-style: italic;
+                        margin: 0px 0px 0px 0px;
+                        &:after, &:before {
+                            content: "";
+                            position: absolute;
+                            top: 50%;
+                            width: calc(35% - 100px);
+                            height: 1px;
+                            background-color: $grayColorDark;
+                            @include screen(med-small) {
+                                width: calc(25% - 50px);
+                            }
+                        }
+                        &:before {
+                            left: 100px;
+                            @include screen(med-small) {
+                                left: 50px;
+                            }
+                        }
+                        &:after {
+                            right: 100px;
+                            @include screen(med-small) {
+                                right: 50px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    &.arcticcontent {
+        .multicolumn-card {
+            .multicolumn-card__image-wrapper {
+                .media {
+
+                    img {
+
+                    }
+                }
+            }
+            .multicolumn-card__info {
+                h3 {
+                    font-family: 'Copperplate';
+                    color: $mainColor;
+                    font-size: $fontSizeLarge;
+                    margin: 0px 0px 0px 0px;
+                    font-weight: 100;
+                    @include screen(med-small) {
+                        font-size: $fontSizeMedium;
+                    }
+                }
+                .rte {
+                    margin: 0px 0px 0px 0px;
+                    p {
+                        font-family: 'Cormorant Garamond';
+                        color: $mainColor;
+                        font-size: $fontSizeMedium;
+                    }
+                }
+            }
+        }
+    }
+}
