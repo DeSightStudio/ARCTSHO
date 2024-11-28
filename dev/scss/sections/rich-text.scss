@@ -1,0 +1,56 @@
+.rich-text {
+    .rich-text__blocks {
+        max-width: 100%;
+        .rich-text__heading {
+            font-family: 'Copperplate';
+            color: $mainColor;
+            font-weight: 100;
+            font-size: $fontSizeMedium*2;
+            @include screen(med-small) {
+                font-size: $fontSizeLarge;
+            }
+        }
+    }
+    &.headline-icon-light, &.headline-icon-dark {
+        .rich-text__blocks {
+            .rich-text__heading {
+                position: relative;
+                padding: 30px 0 0 0;
+                @include screen(med-small) {
+                    padding: 40px 0 0 0;
+                }
+                &:before {
+                    display: block;
+                    width: 92px;
+                    height: 88px;
+                    content: ' ';
+                    position: absolute;
+                    z-index: -1;
+                    top: 0px;
+                    left: 50%;
+                    -webkit-transform: translateX(-50%);
+	                -ms-transform: translateX(-50%);
+	                transform: translateX(-50%);
+                }
+            }
+        }
+    }
+    &.headline-icon-light {
+        .rich-text__blocks {
+            .rich-text__heading {
+                &:before {
+                    background: url('headline-icon_light.png') transparent no-repeat center top;
+                }
+            }
+        }
+    }
+    &.headline-icon-dark {
+        .rich-text__blocks {
+            .rich-text__heading {
+                &:before {
+                    background: url('headline-icon_dark.png') transparent no-repeat center top;
+                }
+            }
+        }
+    }
+}

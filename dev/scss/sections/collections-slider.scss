@@ -71,7 +71,8 @@
                         h2 {
                             font-family: 'Copperplate';
                             color: $whiteColor;
-                            font-size: $fontSizeLarge*1.5;
+                            font-size: $fontSizeLarge*2;
+                            margin: 0px 0px 0px 0px;
                             @include screen(med-small) {
                                 font-size: $fontSizeLarge;
                             }
@@ -80,6 +81,7 @@
                             font-family: 'Cormorant Garamond';
                             color: $whiteColor;
                             font-size: $fontSizeMedium;
+                            margin: 20px 0;
                         }
                         .category-link {
                             font-family: 'Cormorant Garamond';
