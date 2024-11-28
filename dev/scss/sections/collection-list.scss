@@ -1,0 +1,51 @@
+.collection-list-wrapper {
+    .collection-list {
+        .grid__item {
+            .card-wrapper {
+                .card {
+                    position: relative;
+                    .card__inner {
+                        @include screen(med-small) {
+                            max-height: 150px;
+                        }
+                        .card__media {
+                            position: relative;
+                            &:before {
+                                display: block;
+                                position: absolute;
+                                z-index: 1;
+                                background-color: rgba(26,45,28,55%);
+                                content: ' ';
+                                width: 100%;
+                                height: 100%;
+                            }
+                        }
+                    }
+                    .card__content {
+                        position: absolute;
+                        left: 0px;
+                        bottom: 0px;
+                        .card__information {
+                            padding: 30px 20px !important;
+                            h3 {
+                                font-family: 'Copperplate';
+                                color: $whiteColor;
+                                font-size: $fontSizeLarge;
+                                margin: 0px 0px 0px 0px;
+                                @include screen(med-small) {
+                                    font-size: $fontSizeMedium;
+                                }
+                            }
+                            h4 {
+                                font-family: 'Cormorant Garamond';
+                                color: $whiteColor;
+                                font-size: $fontSizeMedium;
+                                margin: 0px 0px 0px 0px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
