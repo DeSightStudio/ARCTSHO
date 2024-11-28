@@ -43,17 +43,10 @@
         "content": {
           "type": "content",
           "settings": {}
-        },
-        "share": {
-          "type": "share",
-          "settings": {
-            "share_label": "Share"
-          }
         }
       },
       "block_order": [
-        "content",
-        "share"
+        "content"
       ],
       "settings": {}
     },
