@@ -1,14 +1,17 @@
 .rich-text {
     .rich-text__blocks {
         max-width: 100%;
+        .arrow-divider {
+            max-width: 70%;
+            margin: 30px auto;
+        }
+    }
+    &.headline-default {
         .rich-text__heading {
-            font-family: 'Copperplate';
+            font-family: 'Cormorant Garamond';
             color: $mainColor;
-            font-weight: 100;
-            font-size: $fontSizeMedium*2;
-            @include screen(med-small) {
-                font-size: $fontSizeLarge;
-            }
+            font-size: $fontSizeLarge;
+            font-weight: bold;
         }
     }
     &.headline-icon-light, &.headline-icon-dark {
@@ -16,8 +19,13 @@
             .rich-text__heading {
                 position: relative;
                 padding: 30px 0 0 0;
+                font-family: 'Copperplate';
+                color: $mainColor;
+                font-weight: 100;
+                font-size: $fontSizeMedium*2;
                 @include screen(med-small) {
                     padding: 40px 0 0 0;
+                    font-size: $fontSizeLarge;
                 }
                 &:before {
                     display: block;
