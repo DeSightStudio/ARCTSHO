@@ -1465,5 +1465,121 @@
         "default": "scheme-1"
       }
     ]
+  },
+  {
+    "name": "Popup-Einstellungen",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Certificate of Origin Pop-Up"
+      },
+      {
+        "type": "checkbox",
+        "id": "popup_certificate_origin_enable",
+        "label": "\"Certificate of Origin\" Pop-Up aktivieren?",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "popup_certificate_origin_abbr",
+        "label": "\"Certificate of Origin\" Pop-Up Abkürzung",
+        "default": "COO"
+      },
+      {
+        "type": "text",
+        "id": "popup_certificate_origin_headline",
+        "label": "\"Certificate of Origin\" Pop-Up Headline",
+        "default": "Certificate of Origin"
+      },
+      {
+        "type": "richtext",
+        "id": "popup_certificate_origin_text",
+        "label": "\"Certificate of Origin\" Pop-Up Text",
+        "default": "<p>Hier steht der Text für das Certificate of Origin Pop-Up.</p>"
+      },
+      {
+        "type": "url",
+        "id": "popup_certificate_origin_sample",
+        "label": "\"Certificate of Origin\" Pop-Up Sample URL"
+      },
+      {
+        "type": "header",
+        "content": "Clearance Certificate Pop-Up"
+      },
+      {
+        "type": "checkbox",
+        "id": "popup_clearance_certificate_enable",
+        "label": "\"Clearance Certificate\" Pop-Up aktivieren?",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "popup_clearance_certificate_abbr",
+        "label": "\"Clearance Certificate\" Pop-Up Abkürzung",
+        "default": "CLC"
+      },
+      {
+        "type": "text",
+        "id": "popup_clearance_certificate_headline",
+        "label": "\"Clearance Certificate\" Pop-Up Headline",
+        "default": "Clearance Certificate"
+      },
+      {
+        "type": "richtext",
+        "id": "popup_clearance_certificate_text",
+        "label": "\"Clearance Certificate\" Pop-Up Text",
+        "default": "<p>Hier steht der Text für das Clearance Certificate Pop-Up.</p>"
+      },
+      {
+        "type": "url",
+        "id": "popup_clearance_certificate_sample",
+        "label": "\"Clearance Certificate\" Pop-Up Sample URL"
+      },
+      {
+        "type": "header",
+        "content": "VAT | UID | TVA Pop-Up"
+      },
+      {
+        "type": "checkbox",
+        "id": "popup_vat_uid_tva_enable",
+        "label": "\"VAT | UID | TVA\" Pop-Up aktivieren?",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "popup_vat_uid_tva_abbr",
+        "label": "\"VAT | UID | TVA\" Pop-Up Abkürzung",
+        "default": "VAT"
+      },
+      {
+        "type": "text",
+        "id": "popup_vat_uid_tva_headline",
+        "label": "\"VAT | UID | TVA\" Pop-Up Headline",
+        "default": "VAT | UID | TVA Information"
+      },
+      {
+        "type": "richtext",
+        "id": "popup_vat_uid_tva_text_col1",
+        "label": "\"VAT | UID | TVA\" Pop-Up Text Spalte #1",
+        "default": "<p>Hier steht der Text für Spalte 1 des VAT Pop-Ups.</p>"
+      },
+      {
+        "type": "richtext",
+        "id": "popup_vat_uid_tva_text_col2",
+        "label": "\"VAT | UID | TVA\" Pop-Up Text Spalte #2",
+        "default": "<p>Hier steht der Text für Spalte 2 des VAT Pop-Ups.</p>"
+      },
+      {
+        "type": "richtext",
+        "id": "popup_vat_uid_tva_text_col3",
+        "label": "\"VAT | UID | TVA\" Pop-Up Text Spalte #3",
+        "default": "<p>Hier steht der Text für Spalte 3 des VAT Pop-Ups.</p>"
+      },
+      {
+        "type": "url",
+        "id": "popup_vat_uid_tva_sample",
+        "label": "\"VAT | UID | TVA\" Pop-Up Sample URL"
+      }
+    ]
   }
 ]

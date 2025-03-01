@@ -1,0 +1,202 @@
+/**
+ * MicroModal Styles für Arctic Antique Pop-Ups
+ */
+
+// Pop-Up Grundstil
+.modal {
+    font-family: 'Cormorant Garamond';
+  
+  // Versteckt standardmäßig
+  &[aria-hidden='true'] {
+    display: none;
+  }
+  
+  // Overlay (Hintergrund)
+  &__overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+  }
+  
+  // Container
+  &__container {
+    background-color: #fff;
+    padding: 30px;
+    max-width: 600px;
+    max-height: 90vh;
+    border-radius: 4px;
+    overflow-y: auto;
+    box-sizing: border-box;
+    
+    // Breiterer Container für VAT Pop-Up
+    &--wide {
+      max-width: 900px;
+    }
+  }
+  
+  // Header
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  // Titel
+  &__title {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  // Schließen-Button
+  &__close {
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    padding: 0;
+    height: 25px;
+    width: 25px;
+    position: relative;
+    
+    &:before, &:after {
+      content: '';
+      position: absolute;
+      width: 2px;
+      height: 25px;
+      background-color: #333;
+      top: 0;
+      left: 50%;
+    }
+    
+    &:before {
+      transform: rotate(45deg);
+    }
+    
+    &:after {
+      transform: rotate(-45deg);
+    }
+    
+    &:hover:before, &:hover:after {
+      background-color: #000;
+    }
+  }
+  
+  // Inhalt
+  &__content {
+    margin-bottom: 20px;
+    color: #333;
+    line-height: 1.5;
+  }
+  
+  // Text
+  &__text {
+    margin-bottom: 20px;
+    
+    p {
+      margin-top: 0;
+      margin-bottom: 15px;
+    }
+    
+    ul, ol {
+      margin-bottom: 15px;
+      padding-left: 20px;
+    }
+  }
+  
+  // Beispiel-Link
+  &__sample {
+    margin-top: 20px;
+    text-align: center;
+    
+    &-link {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #f5f5f5;
+      color: #333;
+      text-decoration: none;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+      
+      &:hover {
+        background-color: #e5e5e5;
+      }
+    }
+  }
+  
+  // Spalten für VAT Pop-Up
+  &__columns {
+    display: flex;
+    flex-wrap: wrap;
+    margin: -10px;
+  }
+  
+  &__column {
+    flex: 1;
+    min-width: 250px;
+    padding: 10px;
+    
+    @media (max-width: 768px) {
+      flex: 100%;
+    }
+  }
+}
+
+// Animation für Slide-In-Effekt
+.micromodal-slide {
+  display: none;
+  
+  &.is-open {
+    display: block;
+  }
+  
+  &[aria-hidden="false"] .modal__overlay {
+    animation: mmfadeIn .3s cubic-bezier(0.0, 0.0, 0.2, 1);
+  }
+  
+  &[aria-hidden="false"] .modal__container {
+    animation: mmslideIn .3s cubic-bezier(0, 0, .2, 1);
+  }
+  
+  &[aria-hidden="true"] .modal__overlay {
+    animation: mmfadeOut .3s cubic-bezier(0.0, 0.0, 0.2, 1);
+  }
+  
+  &[aria-hidden="true"] .modal__container {
+    animation: mmslideOut .3s cubic-bezier(0, 0, .2, 1);
+  }
+  
+  .modal__container,
+  .modal__overlay {
+    will-change: transform;
+  }
+}
+
+// Keyframes für Animationen
+@keyframes mmfadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes mmfadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes mmslideIn {
+  from { transform: translateY(15%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes mmslideOut {
+  from { transform: translateY(0); }
+  to { transform: translateY(-10%); }
+} 

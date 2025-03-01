@@ -1,0 +1,57 @@
+{% comment %}
+  Pop-Up Trigger Snippet
+
+  Dieses Snippet stellt Buttons/Links bereit, um die verschiedenen Pop-Ups zu öffnen.
+
+  Verwendung:
+  - Fügen Sie dieses Snippet in Ihre Templates ein: {% render 'popup-triggers' %}
+  - Oder verwenden Sie einzelne Trigger: <a href="#" data-popup="certificate-origin">COO</a>
+{% endcomment %}
+
+{% if settings.popup_certificate_origin_enable
+  or settings.popup_clearance_certificate_enable
+  or settings.popup_vat_uid_tva_enable
+%}
+  <div class="popup-triggers">
+    {% if settings.popup_certificate_origin_enable %}
+      <a href="#" class="popup-trigger" data-popup="certificate-origin">
+        {{ settings.popup_certificate_origin_abbr }}
+      </a>
+    {% endif %}
+
+    {% if settings.popup_clearance_certificate_enable %}
+      <a href="#" class="popup-trigger" data-popup="clearance-certificate">
+        {{ settings.popup_clearance_certificate_abbr }}
+      </a>
+    {% endif %}
+
+    {% if settings.popup_vat_uid_tva_enable %}
+      <a href="#" class="popup-trigger" data-popup="vat-uid-tva">
+        {{ settings.popup_vat_uid_tva_abbr }}
+      </a>
+    {% endif %}
+  </div>
+
+  <style>
+    .popup-triggers {
+      display: flex;
+      gap: 10px;
+      margin: 10px 0;
+    }
+
+    .popup-trigger {
+      display: inline-block;
+      padding: 5px 10px;
+      background-color: #f5f5f5;
+      color: #333;
+      text-decoration: none;
+      border-radius: 4px;
+      font-size: 14px;
+      transition: background-color 0.3s;
+    }
+
+    .popup-trigger:hover {
+      background-color: #e5e5e5;
+    }
+  </style>
+{% endif %}
