@@ -18,15 +18,6 @@
     </summary>
     <div id="menu-drawer" class="gradient menu-drawer motion-reduce color-{{ section.settings.menu_color_scheme }}">
       <div class="menu-drawer__inner-container">
-        <div class="menu-drawer__top-wrapper">
-          <h2 class="menu-drawer__heading inline-menu-heading">{{ 'sections.header.menu' | t }}</h2>
-          <button
-            class="menu-drawer__close-button link link--text focus-inset"
-            aria-label="{{ 'accessibility.close' | t }}"
-          >
-            <span class="svg-wrapper">{{ 'icon-close.svg' | inline_asset_content }}</span>
-          </button>
-        </div>
         <div class="menu-drawer__navigation-container">
           <nav class="menu-drawer__navigation">
             <ul class="menu-drawer__menu has-submenu list-menu" role="list">
@@ -296,13 +287,6 @@
                 </li>
               {%- endif -%}
             </ul>
-            <!-- Währungsumrechner für Mobile -->
-            <div class="header__localization">
-              <div class="header__localization-wrapper">
-                <h2 class="visually-hidden" id="MobileMenuCurrencyLabel">Währungsauswahl</h2>
-                {%- render 'currency-selector', localPosition: 'MobileMenuCurrency' -%}
-              </div>
-            </div>
           </div>
         </div>
       </div>
