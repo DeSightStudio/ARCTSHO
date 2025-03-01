@@ -41,11 +41,6 @@
 
     {{ content_for_header }}
 
-    {%- comment -%}Test-Tool für Geolokalisierung - nur während der Entwicklung{%- endcomment -%}
-    {%- if request.query_string contains 'geo=' -%}
-      <script src="{{ 'location-test.js' | asset_url }}" defer="defer"></script>
-    {%- endif -%}
-
     {%- liquid
       assign body_font_bold = settings.type_body_font | font_modify: 'weight', 'bold'
       assign body_font_italic = settings.type_body_font | font_modify: 'style', 'italic'
