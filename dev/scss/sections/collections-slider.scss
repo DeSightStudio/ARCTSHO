@@ -1,4 +1,7 @@
 #collection-slider {
+    @include screen(med-small) {
+        display: none;
+    }
     .slider-container {
         .slick-arrow {
             @include center-vertically;
