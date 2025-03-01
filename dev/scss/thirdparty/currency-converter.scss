@@ -1,0 +1,45 @@
+/**
+ * Styles für den Währungsumrechner
+ */
+
+.currency-form {
+  display: inline-flex;
+  margin-right: 1rem;
+}
+
+.currency-selector {
+  .disclosure__button {
+    display: flex;
+    align-items: center;
+    
+    .current-currency {
+      margin-right: 0.5rem;
+    }
+  }
+  
+  .currency-checkmark {
+    &:not([style*="display: inline-block"]) {
+      // Verstecke Checkmarks, wenn sie nicht angezeigt werden sollen
+      display: none;
+    }
+  }
+}
+
+// Mobile Stile
+.menu-drawer {
+  .header__localization {
+    margin-bottom: 1rem;
+    
+    .currency-selector {
+      .disclosure__button {
+        justify-content: flex-start;
+        width: 100%;
+        padding: 0.6rem 0;
+        
+        .current-currency {
+          margin-right: 0.5rem;
+        }
+      }
+    }
+  }
+} 
