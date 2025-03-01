@@ -1,57 +1,89 @@
 {% comment %}
-  Pop-Up Trigger Snippet
+  Popup-Trigger Snippet
+  ======================
+  Dieses Snippet erzeugt Trigger-Buttons für Pop-Ups.
+  Die Buttons werden nur angezeigt, wenn das entsprechende Pop-Up in den Theme-Einstellungen aktiviert ist.
 
-  Dieses Snippet stellt Buttons/Links bereit, um die verschiedenen Pop-Ups zu öffnen.
-
-  Verwendung:
-  - Fügen Sie dieses Snippet in Ihre Templates ein: {% render 'popup-triggers' %}
-  - Oder verwenden Sie einzelne Trigger: <a href="#" data-popup="certificate-origin">COO</a>
+  Anwendung:
+  {% render 'popup-triggers' %}
 {% endcomment %}
 
-{% if settings.popup_certificate_origin_enable
-  or settings.popup_clearance_certificate_enable
-  or settings.popup_vat_uid_tva_enable
-%}
-  <div class="popup-triggers">
-    {% if settings.popup_certificate_origin_enable %}
-      <a href="#" class="popup-trigger" data-popup="certificate-origin">
-        {{ settings.popup_certificate_origin_abbr }}
+<div class="popup-triggers">
+  {% if settings.popup_certificate_origin_enable %}
+    <div class="popup-trigger">
+      <a href="#popup-certificate-origin" class="popup-trigger__link">
+        <span class="popup-trigger__short">CoO</span>
+        <span class="popup-trigger__long">Certificate of Origin</span>
       </a>
-    {% endif %}
+    </div>
+  {% endif %}
 
-    {% if settings.popup_clearance_certificate_enable %}
-      <a href="#" class="popup-trigger" data-popup="clearance-certificate">
-        {{ settings.popup_clearance_certificate_abbr }}
+  {% if settings.popup_clearance_certificate_enable %}
+    <div class="popup-trigger">
+      <a href="#popup-clearance-certificate" class="popup-trigger__link">
+        <span class="popup-trigger__short">CC</span>
+        <span class="popup-trigger__long">Clearance Certificate</span>
       </a>
-    {% endif %}
+    </div>
+  {% endif %}
 
-    {% if settings.popup_vat_uid_tva_enable %}
-      <a href="#" class="popup-trigger" data-popup="vat-uid-tva">
-        {{ settings.popup_vat_uid_tva_abbr }}
+  {% if settings.popup_vat_uid_tva_enable %}
+    <div class="popup-trigger">
+      <a href="#popup-vat-uid-tva" class="popup-trigger__link">
+        <span class="popup-trigger__short">VAT</span>
+        <span class="popup-trigger__long">VAT | UID | TVA</span>
       </a>
-    {% endif %}
-  </div>
+    </div>
+  {% endif %}
+</div>
 
-  <style>
-    .popup-triggers {
-      display: flex;
-      gap: 10px;
-      margin: 10px 0;
+<style>
+  .popup-triggers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 20px 0;
+  }
+
+  .popup-trigger__link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px 16px;
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+    transition: all 0.3s ease;
+  }
+
+  .popup-trigger__link:hover {
+    background-color: #e9e9e9;
+    border-color: #ccc;
+  }
+
+  .popup-trigger__short {
+    display: none;
+    font-weight: bold;
+  }
+
+  .popup-trigger__long {
+    display: block;
+  }
+
+  @media (max-width: 600px) {
+    .popup-trigger__short {
+      display: block;
     }
 
-    .popup-trigger {
-      display: inline-block;
-      padding: 5px 10px;
-      background-color: #f5f5f5;
-      color: #333;
-      text-decoration: none;
-      border-radius: 4px;
-      font-size: 14px;
-      transition: background-color 0.3s;
+    .popup-trigger__long {
+      display: none;
     }
 
-    .popup-trigger:hover {
-      background-color: #e5e5e5;
+    .popup-trigger__link {
+      padding: 8px 12px;
     }
-  </style>
-{% endif %}
+  }
+</style>

@@ -38,6 +38,9 @@ class PopupManager {
     // HTML für Pop-Ups einfügen
     this.injectPopupHTML();
     
+    // Überprüfen, ob ein Pop-Up über die URL geöffnet werden soll
+    this.checkURLForPopup();
+    
     this.initialized = true;
   }
 
@@ -45,29 +48,53 @@ class PopupManager {
    * Fügt Event-Listener für Pop-Up-Trigger hinzu
    */
   addEventListeners() {
-    // Certificate of Origin Pop-Up
-    document.querySelectorAll('[data-popup="certificate-origin"]').forEach(trigger => {
+    // Unterstützung für data-popup Attribute (für manuelle HTML-Implementierung)
+    document.querySelectorAll('[data-popup]').forEach(trigger => {
       trigger.addEventListener('click', (e) => {
         e.preventDefault();
-        MicroModal.show('modal-certificate-origin');
+        const popupType = trigger.getAttribute('data-popup');
+        MicroModal.show(`modal-${popupType}`);
       });
     });
 
-    // Clearance Certificate Pop-Up
-    document.querySelectorAll('[data-popup="clearance-certificate"]').forEach(trigger => {
-      trigger.addEventListener('click', (e) => {
-        e.preventDefault();
-        MicroModal.show('modal-clearance-certificate');
-      });
+    // Unterstützung für Hash-URLs (#popup-xxxx)
+    document.addEventListener('click', (e) => {
+      // Prüfen, ob es sich um einen Link handelt
+      if (e.target.tagName === 'A' || e.target.closest('a')) {
+        const link = e.target.tagName === 'A' ? e.target : e.target.closest('a');
+        const href = link.getAttribute('href');
+        
+        // Prüfen, ob der Link eine #popup-xxxx URL hat
+        if (href && href.startsWith('#popup-')) {
+          e.preventDefault();
+          const popupType = href.replace('#popup-', '');
+          
+          // Prüfen, ob dieser Popup-Typ existiert
+          if (this.popupTypes.includes(popupType)) {
+            MicroModal.show(`modal-${popupType}`);
+          }
+        }
+      }
     });
+  }
 
-    // VAT | UID | TVA Pop-Up
-    document.querySelectorAll('[data-popup="vat-uid-tva"]').forEach(trigger => {
-      trigger.addEventListener('click', (e) => {
-        e.preventDefault();
-        MicroModal.show('modal-vat-uid-tva');
-      });
-    });
+  /**
+   * Überprüft, ob ein Pop-Up über die URL geöffnet werden soll
+   */
+  checkURLForPopup() {
+    const hash = window.location.hash;
+    
+    if (hash && hash.startsWith('#popup-')) {
+      const popupType = hash.replace('#popup-', '');
+      
+      // Prüfen, ob dieser Popup-Typ existiert
+      if (this.popupTypes.includes(popupType)) {
+        // Kurze Verzögerung, um sicherzustellen, dass alles geladen ist
+        setTimeout(() => {
+          MicroModal.show(`modal-${popupType}`);
+        }, 500);
+      }
+    }
   }
 
   /**
