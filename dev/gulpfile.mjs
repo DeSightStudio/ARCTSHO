@@ -51,6 +51,7 @@ gulp.task('scss', gulp.series('clean:css', function() {
  */
 const jsFiles = [
   './node_modules/babel-polyfill/dist/polyfill.js',
+  './js/vendor/**/*.js',  // Vendor-Skripte zuerst laden (einschließlich MicroModal)
   srcJS,
 ];
 

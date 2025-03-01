@@ -9,22 +9,21 @@
 [Contributing](#contributing) |
 [Code of conduct](#code-of-conduct) |
 [Theme Store submission](#theme-store-submission) |
-[License](#license) |
-[Pop-Up System](#pop-up-system)
+[License](#license)
 
 Dawn represents a HTML-first, JavaScript-only-as-needed approach to theme development. It's Shopify's first source available theme with performance, flexibility, and [Online Store 2.0 features](https://www.shopify.com/partners/blog/shopify-online-store) built-in and acts as a reference for building Shopify themes.
 
 * **Web-native in its purest form:** Themes run on the [evergreen web](https://www.w3.org/2001/tag/doc/evergreen-web/). We leverage the latest web browsers to their fullest, while maintaining support for the older ones through progressive enhancement—not polyfills.
-* **Lean, fast, and reliable:** Functionality and design defaults to "no" until it meets this requirement. Code ships on quality. Themes must be built with purpose. They shouldn't support each and every feature in Shopify.
-* **Server-rendered:** HTML must be rendered by Shopify servers using Liquid. Business logic and platform primitives such as translations and money formatting don't belong on the client. Async and on-demand rendering of parts of the page is OK, but we do it sparingly as a progressive enhancement.
-* **Functional, not pixel-perfect:** The Web doesn't require each page to be rendered pixel-perfect by each browser engine. Using semantic markup, progressive enhancement, and clever design, we ensure that themes remain functional regardless of the browser.
+* **Lean, fast, and reliable:** Functionality and design defaults to “no” until it meets this requirement. Code ships on quality. Themes must be built with purpose. They shouldn’t support each and every feature in Shopify.
+* **Server-rendered:** HTML must be rendered by Shopify servers using Liquid. Business logic and platform primitives such as translations and money formatting don’t belong on the client. Async and on-demand rendering of parts of the page is OK, but we do it sparingly as a progressive enhancement.
+* **Functional, not pixel-perfect:** The Web doesn’t require each page to be rendered pixel-perfect by each browser engine. Using semantic markup, progressive enhancement, and clever design, we ensure that themes remain functional regardless of the browser.
 
 You can find a more detailed version of our theme code principles in the [contribution guide](https://github.com/Shopify/dawn/blob/main/.github/CONTRIBUTING.md#theme-code-principles).
 
 ## Getting started
 We recommend using Dawn as a starting point for theme development. [Learn more on Shopify.dev](https://shopify.dev/themes/getting-started/create).
 
-> If you're building a theme for the Shopify Theme Store, then you can use Dawn as a starting point. However, the theme that you submit needs to be [substantially different from Dawn](https://shopify.dev/themes/store/requirements#uniqueness) so that it provides added value for merchants. Learn about the [ways that you can use Dawn](https://shopify.dev/themes/tools/dawn#ways-to-use-dawn).
+> If you're building a theme for the Shopify Theme Store, then you can use Dawn as a starting point. However, the theme that you submit needs to be [substantively different from Dawn](https://shopify.dev/themes/store/requirements#uniqueness) so that it provides added value for merchants. Learn about the [ways that you can use Dawn](https://shopify.dev/themes/tools/dawn#ways-to-use-dawn).
 
 Please note that the main branch may include code for features not yet released. The "stable" version of Dawn is available in the theme store.
 
@@ -98,35 +97,3 @@ Ensure that you follow the list of [theme store requirements](https://shopify.de
 ## License
 
 Copyright (c) 2021-present Shopify Inc. See [LICENSE](/LICENSE.md) for further details.
-
-## Pop-Up System
-
-Das Theme bietet ein Pop-Up-System, mit dem Informationen zu Zertifikaten und Bescheinigungen angezeigt werden können.
-
-### Pop-Up-Links erstellen
-
-Um ein Wort oder einen Textabschnitt mit einem Pop-Up zu verknüpfen, verwenden Sie einfach einen normalen Link mit einer speziellen Hash-URL:
-
-```html
-<p>
-  Wir garantieren die Echtheit unserer Produkte mit einem 
-  <a href="#popup-certificate-origin">Certificate of Origin</a>.
-</p>
-```
-
-Diese Links können Sie überall im Shopify-Editor einfügen, auch in Rich-Text-Feldern:
-
-1. Markieren Sie den Text, der als Link dienen soll
-2. Klicken Sie auf das Link-Symbol
-3. Geben Sie als URL eine der folgenden Hash-URLs ein:
-   - `#popup-certificate-origin` - für Ursprungszertifikat
-   - `#popup-clearance-certificate` - für Unbedenklichkeitsbescheinigung
-   - `#popup-vat-uid-tva` - für Mehrwertsteuer/UID/TVA-Informationen
-
-### Pop-Up-Trigger-Buttons
-
-Sie können auch vorgefertigte Pop-Up-Trigger-Buttons einfügen:
-
-```liquid
-{% render 'popup-triggers' %}
-```

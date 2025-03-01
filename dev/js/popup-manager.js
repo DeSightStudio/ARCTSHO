@@ -1,26 +1,57 @@
 /**
  * Pop-Up Manager für Arctic Antique
  * Verwendet MicroModal.js für animierte Pop-Ups
+ *
+ * Dieser Manager initialisiert MicroModal und fügt Event-Listener für Pop-Up-Trigger hinzu.
+ * Die Pop-Ups selbst werden über das Liquid-Snippet 'popups.liquid' in der theme.liquid geladen.
  */
 
-import MicroModal from 'micromodal';
-
-class PopupManager {
-  constructor() {
-    this.initialized = false;
-    this.popupTypes = ['certificate-origin', 'clearance-certificate', 'vat-uid-tva'];
-    
-    // Initialisierung beim DOMContentLoaded
-    document.addEventListener('DOMContentLoaded', () => {
-      this.init();
-    });
-  }
-
+// IIFE zum Schutz des globalen Namensraums
+(function() {
   /**
-   * Initialisiert den Pop-Up Manager
+   * MicroModal muss als externes Script geladen werden und in dist.js kompiliert sein
    */
-  init() {
-    if (this.initialized) return;
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    // Warten, bis MicroModal verfügbar ist
+    if (typeof MicroModal === 'undefined') {
+      console.error('MicroModal ist nicht definiert. Bitte stellen Sie sicher, dass die MicroModal-Bibliothek geladen ist.');
+      return;
+    }
+    
+    // Typen von Pop-Ups, die unterstützt werden
+    const popupTypes = ['certificate-origin', 'clearance-certificate', 'vat-uid-tva'];
+    
+    // Tracking für laufende Animationen
+    const animatingModals = {};
+    
+    // Verbesserte Funktion zum Schließen mit Animation
+    const closeWithAnimation = (modalId) => {
+      const modal = document.getElementById(modalId);
+      if (!modal || animatingModals[modalId]) return;
+      
+      console.log(`Animation zum Schließen von ${modalId} gestartet`);
+      
+      // Markiere dieses Modal als "in Animation"
+      animatingModals[modalId] = true;
+      
+      // Füge die Animations-Klasse hinzu, aber behalte das Modal sichtbar
+      modal.classList.add('is-closing');
+      
+      // Warte, bis die Animation abgeschlossen ist (300ms für die Animation)
+      setTimeout(() => {
+        // Entferne die Animations-Klasse
+        modal.classList.remove('is-closing');
+        
+        // Markiere als nicht mehr in Animation
+        delete animatingModals[modalId];
+        
+        // Lasse MicroModal das Modal normal schließen
+        MicroModal.close(modalId);
+        
+        console.log(`Animation zum Schließen von ${modalId} abgeschlossen`);
+      }, 300);
+    };
     
     // MicroModal initialisieren
     MicroModal.init({
@@ -29,26 +60,61 @@ class PopupManager {
       disableScroll: true,
       disableFocus: false,
       awaitOpenAnimation: true,
-      awaitCloseAnimation: true
+      awaitCloseAnimation: true,
+      // Callbacks angepasst
+      onShow: modal => {
+        console.log(`${modal.id} wird geöffnet`);
+        // Stelle sicher, dass keine Animations-Klasse vorhanden ist
+        modal.classList.remove('is-closing');
+        // Setze aria-hidden auf false für die Öffnen-Animation
+        modal.setAttribute('aria-hidden', 'false');
+      },
+      onClose: modal => {
+        console.log(`${modal.id} wird durch MicroModal geschlossen`);
+        // Wir fügen Animation nur hinzu, wenn es keine bereits laufende Animation gibt
+        // und wenn dies ein direkter Aufruf von MicroModal.close() ist
+        if (!animatingModals[modal.id] && !modal.classList.contains('is-closing')) {
+          closeWithAnimation(modal.id);
+          // Verhindern, dass MicroModal das Modal direkt schließt
+          return false;
+        }
+        // Ansonsten ist die Animation abgeschlossen, und wir lassen MicroModal tun, was es tun muss
+        return true;
+      }
     });
 
-    // Event-Listener für Pop-Up-Trigger hinzufügen
-    this.addEventListeners();
-    
-    // HTML für Pop-Ups einfügen
-    this.injectPopupHTML();
-    
-    // Überprüfen, ob ein Pop-Up über die URL geöffnet werden soll
-    this.checkURLForPopup();
-    
-    this.initialized = true;
-  }
+    // Manueller Event-Listener für Schließen-Buttons
+    document.querySelectorAll('[data-custom-close]').forEach(closeButton => {
+      closeButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        // Finde das übergeordnete Modal
+        const modal = closeButton.closest('.modal');
+        if (modal && modal.id) {
+          console.log(`Schließen-Button für ${modal.id} geklickt`);
+          // Verwende die animierte Schließen-Funktion
+          closeWithAnimation(modal.id);
+        }
+      });
+    });
 
-  /**
-   * Fügt Event-Listener für Pop-Up-Trigger hinzu
-   */
-  addEventListeners() {
-    // Unterstützung für data-popup Attribute (für manuelle HTML-Implementierung)
+    // Zusätzlicher Event-Listener für das Overlay (zum Schließen bei Klick auf den Hintergrund)
+    document.querySelectorAll('.modal__overlay').forEach(overlay => {
+      overlay.addEventListener('click', (e) => {
+        // Nur schließen, wenn direkt auf das Overlay geklickt wurde (nicht auf Container)
+        if (e.target === overlay) {
+          const modal = overlay.closest('.modal');
+          if (modal && modal.id) {
+            console.log(`Overlay-Klick für ${modal.id}`);
+            // Verwende die animierte Schließen-Funktion
+            closeWithAnimation(modal.id);
+          }
+        }
+      });
+    });
+
+    // Event-Listener für data-popup Attribute
     document.querySelectorAll('[data-popup]').forEach(trigger => {
       trigger.addEventListener('click', (e) => {
         e.preventDefault();
@@ -57,7 +123,7 @@ class PopupManager {
       });
     });
 
-    // Unterstützung für Hash-URLs (#popup-xxxx)
+    // Event-Listener für Hash-URLs (#popup-xxxx)
     document.addEventListener('click', (e) => {
       // Prüfen, ob es sich um einen Link handelt
       if (e.target.tagName === 'A' || e.target.closest('a')) {
@@ -70,137 +136,40 @@ class PopupManager {
           const popupType = href.replace('#popup-', '');
           
           // Prüfen, ob dieser Popup-Typ existiert
-          if (this.popupTypes.includes(popupType)) {
+          if (popupTypes.includes(popupType)) {
             MicroModal.show(`modal-${popupType}`);
           }
         }
       }
     });
-  }
 
-  /**
-   * Überprüft, ob ein Pop-Up über die URL geöffnet werden soll
-   */
-  checkURLForPopup() {
+    // ESC-Taste zum Schließen des aktiven Modals
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        // Finde alle geöffneten Modals
+        const openModals = document.querySelectorAll('.modal[aria-hidden="false"]');
+        openModals.forEach(modal => {
+          if (modal.id && !animatingModals[modal.id]) {
+            console.log(`ESC-Taste gedrückt, schließe ${modal.id}`);
+            // Verwende die animierte Schließen-Funktion
+            closeWithAnimation(modal.id);
+          }
+        });
+      }
+    });
+
+    // Überprüfen, ob ein Pop-Up über die URL geöffnet werden soll
     const hash = window.location.hash;
-    
     if (hash && hash.startsWith('#popup-')) {
       const popupType = hash.replace('#popup-', '');
       
       // Prüfen, ob dieser Popup-Typ existiert
-      if (this.popupTypes.includes(popupType)) {
+      if (popupTypes.includes(popupType)) {
         // Kurze Verzögerung, um sicherzustellen, dass alles geladen ist
         setTimeout(() => {
           MicroModal.show(`modal-${popupType}`);
         }, 500);
       }
     }
-  }
-
-  /**
-   * Fügt HTML für Pop-Ups in das Dokument ein
-   */
-  injectPopupHTML() {
-    const popupContainer = document.createElement('div');
-    popupContainer.className = 'popup-container';
-    
-    // Certificate of Origin Pop-Up
-    if (window.theme && window.theme.settings.popup_certificate_origin_enable) {
-      popupContainer.innerHTML += this.createPopupHTML(
-        'certificate-origin',
-        window.theme.settings.popup_certificate_origin_headline,
-        window.theme.settings.popup_certificate_origin_text,
-        window.theme.settings.popup_certificate_origin_sample
-      );
-    }
-    
-    // Clearance Certificate Pop-Up
-    if (window.theme && window.theme.settings.popup_clearance_certificate_enable) {
-      popupContainer.innerHTML += this.createPopupHTML(
-        'clearance-certificate',
-        window.theme.settings.popup_clearance_certificate_headline,
-        window.theme.settings.popup_clearance_certificate_text,
-        window.theme.settings.popup_clearance_certificate_sample
-      );
-    }
-    
-    // VAT | UID | TVA Pop-Up
-    if (window.theme && window.theme.settings.popup_vat_uid_tva_enable) {
-      popupContainer.innerHTML += this.createVatPopupHTML();
-    }
-    
-    document.body.appendChild(popupContainer);
-  }
-
-  /**
-   * Erstellt HTML für ein Standard-Pop-Up
-   */
-  createPopupHTML(id, headline, content, sampleUrl) {
-    return `
-      <div class="modal micromodal-slide" id="modal-${id}" aria-hidden="true">
-        <div class="modal__overlay" tabindex="-1" data-custom-close>
-          <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-${id}-title">
-            <header class="modal__header">
-              <h2 class="modal__title" id="modal-${id}-title">
-                ${headline}
-              </h2>
-              <button class="modal__close" aria-label="Close modal" data-custom-close></button>
-            </header>
-            <main class="modal__content" id="modal-${id}-content">
-              <div class="modal__text">
-                ${content}
-              </div>
-              ${sampleUrl ? `
-                <div class="modal__sample">
-                  <a href="${sampleUrl}" target="_blank" class="modal__sample-link">Beispiel anzeigen</a>
-                </div>
-              ` : ''}
-            </main>
-          </div>
-        </div>
-      </div>
-    `;
-  }
-
-  /**
-   * Erstellt HTML für das VAT | UID | TVA Pop-Up mit 3 Spalten
-   */
-  createVatPopupHTML() {
-    return `
-      <div class="modal micromodal-slide" id="modal-vat-uid-tva" aria-hidden="true">
-        <div class="modal__overlay" tabindex="-1" data-custom-close>
-          <div class="modal__container modal__container--wide" role="dialog" aria-modal="true" aria-labelledby="modal-vat-uid-tva-title">
-            <header class="modal__header">
-              <h2 class="modal__title" id="modal-vat-uid-tva-title">
-                ${window.theme.settings.popup_vat_uid_tva_headline}
-              </h2>
-              <button class="modal__close" aria-label="Close modal" data-custom-close></button>
-            </header>
-            <main class="modal__content" id="modal-vat-uid-tva-content">
-              <div class="modal__columns">
-                <div class="modal__column">
-                  ${window.theme.settings.popup_vat_uid_tva_text_col1}
-                </div>
-                <div class="modal__column">
-                  ${window.theme.settings.popup_vat_uid_tva_text_col2}
-                </div>
-                <div class="modal__column">
-                  ${window.theme.settings.popup_vat_uid_tva_text_col3}
-                </div>
-              </div>
-              ${window.theme.settings.popup_vat_uid_tva_sample ? `
-                <div class="modal__sample">
-                  <a href="${window.theme.settings.popup_vat_uid_tva_sample}" target="_blank" class="modal__sample-link">Beispiel anzeigen</a>
-                </div>
-              ` : ''}
-            </main>
-          </div>
-        </div>
-      </div>
-    `;
-  }
-}
-
-// Instanz erstellen
-const popupManager = new PopupManager();
-export default popupManager; 
+  });
+})(); 

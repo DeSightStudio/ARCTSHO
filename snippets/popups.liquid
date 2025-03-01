@@ -1,0 +1,116 @@
+{% comment %}
+  Dieses Snippet enthält alle Pop-Ups und lädt die Inhalte direkt aus den Theme-Einstellungen
+{% endcomment %}
+
+<div class="popup-container">
+  {% comment %} Certificate of Origin Pop-Up {% endcomment %}
+  {% if settings.popup_certificate_origin_enable %}
+    <div class="modal micromodal-slide" id="modal-certificate-origin" aria-hidden="true">
+      <div class="modal__overlay" tabindex="-1" data-custom-close>
+        <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-certificate-origin-title">
+          <button class="modal__close" aria-label="Close modal" data-custom-close>x</button>
+          <header class="modal__header">
+            <h2 class="modal__title" id="modal-certificate-origin-title">
+              {{ settings.popup_certificate_origin_headline }}
+            </h2>
+            <h3>
+              {{ settings.popup_certificate_origin_abbr }}
+            </h3>
+          </header>
+          <main class="modal__content" id="modal-certificate-origin-content">
+            <div class="modal__text">
+              {{ settings.popup_certificate_origin_text }}
+            </div>
+            {% if settings.popup_certificate_origin_more_info != blank %}
+              <div class="modal__more-info">
+                <div class="modal__more-info-content">
+                  {{ settings.popup_certificate_origin_more_info }}
+                </div>
+              </div>
+            {% endif %}
+          </main>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  {% comment %} Clearance Certificate Pop-Up {% endcomment %}
+  {% if settings.popup_clearance_certificate_enable %}
+    <div class="modal micromodal-slide" id="modal-clearance-certificate" aria-hidden="true">
+      <div class="modal__overlay" tabindex="-1" data-custom-close>
+        <div
+          class="modal__container"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-clearance-certificate-title"
+        >
+          <button class="modal__close" aria-label="Close modal" data-custom-close>x</button>
+          <header class="modal__header">
+            <h2 class="modal__title" id="modal-clearance-certificate-title">
+              {{ settings.popup_clearance_certificate_headline }}
+            </h2>
+            <h3>
+              {{ settings.popup_clearance_certificate_abbr }}
+            </h3>
+          </header>
+          <main class="modal__content" id="modal-clearance-certificate-content">
+            <div class="modal__text">
+              {{ settings.popup_clearance_certificate_text }}
+            </div>
+            {% if settings.popup_clearance_certificate_more_info != blank %}
+              <div class="modal__more-info">
+                <div class="modal__more-info-content">
+                  {{ settings.popup_clearance_certificate_more_info }}
+                </div>
+              </div>
+            {% endif %}
+          </main>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  {% comment %} VAT | UID | TVA Pop-Up {% endcomment %}
+  {% if settings.popup_vat_uid_tva_enable %}
+    <div class="modal micromodal-slide" id="modal-vat-uid-tva" aria-hidden="true">
+      <div class="modal__overlay" tabindex="-1" data-custom-close>
+        <div
+          class="modal__container modal__container--wide"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-vat-uid-tva-title"
+        >
+          <button class="modal__close" aria-label="Close modal" data-custom-close>x</button>
+          <header class="modal__header">
+            <h2 class="modal__title" id="modal-vat-uid-tva-title">
+              {{ settings.popup_vat_uid_tva_headline }}
+            </h2>
+            <h3>
+              {{ settings.popup_vat_uid_tva_abbr }}
+            </h3>
+          </header>
+          <main class="modal__content" id="modal-vat-uid-tva-content">
+            <div class="modal__columns">
+              <div class="modal__column">
+                {{ settings.popup_vat_uid_tva_text_col1 }}
+              </div>
+              <div class="modal__column">
+                {{ settings.popup_vat_uid_tva_text_col2 }}
+              </div>
+              <div class="modal__column">
+                {{ settings.popup_vat_uid_tva_text_col3 }}
+              </div>
+            </div>
+            {% if settings.popup_vat_uid_tva_more_info != blank %}
+              <div class="modal__more-info">
+                <div class="modal__more-info-content">
+                  {{ settings.popup_vat_uid_tva_more_info }}
+                </div>
+              </div>
+            {% endif %}
+          </main>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+</div>

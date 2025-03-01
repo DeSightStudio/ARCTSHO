@@ -1498,9 +1498,10 @@
         "default": "<p>Hier steht der Text für das Certificate of Origin Pop-Up.</p>"
       },
       {
-        "type": "url",
-        "id": "popup_certificate_origin_sample",
-        "label": "\"Certificate of Origin\" Pop-Up Sample URL"
+        "type": "richtext",
+        "id": "popup_certificate_origin_more_info",
+        "label": "\"Certificate of Origin\" Weiterführende Informationen",
+        "default": "<p>Hier können Sie weiterführende Informationen zum Certificate of Origin eintragen.</p>"
       },
       {
         "type": "header",
@@ -1531,9 +1532,10 @@
         "default": "<p>Hier steht der Text für das Clearance Certificate Pop-Up.</p>"
       },
       {
-        "type": "url",
-        "id": "popup_clearance_certificate_sample",
-        "label": "\"Clearance Certificate\" Pop-Up Sample URL"
+        "type": "richtext",
+        "id": "popup_clearance_certificate_more_info",
+        "label": "\"Clearance Certificate\" Weiterführende Informationen",
+        "default": "<p>Hier können Sie weiterführende Informationen zum Clearance Certificate eintragen.</p>"
       },
       {
         "type": "header",
@@ -1576,9 +1578,10 @@
         "default": "<p>Hier steht der Text für Spalte 3 des VAT Pop-Ups.</p>"
       },
       {
-        "type": "url",
-        "id": "popup_vat_uid_tva_sample",
-        "label": "\"VAT | UID | TVA\" Pop-Up Sample URL"
+        "type": "richtext",
+        "id": "popup_vat_uid_tva_more_info",
+        "label": "\"VAT | UID | TVA\" Weiterführende Informationen",
+        "default": "<p>Hier können Sie weiterführende Informationen zur VAT/UID/TVA eintragen.</p>"
       }
     ]
   }
