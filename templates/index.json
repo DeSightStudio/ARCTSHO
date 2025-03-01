@@ -12,6 +12,12 @@
     "main_collections_slider_JkUqct": {
       "type": "main-collections-slider",
       "blocks": {
+        "collection_H933gV": {
+          "type": "collection",
+          "settings": {
+            "collection": "tusks"
+          }
+        },
         "collection_6xPRfN": {
           "type": "collection",
           "settings": {
@@ -71,15 +77,10 @@
           "settings": {
             "collection": "stabilized-ivory"
           }
-        },
-        "collection_H933gV": {
-          "type": "collection",
-          "settings": {
-            "collection": "tusks"
-          }
         }
       },
       "block_order": [
+        "collection_H933gV",
         "collection_6xPRfN",
         "collection_Er7dTB",
         "collection_DGNFwq",
@@ -89,8 +90,7 @@
         "collection_hc6jbn",
         "collection_8KEFWB",
         "collection_TLGUHH",
-        "collection_MbzVrV",
-        "collection_H933gV"
+        "collection_MbzVrV"
       ],
       "settings": {
         "layout": "full_bleed"
@@ -102,7 +102,7 @@
         "heading_BVX4zN": {
           "type": "heading",
           "settings": {
-            "heading": "Our Mammoth Ivory Selection",
+            "heading": "Our Mammoth Ivory Selectionk",
             "heading_size": "h0"
           }
         }
@@ -133,10 +133,10 @@
             "collection": "tusks"
           }
         },
-        "featured_collection_4EKGm7": {
+        "featured_collection_krmUUX": {
           "type": "featured_collection",
           "settings": {
-            "collection": "bark-offcuts"
+            "collection": "handcrafted-jewellery"
           }
         },
         "featured_collection_rAL9Gn": {
@@ -145,16 +145,16 @@
             "collection": "gear"
           }
         },
-        "featured_collection_FCdkgK": {
+        "featured_collection_4EKGm7": {
           "type": "featured_collection",
           "settings": {
             "collection": "bark-offcuts"
           }
         },
-        "featured_collection_krmUUX": {
+        "featured_collection_FCdkgK": {
           "type": "featured_collection",
           "settings": {
-            "collection": "handcrafted-jewellery"
+            "collection": "bark-offcuts"
           }
         },
         "featured_collection_rq4Y86": {
@@ -202,10 +202,10 @@
       },
       "block_order": [
         "featured_collection_GDXkm8",
-        "featured_collection_4EKGm7",
-        "featured_collection_rAL9Gn",
-        "featured_collection_FCdkgK",
         "featured_collection_krmUUX",
+        "featured_collection_rAL9Gn",
+        "featured_collection_4EKGm7",
+        "featured_collection_FCdkgK",
         "featured_collection_rq4Y86",
         "featured_collection_PfBKC6",
         "featured_collection_DizKEf",
