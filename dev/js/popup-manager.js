@@ -102,7 +102,7 @@
     // Zusätzlicher Event-Listener für das Overlay (zum Schließen bei Klick auf den Hintergrund)
     document.querySelectorAll('.modal__overlay').forEach(overlay => {
       overlay.addEventListener('click', (e) => {
-        // Nur schließen, wenn direkt auf das Overlay geklickt wurde (nicht auf Container)
+        // Nur schließen, wenn direkt auf das Overlay geklickt wurde (nicht auf Container oder dessen Inhalt)
         if (e.target === overlay) {
           const modal = overlay.closest('.modal');
           if (modal && modal.id) {
@@ -111,6 +111,14 @@
             closeWithAnimation(modal.id);
           }
         }
+      });
+    });
+
+    // Verhindern, dass Klicks auf den Modal-Container oder dessen Inhalt das Modal schließen
+    document.querySelectorAll('.modal__container').forEach(container => {
+      container.addEventListener('click', (e) => {
+        // Verhindern, dass das Event zum Overlay propagiert
+        e.stopPropagation();
       });
     });
 
