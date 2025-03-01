@@ -1,0 +1,15 @@
+footer {
+    &.footer {
+        .footer__content-top {
+            padding: 20px 0;
+            max-width: var(--page-width);
+            .footer-block {
+                &.grid {
+                    .shopify-block {
+                         
+                    }
+                }
+            }
+        }
+    }
+}

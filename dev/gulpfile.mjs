@@ -9,6 +9,7 @@ import sass from 'gulp-sass';
 import uglify from 'gulp-uglify';
 import * as dartSass from 'sass';
 import stylelint from 'gulp-stylelint';
+import { deleteAsync } from 'del';
 
 const sassCompiler = sass(dartSass);
 
@@ -20,9 +21,19 @@ const srcJS = 'js/**/*.js';
 const assetsDir = '../assets/';
 
 /**
+ * Clean tasks - löscht bestehende Dateien vor der Neukompilierung
+ */
+gulp.task('clean:css', async function() {
+  return deleteAsync([
+    `${assetsDir}dist.css.liquid`,
+    `${assetsDir}*.css.liquid`
+  ], { force: true });
+});
+
+/**
  * SCSS task
  */
-gulp.task('scss', () => {
+gulp.task('scss', gulp.series('clean:css', function() {
   return gulp.src('scss/*.scss.liquid')
     .pipe(sassCompiler({ outputStyle: 'expanded' }).on('error', sassCompiler.logError))
     .pipe(rename((path) => {
@@ -33,7 +44,7 @@ gulp.task('scss', () => {
     .pipe(replace('}}"', '}}'))
     .pipe(cleanCss())
     .pipe(gulp.dest(assetsDir));
-});
+}));
 
 /**
  * JS task

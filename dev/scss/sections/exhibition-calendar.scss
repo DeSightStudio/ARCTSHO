@@ -48,11 +48,11 @@
       }
       .exhibition-calendar__item {
         padding: 30px 0 30px 150px;
+        position: relative;
         @include screen(med-small) {
           padding: 100px 0px 50px 0px;
           text-align: center;
         }
-        position: relative;
         &:before {
           display: block;
           width: 92px;
