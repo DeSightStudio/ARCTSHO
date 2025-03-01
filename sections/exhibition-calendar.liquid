@@ -29,7 +29,11 @@
       {% endif %}
     {%- endif -%}
 
-    {% assign sortedExhibitions = shop.metaobjects.exhibition_calendar.values | sort: 'from_date' %}
+    {% comment %}
+      Finale Sortierungslösung basierend auf den Forum-Empfehlungen und Metaobjekt-Struktur
+    {% endcomment %}
+    {% assign raw_exhibitions = shop.metaobjects.exhibition_calendar.values %}
+    {% assign sortedExhibitions = raw_exhibitions | sort_natural: 'from-date' %}
 
     <div class="exhibition-calendar__grid">
       {% for exhibition in sortedExhibitions %}
