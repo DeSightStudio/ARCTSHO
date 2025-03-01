@@ -14,6 +14,12 @@
     "footer": {
       "type": "footer",
       "blocks": {
+        "brand_information_ccRY3g": {
+          "type": "brand_information",
+          "settings": {
+            "show_social": true
+          }
+        },
         "forms_inline_6DT3Tb": {
           "type": "shopify://apps/forms/blocks/inline/8744a304-fcb1-4347-b211-bb6b4759a76a",
           "settings": {
@@ -30,27 +36,21 @@
             "padding_right": 0,
             "padding_left": 0
           }
-        },
-        "brand_information_ccRY3g": {
-          "type": "brand_information",
-          "settings": {
-            "show_social": true
-          }
         }
       },
       "block_order": [
-        "forms_inline_6DT3Tb",
-        "brand_information_ccRY3g"
+        "brand_information_ccRY3g",
+        "forms_inline_6DT3Tb"
       ],
       "settings": {
         "color_scheme": "scheme-548c10fa-37f3-441f-92f9-890ada330aca",
         "newsletter_enable": false,
         "newsletter_heading": "Subscribe to our emails",
         "enable_follow_on_shop": false,
-        "show_social": false,
+        "show_social": true,
         "enable_country_selector": false,
         "enable_language_selector": false,
-        "payment_enable": false,
+        "payment_enable": true,
         "show_policy": false,
         "margin_top": 0,
         "padding_top": 0,
