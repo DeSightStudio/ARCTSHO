@@ -35,7 +35,15 @@ class CurrencyConverter {
         '.cart-item__total',
         '.cart__subtotal',
         '.cart__total',
-        '[data-price]'
+        '[data-price]',
+        // Neue Selektoren für den Warenkorb-Gesamtbetrag
+        '.estimated-total',
+        '.cart-totals',
+        '.total-line-table__footer',
+        '.payment-due__price',
+        '.order-summary__emphasis',
+        // Generischer Selektor für alle Preisanzeigen
+        '[class*="total"]'
       ]
     };
     this.init();
@@ -112,6 +120,25 @@ class CurrencyConverter {
           if (button) button.setAttribute('aria-expanded', 'false');
         }
       });
+      
+      // KOMPLETT ÜBERARBEITETER ANSATZ: Wir ersetzen den gesamten Inhalt der Option
+      const currencyCode = option.getAttribute('data-value');
+      if (currencyCode && this.symbols[currencyCode]) {
+        // Speichere das Checkmark-Element, falls vorhanden
+        const checkmark = option.querySelector('.currency-checkmark');
+        
+        // Leere den Inhalt der Option
+        option.innerHTML = '';
+        
+        // Füge das Checkmark-Element wieder hinzu, falls es existierte
+        if (checkmark) {
+          option.appendChild(checkmark);
+        }
+        
+        // Füge den formatierten Währungstext hinzu
+        const textNode = document.createTextNode(`${currencyCode}/${this.symbols[currencyCode]}`);
+        option.appendChild(textNode);
+      }
     });
 
     // Toggle für Dropdown
