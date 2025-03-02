@@ -182,8 +182,13 @@
                             </li>
                           </ul>
                         {%- endif -%}
+                        <h2 class="footer-contact-form__heading">{{ 'templates.contact.form.heading' | t }}</h2>
                         <div class="contact__fields">
                           <div class="field">
+                            <label class="field__label" for="FooterContactForm-name">
+                              {{ 'templates.contact.form.name' | t }}
+                              <span aria-hidden="true">*</span>
+                            </label>
                             <input
                               class="field__input"
                               autocomplete="name"
@@ -191,13 +196,14 @@
                               id="FooterContactForm-name"
                               name="contact[{{ 'templates.contact.form.name' | t }}]"
                               value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}"
-                              placeholder="{{ 'templates.contact.form.name' | t }}"
+                              required
                             >
-                            <label class="field__label" for="FooterContactForm-name">
-                              {{- 'templates.contact.form.name' | t -}}
-                            </label>
                           </div>
                           <div class="field field--with-error">
+                            <label class="field__label" for="FooterContactForm-email">
+                              {{ 'templates.contact.form.email' | t }}
+                              <span aria-hidden="true">*</span>
+                            </label>
                             <input
                               autocomplete="email"
                               type="email"
@@ -208,15 +214,11 @@
                               autocapitalize="off"
                               value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
                               aria-required="true"
+                              required
                               {% if form.errors contains 'email' %}
                                 aria-invalid="true"
                                 aria-describedby="FooterContactForm-email-error"
                               {% endif %}
-                              placeholder="{{ 'templates.contact.form.email' | t }}"
-                            >
-                            <label class="field__label" for="FooterContactForm-email">
-                              {{- 'templates.contact.form.email' | t }}
-                              <span aria-hidden="true">*</span></label
                             >
                             {%- if form.errors contains 'email' -%}
                               <small class="contact__field-error" id="FooterContactForm-email-error">
@@ -233,23 +235,69 @@
                           </div>
                         </div>
                         <div class="field">
+                          <label class="field__label" for="FooterContactForm-phone">
+                            {{ 'templates.contact.form.phone' | t }}
+                            <span aria-hidden="true">*</span>
+                          </label>
+                          <div class="phone-input-container">
+                            <div class="country-code">
+                              <span class="flag-icon">🇩🇪</span>
+                            </div>
+                            <input
+                              type="tel"
+                              id="FooterContactForm-phone"
+                              class="field__input"
+                              autocomplete="tel"
+                              name="contact[{{ 'templates.contact.form.phone' | t }}]"
+                              pattern="[0-9\-]*"
+                              value="{% if form.phone %}{{ form.phone }}{% elsif customer %}{{ customer.phone }}{% endif %}"
+                              required
+                            >
+                          </div>
+                        </div>
+                        <div class="field">
+                          <label class="field__label" for="FooterContactForm-country">
+                            {{ 'templates.contact.form.country' | t }}
+                            <span aria-hidden="true">*</span>
+                          </label>
+                          <select
+                            id="FooterContactForm-country"
+                            class="field__input"
+                            name="contact[{{ 'templates.contact.form.country' | t }}]"
+                            required
+                          >
+                            <option value="{{ 'templates.contact.form.country_options.germany' | t }}" selected>
+                              {{ 'templates.contact.form.country_options.germany' | t }}
+                            </option>
+                            <option value="{{ 'templates.contact.form.country_options.austria' | t }}">
+                              {{ 'templates.contact.form.country_options.austria' | t }}
+                            </option>
+                            <option value="{{ 'templates.contact.form.country_options.switzerland' | t }}">
+                              {{ 'templates.contact.form.country_options.switzerland' | t }}
+                            </option>
+                            <option value="{{ 'templates.contact.form.country_options.other' | t }}">
+                              {{ 'templates.contact.form.country_options.other' | t }}
+                            </option>
+                          </select>
+                        </div>
+                        <div class="field">
+                          <label class="field__label" for="FooterContactForm-body">
+                            {{ 'templates.contact.form.question' | t }}
+                            <span aria-hidden="true">*</span>
+                          </label>
                           <textarea
-                            rows="4"
+                            rows="5"
                             id="FooterContactForm-body"
                             class="text-area field__input"
-                            name="contact[{{ 'templates.contact.form.comment' | t }}]"
-                            placeholder="{{ 'templates.contact.form.comment' | t }}"
+                            name="contact[{{ 'templates.contact.form.question' | t }}]"
+                            required
                           >
                             {{- form.body -}}
                           </textarea>
-                          <label class="form__label field__label" for="FooterContactForm-body">
-                            {{- 'templates.contact.form.comment' | t -}}
-                          </label>
                         </div>
+                        <p class="required-fields-info">{{ 'templates.contact.form.required_fields' | t }}</p>
                         <div class="contact__button">
-                          <button type="submit" class="button">
-                            {{ 'templates.contact.form.send' | t }}
-                          </button>
+                          <button type="submit" class="button">{{ 'templates.contact.form.send_question' | t }}</button>
                         </div>
                       {%- endform -%}
                     </div>

@@ -265,7 +265,18 @@
         "send": "Enviar",
         "post_success": "Gracias por contactarnos. Te responderemos lo antes posible.",
         "error_heading": "Por favor, ajusta lo siguiente:",
-        "title": "Formulario de contacto"
+        "title": "Formulario de contacto",
+        "country": "País",
+        "question": "Pregunta",
+        "required_fields": "* — Campos obligatorios",
+        "send_question": "Enviar pregunta",
+        "heading": "HACER UNA PREGUNTA",
+        "country_options": {
+          "germany": "Alemania",
+          "austria": "Austria",
+          "switzerland": "Suiza",
+          "other": "Otro"
+        }
       }
     },
     "404": {

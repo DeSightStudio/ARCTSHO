@@ -265,7 +265,18 @@
         "send": "Invia",
         "post_success": "Grazie per averci contattato. Risponderemo il prima possibile.",
         "error_heading": "Correggi gli errori seguenti:",
-        "title": "Modulo di contatto"
+        "title": "Modulo di contatto",
+        "country": "Paese",
+        "question": "Domanda",
+        "required_fields": "* — Campi obbligatori",
+        "send_question": "Invia domanda",
+        "heading": "FACI UNA DOMANDA",
+        "country_options": {
+          "germany": "Germania",
+          "austria": "Austria",
+          "switzerland": "Svizzera",
+          "other": "Altro"
+        }
       }
     },
     "404": {

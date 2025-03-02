@@ -264,8 +264,19 @@
         "comment": "Commentaire",
         "send": "Envoyer",
         "post_success": "Merci de nous avoir contactés. Nous vous répondrons dès que possible.",
-        "error_heading": "Veuillez ajuster les éléments suivants :",
-        "title": "Formulaire de contact"
+        "error_heading": "Veuillez ajuster les éléments suivants :",
+        "title": "Formulaire de contact",
+        "country": "Pays",
+        "question": "Question",
+        "required_fields": "* — Champs obligatoires",
+        "send_question": "Envoyer la question",
+        "heading": "POSER UNE QUESTION",
+        "country_options": {
+          "germany": "Allemagne",
+          "austria": "Autriche",
+          "switzerland": "Suisse",
+          "other": "Autre"
+        }
       }
     },
     "404": {
@@ -293,7 +304,7 @@
       "note": "Instructions spéciales concernant la commande",
       "checkout": "Procéder au paiement",
       "empty": "Votre panier est vide",
-      "cart_error": "Une erreur est survenue lors de l’actualisation de votre panier. Veuillez réessayer.",
+      "cart_error": "Une erreur est survenue l'actualisation de votre panier. Veuillez réessayer.",
       "cart_quantity_error_html": "Vous ne pouvez pas ajouter plus de {{ quantity }} de ce produit à votre panier.",
       "headings": {
         "product": "Produit",
@@ -309,14 +320,14 @@
       },
       "estimated_total": "Total estimé",
       "new_estimated_total": "Nouveau total estimé",
-      "duties_and_taxes_included_shipping_at_checkout_with_policy_html": "Frais de douane et taxes inclus. Réductions et <a href=\"{{ link }}\">frais d’expédition</a> calculés à l’étape du paiement.",
-      "duties_and_taxes_included_shipping_at_checkout_without_policy": "Frais de douane et taxes inclus. Réductions et frais d’expédition calculés à l’étape du paiement.",
-      "taxes_included_shipping_at_checkout_with_policy_html": "Taxes incluses. Réductions et <a href=\"{{ link }}\">frais d’expédition</a> calculés à l’étape du paiement.",
-      "taxes_included_shipping_at_checkout_without_policy": "Taxes incluses. Réductions et frais d’expédition calculés à l’étape du paiement.",
-      "duties_included_taxes_at_checkout_shipping_at_checkout_with_policy_html": "Frais de douane inclus. Taxes, réductions et <a href=\"{{ link }}\">frais d’expédition</a> calculés à l’étape du paiement.",
-      "duties_included_taxes_at_checkout_shipping_at_checkout_without_policy": "Frais de douane inclus. Taxes, réductions et frais d’expédition calculés à l’étape du paiement.",
-      "taxes_at_checkout_shipping_at_checkout_with_policy_html": "Taxes, réductions et <a href=\"{{ link }}\">frais d’expédition</a> calculés à l’étape du paiement.",
-      "taxes_at_checkout_shipping_at_checkout_without_policy": "Taxes, réductions et frais d’expédition calculés à l’étape du paiement."
+      "duties_and_taxes_included_shipping_at_checkout_with_policy_html": "Frais de douane et taxes inclus. Réductions et <a href=\"{{ link }}\">frais d'expédition</a> calculés à l'étape du paiement.",
+      "duties_and_taxes_included_shipping_at_checkout_without_policy": "Frais de douane et taxes inclus. Réductions et frais d'expédition calculés à l'étape du paiement.",
+      "taxes_included_shipping_at_checkout_with_policy_html": "Taxes incluses. Réductions et <a href=\"{{ link }}\">frais d'expédition</a> calculés à l'étape du paiement.",
+      "taxes_included_shipping_at_checkout_without_policy": "Taxes incluses. Réductions et frais d'expédition calculés à l'étape du paiement.",
+      "duties_included_taxes_at_checkout_shipping_at_checkout_with_policy_html": "Frais de douane inclus. Taxes, réductions et <a href=\"{{ link }}\">frais d'expédition</a> calculés à l'étape du paiement.",
+      "duties_included_taxes_at_checkout_shipping_at_checkout_without_policy": "Frais de douane inclus. Taxes, réductions et frais d'expédition calculés à l'étape du paiement.",
+      "taxes_at_checkout_shipping_at_checkout_with_policy_html": "Taxes, réductions et <a href=\"{{ link }}\">frais d'expédition</a> calculés à l'étape du paiement.",
+      "taxes_at_checkout_shipping_at_checkout_without_policy": "Taxes, réductions et frais d'expédition calculés à l'étape du paiement."
     },
     "footer": {
       "payment": "Moyens de paiement"
@@ -358,7 +369,7 @@
       "next_announcement": "Annonce suivante",
       "carousel": "Carrousel",
       "announcement": "Annonce",
-      "announcement_bar": "Barre d’annonces"
+      "announcement_bar": "Barre d'annonces"
     },
     "quick_order_list": {
       "product_total": "Sous-total des produits",

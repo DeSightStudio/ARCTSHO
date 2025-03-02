@@ -13,11 +13,11 @@
     "social": {
       "alt_text": {
         "share_on_facebook": "Share on Facebook",
-        "share_on_twitter": "Share on X",
+        "share_on_twitter": "Tweet on Twitter",
         "share_on_pinterest": "Pin on Pinterest"
       },
       "links": {
-        "twitter": "X (Twitter)",
+        "twitter": "Twitter",
         "facebook": "Facebook",
         "pinterest": "Pinterest",
         "instagram": "Instagram",
@@ -40,15 +40,15 @@
       "reset": "Clear search term"
     },
     "cart": {
-      "view": "View cart ({{ count }})",
-      "view_empty_cart": "View cart",
-      "item_added": "Item added to your cart"
+      "view": "View my cart ({{ count }})",
+      "item_added": "Item added to your cart",
+      "view_empty_cart": "View cart"
     },
     "share": {
-      "close": "Close share",
       "copy_to_clipboard": "Copy link",
       "share_url": "Link",
-      "success_message": "Link copied to clipboard"
+      "success_message": "Link copied to clipboard",
+      "close": "Close share"
     },
     "slider": {
       "of": "of",
@@ -129,7 +129,7 @@
         "load_model": "Load 3D Model {{ index }} in gallery view",
         "load_video": "Play video {{ index }} in gallery view",
         "image_available": "Image {{ index }} is now available in gallery view",
-        "open_media": "Open media {{ index }} in modal",
+        "open_media": "Open media {{ index }} in gallery view",
         "play_model": "Play 3D Viewer",
         "play_video": "Play video"
       },
@@ -260,7 +260,18 @@
         "comment": "Comment",
         "send": "Send",
         "post_success": "Thanks for contacting us. We'll get back to you as soon as possible.",
-        "error_heading": "Please adjust the following:"
+        "error_heading": "Please adjust the following:",
+        "country": "Country",
+        "question": "Question",
+        "required_fields": "* — Required fields",
+        "send_question": "Send question",
+        "heading": "ASK A QUESTION",
+        "country_options": {
+          "germany": "Germany",
+          "austria": "Austria",
+          "switzerland": "Switzerland",
+          "other": "Other"
+        }
       }
     },
     "404": {
@@ -293,7 +304,7 @@
       "remove_title": "Remove {{ title }}",
       "estimated_total": "Estimated total",
       "new_estimated_total": "New estimated total",
-      "note": "Order special instructions",
+      "note": "Special instructions for order",
       "checkout": "Check out",
       "empty": "Your cart is empty",
       "cart_error": "There was an error while updating your cart. Please try again.",
@@ -317,7 +328,27 @@
       "login": {
         "title": "Have an account?",
         "paragraph_html": "<a href=\"{{ link }}\" class=\"link underlined-link\">Log in</a> to check out faster."
-      }
+      },
+      "discount": "Discount",
+      "shipping_calculator": {
+        "heading": "Estimate shipping",
+        "country_label": "Country/region",
+        "province_label": "Province/State",
+        "zip_label": "Zip/Postal code",
+        "estimate": "Estimate",
+        "no_shipping_available": "We do not ship to this destination.",
+        "one_shipping_available": "There is one shipping rate available for your order.",
+        "multiple_shipping_available": "There are {{ count }} shipping rates available for your order."
+      },
+      "shipping_calculator_error_message": "Error: Please check your postal code",
+      "duties_and_taxes_included_shipping_at_checkout_with_policy_html": "Duties and taxes included. Discounts and <a href=\"{{ link }}\">shipping</a> calculated at checkout.",
+      "duties_and_taxes_included_shipping_at_checkout_without_policy": "Duties and taxes included. Discounts and shipping calculated at checkout.",
+      "taxes_included_shipping_at_checkout_with_policy_html": "Tax included. Discounts and <a href=\"{{ link }}\">shipping</a> calculated at checkout.",
+      "taxes_included_shipping_at_checkout_without_policy": "Tax included. Discounts and shipping calculated at checkout.",
+      "duties_included_taxes_at_checkout_shipping_at_checkout_with_policy_html": "Duties included. Taxes, discounts, and <a href=\"{{ link }}\">shipping</a> calculated at checkout.",
+      "duties_included_taxes_at_checkout_shipping_at_checkout_without_policy": "Duties included. Taxes, discounts, and shipping calculated at checkout.",
+      "taxes_at_checkout_shipping_at_checkout_with_policy_html": "Taxes, discounts, and <a href=\"{{ link }}\">shipping</a> calculated at checkout.",
+      "taxes_at_checkout_shipping_at_checkout_without_policy": "Taxes, discounts, and shipping calculated at checkout."
     },
     "footer": {
       "payment": "Payment methods"
@@ -360,24 +391,22 @@
       "each": "{{ money }}/ea",
       "product": "Product",
       "variant": "Variant",
-      "variant_total": "Variant total",
-      "items_added": {
-        "one": "{{ quantity }} item added",
-        "other": "{{ quantity }} items added"
-      },
-      "items_removed": {
-        "one": "{{ quantity }} item removed",
-        "other": "{{ quantity }} items removed"
-      },
-      "product_variants": "Product variants",
-      "total_items": "Total items",
-      "remove_all_single_item_confirmation": "Remove 1 item from your cart?",
-      "remove_all_items_confirmation": "Remove all {{ quantity }} items from your cart?",
-      "remove_all": "Remove all",
-      "cancel": "Cancel",
-      "min_error": "This item has a minimum of {{ min }}",
-      "max_error": "This item has a maximum of {{ max }}",
-      "step_error": "You can only add this item in increments of {{ step }}"
+      "variant_placeholder": "Select variant",
+      "note": "Order note",
+      "price": "Price",
+      "quantity": "Qty",
+      "total": "Total",
+      "subtotal": "Subtotal",
+      "add_all_to_cart": "Add all to cart",
+      "added_to_cart": "All items added to cart!",
+      "continue_to_checkout": "Continue to checkout",
+      "field_empty": "Field is empty",
+      "no_changes": "No changes",
+      "qty_updated": "Quantity updated",
+      "item_added": "Item added to list",
+      "product_removed": "Product removed",
+      "price_updated": "Price updated",
+      "price_discounted": "Price discounted"
     }
   },
   "localization": {
@@ -503,16 +532,18 @@
   "gift_cards": {
     "issued": {
       "how_to_use_gift_card": "Use the gift card code online or QR code in-store",
-      "title": "Here's your {{ value }} gift card balance for {{ shop }}!",
+      "title": "Here's your {{ value }} gift card for {{ shop }}!",
       "subtext": "Your gift card",
       "gift_card_code": "Gift card code",
-      "shop_link": "Visit online store",
+      "shop_link": "Continue shopping",
       "add_to_apple_wallet": "Add to Apple Wallet",
       "qr_image_alt": "QR code — scan to redeem gift card",
-      "copy_code": "Copy gift card code",
+      "copy_code": "Copy code",
       "expiration_date": "Expires {{ expires_on }}",
       "copy_code_success": "Code copied successfully",
-      "expired": "Expired"
+      "expired": "Expired",
+      "remaining_html": "Remaining {{ balance }}",
+      "print_gift_card": "Print"
     }
   },
   "recipient": {

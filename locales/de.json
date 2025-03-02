@@ -269,7 +269,18 @@
         "send": "Senden",
         "post_success": "Danke, dass du uns kontaktiert hast. Wir werden uns so schnell wie möglich bei dir melden.",
         "error_heading": "Bitte passe Folgendes an:",
-        "title": "Kontaktformular"
+        "title": "Kontaktformular",
+        "country": "Land",
+        "question": "Frage",
+        "required_fields": "* — Pflichtfelder",
+        "send_question": "Frage senden",
+        "heading": "FRAGE STELLEN",
+        "country_options": {
+          "germany": "Germany",
+          "austria": "Austria",
+          "switzerland": "Switzerland",
+          "other": "Other"
+        }
       }
     },
     "404": {

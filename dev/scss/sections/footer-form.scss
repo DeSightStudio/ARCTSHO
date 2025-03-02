@@ -14,51 +14,120 @@ footer {
     }
 }
 
+/* Footer Contact Form Styles */
 .footer-contact-form {
-    width: 100%;
-  }
+  width: 100%;
+  margin-top: 1rem;
   
-  .footer-contact-form .form__message {
-    align-items: flex-start;
-  }
-  
-  .footer-contact-form .icon-success {
-    margin-top: 0.2rem;
-  }
-  
-  .footer-contact-form .field {
+  .footer-contact-form__heading {
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
     margin-bottom: 1.5rem;
   }
   
-  .footer-contact-form .field__input {
-    background-color: rgba(255, 255, 255, 0.07);
-    border-color: rgba(255, 255, 255, 0.1);
-    color: inherit;
-  }
-  
-  .footer-contact-form .field__input:focus {
-    border-color: rgb(var(--color-base-accent-1));
-  }
-  
-  .footer-contact-form .text-area {
-    resize: vertical;
-    min-height: 100px;
-  }
-  
-  @media screen and (min-width: 750px) {
-    .footer-contact-form .field {
-      margin-bottom: 2rem;
+  .field {
+    margin-bottom: 1.5rem;
+    position: relative;
+    
+    &__label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: white;
+      font-size: 0.9rem;
+    }
+    
+    &__input {
+      width: 100%;
+      padding: 0.75rem;
+      background-color: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 0;
+      color: white;
+      
+      &:focus {
+        outline: none;
+        border-color: white;
+      }
+      
+      &::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+      }
+    }
+    
+    select.field__input {
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.7rem top 50%;
+      background-size: 0.65rem auto;
+      padding-right: 2rem;
     }
   }
   
-  .footer-contact-form .contact__button {
-    margin-top: 2rem;
+  .phone-input-container {
+    display: flex;
+    align-items: center;
+    
+    .country-code {
+      background-color: rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      padding: 0 0.5rem;
+      height: 2.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-right: none;
+      
+      .flag-icon {
+        font-size: 1.2rem;
+      }
+    }
+    
+    .field__input {
+      flex: 1;
+    }
+  }
+  
+  .text-area {
+    min-height: 100px;
+    resize: vertical;
+  }
+  
+  .required-fields-info {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.8rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .contact__button {
+    margin-top: 1.5rem;
+    
+    .button {
+      background-color: white;
+      color: #0a5d17;
+      border: none;
+      padding: 0.75rem 2rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      border-radius: 50px;
+      
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.8);
+      }
+    }
   }
   
   @media screen and (min-width: 750px) {
-    .footer-contact-form .contact__fields {
+    .contact__fields {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      grid-column-gap: 2rem;
+      gap: 1.5rem;
     }
-  } 
+  }
+}
+
+// Zusätzliche Styles für den dunkelgrünen Hintergrund
+.footer.color-scheme-1 {
+  background-color: #0a5d17;
+} 
