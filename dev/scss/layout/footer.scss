@@ -17,6 +17,20 @@ footer {
                         width: 100% !important; // Überschreibe die spezifische Breite auf Mobilgeräten
                     }
                 }
+                h1, h2, h3, h4, h5, h6 {
+                    font-family: Cormorant Garamond;
+                    color: $whiteColor;
+                    font-size: $fontSizeMedium !important;
+                    margin: 0;
+                    font-weight: bold;
+                }
+                
+                p, .rte {
+                    font-family: Cormorant Garamond;
+                    color: $whiteColor;
+                    font-size: $fontSizeRegular !important;
+                    margin: 0;
+                }
             }
             
             // Entferne die festen Grid-Spalten und verwende die individuellen Breiten
@@ -58,3 +72,4 @@ footer.footer .footer-block--newsletter::before {
     color: white;
     font-size: 12px;
 }
+
