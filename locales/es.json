@@ -220,7 +220,7 @@
   },
   "templates": {
     "search": {
-      "no_results": "No se encontraron resultados para "{{ terms }}". Revisa la ortografía o usa una palabra o frase diferente.",
+      "no_results": "No se encontraron resultados para \"{{ terms }}\". Revisa la ortografía o usa una palabra o frase diferente.",
       "results_with_count": {
         "one": "{{ count }} resultado",
         "other": "{{ count }} resultados",
@@ -229,11 +229,11 @@
       "title": "Resultados de búsqueda",
       "page": "Página",
       "products": "Productos",
-      "search_for": "Buscar "{{ terms }}",
+      "search_for": "Buscar \"{{ terms }}\"",
       "results_with_count_and_term": {
-        "one": "Se ha encontrado {{ count }} resultado para "{{ terms }}"",
-        "other": "Se han encontrado {{ count }} resultados para "{{ terms }}"",
-        "many": "Se han encontrado {{ count }} resultados para "{{ terms }}"
+        "one": "Se ha encontrado {{ count }} resultado para \"{{ terms }}\"",
+        "other": "Se han encontrado {{ count }} resultados para \"{{ terms }}\"",
+        "many": "Se han encontrado {{ count }} resultados para \"{{ terms }}\""
       },
       "results_pages_with_count": {
         "one": "{{ count }} página",
