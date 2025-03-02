@@ -14,13 +14,6 @@
     "footer": {
       "type": "footer",
       "blocks": {
-        "brand_information_ccRY3g": {
-          "type": "brand_information",
-          "settings": {
-            "show_social": true,
-            "column_width": 40
-          }
-        },
         "contact_form_hFnQJa": {
           "type": "contact_form",
           "settings": {
@@ -28,11 +21,18 @@
             "heading_size": "h2",
             "column_width": 60
           }
+        },
+        "brand_information_ccRY3g": {
+          "type": "brand_information",
+          "settings": {
+            "show_social": true,
+            "column_width": 40
+          }
         }
       },
       "block_order": [
-        "brand_information_ccRY3g",
-        "contact_form_hFnQJa"
+        "contact_form_hFnQJa",
+        "brand_information_ccRY3g"
       ],
       "settings": {
         "color_scheme": "scheme-548c10fa-37f3-441f-92f9-890ada330aca",

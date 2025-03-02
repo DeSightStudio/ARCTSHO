@@ -123,10 +123,6 @@
                       {%- endif -%}
                       {%- if settings.brand_description != blank -%}
                         <div class="rte">{{ settings.brand_description }}</div>
-                        <div class="rte">
-                          <br>
-                          <strong>VAT | UID | TVA:</strong> DE326113568<br>
-                        </div>
                       {%- endif -%}
                       {%- if block.settings.show_social and has_social_icons -%}
                         {%- render 'social-icons', class: 'footer__list-social' -%}
