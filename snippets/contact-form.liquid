@@ -31,7 +31,10 @@
   <div class="contact__form-container">
     <div class="contact__fields-left">
       <div class="field">
-        <label class="field__label" for="{{ form_id }}-name">{{ 'templates.contact.form.name' | t }}</label>
+        <label class="field__label" for="{{ form_id }}-name">
+          {{ 'templates.contact.form.name' | t }}
+          <span aria-hidden="true">*</span>
+        </label>
         <input
           class="field__input"
           autocomplete="name"
@@ -40,6 +43,8 @@
           name="contact[{{ 'templates.contact.form.name' | t }}]"
           value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}"
           placeholder="{{ 'templates.contact.form.name' | t }}"
+          required
+          aria-required="true"
         >
       </div>
       <div class="field field--with-error">
@@ -57,6 +62,7 @@
           autocapitalize="off"
           value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
           aria-required="true"
+          required
           {% if form.errors contains 'email' %}
             aria-invalid="true"
             aria-describedby="{{ form_id }}-email-error"
@@ -77,7 +83,10 @@
         {%- endif -%}
       </div>
       <div class="field">
-        <label class="field__label" for="{{ form_id }}-phone">{{ 'templates.contact.form.phone' | t }}</label>
+        <label class="field__label" for="{{ form_id }}-phone">
+          {{ 'templates.contact.form.phone' | t }}
+          <span aria-hidden="true">*</span>
+        </label>
         <input
           type="tel"
           id="{{ form_id }}-phone"
@@ -87,17 +96,21 @@
           pattern="[0-9\-]*"
           value="{% if form.phone %}{{ form.phone }}{% elsif customer %}{{ customer.phone }}{% endif %}"
           placeholder="{{ 'templates.contact.form.phone' | t }}"
+          required
+          aria-required="true"
         >
       </div>
       <div class="field">
         <label class="field__label" for="{{ form_id }}-country">
           {{- 'templates.contact.form.country' | t -}}
+          <span aria-hidden="true">*</span>
         </label>
         <select
           id="{{ form_id }}-country"
           class="field__input"
           name="contact[{{ 'templates.contact.form.country' | t }}]"
           required
+          aria-required="true"
         >
           <option value="" disabled selected>{{ 'templates.contact.form.select_country' | t }}</option>
         </select>
@@ -107,6 +120,7 @@
       <div class="field">
         <label class="field__label" for="{{ form_id }}-body">
           {{- 'templates.contact.form.question' | t -}}
+          <span aria-hidden="true">*</span>
         </label>
         <textarea
           rows="10"
@@ -114,6 +128,8 @@
           class="text-area field__input"
           name="contact[{{ 'templates.contact.form.comment' | t }}]"
           placeholder="{{ 'templates.contact.form.question' | t }}"
+          required
+          aria-required="true"
         >
         {{- form.body -}}
       </textarea>
