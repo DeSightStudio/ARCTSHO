@@ -169,65 +169,88 @@
       data-cascade
     {% endif %}
   >
-    <div class="footer__content-bottom-wrapper page-width">
-      <div class="footer__column footer__localization isolate">
-        {%- if section.settings.enable_country_selector and localization.available_countries.size > 1 -%}
-          <localization-form>
-            {%- form 'localization', id: 'FooterCountryForm', class: 'localization-form' -%}
-              <div>
-                <h2 class="caption-large text-body" id="FooterCountryLabel">{{ 'localization.country_label' | t }}</h2>
-                {%- render 'country-localization', localPosition: 'FooterCountry' -%}
-              </div>
-            {%- endform -%}
-          </localization-form>
-        {%- endif -%}
-
-        {%- if section.settings.enable_language_selector and localization.available_languages.size > 1 -%}
-          <localization-form>
-            {%- form 'localization', id: 'FooterLanguageForm', class: 'localization-form' -%}
-              <div>
-                <h2 class="caption-large text-body" id="FooterLanguageLabel">
-                  {{ 'localization.language_label' | t }}
-                </h2>
-                {%- render 'language-localization', localPosition: 'FooterLanguage' -%}
-              </div>
-            {%- endform -%}
-          </localization-form>
-        {%- endif -%}
-      </div>
-      <div class="footer__column footer__column--info">
-        {%- if section.settings.payment_enable -%}
-          <div class="footer__payment">
-            <span class="visually-hidden">{{ 'sections.footer.payment' | t }}</span>
-            <ul class="list list-payment" role="list">
-              {%- for type in shop.enabled_payment_types -%}
-                <li class="list-payment__item">
-                  {{ type | payment_type_svg_tag: class: 'icon icon--full-color' }}
-                </li>
-              {%- endfor -%}
-            </ul>
-          </div>
-        {%- endif -%}
-      </div>
-    </div>
-    <div class="footer__content-bottom-wrapper page-width{% if section.settings.enable_country_selector == false and section.settings.enable_language_selector == false %} footer__content-bottom-wrapper--center{% endif %}">
-      <div class="footer__copyright caption">
-        <small class="copyright__content"
-          >&copy; {{ 'now' | date: '%Y' }}, {{ shop.name | link_to: routes.root_url -}}
-        </small>
-        <small class="copyright__content">{{ powered_by_link }}</small>
-        {%- if section.settings.show_policy -%}
-          <ul class="policies list-unstyled">
-            {%- for policy in shop.policies -%}
-              {%- if policy != blank -%}
-                <li>
-                  <small class="copyright__content"
-                    ><a href="{{ policy.url }}">{{ policy.title | escape }}</a></small
-                  >
-                </li>
-              {%- endif -%}
+    {%- if section.settings.menu1 != blank -%}
+      <div class="footer__menu-row page-width">
+        <div class="footer__menu-wrapper">
+          <ul class="footer__menu list-unstyled">
+            {%- for link in section.settings.menu1.links -%}
+              <li>
+                <a href="{{ link.url }}" class="footer__menu-link link">{{ link.title | escape }}</a>
+              </li>
             {%- endfor -%}
           </ul>
+        </div>
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.menu2 != blank -%}
+      <div class="footer__menu-row page-width">
+        <div class="footer__menu-wrapper">
+          <ul class="footer__menu list-unstyled">
+            {%- assign menu = linklists[section.settings.menu2] -%}
+            {%- for link in menu.links -%}
+              <li>
+                <a href="{{ link.url }}" class="footer__menu-link link">{{ link.title | escape }}</a>
+              </li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      </div>
+    {%- endif -%}
+  </div>
+
+  <!-- Neue dritte Footer-Zeile -->
+  <div class="footer__bottom-row">
+    <div class="page-width">
+      <div class="footer__bottom-content">
+        {%- if section.settings.show_copyright -%}
+          <div class="footer__bottom-item footer__copyright-text">
+            © {{ 'now' | date: '%Y' }} - Arctic Antiques GmbH
+          </div>
+        {%- endif -%}
+
+        {%- if section.settings.show_vat -%}
+          <div class="footer__bottom-item footer__vat-text">VAT | UID | TVA: DE326113568</div>
+        {%- endif -%}
+
+        {%- if section.settings.show_credit -%}
+          <div class="footer__bottom-item footer__credit">
+            <a href="https://www.desightstudio.com" target="_blank" rel="noopener sponsored">
+              Made with <i class="fa fa-heart" aria-hidden="true"></i> by DeSight Studio<sup>®</sup>
+            </a>
+          </div>
+        {%- endif -%}
+
+        {%- if section.settings.show_payment_icons -%}
+          <div class="footer__bottom-item footer__payment-icons">
+            {%- if shop.enabled_payment_types != empty -%}
+              <ul class="list list-payment" role="list">
+                {%- for type in shop.enabled_payment_types -%}
+                  <li class="list-payment__item">
+                    {{ type | payment_type_svg_tag: class: 'icon icon--full-color' }}
+                  </li>
+                {%- endfor -%}
+              </ul>
+            {%- else -%}
+              <ul class="list list-payment" role="list">
+                <li class="list-payment__item">
+                  {{ 'visa' | payment_type_svg_tag: class: 'icon icon--full-color' }}
+                </li>
+                <li class="list-payment__item">
+                  {{ 'master' | payment_type_svg_tag: class: 'icon icon--full-color' }}
+                </li>
+                <li class="list-payment__item">
+                  {{ 'american_express' | payment_type_svg_tag: class: 'icon icon--full-color' }}
+                </li>
+                <li class="list-payment__item">
+                  {{ 'paypal' | payment_type_svg_tag: class: 'icon icon--full-color' }}
+                </li>
+                <li class="list-payment__item">
+                  {{ 'apple_pay' | payment_type_svg_tag: class: 'icon icon--full-color' }}
+                </li>
+              </ul>
+            {%- endif -%}
+          </div>
         {%- endif -%}
       </div>
     </div>
@@ -432,77 +455,61 @@
     },
     {
       "type": "header",
-      "content": "t:sections.footer.settings.header__1.content",
-      "info": "t:sections.footer.settings.header__1.info"
+      "content": "Zusätzliche Menüs"
+    },
+    {
+      "type": "link_list",
+      "id": "menu1",
+      "label": "Erstes zusätzliches Menü",
+      "info": "Fügt ein Menü mit 100% Breite hinzu"
+    },
+    {
+      "type": "select",
+      "id": "menu2",
+      "label": "Zweites zusätzliches Menü",
+      "info": "Fügt ein weiteres Menü mit 100% Breite hinzu",
+      "options": [
+        {
+          "value": "",
+          "label": "Kein Menü"
+        },
+        {
+          "value": "main-menu",
+          "label": "Hauptmenü"
+        },
+        {
+          "value": "footer",
+          "label": "Footer-Menü"
+        }
+      ]
     },
     {
       "type": "header",
-      "content": "t:sections.footer.settings.header__9.content",
-      "info": "t:sections.footer.settings.header__9.info"
+      "content": "Untere Footer-Zeile"
     },
     {
       "type": "checkbox",
-      "id": "enable_follow_on_shop",
+      "id": "show_copyright",
       "default": true,
-      "label": "t:sections.footer.settings.enable_follow_on_shop.label"
-    },
-    {
-      "type": "header",
-      "content": "t:sections.footer.settings.header__2.content",
-      "info": "t:sections.footer.settings.header__2.info"
+      "label": "Copyright anzeigen?"
     },
     {
       "type": "checkbox",
-      "id": "show_social",
+      "id": "show_vat",
       "default": true,
-      "label": "t:sections.footer.settings.show_social.label"
-    },
-    {
-      "type": "header",
-      "content": "t:sections.footer.settings.header__3.content",
-      "info": "t:sections.footer.settings.header__4.info"
+      "label": "VAT anzeigen?"
     },
     {
       "type": "checkbox",
-      "id": "enable_country_selector",
+      "id": "show_credit",
       "default": true,
-      "label": "t:sections.footer.settings.enable_country_selector.label"
-    },
-    {
-      "type": "header",
-      "content": "t:sections.footer.settings.header__5.content",
-      "info": "t:sections.footer.settings.header__6.info"
+      "label": "Credit anzeigen?"
     },
     {
       "type": "checkbox",
-      "id": "enable_language_selector",
+      "id": "show_payment_icons",
       "default": true,
-      "label": "t:sections.footer.settings.enable_language_selector.label"
-    },
-    {
-      "type": "header",
-      "content": "t:sections.footer.settings.header__7.content"
-    },
-    {
-      "type": "checkbox",
-      "id": "payment_enable",
-      "default": true,
-      "label": "t:sections.footer.settings.payment_enable.label"
-    },
-    {
-      "type": "header",
-      "content": "t:sections.footer.settings.header__8.content",
-      "info": "t:sections.footer.settings.header__8.info"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_policy",
-      "default": true,
-      "label": "t:sections.footer.settings.show_policy.label"
-    },
-    {
-      "type": "header",
-      "content": "t:sections.all.spacing"
+      "label": "Zahlungsarten anzeigen?"
     },
     {
       "type": "range",

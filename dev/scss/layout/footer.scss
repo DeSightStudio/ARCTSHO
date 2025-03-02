@@ -54,6 +54,120 @@ footer {
                 }
             }
         }
+
+        // Zusätzliche Menüs
+        .footer__menu-row {
+            padding: 15px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+            .footer__menu-wrapper {
+                width: 100%;
+            }
+
+            .footer__menu {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                margin: 0;
+                padding: 0;
+
+                @media screen and (max-width: 749px) {
+                    flex-direction: column;
+                    align-items: center;
+                    text-align: center;
+                }
+
+                li {
+                    margin: 0 15px;
+                    padding: 0;
+
+                    @media screen and (max-width: 749px) {
+                        margin: 5px 0;
+                    }
+                }
+
+                .footer__menu-link {
+                    font-family: 'Cormorant Garamond';
+                    font-size: 14px;
+                    color: #fff;
+                    text-decoration: none;
+                    transition: opacity 0.2s ease-in-out;
+
+                    &:hover {
+                        opacity: 0.8;
+                    }
+                }
+            }
+        }
+
+        // Untere Footer-Zeile
+        .footer__bottom-row {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 15px 0;
+
+            .footer__bottom-content {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-wrap: wrap;
+                
+                @media screen and (max-width: 749px) {
+                    flex-direction: column;
+                    text-align: center;
+                }
+                
+                .footer__bottom-item {
+                    margin: 5px 10px;
+                    font-family: 'Cormorant Garamond';
+                    font-size: 14px;
+                    color: #fff;
+                    
+                    @media screen and (max-width: 749px) {
+                        margin: 5px 0;
+                    }
+                    
+                    a {
+                        color: #fff;
+                        text-decoration: none;
+                        transition: opacity 0.2s ease-in-out;
+                        
+                        &:hover {
+                            opacity: 0.8;
+                        }
+                        
+                        .fa-heart {
+                            color: #ff4d4d;
+                        }
+                    }
+                }
+                
+                .footer__payment-icons {
+                    .list-payment {
+                        display: flex;
+                        flex-wrap: wrap;
+                        justify-content: flex-end;
+                        
+                        @media screen and (max-width: 749px) {
+                            justify-content: center;
+                        }
+                        
+                        .list-payment__item {
+                            margin-left: 8px;
+                            
+                            @media screen and (max-width: 749px) {
+                                margin: 0 4px;
+                            }
+                            
+                            .icon {
+                                width: 40px;
+                                height: auto;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
