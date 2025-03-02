@@ -29,19 +29,6 @@ footer {
                 flex-shrink: 0;
             }
             
-            // Anpassungen für den Newsletter-Block
-            .footer-block--newsletter {
-                box-sizing: border-box;
-                padding: 0 10px;
-                min-width: 200px;
-                flex-grow: 0;
-                flex-shrink: 0;
-                
-                @media screen and (max-width: 749px) {
-                    width: 100% !important; // Überschreibe die spezifische Breite auf Mobilgeräten
-                }
-            }
-            
             // Dynamische Newsletter-Breiten basierend auf den Einstellungen
             @for $i from 0 through 10 {
                 $width: $i * 10;
