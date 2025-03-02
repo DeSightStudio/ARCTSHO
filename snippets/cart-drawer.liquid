@@ -54,7 +54,7 @@
               {%- endif -%}
             </div>
           </div>
-          {%- if settings.cart_drawer_collection != blank -%}
+          {%- if settings.cart_drawer_collection != blank and settings.cart_drawer_collection != 'all-products' -%}
             <div class="cart-drawer__collection">
               {% render 'card-collection', card_collection: settings.cart_drawer_collection, columns: 1 %}
             </div>
