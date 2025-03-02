@@ -36,12 +36,12 @@
       ],
       "settings": {
         "color_scheme": "scheme-548c10fa-37f3-441f-92f9-890ada330aca",
-        "enable_follow_on_shop": false,
-        "show_social": true,
-        "enable_country_selector": false,
-        "enable_language_selector": false,
-        "payment_enable": true,
-        "show_policy": false,
+        "menu1": "footer",
+        "menu2": "main-menu",
+        "show_copyright": true,
+        "show_vat": true,
+        "show_credit": true,
+        "show_payment_icons": true,
         "margin_top": 0,
         "padding_top": 0,
         "padding_bottom": 0
