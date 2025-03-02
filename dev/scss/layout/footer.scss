@@ -8,7 +8,7 @@ footer {
                 display: flex;
                 flex-wrap: wrap;
                 justify-content: flex-start;
-                gap: 20px;
+                gap: 0px;
                 
                 @media screen and (max-width: 749px) {
                     flex-direction: column;
@@ -41,6 +41,25 @@ footer {
                     width: 100% !important; // Überschreibe die spezifische Breite auf Mobilgeräten
                 }
             }
+            
+            // Dynamische Newsletter-Breiten basierend auf den Einstellungen
+            @for $i from 0 through 10 {
+                $width: $i * 10;
+                .newsletter-width-#{$width} {
+                    width: #{$width + '%'} !important;
+                }
+            }
         }
     }
+}
+
+// Debug-Meldung für das Newsletter-Element hinzufügen
+footer.footer .footer-block--newsletter::before {
+    content: "Newsletter-Breite über CSS-Klasse gesetzt";
+    display: block;
+    background-color: #0a5d17;
+    padding: 5px;
+    margin-bottom: 10px;
+    color: white;
+    font-size: 12px;
 }

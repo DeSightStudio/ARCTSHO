@@ -171,11 +171,11 @@
         {%- endif -%}
 
         <div
-          class="footer-block--newsletter{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+          class="footer-block--newsletter newsletter-width-{{ section.settings.newsletter_width }}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
           {% if settings.animations_reveal_on_scroll %}
             data-cascade
+            style="--animation-order: {{ section.blocks.size | plus: 1 }};"
           {% endif %}
-          style="width: {{ section.settings.newsletter_width }}%;"
         >
           {%- if section.settings.newsletter_enable -%}
             <div class="footer-block__newsletter">
