@@ -44,6 +44,24 @@ footer {
                 min-width: 200px; // Minimale Breite für bessere Lesbarkeit
                 flex-grow: 0;
                 flex-shrink: 0;
+                .list-social {
+                    margin: 10px 0px !important;
+                    padding: 0px !important;
+                    justify-content: flex-start;
+                    .list-social__item {
+                        a {
+                            padding: 0px !important;
+                            .svg-wrapper {
+                                height: 30px !important;
+                                width: 30px !important;
+                            }
+                            .icon {
+                                height: 30px !important;
+                                width: 30px !important;
+                            }
+                        }
+                    }
+                }
             }
             
             // Dynamische Newsletter-Breiten basierend auf den Einstellungen
@@ -54,12 +72,13 @@ footer {
                 }
             }
         }
-
+        .footer__content-bottom {
+            padding: 20px 0px !important;
+        }
         // Zusätzliche Menüs
         .footer__menu-row {
-            padding: 15px 0;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 8px 0;
+            border: 0px solid transparent;
 
             .footer__menu-wrapper {
                 width: 100%;
@@ -89,8 +108,8 @@ footer {
 
                 .footer__menu-link {
                     font-family: 'Cormorant Garamond';
-                    font-size: 14px;
-                    color: #fff;
+                    font-size: $fontSizeRegular;
+                    color: $whiteColor;
                     text-decoration: none;
                     transition: opacity 0.2s ease-in-out;
 
@@ -103,7 +122,7 @@ footer {
 
         // Untere Footer-Zeile
         .footer__bottom-row {
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: $accentLight;
             padding: 15px 0;
 
             .footer__bottom-content {
@@ -120,15 +139,15 @@ footer {
                 .footer__bottom-item {
                     margin: 5px 10px;
                     font-family: 'Cormorant Garamond';
-                    font-size: 14px;
-                    color: #fff;
+                    font-size: $fontSizeSmall;
+                    color: $mainColor;
                     
                     @media screen and (max-width: 749px) {
                         margin: 5px 0;
                     }
                     
                     a {
-                        color: #fff;
+                        color: $mainColor;
                         text-decoration: none;
                         transition: opacity 0.2s ease-in-out;
                         
