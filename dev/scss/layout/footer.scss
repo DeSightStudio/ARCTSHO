@@ -3,11 +3,42 @@ footer {
         .footer__content-top {
             padding: 20px 0;
             max-width: var(--page-width);
-            .footer-block {
-                &.grid {
-                    .shopify-block {
-                         
+            
+            .footer__blocks-wrapper {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: flex-start;
+                gap: 20px;
+                
+                @media screen and (max-width: 749px) {
+                    flex-direction: column;
+                    
+                    .footer-block {
+                        width: 100% !important; // Überschreibe die spezifische Breite auf Mobilgeräten
                     }
+                }
+            }
+            
+            // Entferne die festen Grid-Spalten und verwende die individuellen Breiten
+            .footer-block.grid__item {
+                width: auto; // Die Breite wird durch das inline-style überschrieben
+                box-sizing: border-box;
+                padding: 0 10px;
+                min-width: 200px; // Minimale Breite für bessere Lesbarkeit
+                flex-grow: 0;
+                flex-shrink: 0;
+            }
+            
+            // Anpassungen für den Newsletter-Block
+            .footer-block--newsletter {
+                box-sizing: border-box;
+                padding: 0 10px;
+                min-width: 200px;
+                flex-grow: 0;
+                flex-shrink: 0;
+                
+                @media screen and (max-width: 749px) {
+                    width: 100% !important; // Überschreibe die spezifische Breite auf Mobilgeräten
                 }
             }
         }

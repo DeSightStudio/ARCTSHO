@@ -72,7 +72,9 @@
                 {{ block.shopify_attributes }}
                 {% if settings.animations_reveal_on_scroll %}
                   data-cascade
-                  style="--animation-order: {{ forloop.index }};"
+                  style="--animation-order: {{ forloop.index }}; width: {{ block.settings.column_width }}%;"
+                {% else %}
+                  style="width: {{ block.settings.column_width }}%;"
                 {% endif %}
               >
                 {%- if block.settings.heading != blank -%}
@@ -173,6 +175,7 @@
           {% if settings.animations_reveal_on_scroll %}
             data-cascade
           {% endif %}
+          style="width: {{ section.settings.newsletter_width }}%;"
         >
           {%- if section.settings.newsletter_enable -%}
             <div class="footer-block__newsletter">
@@ -353,6 +356,16 @@
           "default": "footer",
           "label": "t:sections.footer.blocks.link_list.settings.menu.label",
           "info": "t:sections.footer.blocks.link_list.settings.menu.info"
+        },
+        {
+          "type": "range",
+          "id": "column_width",
+          "min": 0,
+          "max": 100,
+          "step": 10,
+          "unit": "%",
+          "label": "Spaltenbreite",
+          "default": 25
         }
       ]
     },
@@ -374,6 +387,16 @@
           "default": true,
           "label": "t:sections.footer.blocks.brand_information.settings.show_social.label",
           "info": "t:sections.footer.blocks.brand_information.settings.show_social.info"
+        },
+        {
+          "type": "range",
+          "id": "column_width",
+          "min": 0,
+          "max": 100,
+          "step": 10,
+          "unit": "%",
+          "label": "Spaltenbreite",
+          "default": 25
         }
       ]
     },
@@ -392,6 +415,16 @@
           "id": "subtext",
           "default": "t:sections.footer.blocks.text.settings.subtext.default",
           "label": "t:sections.footer.blocks.text.settings.subtext.label"
+        },
+        {
+          "type": "range",
+          "id": "column_width",
+          "min": 0,
+          "max": 100,
+          "step": 10,
+          "unit": "%",
+          "label": "Spaltenbreite",
+          "default": 25
         }
       ]
     },
@@ -433,6 +466,16 @@
             }
           ],
           "default": "center"
+        },
+        {
+          "type": "range",
+          "id": "column_width",
+          "min": 0,
+          "max": 100,
+          "step": 10,
+          "unit": "%",
+          "label": "Spaltenbreite",
+          "default": 25
         }
       ]
     },
@@ -465,6 +508,16 @@
           ],
           "default": "h2",
           "label": "Größe der Überschrift"
+        },
+        {
+          "type": "range",
+          "id": "column_width",
+          "min": 0,
+          "max": 100,
+          "step": 10,
+          "unit": "%",
+          "label": "Spaltenbreite",
+          "default": 25
         }
       ]
     }
@@ -486,6 +539,16 @@
       "id": "newsletter_enable",
       "default": true,
       "label": "t:sections.footer.settings.newsletter_enable.label"
+    },
+    {
+      "type": "range",
+      "id": "newsletter_width",
+      "min": 0,
+      "max": 100,
+      "step": 10,
+      "unit": "%",
+      "label": "Newsletter-Spaltenbreite",
+      "default": 50
     },
     {
       "type": "inline_richtext",
