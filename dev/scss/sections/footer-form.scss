@@ -103,7 +103,7 @@ footer {
       height: 45px !important;
     }
     .field__input:not(:placeholder-shown), .field__input:-webkit-autofill, .customer .field input:not(:placeholder-shown), .customer .field input:-webkit-autofill {
-        padding: 0px 12px !important;
+        padding: 0px 12px;
     }
     textarea:focus, textarea:not(:placeholder-shown), textarea:-webkit-autofill, .customer .field textarea:focus, .customer .field textarea:not(:placeholder-shown), .customer .field textarea:-webkit-autofill {
         padding: 12px !important;
