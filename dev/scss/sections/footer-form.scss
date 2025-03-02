@@ -1,0 +1,64 @@
+footer {
+    &.footer {
+        .footer__content-top {
+            padding: 20px 0;
+            max-width: var(--page-width);
+            .footer-block {
+                &.grid {
+                    .shopify-block {
+                         
+                    }
+                }
+            }
+        }
+    }
+}
+
+.footer-contact-form {
+    width: 100%;
+  }
+  
+  .footer-contact-form .form__message {
+    align-items: flex-start;
+  }
+  
+  .footer-contact-form .icon-success {
+    margin-top: 0.2rem;
+  }
+  
+  .footer-contact-form .field {
+    margin-bottom: 1.5rem;
+  }
+  
+  .footer-contact-form .field__input {
+    background-color: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: inherit;
+  }
+  
+  .footer-contact-form .field__input:focus {
+    border-color: rgb(var(--color-base-accent-1));
+  }
+  
+  .footer-contact-form .text-area {
+    resize: vertical;
+    min-height: 100px;
+  }
+  
+  @media screen and (min-width: 750px) {
+    .footer-contact-form .field {
+      margin-bottom: 2rem;
+    }
+  }
+  
+  .footer-contact-form .contact__button {
+    margin-top: 2rem;
+  }
+  
+  @media screen and (min-width: 750px) {
+    .footer-contact-form .contact__fields {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-column-gap: 2rem;
+    }
+  } 
