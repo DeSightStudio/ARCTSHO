@@ -37,6 +37,30 @@
             * {
                 font-family: 'Cormorant Garamond';
             }
+            .cart-item__media {
+                position: relative;
+            }
+            cart-remove-button {
+                position: absolute;
+                top: 5px;
+                right: -10px;
+                .button {
+                    width: 2.5rem !important;
+                    height: 2.5rem !important;
+                    min-width: 2.5rem !important;
+                    min-height: 2.5rem !important;
+                    max-width: 2.5rem !important;
+                    max-height: 2.5rem !important;
+                    background-color: $accentLight !important;
+                    color: $blackColor !important;
+                    outline: none !important;
+                    box-shadow: none !important;
+                    &:hover {
+                        background-color: $mainColor !important;
+                        color: $whiteColor !important;
+                    }
+                }
+            }
         }
     }
     .drawer__footer {

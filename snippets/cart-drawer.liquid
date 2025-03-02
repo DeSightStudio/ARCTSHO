@@ -120,6 +120,21 @@
                     {%- for item in cart.items -%}
                       <tr id="CartDrawer-Item-{{ item.index | plus: 1 }}" class="cart-item" role="row">
                         <td class="cart-item__media" role="cell" headers="CartDrawer-ColumnProductImage">
+                          <cart-remove-button
+                            id="CartDrawer-Remove-{{ item.index | plus: 1 }}"
+                            data-index="{{ item.index | plus: 1 }}"
+                          >
+                            <button
+                              type="button"
+                              class="button button--tertiary cart-remove-button"
+                              aria-label="{{ 'sections.cart.remove_title' | t: title: item.title | escape }}"
+                              data-variant-id="{{ item.variant.id }}"
+                            >
+                              <span class="svg-wrapper">
+                                {{- 'icon-remove.svg' | inline_asset_content -}}
+                              </span>
+                            </button>
+                          </cart-remove-button>
                           {% if item.image %}
                             {% comment %} Leave empty space due to a:empty CSS display: none rule {% endcomment %}
                             <a href="{{ item.url }}" class="cart-item__link" tabindex="-1" aria-hidden="true"> </a>
@@ -327,21 +342,6 @@
                                   </button>
                                 </quantity-input>
                               </div>
-                              <cart-remove-button
-                                id="CartDrawer-Remove-{{ item.index | plus: 1 }}"
-                                data-index="{{ item.index | plus: 1 }}"
-                              >
-                                <button
-                                  type="button"
-                                  class="button button--tertiary cart-remove-button"
-                                  aria-label="{{ 'sections.cart.remove_title' | t: title: item.title | escape }}"
-                                  data-variant-id="{{ item.variant.id }}"
-                                >
-                                  <span class="svg-wrapper">
-                                    {{- 'icon-remove.svg' | inline_asset_content -}}
-                                  </span>
-                                </button>
-                              </cart-remove-button>
                             </div>
                             {%- if has_qty_rules or has_vol_pricing -%}
                               <button
@@ -467,6 +467,213 @@
             </button>
           </div>
         {%- endif -%}
+
+        <!-- Ursprungszeugnis / Certificate of Origin -->
+        {% assign certificate_in_cart = false %}
+        {% for item in cart.items %}
+          {% if item.sku == '2226' or item.product_id == 46347117723862 %}
+            {% assign certificate_in_cart = true %}
+          {% endif %}
+        {% endfor %}
+
+        {% unless certificate_in_cart %}
+          <div class="cart-drawer__origin-certificate">
+            <div class="origin-certificate-container">
+              <div class="origin-certificate-info">
+                <h3>Ursprungszeugnis</h3>
+                <div class="origin-certificate-price">€ 25,00 + MwSt</div>
+              </div>
+
+              <button
+                type="button"
+                class="button button--primary origin-certificate-button"
+                id="CartDrawer-AddOriginCertificate"
+                data-product-id="46347117723862"
+                data-sku="2226"
+                onclick="addOriginCertificateToCart(this)"
+              >
+                <span>In den Warenkorb</span>
+              </button>
+            </div>
+          </div>
+        {% endunless %}
+
+        <script>
+          function addOriginCertificateToCart(button) {
+            button.classList.add('loading');
+            button.disabled = true;
+
+            // Produkt-ID direkt aus dem data-product-id Attribut
+            const productId = button.dataset.productId;
+
+            let formData = {
+              items: [
+                {
+                  id: parseInt(productId, 10),
+                  quantity: 1,
+                },
+              ],
+            };
+
+            console.log('Füge Produkt hinzu:', formData);
+
+            fetch('/cart/add.js', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(formData),
+            })
+              .then((response) => {
+                if (!response.ok) {
+                  return response.json().then((data) => {
+                    console.error('Fehler bei der Anfrage:', data);
+                    throw new Error(data.description || 'Fehler beim Hinzufügen zum Warenkorb');
+                  });
+                }
+                return response.json();
+              })
+              .then((data) => {
+                console.log('Erfolgreich hinzugefügt:', data);
+                // Update cart drawer
+                refreshCart();
+
+                // Sofort das Ursprungszeugnis-Element ausblenden
+                const certificateElement = document.querySelector('.cart-drawer__origin-certificate');
+                if (certificateElement) {
+                  certificateElement.style.display = 'none';
+                }
+
+                button.classList.remove('loading');
+                button.disabled = true;
+                button.classList.add('already-in-cart');
+                button.querySelector('span').textContent = 'Bereits im Warenkorb';
+              })
+              .catch((error) => {
+                console.error('Fehler:', error);
+                alert('Fehler beim Hinzufügen zum Warenkorb: ' + error.message);
+                button.classList.remove('loading');
+                button.disabled = false;
+              });
+          }
+
+          // Funktion zum Aktualisieren des Warenkorbs
+          function refreshCart() {
+            fetch(`${window.location.origin}/cart?section_id=cart-drawer`)
+              .then((response) => response.text())
+              .then((responseText) => {
+                const html = new DOMParser().parseFromString(responseText, 'text/html');
+                const selectors = ['cart-drawer-items', '.cart-drawer__footer'];
+                for (const selector of selectors) {
+                  const targetElement = document.querySelector(selector);
+                  const sourceElement = html.querySelector(selector);
+                  if (targetElement && sourceElement) {
+                    targetElement.replaceWith(sourceElement);
+                  }
+                }
+
+                // Prüfen, ob das Ursprungszeugnis im Warenkorb ist und entsprechend das Element ein-/ausblenden
+                const certificateElement = document.querySelector('.cart-drawer__origin-certificate');
+                if (certificateElement) {
+                  // Prüfen, ob das Produkt im Warenkorb ist
+                  let certificateInCart = false;
+                  const cartItems = document.querySelectorAll('.cart-item');
+                  cartItems.forEach((item) => {
+                    const productIdElement = item.querySelector('[data-variant-id]');
+                    if (productIdElement) {
+                      const productId = productIdElement.getAttribute('data-variant-id');
+                      // Prüfen auf die Produkt-ID des Ursprungszeugnisses
+                      if (
+                        item.textContent.includes('Ursprungszeugnis') ||
+                        item.textContent.includes('Certificate of Origin') ||
+                        item.querySelector('[data-variant-id="46347117723862"]')
+                      ) {
+                        certificateInCart = true;
+                      }
+                    }
+                  });
+
+                  // Element ausblenden, wenn es im Warenkorb ist
+                  if (certificateInCart) {
+                    certificateElement.style.display = 'none';
+                  } else {
+                    certificateElement.style.display = 'block';
+                  }
+                }
+
+                // Wir müssen das Ursprungszeugnis-Element neu initialisieren
+                const certificateButton = document.getElementById('CartDrawer-AddOriginCertificate');
+                if (certificateButton) {
+                  certificateButton.addEventListener('click', function () {
+                    addOriginCertificateToCart(this);
+                  });
+                }
+              })
+              .catch((error) => {
+                console.error('Fehler beim Aktualisieren des Warenkorbs:', error);
+              });
+          }
+        </script>
+
+        <style>
+          .cart-drawer__origin-certificate {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+          }
+
+          .origin-certificate-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          }
+
+          .origin-certificate-info h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 20px;
+            margin: 0 0 8px 0;
+            font-weight: 500;
+            color: #1a1a1a;
+          }
+
+          .origin-certificate-price {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 16px;
+            color: #333;
+          }
+
+          .origin-certificate-button {
+            padding: 8px 16px;
+            white-space: nowrap;
+            background-color: #05470a;
+            border: 1px solid #05470a;
+            color: white;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            border-radius: 4px;
+            cursor: pointer;
+          }
+
+          .origin-certificate-button:hover {
+            background-color: #043208;
+          }
+
+          .origin-certificate-button.loading {
+            opacity: 0.7;
+            cursor: wait;
+          }
+
+          .origin-certificate-button.already-in-cart {
+            background-color: #ccc;
+            border-color: #ccc;
+            cursor: not-allowed;
+          }
+        </style>
+
         {%- if settings.show_cart_note -%}
           <details id="Details-CartDrawer">
             <summary>

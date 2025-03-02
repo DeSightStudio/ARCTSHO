@@ -179,7 +179,7 @@ class QuantityOverride {
         button.style.setProperty('display', 'flex', 'important');
         button.style.setProperty('visibility', 'visible', 'important');
         button.style.setProperty('opacity', '1', 'important');
-        button.style.setProperty('position', 'relative', 'important');
+        button.style.setProperty('position', 'absolute', 'important');
         button.style.setProperty('z-index', '999', 'important');
         button.style.setProperty('pointer-events', 'auto', 'important');
         
