@@ -1,0 +1,20 @@
+cart-remove-button {
+    position: absolute;
+    top: -90px;
+    left: -45px;
+    @include screen(med-small) {
+        left: -35px;
+    }
+    .button {
+        min-width: 2.5rem !important;
+        min-height: 2.5rem !important;
+        background-color: $accentLight !important;
+        color: $blackColor !important;
+        outline: none !important;
+        box-shadow: none !important;
+        &:hover {
+            background-color: $mainColor !important;
+            color: $whiteColor !important;
+        }
+    }
+}
