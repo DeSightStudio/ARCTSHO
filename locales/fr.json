@@ -262,7 +262,7 @@
         "email": "E-mail",
         "phone": "Numéro de téléphone",
         "comment": "Commentaire",
-        "send": "Envoyer",
+        "send": "Envoyer la question",
         "post_success": "Merci de nous avoir contactés. Nous vous répondrons dès que possible.",
         "error_heading": "Veuillez ajuster les éléments suivants :",
         "title": "Formulaire de contact",

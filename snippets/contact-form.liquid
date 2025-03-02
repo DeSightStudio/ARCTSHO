@@ -1,0 +1,128 @@
+{% comment %}
+  Kontaktformular-Snippet für Wiederverwendung
+  Akzeptiert Parameter:
+  - form_id: Die ID des Formulars
+  - contact_class: Zusätzliche CSS-Klassen
+{% endcomment %}
+
+{%- form 'contact', id: form_id, class: contact_class -%}
+  {%- if form.posted_successfully? -%}
+    <h2 class="form-status form-status-list form__message" tabindex="-1" autofocus>
+      {{- 'icon-success.svg' | inline_asset_content -}}
+      {{ 'templates.contact.form.post_success' | t }}
+    </h2>
+  {%- elsif form.errors -%}
+    <div class="form__message">
+      <h2 class="form-status caption-large text-body" role="alert" tabindex="-1" autofocus>
+        {{- 'icon-error.svg' | inline_asset_content -}}
+        {{ 'templates.contact.form.error_heading' | t }}
+      </h2>
+    </div>
+    <ul class="form-status-list caption-large" role="list">
+      <li>
+        <a href="#{{ form_id }}-email" class="link">
+          {{ form.errors.translated_fields.email | capitalize }}
+          {{ form.errors.messages.email }}
+        </a>
+      </li>
+    </ul>
+  {%- endif -%}
+
+  <div class="contact__form-container">
+    <div class="contact__fields-left">
+      <div class="field">
+        <label class="field__label" for="{{ form_id }}-name">{{ 'templates.contact.form.name' | t }}</label>
+        <input
+          class="field__input"
+          autocomplete="name"
+          type="text"
+          id="{{ form_id }}-name"
+          name="contact[{{ 'templates.contact.form.name' | t }}]"
+          value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}"
+          placeholder="{{ 'templates.contact.form.name' | t }}"
+        >
+      </div>
+      <div class="field field--with-error">
+        <label class="field__label" for="{{ form_id }}-email">
+          {{- 'templates.contact.form.email' | t }}
+          <span aria-hidden="true">*</span>
+        </label>
+        <input
+          autocomplete="email"
+          type="email"
+          id="{{ form_id }}-email"
+          class="field__input"
+          name="contact[email]"
+          spellcheck="false"
+          autocapitalize="off"
+          value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+          aria-required="true"
+          {% if form.errors contains 'email' %}
+            aria-invalid="true"
+            aria-describedby="{{ form_id }}-email-error"
+          {% endif %}
+          placeholder="{{ 'templates.contact.form.email' | t }}"
+        >
+        {%- if form.errors contains 'email' -%}
+          <small class="contact__field-error" id="{{ form_id }}-email-error">
+            <span class="visually-hidden">{{ 'accessibility.error' | t }}</span>
+            <span class="form__message">
+              <span class="svg-wrapper">
+                {{- 'icon-error.svg' | inline_asset_content -}}
+              </span>
+              {{- form.errors.translated_fields.email | capitalize }}
+              {{ form.errors.messages.email -}}
+            </span>
+          </small>
+        {%- endif -%}
+      </div>
+      <div class="field">
+        <label class="field__label" for="{{ form_id }}-phone">{{ 'templates.contact.form.phone' | t }}</label>
+        <input
+          type="tel"
+          id="{{ form_id }}-phone"
+          class="field__input"
+          autocomplete="tel"
+          name="contact[{{ 'templates.contact.form.phone' | t }}]"
+          pattern="[0-9\-]*"
+          value="{% if form.phone %}{{ form.phone }}{% elsif customer %}{{ customer.phone }}{% endif %}"
+          placeholder="{{ 'templates.contact.form.phone' | t }}"
+        >
+      </div>
+      <div class="field">
+        <label class="field__label" for="{{ form_id }}-country">
+          {{- 'templates.contact.form.country' | t -}}
+        </label>
+        <select
+          id="{{ form_id }}-country"
+          class="field__input"
+          name="contact[{{ 'templates.contact.form.country' | t }}]"
+          required
+        >
+          <option value="" disabled selected>Bitte wählen Sie ein Land</option>
+        </select>
+      </div>
+    </div>
+    <div class="contact__fields-right">
+      <div class="field">
+        <label class="field__label" for="{{ form_id }}-body">
+          {{- 'templates.contact.form.comment' | t -}}
+        </label>
+        <textarea
+          rows="10"
+          id="{{ form_id }}-body"
+          class="text-area field__input"
+          name="contact[{{ 'templates.contact.form.comment' | t }}]"
+          placeholder="{{ 'templates.contact.form.comment' | t }}"
+        >
+        {{- form.body -}}
+      </textarea>
+      </div>
+      <div class="contact__button">
+        <button type="submit" class="button">
+          {{ 'templates.contact.form.send' | t }}
+        </button>
+      </div>
+    </div>
+  </div>
+{%- endform -%}

@@ -266,7 +266,7 @@
         "email": "E-Mail",
         "phone": "Telefonnummer",
         "comment": "Kommentar",
-        "send": "Senden",
+        "send": "Frage senden",
         "post_success": "Danke, dass du uns kontaktiert hast. Wir werden uns so schnell wie möglich bei dir melden.",
         "error_heading": "Bitte passe Folgendes an:",
         "title": "Kontaktformular",
@@ -276,10 +276,10 @@
         "send_question": "Frage senden",
         "heading": "FRAGE STELLEN",
         "country_options": {
-          "germany": "Germany",
-          "austria": "Austria",
-          "switzerland": "Switzerland",
-          "other": "Other"
+          "germany": "Deutschland",
+          "austria": "Österreich",
+          "switzerland": "Schweiz",
+          "other": "Andere"
         }
       }
     },

@@ -50,6 +50,23 @@
                     scrollTop: $(target).offset().top
                 }, 600);
             }
+            
+            // Funktion, um Platzhalter für Formularfelder zu setzen
+            function setupFormPlaceholders() {
+                // Footer Kontakt-Formular
+                $('#FooterContactForm-name').attr('placeholder', 'Ihr vollständiger Name');
+                $('#FooterContactForm-email').attr('placeholder', 'Ihre E-Mail-Adresse');
+                $('#FooterContactForm-phone').attr('placeholder', 'Ihre Telefonnummer inkl. Landesvorwahl');
+                $('#FooterContactForm-body').attr('placeholder', 'Ihre Frage');
+                
+                // Kontaktseiten-Formular
+                $('#ContactForm-name').attr('placeholder', 'Ihr vollständiger Name');
+                $('#ContactForm-email').attr('placeholder', 'Ihre E-Mail-Adresse');
+                $('#ContactForm-phone').attr('placeholder', 'Ihre Telefonnummer inkl. Landesvorwahl');
+                $('#ContactForm-body').attr('placeholder', 'Ihre Frage');
+                
+                // Die Platzhalter für die Country-Dropdowns werden in der initCountryDropdown-Funktion gesetzt
+            }
 
             // Initialize international telephone input
             function initIntlTelInput() {
@@ -408,6 +425,12 @@
 
                 // Initialize country dropdown
                 initCountryDropdown();
+                
+                // Setup Form Placeholders
+                setupFormPlaceholders();
+                
+                // Optimize form fields
+                optimizeFormFields();
 
                 // Event listener for a button to toggle visibility
                 $('#toggle-button').on('click', function() {
