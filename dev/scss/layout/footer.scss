@@ -17,6 +17,9 @@ footer {
                         width: 100% !important; // Überschreibe die spezifische Breite auf Mobilgeräten
                     }
                 }
+                .footer-block__brand-info {
+                    margin-top: 30px;
+                }
                 h1, h2, h3, h4, h5, h6 {
                     font-family: Cormorant Garamond;
                     color: $whiteColor;
@@ -37,7 +40,7 @@ footer {
             .footer-block.grid__item {
                 width: auto; // Die Breite wird durch das inline-style überschrieben
                 box-sizing: border-box;
-                padding: 0 10px;
+                padding: 0 20px;
                 min-width: 200px; // Minimale Breite für bessere Lesbarkeit
                 flex-grow: 0;
                 flex-shrink: 0;
