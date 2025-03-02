@@ -24,7 +24,7 @@
         "contact_form_hFnQJa": {
           "type": "contact_form",
           "settings": {
-            "heading": "Kontaktiere uns",
+            "heading": "Ask a question",
             "heading_size": "h2",
             "column_width": 60
           }
@@ -36,9 +36,6 @@
       ],
       "settings": {
         "color_scheme": "scheme-548c10fa-37f3-441f-92f9-890ada330aca",
-        "newsletter_enable": false,
-        "newsletter_width": 50,
-        "newsletter_heading": "Subscribe to our emails",
         "enable_follow_on_shop": false,
         "show_social": true,
         "enable_country_selector": false,
