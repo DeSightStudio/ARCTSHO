@@ -113,4 +113,279 @@
       </div>
     </div>
   {% endif %}
+
+  {% comment %} VAT ID Cart Form Pop-Up {% endcomment %}
+  {% if settings.cart_popup_vat_id_enable %}
+    <div class="modal micromodal-slide" id="modal-cart-vat-id" aria-hidden="true">
+      <div class="modal__overlay" tabindex="-1" data-custom-close>
+        <div
+          class="modal__container"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-cart-vat-id-title"
+        >
+          <button class="modal__close" aria-label="Close modal" data-custom-close>x</button>
+          <header class="modal__header">
+            <h2 class="modal__title" id="modal-cart-vat-id-title">
+              {{ settings.cart_popup_vat_id_headline }}
+            </h2>
+          </header>
+          <main class="modal__content" id="modal-cart-vat-id-content">
+            <div class="modal__text">
+              {{ settings.cart_popup_vat_id_text }}
+            </div>
+
+            {%- form 'contact', id: 'vatIdCartForm', class: 'vat-id-form' -%}
+              {% if form.posted_successfully? %}
+                <div class="form-success">
+                  {{ settings.cart_popup_vat_id_success_message }}
+                </div>
+                <script>
+                  // Warenkorb leeren nach erfolgreicher Übermittlung
+                  document.addEventListener('DOMContentLoaded', function () {
+                    fetch('/cart/clear.js', {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                      },
+                    })
+                      .then((response) => response.json())
+                      .then((data) => {
+                        console.log('Warenkorb geleert:', data);
+                        // Warten und dann Seite neu laden, um Warenkorb-Anzeige zu aktualisieren
+                        setTimeout(function () {
+                          window.location.reload();
+                        }, 3000); // 3 Sekunden warten
+                      })
+                      .catch((error) => {
+                        console.error('Fehler beim Leeren des Warenkorbs:', error);
+                      });
+                  });
+                </script>
+              {% elsif form.errors %}
+                <div class="form-error">
+                  <h2>
+                    {{ 'templates.contact.form.error_heading' | t }}
+                  </h2>
+                  <ul>
+                    {% for field in form.errors %}
+                      <li>
+                        <a href="#ContactForm-{{ field }}">
+                          {{ form.errors.translated_fields[field] | capitalize }}
+                          {{ form.errors.messages[field] }}
+                        </a>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              {% endif %}
+
+              <input type="hidden" name="contact[form_type]" value="VAT ID Form">
+
+              {% comment %} Produktdaten aus dem Warenkorb hinzufügen {% endcomment %}
+              <input
+                type="hidden"
+                name="contact[cart_items]"
+                value="{% for item in cart.items %}{{ item.product.title }} ({{ item.variant.title }}) - {{ item.quantity }}x - {{ item.final_price | money }}{% unless forloop.last %} | {% endunless %}{% endfor %}"
+              >
+              <input type="hidden" name="contact[cart_total]" value="{{ cart.total_price | money }}">
+
+              <div class="cart-items-summary">
+                <h3>{{ 'sections.cart.caption' | t }}</h3>
+                <table class="cart-items-table">
+                  <thead>
+                    <tr>
+                      <th>{{ 'sections.cart.headings.product' | t }}</th>
+                      <th>{{ 'sections.cart.headings.quantity' | t }}</th>
+                      <th>{{ 'sections.cart.headings.price' | t }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for item in cart.items %}
+                      <tr>
+                        <td>
+                          <div class="cart-item-name">{{ item.product.title }}</div>
+                          {% if item.variant.title != 'Default Title' %}
+                            <div class="cart-item-variant">{{ item.variant.title }}</div>
+                          {% endif %}
+                        </td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.final_line_price | money }}</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <td colspan="2">{{ 'sections.cart.estimated_total' | t }}:</td>
+                      <td>
+                        <strong>{{ cart.total_price | money }}</strong>
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+
+              <div class="form-field-group">
+                <div class="form-field">
+                  <label for="ContactForm-firstName">
+                    {{- 'customer.vat_form.first_name' | t }}
+                    <span aria-hidden="true">*</span></label
+                  >
+                  <input
+                    type="text"
+                    id="ContactForm-firstName"
+                    name="contact[first_name]"
+                    value="{% if form.first_name %}{{ form.first_name }}{% endif %}"
+                    autocomplete="given-name"
+                    required
+                  >
+                </div>
+                <div class="form-field">
+                  <label for="ContactForm-lastName">
+                    {{- 'customer.vat_form.last_name' | t }}
+                    <span aria-hidden="true">*</span></label
+                  >
+                  <input
+                    type="text"
+                    id="ContactForm-lastName"
+                    name="contact[last_name]"
+                    value="{% if form.last_name %}{{ form.last_name }}{% endif %}"
+                    autocomplete="family-name"
+                    required
+                  >
+                </div>
+              </div>
+
+              <div class="form-field-group">
+                <div class="form-field">
+                  <label for="ContactForm-email">
+                    {{- 'customer.vat_form.email' | t }}
+                    <span aria-hidden="true">*</span></label
+                  >
+                  <input
+                    type="email"
+                    id="ContactForm-email"
+                    name="contact[email]"
+                    value="{% if form.email %}{{ form.email }}{% endif %}"
+                    autocomplete="email"
+                    spellcheck="false"
+                    autocapitalize="off"
+                    required
+                  >
+                </div>
+                <div class="form-field">
+                  <label for="ContactForm-phone">
+                    {{- 'customer.vat_form.phone' | t }}
+                    <span aria-hidden="true">*</span></label
+                  >
+                  <input
+                    type="tel"
+                    id="ContactForm-phone"
+                    name="contact[phone]"
+                    value="{% if form.phone %}{{ form.phone }}{% endif %}"
+                    autocomplete="tel"
+                    required
+                  >
+                </div>
+              </div>
+
+              <div class="form-field">
+                <label for="ContactForm-company">
+                  {{- 'customer.vat_form.company' | t }}
+                  <span aria-hidden="true">*</span></label
+                >
+                <input
+                  type="text"
+                  id="ContactForm-company"
+                  name="contact[company]"
+                  value="{% if form.company %}{{ form.company }}{% endif %}"
+                  required
+                >
+              </div>
+
+              <div class="form-field">
+                <label for="ContactForm-address">
+                  {{- 'customer.vat_form.address' | t }}
+                  <span aria-hidden="true">*</span></label
+                >
+                <input
+                  type="text"
+                  id="ContactForm-address"
+                  name="contact[address]"
+                  value="{% if form.address %}{{ form.address }}{% endif %}"
+                  required
+                >
+              </div>
+
+              <div class="form-field-group">
+                <div class="form-field">
+                  <label for="ContactForm-postalCode">
+                    {{- 'customer.vat_form.postal_code' | t }}
+                    <span aria-hidden="true">*</span></label
+                  >
+                  <input
+                    type="text"
+                    id="ContactForm-postalCode"
+                    name="contact[postal_code]"
+                    value="{% if form.postal_code %}{{ form.postal_code }}{% endif %}"
+                    required
+                  >
+                </div>
+                <div class="form-field">
+                  <label for="ContactForm-city">
+                    {{- 'customer.vat_form.city' | t }}
+                    <span aria-hidden="true">*</span></label
+                  >
+                  <input
+                    type="text"
+                    id="ContactForm-city"
+                    name="contact[city]"
+                    value="{% if form.city %}{{ form.city }}{% endif %}"
+                    required
+                  >
+                </div>
+              </div>
+
+              <div class="form-field-group">
+                <div class="form-field">
+                  <label for="ContactForm-country">
+                    {{- 'customer.vat_form.country' | t }}
+                    <span aria-hidden="true">*</span></label
+                  >
+                  <select id="ContactForm-country" name="contact[country]" required>
+                    <option value="">{{ 'customer.vat_form.select_country' | t }}</option>
+                    {% for country in shop.enabled_countries %}
+                      <option value="{{ country.iso_code }}">{{ country.name }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="form-field">
+                  <label for="ContactForm-vatId">
+                    {{- 'customer.vat_form.vat_id' | t }}
+                    <span aria-hidden="true">*</span></label
+                  >
+                  <input
+                    type="text"
+                    id="ContactForm-vatId"
+                    name="contact[vat_id]"
+                    value="{% if form.vat_id %}{{ form.vat_id }}{% endif %}"
+                    required
+                  >
+                </div>
+              </div>
+
+              <div class="form-submit-group">
+                <button type="button" class="button button--secondary" data-custom-close>
+                  {{ settings.cart_popup_vat_id_cancel_label | default: 'Cancel' }}
+                </button>
+                <button type="submit" class="button button--primary">
+                  {{ settings.cart_popup_vat_id_submit_label | default: 'Submit' }}
+                </button>
+              </div>
+            {%- endform -%}
+          </main>
+        </div>
+      </div>
+    </div>
+  {% endif %}
 </div>

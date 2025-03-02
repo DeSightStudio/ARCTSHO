@@ -210,4 +210,125 @@
 @keyframes mmslideOut {
   from { transform: translateY(0); }
   to { transform: translateY(-10%); }
+}
+
+// VAT ID Form Styles
+.vat-id-form {
+  margin-top: 1.5rem;
+  
+  .cart-items-summary {
+    margin-bottom: 2rem;
+    border: 1px solid var(--color-border);
+    border-radius: 0.25rem;
+    padding: 1rem;
+    background-color: rgba(0, 0, 0, 0.02);
+    
+    h3 {
+      margin-top: 0;
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+    
+    .cart-items-table {
+      width: 100%;
+      border-collapse: collapse;
+      
+      th, td {
+        padding: 0.5rem;
+        text-align: left;
+        border-bottom: 1px solid var(--color-border);
+      }
+      
+      th {
+        font-weight: 500;
+        font-size: 0.9rem;
+      }
+      
+      .cart-item-name {
+        font-weight: 500;
+      }
+      
+      .cart-item-variant {
+        font-size: 0.85rem;
+        color: #666;
+      }
+      
+      tfoot {
+        font-weight: 500;
+        
+        td {
+          padding-top: 1rem;
+          border-bottom: none;
+        }
+      }
+    }
+  }
+  
+  .form-field-group {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    
+    @media screen and (max-width: 749px) {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+  }
+  
+  .form-field {
+    margin-bottom: 1rem;
+    width: 100%;
+    
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+    
+    input, select {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--color-border);
+      border-radius: 0.25rem;
+      background-color: var(--color-background);
+    }
+  }
+  
+  .form-submit-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    
+    @media screen and (max-width: 749px) {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+  }
+  
+  .form-success, .form-error {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    border-radius: 0.25rem;
+  }
+  
+  .form-success {
+    background-color: rgba(0, 128, 0, 0.1);
+    color: darkgreen;
+  }
+  
+  .form-error {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+    
+    ul {
+      padding-left: 1.25rem;
+      margin-top: 0.5rem;
+    }
+  }
+}
+
+.cart-drawer__vat-id-button {
+  margin: 1rem 0;
 } 

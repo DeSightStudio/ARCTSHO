@@ -519,6 +519,19 @@
       "subtotal": "Zwischensumme",
       "total_duties": "Zollgebühren",
       "total_refunded": "Zurückerstattet"
+    },
+    "vat_form": {
+      "first_name": "Vorname",
+      "last_name": "Nachname",
+      "email": "E-Mail",
+      "phone": "Telefon",
+      "company": "Firmenname",
+      "address": "Adresse",
+      "postal_code": "Postleitzahl",
+      "city": "Stadt",
+      "country": "Land",
+      "vat_id": "USt-IdNr.",
+      "select_country": "Land auswählen"
     }
   },
   "gift_cards": {

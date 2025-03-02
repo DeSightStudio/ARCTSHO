@@ -475,6 +475,19 @@
           </details>
         {%- endif -%}
 
+        {%- if settings.cart_popup_vat_id_enable -%}
+          <div class="cart-drawer__vat-id-button">
+            <button
+              type="button"
+              class="button button--secondary button--full-width"
+              id="CartDrawer-VatIdButton"
+              data-micromodal-trigger="modal-cart-vat-id"
+            >
+              {{ settings.cart_popup_vat_id_button_label | default: 'Add VAT ID' }}
+            </button>
+          </div>
+        {%- endif -%}
+
         <!-- Start blocks -->
         <!-- Subtotals -->
 

@@ -518,6 +518,19 @@
       "subtotal": "Subtotal",
       "total_duties": "Aranceles",
       "total_refunded": "Reembolsado"
+    },
+    "vat_form": {
+      "first_name": "Nombre",
+      "last_name": "Apellido",
+      "email": "Correo electrónico",
+      "phone": "Teléfono",
+      "company": "Nombre de la empresa",
+      "address": "Dirección",
+      "postal_code": "Código postal",
+      "city": "Ciudad",
+      "country": "País",
+      "vat_id": "Número de IVA",
+      "select_country": "Seleccionar un país"
     }
   },
   "gift_cards": {

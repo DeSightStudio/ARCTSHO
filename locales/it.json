@@ -518,6 +518,22 @@
       "password": "Password",
       "password_confirm": "Conferma password",
       "submit": "Reimposta password"
+    },
+    "email": "Email",
+    "name_label": "Nome del destinatario (opzionale)",
+    "name": "Nome",
+    "vat_form": {
+      "first_name": "Nome",
+      "last_name": "Cognome",
+      "email": "Email",
+      "phone": "Telefono",
+      "company": "Nome azienda",
+      "address": "Indirizzo",
+      "postal_code": "Codice postale",
+      "city": "Città",
+      "country": "Paese",
+      "vat_id": "Partita IVA",
+      "select_country": "Seleziona un paese"
     }
   },
   "gift_cards": {

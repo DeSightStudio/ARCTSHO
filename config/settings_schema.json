@@ -1581,7 +1581,53 @@
         "type": "richtext",
         "id": "popup_vat_uid_tva_more_info",
         "label": "\"VAT | UID | TVA\" Weiterführende Informationen",
-        "default": "<p>Hier können Sie weiterführende Informationen zur VAT/UID/TVA eintragen.</p>"
+        "default": "<p>Hier können Sie weiterführende Informationen zur VAT eintragen.</p>"
+      },
+      {
+        "type": "header",
+        "content": "VAT ID Cart Formular"
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_popup_vat_id_enable",
+        "label": "VAT ID Popup im Warenkorb aktivieren",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "cart_popup_vat_id_button_label",
+        "label": "VAT ID Button-Label",
+        "default": "USt-IdNr. hinzufügen"
+      },
+      {
+        "type": "text",
+        "id": "cart_popup_vat_id_headline",
+        "label": "VAT ID Popup Headline",
+        "default": "USt-IdNr. hinzufügen"
+      },
+      {
+        "type": "richtext",
+        "id": "cart_popup_vat_id_text",
+        "label": "VAT ID Popup Text",
+        "default": "<p>Bitte geben Sie Ihre Firmendaten und USt-IdNr. ein.</p>"
+      },
+      {
+        "type": "text",
+        "id": "cart_popup_vat_id_submit_label",
+        "label": "VAT ID Submit Button-Label",
+        "default": "Absenden"
+      },
+      {
+        "type": "text",
+        "id": "cart_popup_vat_id_cancel_label",
+        "label": "VAT ID Cancel Button-Label",
+        "default": "Abbrechen"
+      },
+      {
+        "type": "richtext",
+        "id": "cart_popup_vat_id_success_message",
+        "label": "VAT ID Erfolgsmeldung",
+        "default": "<p>Vielen Dank! Ihre USt-IdNr. wurde erfolgreich gespeichert.</p>"
       }
     ]
   }

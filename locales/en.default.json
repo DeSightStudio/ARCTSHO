@@ -528,6 +528,22 @@
       "password": "Password",
       "password_confirm": "Confirm password",
       "submit": "Reset password"
+    },
+    "email": "Email",
+    "name_label": "Recipient name (optional)",
+    "name": "Name",
+    "vat_form": {
+      "first_name": "First Name",
+      "last_name": "Last Name",
+      "email": "Email",
+      "phone": "Phone",
+      "company": "Company Name",
+      "address": "Address",
+      "postal_code": "Postal Code",
+      "city": "City",
+      "country": "Country",
+      "vat_id": "VAT ID",
+      "select_country": "Select a country"
     }
   },
   "gift_cards": {

@@ -20,7 +20,7 @@
     }
     
     // Typen von Pop-Ups, die unterstützt werden
-    const popupTypes = ['certificate-origin', 'clearance-certificate', 'vat-uid-tva'];
+    const popupTypes = ['certificate-origin', 'clearance-certificate', 'vat-uid-tva', 'cart-vat-id'];
     
     // Tracking für laufende Animationen
     const animatingModals = {};

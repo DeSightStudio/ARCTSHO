@@ -40,7 +40,7 @@
                     display: flex;
                     align-items: center;
                     justify-items: center;
-                    min-height: 700px;
+                    min-height: calc(100vh - 150px);
                     position: relative;
                     z-index: 9;
                     @include screen(med-small) {

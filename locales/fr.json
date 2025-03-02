@@ -518,6 +518,19 @@
       "subtotal": "Sous-total",
       "total_duties": "Frais de douane",
       "total_refunded": "Remboursé"
+    },
+    "vat_form": {
+      "first_name": "Prénom",
+      "last_name": "Nom",
+      "email": "E-mail",
+      "phone": "Téléphone",
+      "company": "Nom de l'entreprise",
+      "address": "Adresse",
+      "postal_code": "Code postal",
+      "city": "Ville",
+      "country": "Pays",
+      "vat_id": "Numéro de TVA",
+      "select_country": "Sélectionner un pays"
     }
   },
   "gift_cards": {
