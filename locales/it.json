@@ -267,6 +267,7 @@
         "error_heading": "Correggi gli errori seguenti:",
         "title": "Modulo di contatto",
         "country": "Paese",
+        "select_country": "Seleziona un paese",
         "question": "Domanda",
         "required_fields": "* — Campi obbligatori",
         "send_question": "Invia domanda",

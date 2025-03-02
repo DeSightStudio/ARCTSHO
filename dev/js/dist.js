@@ -53,19 +53,34 @@
             
             // Funktion, um Platzhalter für Formularfelder zu setzen
             function setupFormPlaceholders() {
-                // Footer Kontakt-Formular
-                $('#FooterContactForm-name').attr('placeholder', 'Ihr vollständiger Name');
-                $('#FooterContactForm-email').attr('placeholder', 'Ihre E-Mail-Adresse');
-                $('#FooterContactForm-phone').attr('placeholder', 'Ihre Telefonnummer inkl. Landesvorwahl');
-                $('#FooterContactForm-body').attr('placeholder', 'Ihre Frage');
-                
-                // Kontaktseiten-Formular
-                $('#ContactForm-name').attr('placeholder', 'Ihr vollständiger Name');
-                $('#ContactForm-email').attr('placeholder', 'Ihre E-Mail-Adresse');
-                $('#ContactForm-phone').attr('placeholder', 'Ihre Telefonnummer inkl. Landesvorwahl');
-                $('#ContactForm-body').attr('placeholder', 'Ihre Frage');
+                // Die Platzhalter werden nun durch die Liquid-Übersetzungen im Template gesetzt
+                // und sollten nicht durch JavaScript überschrieben werden
                 
                 // Die Platzhalter für die Country-Dropdowns werden in der initCountryDropdown-Funktion gesetzt
+            }
+
+            // Funktion zur Optimierung der Formularfelder und dynamischen Breite
+            function optimizeFormFields() {
+                // Alle Elemente mit einer Klasse, die "-width-" enthält, finden und optimieren
+                $('[class*="-width-"]').each(function() {
+                    var $element = $(this);
+                    var classList = $element.attr('class').split(' ');
+                    
+                    // Durchsuchen der Klassen nach *-width-XX
+                    classList.forEach(function(className) {
+                        if (className.indexOf('-width-') !== -1) {
+                            var width = className.split('-width-')[1];
+                            console.log('Anwenden der dynamischen Breite für ' + className + ': ' + width + '%');
+                            
+                            // Breite direkt anwenden, falls nötig
+                            if ($element.css('width') === 'auto' || !$element.css('width')) {
+                                $element.css('width', width + '%');
+                            }
+                        }
+                    });
+                });
+                
+                // Weitere Optimierungen können hier hinzugefügt werden
             }
 
             // Initialize international telephone input
@@ -384,10 +399,8 @@
                 if ($('#FooterContactForm-country').length) {
                     const countrySelect = $('#FooterContactForm-country');
                     
-                    // Set default selection for Germany
-                    countrySelect.empty();
-                    countrySelect.append('<option value="" disabled>Bitte wählen Sie ein Land</option>');
-                    
+                    // Die Option wurde bereits mit Liquid-Übersetzungen erstellt,
+                    // wir müssen nur die Länderliste hinzufügen
                     countryList.forEach(country => {
                         const selected = country.code === 'DE' ? 'selected' : '';
                         countrySelect.append(`<option value="${country.name}" ${selected}>${country.name}</option>`);
@@ -398,10 +411,8 @@
                 if ($('#ContactForm-country').length) {
                     const contactFormCountrySelect = $('#ContactForm-country');
                     
-                    // Set default selection for Germany
-                    contactFormCountrySelect.empty();
-                    contactFormCountrySelect.append('<option value="" disabled>Bitte wählen Sie ein Land</option>');
-                    
+                    // Die Option wurde bereits mit Liquid-Übersetzungen erstellt,
+                    // wir müssen nur die Länderliste hinzufügen
                     countryList.forEach(country => {
                         const selected = country.code === 'DE' ? 'selected' : '';
                         contactFormCountrySelect.append(`<option value="${country.name}" ${selected}>${country.name}</option>`);
@@ -429,9 +440,9 @@
                 // Setup Form Placeholders
                 setupFormPlaceholders();
                 
-                // Optimize form fields
+                // Formularfelder optimieren und dynamische Breite anwenden
                 optimizeFormFields();
-
+                
                 // Event listener for a button to toggle visibility
                 $('#toggle-button').on('click', function() {
                     toggleVisibility('.toggle-target');

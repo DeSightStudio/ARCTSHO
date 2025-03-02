@@ -267,6 +267,7 @@
         "error_heading": "Por favor, ajusta lo siguiente:",
         "title": "Formulario de contacto",
         "country": "País",
+        "select_country": "Seleccione un país",
         "question": "Pregunta",
         "required_fields": "* — Campos obligatorios",
         "send_question": "Enviar pregunta",

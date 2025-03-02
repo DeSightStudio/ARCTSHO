@@ -267,6 +267,7 @@
         "error_heading": "Veuillez ajuster les éléments suivants :",
         "title": "Formulaire de contact",
         "country": "Pays",
+        "select_country": "Sélectionnez un pays",
         "question": "Question",
         "required_fields": "* — Champs obligatoires",
         "send_question": "Envoyer la question",

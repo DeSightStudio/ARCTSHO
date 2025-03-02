@@ -271,6 +271,7 @@
         "error_heading": "Bitte passe Folgendes an:",
         "title": "Kontaktformular",
         "country": "Land",
+        "select_country": "Bitte wählen Sie ein Land",
         "question": "Frage",
         "required_fields": "* — Pflichtfelder",
         "send_question": "Frage senden",

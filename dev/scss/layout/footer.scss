@@ -53,9 +53,17 @@ footer {
     }
 }
 
+// Allgemeine dynamische Breitenklassen für alle Blöcke
+@for $i from 0 through 10 {
+    $width: $i * 10;
+    .block-width-#{$width} {
+        width: #{$width + '%'} !important;
+    }
+}
+
 // Debug-Meldung für das Newsletter-Element hinzufügen
 footer.footer .footer-block--newsletter::before {
-    content: "Newsletter-Breite über CSS-Klasse gesetzt";
+    content: "Breite über CSS-Klasse gesetzt";
     display: block;
     background-color: #0a5d17;
     padding: 5px;
