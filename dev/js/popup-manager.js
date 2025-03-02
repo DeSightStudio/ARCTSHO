@@ -131,6 +131,16 @@
       });
     });
 
+    // Spezifischer Event-Listener für den VAT-ID-Button im Cart
+    document.addEventListener('click', function(e) {
+      const vatIdButton = e.target.closest('#CartDrawer-VatIdButton');
+      if (vatIdButton) {
+        e.preventDefault();
+        console.log('VAT-ID-Button im Cart wurde geklickt');
+        MicroModal.show('modal-cart-vat-id');
+      }
+    });
+
     // Event-Listener für Hash-URLs (#popup-xxxx)
     document.addEventListener('click', (e) => {
       // Prüfen, ob es sich um einen Link handelt

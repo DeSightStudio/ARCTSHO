@@ -400,5 +400,50 @@
 
     <!-- Pop-Up Komponenten -->
     {% render 'popups' %}
+
+    {% comment %}
+      Inline-Script für VAT-ID-Button im Cart
+    {% endcomment %}
+    <script defer>
+      document.addEventListener('DOMContentLoaded', function () {
+        // Direkter Fix für VAT-ID-Button im Cart
+        function fixVatIdButton() {
+          // Warten auf den Button und das Modal
+          const checkInterval = setInterval(function () {
+            const vatIdButton = document.getElementById('CartDrawer-VatIdButton');
+            const vatIdModal = document.getElementById('modal-cart-vat-id');
+
+            if (vatIdButton && vatIdModal && typeof window.MicroModal !== 'undefined') {
+              console.log('VAT-ID-Button und Modal gefunden, füge Event-Listener hinzu');
+
+              // Event-Listener hinzufügen
+              vatIdButton.addEventListener('click', function (e) {
+                e.preventDefault();
+                console.log('VAT-ID-Button geklickt (direkter Listener)');
+                window.MicroModal.show('modal-cart-vat-id');
+              });
+
+              // Erfolg
+              clearInterval(checkInterval);
+            }
+          }, 500);
+
+          // Nach 10 Sekunden abbrechen, falls die Elemente nicht gefunden werden
+          setTimeout(function () {
+            clearInterval(checkInterval);
+          }, 10000);
+        }
+
+        // Fix ausführen
+        fixVatIdButton();
+
+        // Auch bei Nutzung des Cart-Icons neu initialisieren
+        document.addEventListener('click', function (e) {
+          if (e.target.closest('#cart-icon-bubble') || e.target.id === 'cart-icon-bubble') {
+            setTimeout(fixVatIdButton, 500);
+          }
+        });
+      });
+    </script>
   </body>
 </html>

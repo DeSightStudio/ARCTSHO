@@ -459,12 +459,93 @@
                     smoothScroll($(this).attr('href'));
                 });
 
+                // Event-Listener für den VAT ID Button im Warenkorb
+                function initVatIdButton() {
+                    console.log('Initialisiere VAT-ID Button im Warenkorb...');
+                    
+                    // Direkter Event-Listener für den Button
+                    $(document).on('click', '#CartDrawer-VatIdButton', function(e) {
+                        e.preventDefault();
+                        console.log('VAT-ID Button im Warenkorb wurde geklickt');
+                        
+                        // Prüfen, ob MicroModal verfügbar ist
+                        if (typeof window.MicroModal !== 'undefined') {
+                            window.MicroModal.show('modal-cart-vat-id');
+                        } else {
+                            console.error('MicroModal ist nicht verfügbar');
+                        }
+                    });
+                }
+                
+                // VAT-ID Button initialisieren
+                initVatIdButton();
+
                 // Slick Slider Initialization
                 initializeSlickSlider();
             }
 
             // Starte die Initialisierung
             initialize();
+            
+            // Debug für VAT-ID-Button und Modal
+            setTimeout(function() {
+                console.log('Debugging VAT-ID-Button und Modal:');
+                
+                // Überprüfen, ob MicroModal geladen ist
+                if (typeof window.MicroModal === 'undefined') {
+                    console.error('MicroModal ist nicht geladen!');
+                } else {
+                    console.log('MicroModal ist verfügbar:', window.MicroModal);
+                }
+                
+                // Überprüfen, ob das Modal existiert
+                const vatIdModal = document.getElementById('modal-cart-vat-id');
+                if (!vatIdModal) {
+                    console.error('Modal "modal-cart-vat-id" nicht gefunden!');
+                } else {
+                    console.log('Modal "modal-cart-vat-id" gefunden:', vatIdModal);
+                }
+                
+                // Überprüfen, ob der Button existiert
+                const vatIdButton = document.getElementById('CartDrawer-VatIdButton');
+                if (!vatIdButton) {
+                    console.error('Button "CartDrawer-VatIdButton" nicht gefunden!');
+                } else {
+                    console.log('Button "CartDrawer-VatIdButton" gefunden:', vatIdButton);
+                    
+                    // Direkt einen Click-Event simulieren
+                    console.log('Simuliere Klick-Event für VAT-ID-Button...');
+                    vatIdButton.addEventListener('click', function(e) {
+                        console.log('VAT-ID-Button wurde geklickt');
+                        if (typeof window.MicroModal !== 'undefined') {
+                            try {
+                                window.MicroModal.show('modal-cart-vat-id');
+                                console.log('MicroModal.show für "modal-cart-vat-id" aufgerufen');
+                            } catch (err) {
+                                console.error('Fehler beim Anzeigen des Modals:', err);
+                            }
+                        }
+                    });
+                }
+                
+                // Direkter Zugang zum Modal (für Tests)
+                window.openVatIdModal = function() {
+                    console.log('Manueller Aufruf von openVatIdModal');
+                    if (typeof window.MicroModal !== 'undefined') {
+                        try {
+                            window.MicroModal.show('modal-cart-vat-id');
+                            console.log('MicroModal.show für "modal-cart-vat-id" aufgerufen');
+                        } catch (err) {
+                            console.error('Fehler beim Anzeigen des Modals:', err);
+                        }
+                    }
+                };
+                
+                // Prüfen der Event-Listener
+                console.log('Überprüfe, ob der Button event listeners hat:');
+                const buttonEvents = getEventListeners && vatIdButton ? getEventListeners(vatIdButton) : 'getEventListeners nicht verfügbar';
+                console.log('Button Events:', buttonEvents);
+            }, 2000);
         }, 500);
     });
 })(jQuery);
