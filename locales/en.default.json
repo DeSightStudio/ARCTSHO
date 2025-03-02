@@ -543,7 +543,12 @@
       "city": "City",
       "country": "Country",
       "vat_id": "VAT ID",
-      "select_country": "Select a country"
+      "select_country": "Select a country",
+      "invalid_format": "Invalid format. Please enter the VAT ID in the format DE123456789.",
+      "validating": "Validating...",
+      "valid": "Valid VAT ID.",
+      "invalid": "Invalid VAT ID. Please check your input.",
+      "validation_error": "Error during validation. You can still proceed."
     }
   },
   "gift_cards": {

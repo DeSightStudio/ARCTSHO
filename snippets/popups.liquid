@@ -204,7 +204,7 @@
                   type="hidden"
                   id="vatIdForm-cart_items"
                   name="contact[cart_items]"
-                  value="{% for item in cart.items %}{{ item.product.title }} ({{ item.variant.title }}) - {{ item.quantity }}x - {{ item.final_price | money }}{% unless forloop.last %} | {% endunless %}{% endfor %}"
+                  value="{% for item in cart.items %}{{ item.product.title }} ({{ item.variant.title }}) - SKU: {{ item.variant.sku }} - {{ item.quantity }}x - {{ item.final_price | money }}{% unless forloop.last %} | {% endunless %}{% endfor %}"
                 >
                 <input
                   type="hidden"
@@ -231,6 +231,7 @@
                             {% if item.variant.title != 'Default Title' %}
                               <div class="cart-item-variant">{{ item.variant.title }}</div>
                             {% endif %}
+                            <div class="cart-item-sku">SKU: {{ item.sku || 'N/A' }}</div>
                           </td>
                           <td>{{ item.quantity }}</td>
                           <td>{{ item.final_line_price | money }}</td>
@@ -387,13 +388,17 @@
                       {{- 'customer.vat_form.vat_id' | t }}
                       <span aria-hidden="true">*</span></label
                     >
-                    <input
-                      type="text"
-                      id="ContactForm-vatId"
-                      name="contact[vat_id]"
-                      value="{% if form.vat_id %}{{ form.vat_id }}{% endif %}"
-                      required
-                    >
+                    <div class="vat-id-input-wrapper">
+                      <input
+                        type="text"
+                        id="ContactForm-vatId"
+                        name="contact[vat_id]"
+                        value="{% if form.vat_id %}{{ form.vat_id }}{% endif %}"
+                        required
+                      >
+                      <div id="vatIdValidationStatus" class="vat-id-validation-status"></div>
+                    </div>
+                    <div id="vatIdValidationMessage" class="vat-id-validation-message"></div>
                   </div>
                 </div>
 
@@ -411,6 +416,9 @@
             <script>
               // Internationales Telefon-Input für das VAT-ID-Formular
               document.addEventListener('DOMContentLoaded', function () {
+                // VAT ID Validierung initialisieren
+                initVatIdValidation();
+
                 if (typeof window.intlTelInput !== 'undefined' && document.querySelector('#ContactForm-vatId-phone')) {
                   const vatPhoneInput = document.querySelector('#ContactForm-vatId-phone');
                   const vatIti = window.intlTelInput(vatPhoneInput, {
@@ -478,7 +486,250 @@
                   });
                 }
               });
+
+              // Funktion zur Initialisierung der VAT-ID-Validierung
+              function initVatIdValidation() {
+                const vatIdInput = document.getElementById('ContactForm-vatId');
+                const vatIdValidationStatus = document.getElementById('vatIdValidationStatus');
+                const vatIdValidationMessage = document.getElementById('vatIdValidationMessage');
+                const submitButton = document.getElementById('vatIdForm-submit');
+
+                if (!vatIdInput) return;
+
+                // Statusvariable für die VAT-ID-Validierung
+                let vatIdIsValid = false;
+
+                // Event-Listener für die Eingabe und das Verlassen des Feldes
+                vatIdInput.addEventListener('blur', validateVatId);
+                vatIdInput.addEventListener('input', function () {
+                  // Bei Änderung den Status zurücksetzen
+                  vatIdValidationStatus.className = 'vat-id-validation-status';
+                  vatIdValidationMessage.innerHTML = '';
+                  vatIdValidationMessage.className = 'vat-id-validation-message';
+                });
+
+                // Funktion zur Validierung der VAT-ID über die EU-VIES-API
+                function validateVatId() {
+                  const vatId = vatIdInput.value.trim();
+
+                  // Prüfen, ob eine VAT-ID eingegeben wurde
+                  if (!vatId) {
+                    updateValidationStatus('neutral', '');
+                    return;
+                  }
+
+                  // Einfache Formatvalidierung (2 Länderbuchstaben + Nummern)
+                  const vatIdRegex = /^[A-Z]{2}[0-9A-Z]{2,12}$/;
+                  if (!vatIdRegex.test(vatId)) {
+                    updateValidationStatus(
+                      'invalid',
+                      '{{ "customer.vat_form.invalid_format" | t | default: "Ungültiges Format. Bitte geben Sie die USt-IdNr. im Format DE123456789 ein." }}'
+                    );
+                    return;
+                  }
+
+                  // Status auf "wird geprüft" setzen
+                  updateValidationStatus(
+                    'checking',
+                    '{{ "customer.vat_form.validating" | t | default: "Überprüfung..." }}'
+                  );
+
+                  // Land und Nummer extrahieren
+                  const countryCode = vatId.substr(0, 2);
+                  const vatNumber = vatId.substr(2);
+
+                  // EU VIES API verwenden (über CORS-Proxy)
+                  // Hier wird ein kostenloser CORS-Proxy verwendet, für Produktionsumgebungen sollte
+                  // ein eigener Server oder ein kostenpflichtiger Dienst verwendet werden
+                  const corsProxy = 'https://corsproxy.io/?';
+                  const viesApiUrl = `${corsProxy}https://ec.europa.eu/taxation_customs/vies/rest-api/check-vat-number`;
+
+                  const requestData = {
+                    countryCode: countryCode,
+                    vatNumber: vatNumber,
+                  };
+
+                  fetch(viesApiUrl, {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestData),
+                  })
+                    .then((response) => {
+                      // Prüfen, ob die Anfrage erfolgreich war
+                      if (!response.ok) {
+                        throw new Error(`HTTP-Fehler! Status: ${response.status}`);
+                      }
+                      return response.json();
+                    })
+                    .then((data) => {
+                      console.log('VAT-Validierungsergebnis:', data);
+
+                      // Validierungsstatus aktualisieren
+                      if (data.valid) {
+                        // Gültige VAT-ID
+                        vatIdIsValid = true;
+                        updateValidationStatus(
+                          'valid',
+                          '{{ "customer.vat_form.valid" | t | default: "Gültige USt-IdNr." }}'
+                        );
+
+                        // Unternehmensinformationen anzeigen, wenn verfügbar
+                        if (data.name) {
+                          vatIdValidationMessage.innerHTML += `<div class="company-info">
+                          <strong>${data.name}</strong><br>
+                          ${data.address || ''}
+                        </div>`;
+                        }
+                      } else {
+                        // Ungültige VAT-ID
+                        vatIdIsValid = false;
+                        updateValidationStatus(
+                          'invalid',
+                          '{{ "customer.vat_form.invalid" | t | default: "Ungültige USt-IdNr. Bitte überprüfen Sie Ihre Eingabe." }}'
+                        );
+                      }
+                    })
+                    .catch((error) => {
+                      console.error('Fehler bei der VAT-ID-Validierung:', error);
+
+                      // Bei Fehlern trotzdem fortfahren lassen
+                      vatIdIsValid = true;
+                      updateValidationStatus(
+                        'error',
+                        '{{ "customer.vat_form.validation_error" | t | default: "Fehler bei der Überprüfung. Sie können trotzdem fortfahren." }}'
+                      );
+                    });
+                }
+
+                // Funktion zum Aktualisieren des Validierungsstatus
+                function updateValidationStatus(status, message) {
+                  // Klassen aktualisieren
+                  vatIdValidationStatus.className = 'vat-id-validation-status ' + status;
+
+                  // Symbol je nach Status setzen
+                  if (status === 'valid') {
+                    vatIdValidationStatus.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+                  } else if (status === 'invalid') {
+                    vatIdValidationStatus.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
+                  } else if (status === 'checking') {
+                    vatIdValidationStatus.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="spinner"><circle cx="12" cy="12" r="10"></circle></svg>`;
+                  } else {
+                    vatIdValidationStatus.innerHTML = '';
+                  }
+
+                  // Nachricht setzen
+                  vatIdValidationMessage.innerHTML = message;
+                  vatIdValidationMessage.className = 'vat-id-validation-message ' + status;
+
+                  // Submit-Button aktivieren/deaktivieren
+                  if (submitButton) {
+                    if (status === 'invalid') {
+                      submitButton.setAttribute('disabled', 'disabled');
+                      submitButton.classList.add('disabled');
+                    } else {
+                      submitButton.removeAttribute('disabled');
+                      submitButton.classList.remove('disabled');
+                    }
+                  }
+                }
+
+                // Modifikation der Formularübermittlung zur Validitätsprüfung
+                const form = document.getElementById('vatIdCartForm');
+                if (form) {
+                  const originalSubmitHandler = form.onsubmit;
+
+                  form.onsubmit = function (e) {
+                    const vatId = vatIdInput.value.trim();
+
+                    // Wenn das Feld leer ist, normale Validierung durchführen lassen
+                    if (!vatId) return true;
+
+                    // Wenn die VAT-ID ungültig ist, Absenden verhindern
+                    if (vatIdValidationMessage.classList.contains('invalid')) {
+                      e.preventDefault();
+                      vatIdValidationMessage.scrollIntoView({ behavior: 'smooth' });
+                      return false;
+                    }
+
+                    // Ansonsten den ursprünglichen Handler aufrufen, wenn er existiert
+                    if (typeof originalSubmitHandler === 'function') {
+                      return originalSubmitHandler.call(this, e);
+                    }
+
+                    return true;
+                  };
+                }
+              }
             </script>
+
+            <style>
+              /* Styles für die VAT-ID-Validierung */
+              .vat-id-input-wrapper {
+                position: relative;
+                display: flex;
+                align-items: center;
+              }
+
+              .vat-id-validation-status {
+                margin-left: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              }
+
+              .vat-id-validation-status.valid {
+                color: #28a745;
+              }
+
+              .vat-id-validation-status.invalid {
+                color: #dc3545;
+              }
+
+              .vat-id-validation-status.checking .spinner {
+                animation: spin 1s linear infinite;
+              }
+
+              @keyframes spin {
+                from {
+                  transform: rotate(0deg);
+                }
+                to {
+                  transform: rotate(360deg);
+                }
+              }
+
+              .vat-id-validation-message {
+                margin-top: 5px;
+                font-size: 0.85em;
+              }
+
+              .vat-id-validation-message.valid {
+                color: #28a745;
+              }
+
+              .vat-id-validation-message.invalid {
+                color: #dc3545;
+              }
+
+              .vat-id-validation-message.error {
+                color: #ffc107;
+              }
+
+              .company-info {
+                margin-top: 5px;
+                padding: 8px;
+                background-color: #f8f9fa;
+                border-radius: 4px;
+                font-size: 0.9em;
+              }
+
+              .button.disabled {
+                opacity: 0.65;
+                cursor: not-allowed;
+              }
+            </style>
           </main>
         </div>
       </div>
@@ -506,6 +757,7 @@
               cart.items.forEach((item, index) => {
                 const title = item.product_title;
                 const variant = item.variant_title || 'Default Title';
+                const sku = item.sku || 'N/A';
                 const quantity = item.quantity;
                 const price = (item.final_price / 100).toLocaleString(window.Shopify?.locale || 'de-DE', {
                   style: 'currency',
@@ -517,7 +769,7 @@
                 });
 
                 // Wert für das versteckte Eingabefeld
-                cartItemsValue += `${title} (${variant}) - ${quantity}x - ${price}`;
+                cartItemsValue += `${title} (${variant}) - SKU: ${sku} - ${quantity}x - ${price}`;
                 if (index < cart.items.length - 1) cartItemsValue += ' | ';
 
                 // HTML für die Tabelle
@@ -526,6 +778,7 @@
                     <td>
                       <div class="cart-item-name">${title}</div>
                       ${variant !== 'Default Title' ? `<div class="cart-item-variant">${variant}</div>` : ''}
+                      <div class="cart-item-sku">SKU: ${sku}</div>
                     </td>
                     <td>${quantity}</td>
                     <td>${linePrice}</td>
