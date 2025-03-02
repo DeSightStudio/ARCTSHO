@@ -171,11 +171,13 @@
                               </span>
                               <strong class="cart-item__final-price product-option">
                                 {{ item.final_price | money }}
+                                {% render 'vat-info-badge' %}
                               </strong>
                             </div>
                           {%- else -%}
                             <div class="product-option">
                               {{ item.original_price | money }}
+                              {% render 'vat-info-badge' %}
                             </div>
                           {%- endif -%}
 
@@ -253,11 +255,13 @@
                                 </span>
                                 <span class="price price--end">
                                   {{ item.final_line_price | money }}
+                                  {% render 'vat-info-badge' %}
                                 </span>
                               </div>
                             {%- else -%}
                               <span class="price price--end">
                                 {{ item.original_line_price | money }}
+                                {% render 'vat-info-badge' %}
                               </span>
                             {%- endif -%}
 
@@ -265,6 +269,7 @@
                               <div class="unit-price caption">
                                 <span class="visually-hidden">{{ 'products.product.price.unit_price' | t }}</span>
                                 {{ item.unit_price | money }}
+                                {% render 'vat-info-badge' %}
                                 <span aria-hidden="true">/</span>
                                 <span class="visually-hidden"
                                   >&nbsp;{{ 'accessibility.unit_price_separator' | t }}&nbsp;</span
@@ -412,7 +417,10 @@
                                     <ul class="list-unstyled">
                                       <li>
                                         <span>{{ item.variant.quantity_rule.min }}+</span>
-                                        <span>{{ item.variant.price | money_with_currency }}/ea</span>
+                                        <span>
+                                          {{- item.variant.price | money_with_currency }}
+                                          {% render 'vat-info-badge' %}/ea</span
+                                        >
                                       </li>
                                       {%- for price_break in item.variant.quantity_price_breaks -%}
                                         <li>
@@ -420,7 +428,10 @@
                                             {{- price_break.minimum_quantity -}}
                                             <span aria-hidden="true">+</span></span
                                           >
-                                          <span>{{ price_break.price | money_with_currency }}/ea</span>
+                                          <span>
+                                            {{- price_break.price | money_with_currency }}
+                                            {% render 'vat-info-badge' %}/ea</span
+                                          >
                                         </li>
                                       {%- endfor -%}
                                     </ul>
@@ -469,10 +480,12 @@
         {%- endif -%}
 
         <!-- Ursprungszeugnis / Certificate of Origin -->
+        {% comment %}Ursprungszeugnis-Check{% endcomment %}
         {% assign certificate_in_cart = false %}
         {% for item in cart.items %}
           {% if item.sku == '2226' or item.product_id == 46347117723862 %}
             {% assign certificate_in_cart = true %}
+            {% break %}
           {% endif %}
         {% endfor %}
 
@@ -480,8 +493,23 @@
           <div class="cart-drawer__origin-certificate">
             <div class="origin-certificate-container">
               <div class="origin-certificate-info">
-                <h3>Ursprungszeugnis</h3>
-                <div class="origin-certificate-price">€ 25,00 + MwSt</div>
+                <h3>
+                  {% if request.locale.iso_code == 'de' %}
+                    Ursprungszeugnis
+                  {% elsif request.locale.iso_code == 'it' %}
+                    Certificato di origine
+                  {% elsif request.locale.iso_code == 'es' %}
+                    Certificado de origen
+                  {% elsif request.locale.iso_code == 'fr' %}
+                    Certificat d'origine
+                  {% else %}
+                    Certificate of Origin
+                  {% endif %}
+                </h3>
+                <div class="origin-certificate-price">
+                  {{ 2500 | money }}
+                  {% render 'vat-info-badge' %}
+                </div>
               </div>
 
               <button
@@ -492,7 +520,7 @@
                 data-sku="2226"
                 onclick="addOriginCertificateToCart(this)"
               >
-                <span>In den Warenkorb</span>
+                <span>{{ 'products.product.add_to_cart' | t }}</span>
               </button>
             </div>
           </div>
@@ -528,7 +556,7 @@
                 if (!response.ok) {
                   return response.json().then((data) => {
                     console.error('Fehler bei der Anfrage:', data);
-                    throw new Error(data.description || 'Fehler beim Hinzufügen zum Warenkorb');
+                    throw new Error(data.description || '{{ "sections.cart.cart_error" | t }}');
                   });
                 }
                 return response.json();
@@ -547,11 +575,11 @@
                 button.classList.remove('loading');
                 button.disabled = true;
                 button.classList.add('already-in-cart');
-                button.querySelector('span').textContent = 'Bereits im Warenkorb';
+                button.querySelector('span').textContent = '{{ "products.product.sold_out" | t }}';
               })
               .catch((error) => {
-                console.error('Fehler:', error);
-                alert('Fehler beim Hinzufügen zum Warenkorb: ' + error.message);
+                console.error('{{ "sections.cart.cart_error" | t }}:', error);
+                alert('{{ "sections.cart.cart_error" | t }}: ' + error.message);
                 button.classList.remove('loading');
                 button.disabled = false;
               });
@@ -577,16 +605,18 @@
                 if (certificateElement) {
                   // Prüfen, ob das Produkt im Warenkorb ist
                   let certificateInCart = false;
-                  const cartItems = document.querySelectorAll('.cart-item');
-                  cartItems.forEach((item) => {
-                    const productIdElement = item.querySelector('[data-variant-id]');
-                    if (productIdElement) {
-                      const productId = productIdElement.getAttribute('data-variant-id');
-                      // Prüfen auf die Produkt-ID des Ursprungszeugnisses
+                  const items = document.querySelectorAll('.cart-item');
+                  items.forEach((item) => {
+                    const removeButton = item.querySelector('.cart-remove-button');
+                    if (removeButton && removeButton.dataset.variantId) {
+                      const variantId = removeButton.getAttribute('data-variant-id');
+                      const productTitle = item.querySelector('.cart-item__name');
+                      // Prüfen auf die Produkt-ID des Ursprungszeugnisses oder SKU 2226
                       if (
-                        item.textContent.includes('Ursprungszeugnis') ||
-                        item.textContent.includes('Certificate of Origin') ||
-                        item.querySelector('[data-variant-id="46347117723862"]')
+                        removeButton.closest('.cart-item').querySelector('[data-product-id="46347117723862"]') ||
+                        (productTitle &&
+                          (productTitle.textContent.includes('Ursprungszeugnis') ||
+                            productTitle.textContent.includes('Certificate of Origin')))
                       ) {
                         certificateInCart = true;
                       }
@@ -594,23 +624,11 @@
                   });
 
                   // Element ausblenden, wenn es im Warenkorb ist
-                  if (certificateInCart) {
-                    certificateElement.style.display = 'none';
-                  } else {
-                    certificateElement.style.display = 'block';
-                  }
-                }
-
-                // Wir müssen das Ursprungszeugnis-Element neu initialisieren
-                const certificateButton = document.getElementById('CartDrawer-AddOriginCertificate');
-                if (certificateButton) {
-                  certificateButton.addEventListener('click', function () {
-                    addOriginCertificateToCart(this);
-                  });
+                  certificateElement.style.display = certificateInCart ? 'none' : 'block';
                 }
               })
               .catch((error) => {
-                console.error('Fehler beim Aktualisieren des Warenkorbs:', error);
+                console.error('{{ "sections.cart.cart_error" | t }}:', error);
               });
           }
         </script>
@@ -714,7 +732,10 @@
 
           <div class="totals" role="status">
             <h2 class="totals__total">{{ 'sections.cart.estimated_total' | t }}</h2>
-            <p class="totals__total-value">{{ cart.total_price | money_with_currency }}</p>
+            <p class="totals__total-value">
+              {{ cart.total_price | money_with_currency }}
+              {% render 'vat-info-badge' %}
+            </p>
           </div>
 
           <small class="tax-note caption-large rte">

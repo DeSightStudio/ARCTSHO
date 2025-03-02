@@ -443,6 +443,27 @@
             setTimeout(fixVatIdButton, 500);
           }
         });
+
+        // MicroModal fix für VAT-Info-Badges
+        if (typeof window.MicroModal !== 'undefined') {
+          console.log('MicroModal für VAT-Info-Badges initialisiert');
+
+          // Alle VAT-Info-Icons selektieren und Event-Listener hinzufügen
+          document.querySelectorAll('.vat-info-icon').forEach(function (button) {
+            button.addEventListener('click', function (e) {
+              e.preventDefault();
+              e.stopPropagation();
+
+              const modalId = this.getAttribute('data-micromodal-trigger');
+              if (modalId) {
+                console.log('Öffne VAT-Modal:', modalId);
+                window.MicroModal.show(modalId);
+              }
+            });
+          });
+        } else {
+          console.error('MicroModal ist nicht verfügbar für VAT-Info-Badges!');
+        }
       });
     </script>
   </body>
