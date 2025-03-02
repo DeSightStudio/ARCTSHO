@@ -108,6 +108,9 @@ footer {
     textarea:focus, textarea:not(:placeholder-shown), textarea:-webkit-autofill, .customer .field textarea:focus, .customer .field textarea:not(:placeholder-shown), .customer .field textarea:-webkit-autofill {
         padding: 12px !important;
     }
+    input#FooterContactForm-phone {
+        padding-left: 70px !important;
+    }
     &__input, textarea {
         width: 100%;
         padding: 0px 12px;

@@ -8,7 +8,7 @@ footer {
                 display: flex;
                 flex-wrap: wrap;
                 justify-content: flex-start;
-                gap: 0px;
+                gap: 0px !important;
                 
                 @media screen and (max-width: 749px) {
                     flex-direction: column;
