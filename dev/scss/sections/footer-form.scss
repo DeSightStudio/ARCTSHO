@@ -65,6 +65,58 @@ footer {
     }
   }
   
+  /* International Phone Input Styles */
+  .iti {
+    width: 100%;
+    
+    &__flag {
+      background-image: url("https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/img/flags.png");
+    }
+    
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+      .iti__flag {
+        background-image: url("https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/img/flags@2x.png");
+      }
+    }
+    
+    &__selected-flag {
+      background-color: rgba(255, 255, 255, 0.1);
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 0 10px;
+    }
+    
+    &__country-list {
+      background-color: #152C30;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      width: 300px;
+      max-height: 200px;
+      
+      &::-webkit-scrollbar {
+        width: 6px;
+      }
+      
+      &::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+      }
+      
+      &::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.3);
+      }
+    }
+    
+    &__country {
+      padding: 8px;
+    }
+    
+    &__dial-code {
+      color: rgba(255, 255, 255, 0.8);
+    }
+    
+    &__country-name {
+      color: white;
+    }
+  }
+  
   .phone-input-container {
     display: flex;
     align-items: center;
@@ -130,4 +182,59 @@ footer {
 // Zusätzliche Styles für den dunkelgrünen Hintergrund
 .footer.color-scheme-1 {
   background-color: #0a5d17;
+} 
+
+/* Styles für die Contact Form Seite */
+.contact {
+  /* International Phone Input Styles */
+  .iti {
+    width: 100%;
+    
+    &__flag {
+      background-image: url("https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/img/flags.png");
+    }
+    
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+      .iti__flag {
+        background-image: url("https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/img/flags@2x.png");
+      }
+    }
+    
+    &__selected-flag {
+      background-color: rgba(0, 0, 0, 0.05);
+      border-right: 1px solid rgba(0, 0, 0, 0.1);
+      padding: 0 10px;
+    }
+    
+    &__country-list {
+      background-color: white;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      width: 300px;
+      max-height: 200px;
+      
+      &::-webkit-scrollbar {
+        width: 6px;
+      }
+      
+      &::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.05);
+      }
+      
+      &::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0.1);
+      }
+    }
+    
+    &__country {
+      padding: 8px;
+    }
+    
+    &__dial-code {
+      color: rgba(0, 0, 0, 0.8);
+    }
+    
+    &__country-name {
+      color: #000;
+    }
+  }
 } 

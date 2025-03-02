@@ -113,6 +113,17 @@
         <label class="field__label" for="ContactForm-phone">{{ 'templates.contact.form.phone' | t }}</label>
       </div>
       <div class="field">
+        <select
+          id="ContactForm-country"
+          class="field__input"
+          name="contact[{{ 'templates.contact.form.country' | t }}]"
+          required
+        >
+          <option value="" disabled selected>{{ 'templates.contact.form.select_country' | t }}</option>
+        </select>
+        <label class="field__label" for="ContactForm-country">{{ 'templates.contact.form.country' | t }}</label>
+      </div>
+      <div class="field">
         <textarea
           rows="10"
           id="ContactForm-body"

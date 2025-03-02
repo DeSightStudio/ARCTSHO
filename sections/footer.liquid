@@ -240,9 +240,6 @@
                             <span aria-hidden="true">*</span>
                           </label>
                           <div class="phone-input-container">
-                            <div class="country-code">
-                              <span class="flag-icon">🇩🇪</span>
-                            </div>
                             <input
                               type="tel"
                               id="FooterContactForm-phone"
@@ -265,20 +262,7 @@
                             class="field__input"
                             name="contact[{{ 'templates.contact.form.country' | t }}]"
                             required
-                          >
-                            <option value="{{ 'templates.contact.form.country_options.germany' | t }}" selected>
-                              {{ 'templates.contact.form.country_options.germany' | t }}
-                            </option>
-                            <option value="{{ 'templates.contact.form.country_options.austria' | t }}">
-                              {{ 'templates.contact.form.country_options.austria' | t }}
-                            </option>
-                            <option value="{{ 'templates.contact.form.country_options.switzerland' | t }}">
-                              {{ 'templates.contact.form.country_options.switzerland' | t }}
-                            </option>
-                            <option value="{{ 'templates.contact.form.country_options.other' | t }}">
-                              {{ 'templates.contact.form.country_options.other' | t }}
-                            </option>
-                          </select>
+                          ></select>
                         </div>
                         <div class="field">
                           <label class="field__label" for="FooterContactForm-body">
