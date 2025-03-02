@@ -507,7 +507,13 @@
                   {% endif %}
                 </h3>
                 <div class="origin-certificate-price">
-                  {{ 2500 | money }}
+                  {% if shop.currency == 'EUR' %}
+                    {{ 2500 | money }}
+                  {% elsif shop.currency == 'USD' %}
+                    {{ 2600 | money }}
+                  {% else %}
+                    {{ 2500 | money }}
+                  {% endif %}
                   {% render 'vat-info-badge' %}
                 </div>
               </div>
@@ -534,11 +540,18 @@
             // Produkt-ID direkt aus dem data-product-id Attribut
             const productId = button.dataset.productId;
 
+            // Die Preis-Logik basierend auf der Währung des Shops
+            let productPrice = {% if shop.currency == 'EUR' %}2500{% elsif shop.currency == 'USD' %}2600{% else %}2500{% endif %};
+            console.log('Produktpreis:', productPrice);
+
             let formData = {
               items: [
                 {
                   id: parseInt(productId, 10),
                   quantity: 1,
+                  properties: {
+                    '_price': productPrice
+                  }
                 },
               ],
             };
