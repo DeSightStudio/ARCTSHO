@@ -531,7 +531,15 @@
       "city": "Stadt",
       "country": "Land",
       "vat_id": "USt-IdNr.",
-      "select_country": "Land auswählen"
+      "select_country": "Land auswählen",
+      "enter_vat_id": "Bitte geben Sie eine USt-IdNr. ein",
+      "country_not_supported": "Ländercode nicht unterstützt",
+      "invalid_format": "Ungültiges Format. Beispiel: DE123456789",
+      "validating": "Überprüfung läuft...",
+      "valid": "Gültige USt-IdNr.",
+      "invalid": "Ungültige USt-IdNr. oder nicht registriert",
+      "validation_error": "Fehler bei der Validierung. Bitte versuchen Sie es später erneut.",
+      "format_valid": "Format ist gültig"
     }
   },
   "gift_cards": {

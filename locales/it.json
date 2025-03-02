@@ -533,7 +533,15 @@
       "city": "Città",
       "country": "Paese",
       "vat_id": "Partita IVA",
-      "select_country": "Seleziona un paese"
+      "select_country": "Seleziona un paese",
+      "enter_vat_id": "Inserisci una Partita IVA",
+      "country_not_supported": "Codice paese non supportato",
+      "invalid_format": "Formato non valido. Esempio: IT12345678901",
+      "validating": "Convalida in corso...",
+      "valid": "Partita IVA valida",
+      "invalid": "Partita IVA non valida o non registrata",
+      "validation_error": "Errore durante la convalida. Riprova più tardi.",
+      "format_valid": "Il formato è valido"
     }
   },
   "gift_cards": {

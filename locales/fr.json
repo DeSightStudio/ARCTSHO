@@ -530,7 +530,15 @@
       "city": "Ville",
       "country": "Pays",
       "vat_id": "Numéro de TVA",
-      "select_country": "Sélectionner un pays"
+      "select_country": "Sélectionner un pays",
+      "enter_vat_id": "Veuillez saisir un numéro de TVA",
+      "country_not_supported": "Code pays non pris en charge",
+      "invalid_format": "Format invalide. Exemple : FR12345678901",
+      "validating": "Validation en cours...",
+      "valid": "Numéro de TVA valide",
+      "invalid": "Numéro de TVA invalide ou non enregistré",
+      "validation_error": "Erreur lors de la validation. Veuillez réessayer plus tard.",
+      "format_valid": "Le format est valide"
     }
   },
   "gift_cards": {

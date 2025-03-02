@@ -1,0 +1,192 @@
+#vatIdCartFormContainer {
+    // VAT ID Form Styles
+.vat-id-form {
+    margin-top: 1.5rem;
+    * {
+        box-shadow: none !important;
+        overflow: hidden !important;
+    }
+    .iti {
+        border-radius: 8px 0px 0px 8px !important;
+        .iti__flag-container {
+            border-radius: 8px 0px 0px 8px !important;
+            overflow: hidden !important;
+            .iti__selected-flag {
+                background-color: transparent !important;
+            }
+        }
+    }
+    .vat-id-input-wrapper {
+        display: block;
+        #vatIdValidationStatus {
+            margin: 5px 0 0 0 !important;
+            border-radius: 8px !important;
+            font-size: $fontSizeSmall !important;
+            font-family: Cormorant Garamond;
+            font-weight: bold;
+        }
+    }
+    #vatIdValidationMessage {
+        display: none !important;
+        * {
+            display: none !important;
+        }
+    }
+    .cart-items-summary {
+      margin-bottom: 2rem;
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      padding: 1rem;
+      background-color: $accentLight;
+      
+      h1, h2, h3, h4, h5, h6 {
+        font-family: Cormorant Garamond;
+        color: $mainColor;
+        font-size: $fontSizeMedium !important;
+        margin: 0;
+        font-weight: bold;
+    }
+      
+      .cart-items-table {
+        width: 100%;
+        border-collapse: collapse;
+        
+        th, td {
+          padding: 0.5rem;
+          text-align: left;
+          border-bottom: 1px solid var(--color-border);
+          font-size: $fontSizeSmall;
+          color: #666;
+          font-weight: 400;
+          font-family: Cormorant Garamond;
+          font-weight: bold;
+        }
+        
+        th {
+          
+        }
+        
+        .cart-item-name {
+          font-size: $fontSizeRegular !important;
+          color: $mainColor;
+          font-family: Cormorant Garamond;
+          font-weight: bold;
+        }
+        
+        .cart-item-sku {
+          font-size: $fontSizeSmall;
+          color: #666;
+          font-weight: 400;
+          font-size: $fontSizeSmall !important;
+          font-family: Cormorant Garamond;
+        }
+        
+        tfoot {
+          td {
+            padding-top: 1rem;
+            border-bottom: none;
+            color: $mainColor;
+            font-size: $fontSizeMedium !important;
+            font-family: Cormorant Garamond;
+            font-weight: bold;
+          }
+        }
+      }
+    }
+    
+    .form-field-group {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      
+      @media screen and (max-width: 749px) {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+    }
+    
+    .form-field {
+      margin-bottom: 1rem;
+      width: 100%;
+      
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: $mainColor;
+        font-weight: 400;
+        font-size: $fontSizeRegular !important;
+        font-family: Cormorant Garamond;
+      }
+      
+      input, select {
+        width: 100%;
+        padding: 12px;
+        background-color: white;
+        border: 1px solid $grayColor;
+        border-radius: 8px;
+        color: #333;
+        outline: none;
+        overflow: hidden !important;
+        font-size: 14px !important;
+        font-family: 'Cormorant Garamond';
+        &:focus {
+            outline: none;
+            border: 1px solid $mainColor;
+            color: #0a5d17;
+            &::placeholder {
+                color: #0a5d17;
+                opacity: 1;
+                transform: none;
+                -webkit-transform: none;
+            }
+        }
+        
+        &::placeholder {
+            color: #666;
+            opacity: 1;
+            transition: color 0.3s ease;
+            transform: none !important;
+            -webkit-transform: none !important;
+            position: static !important;
+        }
+      }
+    }
+    
+    .form-submit-group {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+      margin-top: 1.5rem;
+      
+      @media screen and (max-width: 749px) {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+    }
+    
+    .form-success, .form-error {
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      border-radius: 0.25rem;
+    }
+    
+    .form-success {
+      background-color: rgba(0, 128, 0, 0.1);
+      color: darkgreen;
+    }
+    
+    .form-error {
+      background-color: rgba(220, 53, 69, 0.1);
+      color: #dc3545;
+      
+      ul {
+        padding-left: 1.25rem;
+        margin-top: 0.5rem;
+      }
+    }
+  }
+  
+  .cart-drawer__vat-id-button {
+    margin: 1rem 0;
+  } 
+}

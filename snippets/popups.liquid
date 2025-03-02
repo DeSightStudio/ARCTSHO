@@ -490,177 +490,224 @@
               // Funktion zur Initialisierung der VAT-ID-Validierung
               function initVatIdValidation() {
                 const vatIdInput = document.getElementById('ContactForm-vatId');
-                const vatIdValidationStatus = document.getElementById('vatIdValidationStatus');
-                const vatIdValidationMessage = document.getElementById('vatIdValidationMessage');
+                const validationStatus = document.getElementById('vatIdValidationStatus');
+                const companyInfoElement = document.getElementById('vatIdValidationMessage');
                 const submitButton = document.getElementById('vatIdForm-submit');
 
-                if (!vatIdInput) return;
+                let isValidating = false;
+                let lastValidatedValue = '';
+                const API_KEY = 'vat_live_iF5iSdIE2w0aPPYbbJbKClZuiJgxfNGHujzU2ERP';
 
-                // Statusvariable für die VAT-ID-Validierung
-                let vatIdIsValid = false;
-
-                // Event-Listener für die Eingabe und das Verlassen des Feldes
-                vatIdInput.addEventListener('blur', validateVatId);
-                vatIdInput.addEventListener('input', function () {
-                  // Bei Änderung den Status zurücksetzen
-                  vatIdValidationStatus.className = 'vat-id-validation-status';
-                  vatIdValidationMessage.innerHTML = '';
-                  vatIdValidationMessage.className = 'vat-id-validation-message';
-                });
-
-                // Funktion zur Validierung der VAT-ID über die EU-VIES-API
-                function validateVatId() {
-                  const vatId = vatIdInput.value.trim();
-
-                  // Prüfen, ob eine VAT-ID eingegeben wurde
-                  if (!vatId) {
-                    updateValidationStatus('neutral', '');
-                    return;
-                  }
-
-                  // Einfache Formatvalidierung (2 Länderbuchstaben + Nummern)
-                  const vatIdRegex = /^[A-Z]{2}[0-9A-Z]{2,12}$/;
-                  if (!vatIdRegex.test(vatId)) {
-                    updateValidationStatus(
-                      'invalid',
-                      '{{ "customer.vat_form.invalid_format" | t | default: "Ungültiges Format. Bitte geben Sie die USt-IdNr. im Format DE123456789 ein." }}'
-                    );
-                    return;
-                  }
-
-                  // Status auf "wird geprüft" setzen
-                  updateValidationStatus(
-                    'checking',
-                    '{{ "customer.vat_form.validating" | t | default: "Überprüfung..." }}'
-                  );
-
-                  // Land und Nummer extrahieren
-                  const countryCode = vatId.substr(0, 2);
-                  const vatNumber = vatId.substr(2);
-
-                  // EU VIES API verwenden (über CORS-Proxy)
-                  // Hier wird ein kostenloser CORS-Proxy verwendet, für Produktionsumgebungen sollte
-                  // ein eigener Server oder ein kostenpflichtiger Dienst verwendet werden
-                  const corsProxy = 'https://corsproxy.io/?';
-                  const viesApiUrl = `${corsProxy}https://ec.europa.eu/taxation_customs/vies/rest-api/check-vat-number`;
-
-                  const requestData = {
-                    countryCode: countryCode,
-                    vatNumber: vatNumber,
+                // Debounce-Funktion zur Begrenzung der Validierungsaufrufe
+                function debounce(func, wait) {
+                  let timeout;
+                  return function executedFunction(...args) {
+                    const later = () => {
+                      clearTimeout(timeout);
+                      func(...args);
+                    };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
                   };
-
-                  fetch(viesApiUrl, {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(requestData),
-                  })
-                    .then((response) => {
-                      // Prüfen, ob die Anfrage erfolgreich war
-                      if (!response.ok) {
-                        throw new Error(`HTTP-Fehler! Status: ${response.status}`);
-                      }
-                      return response.json();
-                    })
-                    .then((data) => {
-                      console.log('VAT-Validierungsergebnis:', data);
-
-                      // Validierungsstatus aktualisieren
-                      if (data.valid) {
-                        // Gültige VAT-ID
-                        vatIdIsValid = true;
-                        updateValidationStatus(
-                          'valid',
-                          '{{ "customer.vat_form.valid" | t | default: "Gültige USt-IdNr." }}'
-                        );
-
-                        // Unternehmensinformationen anzeigen, wenn verfügbar
-                        if (data.name) {
-                          vatIdValidationMessage.innerHTML += `<div class="company-info">
-                          <strong>${data.name}</strong><br>
-                          ${data.address || ''}
-                        </div>`;
-                        }
-                      } else {
-                        // Ungültige VAT-ID
-                        vatIdIsValid = false;
-                        updateValidationStatus(
-                          'invalid',
-                          '{{ "customer.vat_form.invalid" | t | default: "Ungültige USt-IdNr. Bitte überprüfen Sie Ihre Eingabe." }}'
-                        );
-                      }
-                    })
-                    .catch((error) => {
-                      console.error('Fehler bei der VAT-ID-Validierung:', error);
-
-                      // Bei Fehlern trotzdem fortfahren lassen
-                      vatIdIsValid = true;
-                      updateValidationStatus(
-                        'error',
-                        '{{ "customer.vat_form.validation_error" | t | default: "Fehler bei der Überprüfung. Sie können trotzdem fortfahren." }}'
-                      );
-                    });
                 }
 
                 // Funktion zum Aktualisieren des Validierungsstatus
-                function updateValidationStatus(status, message) {
-                  // Klassen aktualisieren
-                  vatIdValidationStatus.className = 'vat-id-validation-status ' + status;
+                function updateValidationStatus(status, message, companyInfo = null) {
+                  validationStatus.className = 'vat-id-validation-status';
+                  validationStatus.classList.add(`validation-${status}`);
+                  validationStatus.textContent = message;
 
-                  // Symbol je nach Status setzen
-                  if (status === 'valid') {
-                    vatIdValidationStatus.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
-                  } else if (status === 'invalid') {
-                    vatIdValidationStatus.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
-                  } else if (status === 'checking') {
-                    vatIdValidationStatus.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="spinner"><circle cx="12" cy="12" r="10"></circle></svg>`;
-                  } else {
-                    vatIdValidationStatus.innerHTML = '';
-                  }
+                  // Aktiviere oder deaktiviere den Submit-Button
+                  if (status === 'success') {
+                    submitButton.disabled = false;
+                    submitButton.classList.remove('disabled');
 
-                  // Nachricht setzen
-                  vatIdValidationMessage.innerHTML = message;
-                  vatIdValidationMessage.className = 'vat-id-validation-message ' + status;
-
-                  // Submit-Button aktivieren/deaktivieren
-                  if (submitButton) {
-                    if (status === 'invalid') {
-                      submitButton.setAttribute('disabled', 'disabled');
-                      submitButton.classList.add('disabled');
-                    } else {
-                      submitButton.removeAttribute('disabled');
-                      submitButton.classList.remove('disabled');
+                    // Firmeninformationen anzeigen, wenn verfügbar
+                    if (companyInfo) {
+                      companyInfoElement.innerHTML = `
+                        <div class="company-info">
+                          <p><strong>${companyInfo.name || ''}</strong></p>
+                          <p>${companyInfo.address || ''}</p>
+                        </div>
+                      `;
+                      companyInfoElement.style.display = 'block';
                     }
+                  } else {
+                    submitButton.disabled = status !== 'checking';
+                    submitButton.classList.toggle('disabled', status !== 'checking');
+                    companyInfoElement.style.display = 'none';
+                    companyInfoElement.innerHTML = '';
                   }
                 }
 
-                // Modifikation der Formularübermittlung zur Validitätsprüfung
-                const form = document.getElementById('vatIdCartForm');
-                if (form) {
-                  const originalSubmitHandler = form.onsubmit;
+                // Funktion zur Vorvalidierung (Formatprüfung)
+                function preValidateVatId(vatId) {
+                  if (!vatId || vatId.trim().length < 3) {
+                    return {
+                      valid: false,
+                      message:
+                        "{{ 'customer.vat_form.enter_vat_id' | t | default: 'Bitte geben Sie eine Umsatzsteuer-ID ein' }}",
+                    };
+                  }
 
-                  form.onsubmit = function (e) {
-                    const vatId = vatIdInput.value.trim();
+                  // VAT-ID Format: 2 Buchstaben Ländercode + 2-12 alphanumerische Zeichen
+                  const vatIdRegex = /^([A-Z]{2})([0-9A-Z]{2,12})$/;
+                  const match = vatId.trim().toUpperCase().match(vatIdRegex);
 
-                    // Wenn das Feld leer ist, normale Validierung durchführen lassen
-                    if (!vatId) return true;
+                  if (!match) {
+                    return {
+                      valid: false,
+                      message:
+                        "{{ 'customer.vat_form.invalid_format' | t | default: 'Ungültiges Format. Beispiel: DE123456789' }}",
+                    };
+                  }
 
-                    // Wenn die VAT-ID ungültig ist, Absenden verhindern
-                    if (vatIdValidationMessage.classList.contains('invalid')) {
-                      e.preventDefault();
-                      vatIdValidationMessage.scrollIntoView({ behavior: 'smooth' });
-                      return false;
-                    }
+                  const countryCode = match[1];
+                  const vatNumber = match[2];
 
-                    // Ansonsten den ursprünglichen Handler aufrufen, wenn er existiert
-                    if (typeof originalSubmitHandler === 'function') {
-                      return originalSubmitHandler.call(this, e);
-                    }
+                  // Liste der unterstützten EU-Länder
+                  const supportedCountries = [
+                    'AT',
+                    'BE',
+                    'BG',
+                    'CY',
+                    'CZ',
+                    'DE',
+                    'DK',
+                    'EE',
+                    'ES',
+                    'FI',
+                    'FR',
+                    'GR',
+                    'HR',
+                    'HU',
+                    'IE',
+                    'IT',
+                    'LT',
+                    'LU',
+                    'LV',
+                    'MT',
+                    'NL',
+                    'PL',
+                    'PT',
+                    'RO',
+                    'SE',
+                    'SI',
+                    'SK',
+                    'XI', // XI ist Nordirland
+                  ];
 
-                    return true;
+                  if (!supportedCountries.includes(countryCode)) {
+                    return {
+                      valid: false,
+                      message:
+                        "{{ 'customer.vat_form.country_not_supported' | t | default: 'Ländercode nicht unterstützt' }}",
+                    };
+                  }
+
+                  return {
+                    valid: true,
+                    countryCode,
+                    vatNumber,
+                    fullVatId: vatId.trim().toUpperCase(),
                   };
                 }
+
+                // Funktion zur Validierung der VAT-ID über die API
+                async function validateVatId(vatId) {
+                  if (isValidating || vatId === lastValidatedValue) return;
+
+                  const preValidation = preValidateVatId(vatId);
+                  if (!preValidation.valid) {
+                    updateValidationStatus('error', preValidation.message);
+                    return;
+                  }
+
+                  isValidating = true;
+                  lastValidatedValue = vatId;
+
+                  updateValidationStatus(
+                    'checking',
+                    "{{ 'customer.vat_form.validating' | t | default: 'Überprüfung läuft...' }}"
+                  );
+
+                  try {
+                    // API-Anfrage an vatcheckapi.com mit dem bereitgestellten API-Key
+                    const apiUrl = `https://api.vatcheckapi.com/v2/check?apikey=${API_KEY}&vat_number=${preValidation.fullVatId}`;
+                    console.log('VAT-Validierung API-Anfrage an:', apiUrl);
+
+                    const response = await fetch(apiUrl);
+                    const data = await response.json();
+
+                    console.log('VAT-Validierung Antwort:', data);
+
+                    // Verarbeitung der API-Antwort
+                    if (data.format_valid && data.registration_info && data.registration_info.is_registered) {
+                      // Erfolgreich validiert
+                      updateValidationStatus(
+                        'success',
+                        "{{ 'customer.vat_form.valid' | t | default: 'Gültige Umsatzsteuer-ID' }}",
+                        data.registration_info
+                      );
+                    } else if (data.format_valid && !data.registration_info.is_registered) {
+                      // Format gültig, aber nicht registriert
+                      updateValidationStatus(
+                        'error',
+                        "{{ 'customer.vat_form.invalid' | t | default: 'Ungültige Umsatzsteuer-ID oder nicht registriert' }}"
+                      );
+                    } else {
+                      // Ungültiges Format
+                      updateValidationStatus(
+                        'error',
+                        "{{ 'customer.vat_form.invalid_format' | t | default: 'Ungültiges Format der Umsatzsteuer-ID' }}"
+                      );
+                    }
+                  } catch (error) {
+                    console.error('Fehler bei der VAT-ID-Validierung:', error);
+                    updateValidationStatus(
+                      'error',
+                      "{{ 'customer.vat_form.validation_error' | t | default: 'Fehler bei der Validierung. Bitte versuchen Sie es später erneut.' }}"
+                    );
+                  } finally {
+                    isValidating = false;
+                  }
+                }
+
+                // Debounced Validierungsfunktion (Verzögerung, um API-Aufrufe zu begrenzen)
+                const debouncedValidate = debounce((value) => {
+                  validateVatId(value);
+                }, 500);
+
+                // Event-Listener für Eingabe
+                vatIdInput.addEventListener('input', (e) => {
+                  const value = e.target.value.trim();
+                  if (value.length >= 4) {
+                    debouncedValidate(value);
+                  } else {
+                    updateValidationStatus(
+                      'warning',
+                      "{{ 'customer.vat_form.enter_vat_id' | t | default: 'Bitte geben Sie eine Umsatzsteuer-ID ein' }}"
+                    );
+                    submitButton.disabled = true;
+                    submitButton.classList.add('disabled');
+                  }
+                });
+
+                // Event-Listener für Fokus-Verlust
+                vatIdInput.addEventListener('blur', (e) => {
+                  const value = e.target.value.trim();
+                  if (value.length >= 4) {
+                    validateVatId(value);
+                  }
+                });
+
+                // Initial-Status
+                updateValidationStatus(
+                  'warning',
+                  "{{ 'customer.vat_form.enter_vat_id' | t | default: 'Bitte geben Sie eine Umsatzsteuer-ID ein' }}"
+                );
+                submitButton.disabled = true;
+                submitButton.classList.add('disabled');
               }
             </script>
 
@@ -674,51 +721,58 @@
 
               .vat-id-validation-status {
                 margin-left: 10px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
+                font-size: 0.9em;
+                padding: 2px 8px;
+                border-radius: 4px;
               }
 
-              .vat-id-validation-status.valid {
+              .validation-success {
                 color: #28a745;
+                background-color: #f0fff4;
               }
 
-              .vat-id-validation-status.invalid {
+              .validation-error {
                 color: #dc3545;
+                background-color: #fff0f0;
               }
 
-              .vat-id-validation-status.checking .spinner {
-                animation: spin 1s linear infinite;
+              .validation-warning {
+                color: #fd7e14;
+                background-color: #fff9f0;
               }
 
-              @keyframes spin {
+              .validation-checking {
+                color: #17a2b8;
+                background-color: #f0f9ff;
+                position: relative;
+                padding-right: 25px;
+              }
+
+              .validation-checking:after {
+                content: '';
+                position: absolute;
+                right: 8px;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 12px;
+                height: 12px;
+                border: 2px solid currentColor;
+                border-radius: 50%;
+                border-right-color: transparent;
+                animation: rotate 1s linear infinite;
+              }
+
+              @keyframes rotate {
                 from {
-                  transform: rotate(0deg);
+                  transform: translateY(-50%) rotate(0deg);
                 }
                 to {
-                  transform: rotate(360deg);
+                  transform: translateY(-50%) rotate(360deg);
                 }
-              }
-
-              .vat-id-validation-message {
-                margin-top: 5px;
-                font-size: 0.85em;
-              }
-
-              .vat-id-validation-message.valid {
-                color: #28a745;
-              }
-
-              .vat-id-validation-message.invalid {
-                color: #dc3545;
-              }
-
-              .vat-id-validation-message.error {
-                color: #ffc107;
               }
 
               .company-info {
-                margin-top: 5px;
+                margin-top: 10px;
                 padding: 8px;
                 background-color: #f8f9fa;
                 border-radius: 4px;
@@ -728,6 +782,11 @@
               .button.disabled {
                 opacity: 0.65;
                 cursor: not-allowed;
+              }
+
+              .vat-id-validation-message {
+                margin-top: 5px;
+                width: 100%;
               }
             </style>
           </main>

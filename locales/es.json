@@ -530,7 +530,15 @@
       "city": "Ciudad",
       "country": "País",
       "vat_id": "Número de IVA",
-      "select_country": "Seleccionar un país"
+      "select_country": "Seleccionar un país",
+      "enter_vat_id": "Por favor, introduce un número de IVA",
+      "country_not_supported": "Código de país no compatible",
+      "invalid_format": "Formato inválido. Ejemplo: ES12345678X",
+      "validating": "Validación en curso...",
+      "valid": "Número de IVA válido",
+      "invalid": "Número de IVA inválido o no registrado",
+      "validation_error": "Error durante la validación. Por favor, inténtalo más tarde.",
+      "format_valid": "El formato es válido"
     }
   },
   "gift_cards": {
