@@ -43,6 +43,30 @@
         @include screen(med-small) {
           width: calc(100% - 20px);
         }
+        
+        /* Styles für intl-tel-input im Modal */
+        .iti {
+          width: 100% !important;
+          display: block;
+          position: relative;
+          z-index: 10;
+          
+          &__country-list {
+            z-index: 15;
+            position: absolute;
+            background-color: white;
+          }
+          
+          &__flag-container {
+            z-index: 11;
+          }
+          
+          &__selected-flag {
+            background-color: white !important;
+            z-index: 11;
+          }
+        }
+        
         .modal__close {
           border: 1px solid $blackColor;
           padding: 5px 11px;
