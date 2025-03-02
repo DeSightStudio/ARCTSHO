@@ -5,7 +5,7 @@
     .slider-container {
         .slick-arrow {
             @include center-vertically;
-            z-index: 9;
+            z-index: 1;
             &.slickNavPrev {
                 left: 20px;
             }
