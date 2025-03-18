@@ -433,6 +433,13 @@ if (!customElements.get('product-info')) {
         // Ereignis, wenn ein Artikel aus dem Warenkorb entfernt wird
         document.addEventListener('cart:item:removed', this.handleCartItemRemoved.bind(this));
         
+        // Ereignis, wenn ein Artikel zum Warenkorb hinzugefügt wird
+        document.addEventListener('cart:item:added', this.handleCartItemAdded.bind(this));
+        
+        // Auf Drawer öffnen/schließen reagieren
+        document.addEventListener('drawer:opened', this.handleCartUpdate.bind(this));
+        document.addEventListener('drawer:closed', this.handleCartUpdate.bind(this));
+        
         // Prüfen, ob das Produkt bereits im Warenkorb ist
         this.checkProductInCart();
       }
@@ -463,6 +470,38 @@ if (!customElements.get('product-info')) {
         });
         
         // Zusätzlich noch den regulären Check aufrufen, um sicherzugehen
+        this.checkProductInCart();
+      }
+      
+      handleCartItemAdded(event) {
+        // Wenn ein Artikel zum Warenkorb hinzugefügt wurde, Produktstatus aktualisieren
+        console.log('Artikel zum Warenkorb hinzugefügt - aktualisiere Produktstatus...', event.detail);
+        
+        // Sofortiges Update für PDP-Buttons
+        if (this.productId && event.detail && event.detail.productId === this.productId) {
+          console.log('Dieses Produkt wurde zum Warenkorb hinzugefügt:', this.productId);
+          
+          // Submit-Button und Text aktualisieren, wenn das Produkt im Warenkorb ist
+          const button = this.querySelector('button[type="submit"], button[name="add"], product-form button[name="add"]');
+          if (button) {
+            const productForm = button.closest('product-form');
+            
+            if (productForm && typeof productForm.updateButtonToViewCart === 'function') {
+              // Nutze die Methode in product-form, wenn verfügbar
+              productForm.updateButtonToViewCart();
+            } else {
+              // Fallback, wenn product-form nicht verfügbar ist
+              button.type = 'button';
+              button.setAttribute('onclick', 'event.preventDefault(); document.querySelector("cart-drawer").open();');
+              const buttonText = button.querySelector('span');
+              if (buttonText) {
+                buttonText.textContent = window.variantStrings.view_cart_button || 'View cart';
+              }
+            }
+          }
+        }
+        
+        // Zusätzlich noch die reguläre Überprüfung durchführen
         this.checkProductInCart();
       }
       

@@ -174,6 +174,14 @@ document.addEventListener('click', function(event) {
             
             // Event auslösen
             document.dispatchEvent(new CustomEvent('cart:updated'));
+            
+            // Zusätzliches Event mit Artikel-IDs auslösen
+            document.dispatchEvent(new CustomEvent('cart:item:added', {
+              detail: {
+                variantId: parseInt(formData.get('id')),
+                productId: productId
+              }
+            }));
           })
           .catch(error => {
             console.error('Fehler beim Hinzufügen zum Warenkorb:', error);

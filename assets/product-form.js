@@ -309,6 +309,9 @@ if (!customElements.get('product-form')) {
         // Ereignis, wenn ein Artikel aus dem Warenkorb entfernt wird
         document.addEventListener('cart:item:removed', this.handleCartItemRemoved.bind(this));
         
+        // Ereignis, wenn ein Artikel zum Warenkorb hinzugefügt wird
+        document.addEventListener('cart:item:added', this.handleCartItemAdded.bind(this));
+        
         // Prüfen, ob das Produkt bereits im Warenkorb ist
         this.checkProductInCart();
       }
@@ -365,6 +368,25 @@ if (!customElements.get('product-form')) {
           .catch(error => {
             console.error('Fehler beim Überprüfen des Warenkorbs:', error);
           });
+      }
+
+      // Methode, um auf Hinzufügen zum Warenkorb zu reagieren
+      handleCartItemAdded(event) {
+        if (!event.detail) return;
+        
+        console.log('Artikel zum Warenkorb hinzugefügt - aktualisiere Produktstatus...', event.detail);
+        const currentVariantId = parseInt(this.variantIdInput.value);
+        const currentProductId = parseInt(this.form.dataset.productId || this.closest('[data-product-id]')?.dataset.productId);
+        
+        if ((event.detail.variantId && event.detail.variantId === currentVariantId) || 
+            (event.detail.productId && event.detail.productId === currentProductId)) {
+          console.log('Dieser Artikel wurde zum Warenkorb hinzugefügt:', currentVariantId);
+          // Button aktualisieren
+          this.updateButtonToViewCart();
+        } else {
+          // Mache den regulären Check, falls die Varianten-ID nicht übereinstimmt
+          this.checkProductInCart();
+        }
       }
     }
   );
