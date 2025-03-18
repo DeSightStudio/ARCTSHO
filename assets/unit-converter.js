@@ -17,16 +17,30 @@ class UnitConverter {
     
     // Initial alle Werte als metrisch kennzeichnen
     this.tagMetricValues();
+
+    // Nach Filter-Anwendung erneut initialisieren
+    this.setupSectionReloadListener();
   }
 
   setupEventListeners() {
     // Auf DOMContentLoaded warten, dann erst Listener hinzufügen
     document.addEventListener('DOMContentLoaded', () => {
-      // Unit-Switcher Checkbox finden und Listener hinzufügen
-      const unitSwitcherInput = document.getElementById('unit-switcher');
+      this.attachUnitSwitcherListeners();
+    });
+  }
+
+  attachUnitSwitcherListeners() {
+    // Unit-Switcher Checkbox finden und Listener hinzufügen
+    const unitSwitcherInputs = document.querySelectorAll('#unit-switcher');
       
-      if (unitSwitcherInput) {
-        unitSwitcherInput.addEventListener('change', (event) => {
+    if (unitSwitcherInputs.length > 0) {
+      unitSwitcherInputs.forEach(unitSwitcherInput => {
+        // Bestehende Listener entfernen, um Duplikate zu vermeiden
+        const newInput = unitSwitcherInput.cloneNode(true);
+        unitSwitcherInput.parentNode.replaceChild(newInput, unitSwitcherInput);
+        
+        // Neuen Listener hinzufügen
+        newInput.addEventListener('change', (event) => {
           // Verhindern, dass das Event an Formulare weitergeleitet wird
           event.preventDefault();
           event.stopPropagation();
@@ -37,13 +51,71 @@ class UnitConverter {
           // Debug-Ausgabe
           console.log('Unit-Switcher wurde geändert:', event.target.checked ? 'imperial' : 'metric');
         }, { capture: true });
-        
-        // Debug-Ausgabe
-        console.log('Unit-Switcher Listener wurde hinzugefügt.');
-      } else {
-        console.warn('Unit-Switcher Input wurde nicht gefunden.');
+      });
+      
+      // Debug-Ausgabe
+      console.log('Unit-Switcher Listener wurden hinzugefügt:', unitSwitcherInputs.length);
+    } else {
+      console.warn('Unit-Switcher Input wurde nicht gefunden.');
+    }
+  }
+
+  setupSectionReloadListener() {
+    // Nach AJAX-Updates/Filteranwendung erneut initialisieren
+    document.addEventListener('section:load', this.handleSectionLoad.bind(this));
+    
+    // Shopify-spezifischer Event für AJAX-Filter
+    document.addEventListener('shopify:section:load', this.handleSectionLoad.bind(this));
+    
+    // Beobachter für DOM-Änderungen einrichten
+    this.setupMutationObserver();
+  }
+
+  handleSectionLoad(event) {
+    console.log('Sektion wurde geladen, initialisiere Unit-Switcher neu');
+    // Kurze Verzögerung, um sicherzustellen, dass DOM vollständig aktualisiert ist
+    setTimeout(() => {
+      this.attachUnitSwitcherListeners();
+      this.tagMetricValues();
+      // Aktuelle Einheit sofort anwenden
+      this.convertAllUnits();
+    }, 100);
+  }
+
+  setupMutationObserver() {
+    // Beobachter für DOM-Änderungen, besonders nach Filter-Anwendung
+    const observer = new MutationObserver((mutations) => {
+      let shouldReinitialize = false;
+      
+      for (const mutation of mutations) {
+        // Prüfen, ob relevante Filterelemente oder Produktlisten hinzugefügt/geändert wurden
+        if (mutation.type === 'childList' && 
+           (mutation.target.classList.contains('facets-container') ||
+            mutation.target.classList.contains('product-grid'))) {
+          shouldReinitialize = true;
+          break;
+        }
+      }
+      
+      if (shouldReinitialize) {
+        console.log('DOM-Änderung erkannt, initialisiere Unit-Switcher neu');
+        this.attachUnitSwitcherListeners();
+        this.tagMetricValues();
+        this.convertAllUnits();
       }
     });
+    
+    // Facets-Container und Produktliste beobachten
+    const facetsContainer = document.querySelector('.facets-container');
+    const productGrid = document.querySelector('.product-grid');
+    
+    if (facetsContainer) {
+      observer.observe(facetsContainer, { childList: true, subtree: true });
+    }
+    
+    if (productGrid) {
+      observer.observe(productGrid, { childList: true, subtree: true });
+    }
   }
 
   tagMetricValues() {
@@ -215,14 +287,8 @@ customElements.define('unit-switcher', UnitSwitcher);
 // Sofortige Initialisierung des Event-Listeners, falls DOM bereits geladen ist
 if (document.readyState === 'complete' || document.readyState === 'interactive') {
   setTimeout(() => {
-    const unitSwitcherInput = document.getElementById('unit-switcher');
-    if (unitSwitcherInput) {
-      unitSwitcherInput.addEventListener('change', (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        window.unitConverter.handleUnitSwitchChange(event);
-        console.log('Unit-Switcher nachträglich initialisiert');
-      }, { capture: true });
+    if (window.unitConverter) {
+      window.unitConverter.attachUnitSwitcherListeners();
     }
   }, 100);
 }
@@ -234,4 +300,26 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('Unit-Converter wurde manuell initialisiert.');
     window.unitConverter.init();
   }
+});
+
+// Event-Handler für Shopify-spezifische AJAX-Filter-Aktualisierungen
+document.addEventListener('shopify:section:load', () => {
+  console.log('Shopify Section geladen - Reinitialisiere Unit-Converter');
+  if (window.unitConverter) {
+    window.unitConverter.attachUnitSwitcherListeners();
+    window.unitConverter.tagMetricValues();
+    window.unitConverter.convertAllUnits();
+  }
+});
+
+// Handler für Collection-Filteranwendungen
+document.addEventListener('filter:updated', () => {
+  console.log('Filter wurden aktualisiert - Reinitialisiere Unit-Converter');
+  setTimeout(() => {
+    if (window.unitConverter) {
+      window.unitConverter.attachUnitSwitcherListeners();
+      window.unitConverter.tagMetricValues();
+      window.unitConverter.convertAllUnits();
+    }
+  }, 300); // Kurze Verzögerung, um sicherzustellen, dass DOM aktualisiert ist
 }); 
