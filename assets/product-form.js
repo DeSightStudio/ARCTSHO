@@ -39,7 +39,9 @@ if (!customElements.get('product-form')) {
           if (this.cart) {
             this.cart.open();
           } else {
-            window.location = window.routes.cart_url;
+            // Anstatt zur Cart-Seite zu navigieren, zeige eine Benachrichtigung an
+            console.log('Cart-Drawer nicht gefunden, zeige stattdessen eine Benachrichtigung');
+            this.showToastNotification(window.variantStrings.viewCartMessage || 'Produkt ist bereits im Warenkorb');
           }
           return;
         }
@@ -97,7 +99,9 @@ if (!customElements.get('product-form')) {
                 this.cart.renderContents(cart);
                 this.cart.open();
               } else {
-                window.location = window.routes.cart_url;
+                // Anstatt zur Cart-Seite zu navigieren, zeige eine Benachrichtigung an
+                console.log('Cart-Drawer nicht gefunden, zeige stattdessen eine Benachrichtigung');
+                this.showToastNotification(window.variantStrings.viewCartMessage || 'Produkt ist bereits im Warenkorb');
               }
               
               // Event auslösen, um andere Komponenten zu informieren
@@ -124,7 +128,9 @@ if (!customElements.get('product-form')) {
                     this.error = true;
                     return;
                   } else if (!this.cart) {
-                    window.location = window.routes.cart_url;
+                    // Anstatt zur Cart-Seite zu navigieren, zeige eine Benachrichtigung an
+                    console.log('Cart-Drawer nicht gefunden, zeige stattdessen eine Benachrichtigung');
+                    this.showToastNotification(window.variantStrings.addToCartSuccess || 'Produkt zum Warenkorb hinzugefügt!');
                     return;
                   }
 
@@ -194,7 +200,9 @@ if (!customElements.get('product-form')) {
                   this.error = true;
                   return;
                 } else if (!this.cart) {
-                  window.location = window.routes.cart_url;
+                  // Anstatt zur Cart-Seite zu navigieren, zeige eine Benachrichtigung an
+                  console.log('Cart-Drawer nicht gefunden, zeige stattdessen eine Benachrichtigung');
+                  this.showToastNotification(window.variantStrings.addToCartSuccess || 'Produkt zum Warenkorb hinzugefügt!');
                   return;
                 }
 
@@ -387,6 +395,71 @@ if (!customElements.get('product-form')) {
           // Mache den regulären Check, falls die Varianten-ID nicht übereinstimmt
           this.checkProductInCart();
         }
+      }
+
+      // Neue Hilfsmethode zum Anzeigen einer Toast-Benachrichtigung
+      showToastNotification(message) {
+        // Erstelle ein Benachrichtigungselement
+        const notification = document.createElement('div');
+        notification.className = 'cart-notification-toast';
+        notification.innerHTML = `
+          <div class="cart-notification-toast__content">
+            <span>${message}</span>
+          </div>
+        `;
+        
+        // Styles hinzufügen, falls nicht vorhanden
+        if (!document.getElementById('cart-notification-toast-styles')) {
+          const style = document.createElement('style');
+          style.id = 'cart-notification-toast-styles';
+          style.innerHTML = `
+            .cart-notification-toast {
+              position: fixed;
+              bottom: 20px;
+              right: 20px;
+              background-color: #19491e;
+              color: white;
+              padding: 12px 20px;
+              border-radius: 4px;
+              box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+              z-index: 9999;
+              transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+              transform: translateY(0);
+              opacity: 1;
+            }
+            .cart-notification-toast--hiding {
+              transform: translateY(10px);
+              opacity: 0;
+            }
+            .cart-notification-toast__content {
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              font-size: 14px;
+              font-weight: 500;
+            }
+            @media screen and (max-width: 749px) {
+              .cart-notification-toast {
+                bottom: 10px;
+                right: 10px;
+                left: 10px;
+                padding: 10px 15px;
+              }
+            }
+          `;
+          document.head.appendChild(style);
+        }
+        
+        // Zum Dokument hinzufügen
+        document.body.appendChild(notification);
+        
+        // Nach 3 Sekunden entfernen
+        setTimeout(() => {
+          notification.classList.add('cart-notification-toast--hiding');
+          setTimeout(() => {
+            document.body.removeChild(notification);
+          }, 300);
+        }, 3000);
       }
     }
   );

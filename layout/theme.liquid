@@ -15,6 +15,9 @@
       <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
     {%- endunless -%}
 
+    <!-- Cart-Redirect: Verhindert den Zugriff auf die /cart Seite -->
+    <script src="{{ 'cart-redirect.js' | asset_url }}" defer="defer"></script>
+
     <title>
       {{ page_title }}
       {%- if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif -%}
