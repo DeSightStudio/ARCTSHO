@@ -178,7 +178,17 @@
       },
       "taxes_included": "Taxes incluses.",
       "duties_included": "Frais de douane inclus.",
-      "duties_and_taxes_included": "Frais de douane et taxes inclus."
+      "duties_and_taxes_included": "Frais de douane et taxes inclus.",
+      "plus_vat": "plus TVA",
+      "add_to_cart_button": "Ajouter au panier",
+      "product_specs": {
+        "length": "Longueur",
+        "width": "Largeur",
+        "height": "Hauteur",
+        "diameter": "Diamètre",
+        "weight": "Poids",
+        "dimensions_title": "Dimensions du produit"
+      }
     },
     "modal": {
       "label": "Galerie de supports multimédias"

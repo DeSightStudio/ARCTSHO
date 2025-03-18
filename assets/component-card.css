@@ -247,6 +247,23 @@
   .grid--2-col-tablet-down .card__content quick-add-bulk .quantity {
     width: auto;
   }
+
+  .card__article-number {
+    font-size: 0.8rem;
+  }
+  
+  .product-price-container {
+    margin-top: 0.4rem;
+  }
+  
+  .product-price-tax {
+    font-size: 0.75rem;
+  }
+  
+  .product-weight {
+    font-size: 0.8rem;
+    margin-top: 0.4rem;
+  }
 }
 
 .card-information quantity-popover volume-pricing {
@@ -592,4 +609,250 @@
   .grid__item:nth-child(8n) .product-card-wrapper:hover .shape--blob {
     clip-path: polygon(var(--shape--blob-5));
   }
+}
+
+/* Product Additional Information Styling */
+.card__article-number {
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  color: rgba(var(--color-foreground), 0.75);
+}
+
+.product-price-container {
+  display: flex;
+  flex-direction: column;
+  align-items: var(--text-alignment);
+  margin-top: 0.5rem;
+}
+
+.product-price-tax {
+  font-size: 0.8rem;
+  color: rgba(var(--color-foreground), 0.75);
+  margin-top: 0.2rem;
+}
+
+.info-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: rgba(var(--color-foreground), 0.1);
+  margin-left: 5px;
+  font-style: italic;
+  font-weight: bold;
+}
+
+.product-weight {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.weight-value {
+  font-weight: normal;
+}
+
+/* Produktkarten-Styling mit Hover-Effekt */
+.card-product__link {
+  display: block;
+  height: 100%;
+  position: relative;
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Initialer Zustand der Produktkarte */
+.card-product__content {
+  padding: 0.5rem 0;
+  transition: all 0.4s ease;
+}
+
+.card-product__content--initial {
+  opacity: 1;
+  visibility: visible;
+  position: relative;
+  z-index: 1;
+}
+
+.card-product__content--hover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.4s ease;
+  background-color: inherit;
+  padding: 0.5rem 0;
+  height: 100%;
+  z-index: 2;
+}
+
+/* Hover-Effekt */
+/*.card-wrapper:hover .card-product__content--initial {
+  opacity: 0;
+  visibility: hidden;
+}*/
+
+.card-wrapper:hover .card-product__content--hover {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Artikelnummer */
+.card__article-number {
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  color: rgba(var(--color-foreground), 0.75);
+}
+
+/* Preis-Container */
+.card-product__price-container {
+  display: flex;
+  flex-direction: column;
+  align-items: var(--text-alignment);
+  margin-top: 0.5rem;
+}
+
+/* Mehrwertsteuer-Hinweis */
+.card-product__price-tax {
+  display: flex;
+  align-items: center;
+  font-size: 0.8rem;
+  color: rgba(var(--color-foreground), 0.75);
+  margin-top: 0.2rem;
+}
+
+.card-product__vat-info-button {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.info-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: rgba(var(--color-foreground), 0.1);
+  margin-left: 5px;
+  font-style: italic;
+  font-weight: bold;
+  position: relative;
+  z-index: 5;
+}
+
+.info-icon:hover {
+  background-color: rgba(var(--color-foreground), 0.15);
+}
+
+/* Gewichtsanzeige */
+.card-product__weight {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.weight-value {
+  font-weight: normal;
+}
+
+/* Spezifikationen-Liste für Hover-Zustand */
+.card-product__specs-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.card-product__specs-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.card-product__specs-label {
+  font-weight: 500;
+}
+
+/* Add-to-Cart Button */
+.card-product__actions {
+  margin-top: 0.75rem;
+  z-index: 5;
+  position: relative;
+}
+
+.card-product__add-form {
+  z-index: 6;
+}
+
+.card-product__add-button {
+  width: 100%;
+  z-index: 6;
+}
+
+@media screen and (max-width: 749px) {
+  .card__article-number {
+    font-size: 0.8rem;
+  }
+  
+  .card-product__price-container {
+    margin-top: 0.4rem;
+  }
+  
+  .card-product__price-tax {
+    font-size: 0.75rem;
+  }
+  
+  .card-product__weight {
+    font-size: 0.8rem;
+    margin-top: 0.4rem;
+  }
+
+  .card-product__specs-item {
+    font-size: 0.8rem;
+  }
+}
+
+/* Badge-Anpassungen */
+.badge--top-right {
+  top: 0;
+  right: 0;
+  bottom: auto;
+  left: auto;
+  font-weight: bold;
+  padding: 0.25rem 0.5rem;
+  z-index: 3;
+}
+
+.color-accent-1 {
+  background-color: rgb(5, 71, 10); /* Dunkelgrün */
+  color: #ffffff;
+}
+
+/* Ausverkauft-Button Styling */
+.card-product__add-button.button--disabled {
+  background-color: rgb(100, 100, 100, 0.15);
+  color: #666;
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+/* Ausverkauft-Text in der Karte */
+.ausverkauft-container {
+  width: 100%;
+  text-align: center;
+  padding: 10px 0;
+  background-color: rgba(100, 100, 100, 0.1);
+  font-weight: 500;
+  color: #666;
+  font-size: 1.1rem;
+  border-radius: 2px;
 }

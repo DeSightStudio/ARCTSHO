@@ -178,7 +178,17 @@
       "product_variants": "Variantes de producto",
       "taxes_included": "Impuestos incluidos.",
       "duties_included": "Aranceles incluidos.",
-      "duties_and_taxes_included": "Aranceles e impuestos incluidos."
+      "duties_and_taxes_included": "Aranceles e impuestos incluidos.",
+      "plus_vat": "más IVA",
+      "add_to_cart_button": "Añadir al carrito",
+      "product_specs": {
+        "length": "Longitud",
+        "width": "Anchura",
+        "height": "Altura",
+        "diameter": "Diámetro",
+        "weight": "Peso",
+        "dimensions_title": "Dimensiones del producto"
+      }
     },
     "modal": {
       "label": "Galería multimedia"

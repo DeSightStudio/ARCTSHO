@@ -190,7 +190,17 @@
       "article": "Artikel",
       "tax": "MwSt.",
       "tax_info": "Alle Preise zzgl. der gesetzlichen Mehrwertsteuer",
-      "from": "Ab"
+      "from": "Ab",
+      "plus_vat": "plus VAT",
+      "add_to_cart_button": "In den Warenkorb",
+      "product_specs": {
+        "length": "Länge",
+        "width": "Breite",
+        "height": "Höhe",
+        "diameter": "Durchmesser",
+        "weight": "Gewicht",
+        "dimensions_title": "Produktmaße"
+      }
     },
     "modal": {
       "label": "Medien-Galerie"

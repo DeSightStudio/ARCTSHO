@@ -123,6 +123,16 @@
       "sku": "SKU",
       "on_sale": "Sale",
       "product_variants": "Product variants",
+      "plus_vat": "plus VAT",
+      "add_to_cart_button": "Add to cart",
+      "product_specs": {
+        "length": "Length",
+        "width": "Width",
+        "height": "Height",
+        "diameter": "Diameter",
+        "weight": "Weight",
+        "dimensions_title": "Product dimensions"
+      },
       "media": {
         "gallery_viewer": "Gallery Viewer",
         "load_image": "Load image {{ index }} in gallery view",

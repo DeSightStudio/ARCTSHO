@@ -178,7 +178,17 @@
       "product_variants": "Varianti di prodotto",
       "taxes_included": "Imposte incluse.",
       "duties_included": "Dazi inclusi.",
-      "duties_and_taxes_included": "Dazi e imposte inclusi."
+      "duties_and_taxes_included": "Dazi e imposte inclusi.",
+      "plus_vat": "più IVA",
+      "add_to_cart_button": "Aggiungi al carrello",
+      "product_specs": {
+        "length": "Lunghezza",
+        "width": "Larghezza",
+        "height": "Altezza",
+        "diameter": "Diametro",
+        "weight": "Peso",
+        "dimensions_title": "Dimensioni del prodotto"
+      }
     },
     "modal": {
       "label": "Galleria contenuti multimediali"
