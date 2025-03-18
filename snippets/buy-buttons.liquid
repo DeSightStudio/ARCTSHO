@@ -72,7 +72,10 @@
           -%}
           <button
             id="ProductSubmitButton-{{ section_id }}"
-            type="submit"
+            type="{% if product.selected_or_first_available_variant.available == false or quantity_rule_soldout or product.selected_or_first_available_variant == null %}submit{% else %}{% assign product_in_cart = false %}{% for item in cart.items %}{% if item.product_id == product.id %}{% assign product_in_cart = true %}{% break %}{% endif %}{% endfor %}{% if product_in_cart %}button{% else %}submit{% endif %}{% endif %}"
+            {% if product_in_cart %}
+              onclick="event.preventDefault(); document.querySelector('cart-drawer').open();"
+            {% endif %}
             name="add"
             class="product-form__submit button button--full-width {% if show_dynamic_checkout %}button--secondary{% else %}button--primary{% endif %}"
             {% if product.selected_or_first_available_variant.available == false
@@ -88,7 +91,11 @@
               {%- elsif product.selected_or_first_available_variant.available == false or quantity_rule_soldout -%}
                 {{ 'products.product.sold_out' | t }}
               {%- else -%}
-                {{ 'products.product.add_to_cart' | t }}
+                {% if product_in_cart %}
+                  {{ 'products.product.view_cart_button' | t }}
+                {% else %}
+                  {{ 'products.product.add_to_cart' | t }}
+                {% endif %}
               {%- endif -%}
             </span>
             {%- render 'loading-spinner' -%}

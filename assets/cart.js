@@ -1,3 +1,184 @@
+// Initialisiere variantStrings aus cartStrings
+window.variantStrings = window.variantStrings || {};
+window.variantStrings.view_cart_button = window.variantStrings.view_cart_button || 'View cart';
+
+// Debug-Logging für Produktkarten und Warenkorb
+console.log('cart.js geladen. variantStrings:', window.variantStrings);
+
+// Funktion zum Aktualisieren der Produktkarten, die auf jeder Seite genutzt werden kann
+function updateProductCards() {
+  console.log('Aktualisiere Produktkarten basierend auf dem Warenkorb');
+  
+  // Prüfen, ob Produktkarten auf der Seite existieren
+  const productCards = document.querySelectorAll('.card-product__actions');
+  if (!productCards.length) {
+    console.log('Keine Produktkarten gefunden');
+    return;
+  }
+  
+  console.log(`${productCards.length} Produktkarten gefunden`);
+  
+  // Abrufen der aktuellen Warenkorbdaten
+  fetch(`${routes.cart_url}.js`)
+    .then(response => response.json())
+    .then(cart => {
+      console.log('Warenkorb geladen:', cart);
+      
+      // Erstelle eine Liste der Produkt-IDs im Warenkorb
+      const cartProductIds = cart.items.map(item => item.product_id);
+      console.log('Produkte im Warenkorb:', cartProductIds);
+      
+      // Aktualisiere die Schaltflächen für jede Produktkarte
+      productCards.forEach((card, index) => {
+        const addForm = card.querySelector('.card-product__add-form');
+        if (!addForm) {
+          console.log(`Karte ${index}: Kein Add-Formular gefunden`);
+          return;
+        }
+        
+        // Extrahiere die Produkt-ID direkt aus dem Formular
+        const productId = parseInt(addForm.dataset.productId);
+        if (!productId) {
+          console.log(`Karte ${index}: Keine Produkt-ID gefunden`, addForm);
+          return;
+        }
+        
+        console.log(`Karte ${index}: Produkt-ID ${productId}`);
+        
+        // Prüfen, ob dieses Produkt im Warenkorb ist
+        const isInCart = cartProductIds.includes(productId);
+        console.log(`Produkt ${productId} ist im Warenkorb: ${isInCart}`);
+        
+        // Aktualisiere das UI entsprechend
+        if (isInCart && addForm.style.display !== 'none') {
+          console.log(`Produkt ${productId} ist im Warenkorb - zeige "Zum Warenkorb"-Button`);
+          
+          // Wenn bereits im Warenkorb, zeige "Zum Warenkorb"-Button
+          addForm.style.display = 'none';
+          
+          // Prüfen, ob bereits ein "Zum Warenkorb"-Button existiert
+          let viewCartButton = card.querySelector('button.card-product__add-button');
+          
+          if (!viewCartButton) {
+            viewCartButton = document.createElement('button');
+            viewCartButton.type = 'button';
+            viewCartButton.className = 'card-product__add-button button button--full-width button--primary';
+            viewCartButton.setAttribute('onclick', 'event.stopPropagation(); document.querySelector("cart-drawer").open();');
+            viewCartButton.innerHTML = `<span>${window.variantStrings.view_cart_button}</span>`;
+            card.appendChild(viewCartButton);
+            console.log(`"Zum Warenkorb"-Button für Produkt ${productId} erstellt`);
+          }
+        } else if (!isInCart && addForm.style.display === 'none') {
+          console.log(`Produkt ${productId} ist nicht im Warenkorb - zeige "In den Warenkorb"-Button`);
+          
+          // Wenn nicht im Warenkorb, zeige "In den Warenkorb"-Button
+          const viewCartButton = card.querySelector('button.card-product__add-button');
+          if (viewCartButton) {
+            viewCartButton.remove();
+            console.log(`"Zum Warenkorb"-Button für Produkt ${productId} entfernt`);
+          }
+          addForm.style.display = 'block';
+        }
+      });
+      
+      // Event auslösen, um andere Komponenten zu informieren
+      document.dispatchEvent(new CustomEvent('product-cards:updated'));
+    })
+    .catch(error => {
+      console.error('Fehler beim Abrufen des Warenkorbs:', error);
+    });
+}
+
+//-----------------------------------------------
+// Event-Listener für DOM-Initialisierung und Warenkorb-Updates
+//-----------------------------------------------
+
+// Hinzufügen eines Event-Listeners für die Initialisierung der Produktkarten 
+// nach der DOM-Initialisierung
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('DOM geladen - initialisiere Produktkarten...');
+  
+  // Initiale Aktualisierung der Produktkarten basierend auf dem Warenkorb
+  setTimeout(function() {
+    updateProductCards();
+  }, 500); // Kurze Verzögerung, um sicherzustellen, dass alles geladen ist
+});
+
+// Event-Listener für Warenkorbaktualisierungen
+document.addEventListener('cart:updated', function(event) {
+  console.log('Warenkorb aktualisiert - aktualisiere Produktkarten...', event);
+  setTimeout(function() {
+    updateProductCards();
+  }, 500);
+});
+
+// Überprüfe, ob ein Produkt bereits im Warenkorb ist, bevor es hinzugefügt wird
+document.addEventListener('click', function(event) {
+  const addToCartButton = event.target.closest('.card-product__add-form button[type="submit"]');
+  
+  if (addToCartButton) {
+    event.preventDefault();
+    
+    const form = addToCartButton.closest('form');
+    if (!form) return;
+    
+    const productId = parseInt(form.dataset.productId);
+    if (!productId) return;
+    
+    console.log('Hinzufügen-Button geklickt für Produkt', productId);
+    
+    // Überprüfen, ob das Produkt bereits im Warenkorb ist
+    fetch(`${routes.cart_url}.js`)
+      .then(response => response.json())
+      .then(cart => {
+        console.log('Warenkorb-Daten geladen:', cart);
+        const productInCart = cart.items.some(item => item.product_id === productId);
+        
+        if (productInCart) {
+          console.log('Produkt bereits im Warenkorb - öffne Drawer');
+          // Wenn bereits im Warenkorb, öffne den Cart-Drawer anstatt zur Warenkorb-Seite zu navigieren
+          const cartDrawer = document.querySelector('cart-drawer');
+          if (cartDrawer) {
+            cartDrawer.open();
+          }
+        } else {
+          console.log('Produkt noch nicht im Warenkorb - füge hinzu');
+          // Wenn nicht im Warenkorb, zum Warenkorb hinzufügen
+          // FormData für den Versand vorbereiten
+          const formData = new FormData(form);
+          
+          // Menge auf 1 setzen, unabhängig davon, was im Formular steht
+          formData.set('quantity', '1');
+          
+          // Zum Warenkorb hinzufügen
+          fetch(routes.cart_add_url, {
+            method: 'POST',
+            body: formData
+          })
+          .then(response => response.json())
+          .then(data => {
+            console.log('Produkt zum Warenkorb hinzugefügt', data);
+            
+            // Aktualisiere die Produktkarten
+            updateProductCards();
+            
+            // Warenkorb-Drawer öffnen
+            const cartDrawer = document.querySelector('cart-drawer');
+            if (cartDrawer) {
+              cartDrawer.open();
+            }
+            
+            // Event auslösen
+            document.dispatchEvent(new CustomEvent('cart:updated'));
+          })
+          .catch(error => {
+            console.error('Fehler beim Hinzufügen zum Warenkorb:', error);
+          });
+        }
+      });
+  }
+});
+
 class CartRemoveButton extends HTMLElement {
   constructor() {
     super();
@@ -17,12 +198,14 @@ class CartItems extends HTMLElement {
     super();
     this.lineItemStatusElement =
       document.getElementById('shopping-cart-line-item-status') || document.getElementById('CartDrawer-LineItemStatus');
+    this.currentItemCount = Array.from(this.querySelectorAll('[name="updates[]"]'))
+      .reduce((total, quantityInput) => total + parseInt(quantityInput.value), 0);
 
-    const debouncedOnChange = debounce((event) => {
+    this.debouncedOnChange = debounce((event) => {
       this.onChange(event);
     }, ON_CHANGE_DEBOUNCE_TIMER);
 
-    this.addEventListener('change', debouncedOnChange.bind(this));
+    this.addEventListener('change', this.debouncedOnChange.bind(this));
   }
 
   cartUpdateUnsubscriber = undefined;
@@ -146,12 +329,20 @@ class CartItems extends HTMLElement {
   updateQuantity(line, quantity, name, variantId) {
     this.enableLoading(line);
 
+    // Begrenze die Menge auf 1, wenn sie größer ist
+    if (quantity > 1) {
+      console.log(`Menge ${quantity} größer als 1 - setze auf 1 zurück`);
+      quantity = 1;
+    }
+
     const body = JSON.stringify({
       line,
       quantity,
       sections: this.getSectionsToRender().map((section) => section.section),
       sections_url: window.location.pathname,
     });
+
+    console.log(`Aktualisiere Warenkorb: Zeile ${line}, Menge ${quantity}`);
 
     fetch(`${routes.cart_change_url}`, { ...fetchConfig(), ...{ body } })
       .then((response) => {
@@ -167,6 +358,33 @@ class CartItems extends HTMLElement {
           quantityElement.value = quantityElement.getAttribute('value');
           this.updateLiveRegions(line, parsedState.errors);
           return;
+        }
+
+        // Überprüfen, ob das Produkt in parsedState mehr als einmal enthalten ist und es auf 1 beschränken
+        if (quantity > 0) {
+          const currentItem = this.querySelector(`[data-index="${line}"]`);
+          if (currentItem) {
+            const productId = parseInt(currentItem.dataset.productId);
+            console.log(`Produkt-ID für Zeile ${line}: ${productId}`);
+            
+            if (productId) {
+              // Alle Items mit dieser Produkt-ID finden
+              const matchingItems = parsedState.items.filter(item => item.product_id === productId);
+              console.log(`Gefundene übereinstimmende Items: ${matchingItems.length}`);
+              
+              // Die Gesamtmenge dieses Produkts berechnen
+              const totalQuantity = matchingItems.reduce((total, item) => total + item.quantity, 0);
+              console.log(`Gesamtmenge des Produkts im Warenkorb: ${totalQuantity}`);
+              
+              // Wenn mehr als 1 vorhanden, Menge auf 1 begrenzen
+              if (totalQuantity > 1) {
+                console.log(`Mehr als 1 Stück im Warenkorb, reduziere auf 1`);
+                // Aktualisiere die Menge auf 1 und breche den aktuellen Vorgang ab
+                this.updateQuantity(line, 1, name);
+                return;
+              }
+            }
+          }
         }
 
         this.classList.toggle('is-empty', parsedState.item_count === 0);
@@ -236,7 +454,23 @@ class CartItems extends HTMLElement {
   }
 
   getSectionInnerHTML(html, selector) {
-    return new DOMParser().parseFromString(html, 'text/html').querySelector(selector).innerHTML;
+    return new DOMParser()
+      .parseFromString(html, 'text/html')
+      .querySelector(selector).innerHTML;
+  }
+
+  // Methode, um zu prüfen, ob ein Produkt bereits im Warenkorb ist
+  checkProductInCart(productId) {
+    return fetch(`${routes.cart_url}.js`)
+      .then(response => response.json())
+      .then(cart => {
+        const productsInCart = cart.items.filter(item => item.product_id === productId);
+        return productsInCart.length > 0;
+      })
+      .catch(error => {
+        console.error('Error checking cart:', error);
+        return false;
+      });
   }
 
   enableLoading(line) {

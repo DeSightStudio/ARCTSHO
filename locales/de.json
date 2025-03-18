@@ -191,8 +191,9 @@
       "tax": "MwSt.",
       "tax_info": "Alle Preise zzgl. der gesetzlichen Mehrwertsteuer",
       "from": "Ab",
-      "plus_vat": "plus VAT",
+      "plus_vat": "zzgl. MwSt.",
       "add_to_cart_button": "In den Warenkorb",
+      "view_cart_button": "Zum Warenkorb",
       "product_specs": {
         "length": "Länge",
         "width": "Breite",

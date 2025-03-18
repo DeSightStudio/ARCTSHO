@@ -75,10 +75,72 @@ class ProductCard extends HTMLElement {
 
   handleAddToCart(event) {
     // Event-Propagation stoppen, damit Link nicht ausgelöst wird
+    event.preventDefault();
     event.stopPropagation();
     
-    // AJAX-Warenkorb-Hinzufügen (optional)
-    // Hier kann später AJAX-Funktionalität hinzugefügt werden
+    const form = event.currentTarget;
+    const productId = parseInt(form.dataset.productId);
+    
+    if (!productId) {
+      console.error('Keine Produkt-ID gefunden!');
+      return;
+    }
+    
+    console.log('Produkt zum Warenkorb hinzufügen (ProductCard Handler)', productId);
+    
+    // Prüfen, ob das Produkt bereits im Warenkorb ist
+    fetch(`${routes.cart_url}.js`)
+      .then(response => response.json())
+      .then(cart => {
+        const productInCart = cart.items.some(item => item.product_id === productId);
+        
+        if (productInCart) {
+          console.log('Produkt bereits im Warenkorb - Öffne Drawer');
+          // Wenn bereits im Warenkorb, Drawer öffnen
+          const cartDrawer = document.querySelector('cart-drawer');
+          if (cartDrawer) {
+            cartDrawer.open();
+          }
+        } else {
+          console.log('Produkt noch nicht im Warenkorb - Füge hinzu');
+          
+          // FormData erstellen
+          const formData = new FormData(form);
+          
+          // Sicherstellen, dass die Menge 1 ist
+          formData.set('quantity', '1');
+          
+          // AJAX-Warenkorb-Hinzufügen
+          fetch(routes.cart_add_url, {
+            method: 'POST',
+            body: formData
+          })
+          .then(response => response.json())
+          .then(data => {
+            console.log('Produkt erfolgreich hinzugefügt', data);
+            
+            // Warenkorb-Drawer öffnen
+            const cartDrawer = document.querySelector('cart-drawer');
+            if (cartDrawer) {
+              cartDrawer.open();
+            }
+            
+            // Produktkarten aktualisieren
+            if (typeof updateProductCards === 'function') {
+              setTimeout(updateProductCards, 100);
+            }
+            
+            // Event auslösen, um andere Komponenten zu informieren
+            document.dispatchEvent(new CustomEvent('cart:updated'));
+          })
+          .catch(error => {
+            console.error('Fehler beim Hinzufügen zum Warenkorb:', error);
+          });
+        }
+      })
+      .catch(error => {
+        console.error('Fehler beim Überprüfen des Warenkorbs:', error);
+      });
   }
 
   handleUnitChange(event) {

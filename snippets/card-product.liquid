@@ -293,21 +293,41 @@
           {% comment %} Add to Cart Button (außerhalb des Link-Bereichs) {% endcomment %}
           <div class="card-product__actions">
             {%- if card_product.available -%}
-              <form
-                method="post"
-                action="{{ routes.cart_add_url }}"
-                class="card-product__add-form"
-                onclick="event.stopPropagation();"
-              >
-                <input type="hidden" name="id" value="{{ card_product.selected_or_first_available_variant.id }}">
+              {%- assign product_in_cart = false -%}
+              {%- for item in cart.items -%}
+                {%- if item.product_id == card_product.id -%}
+                  {%- assign product_in_cart = true -%}
+                  {%- break -%}
+                {%- endif -%}
+              {%- endfor -%}
+
+              {%- if product_in_cart -%}
                 <button
-                  type="submit"
-                  class="card-product__add-button button button--full-width button--secondary"
-                  onclick="event.stopPropagation();"
+                  type="button"
+                  class="card-product__add-button button button--full-width button--primary"
+                  onclick="event.stopPropagation(); document.querySelector('cart-drawer').open();"
                 >
-                  <span>{{ 'products.product.add_to_cart_button' | t }}</span>
+                  <span>{{ 'products.product.view_cart_button' | t }}</span>
                 </button>
-              </form>
+              {%- else -%}
+                <form
+                  method="post"
+                  action="{{ routes.cart_add_url }}"
+                  class="card-product__add-form"
+                  onclick="event.stopPropagation();"
+                  data-product-id="{{ card_product.id }}"
+                >
+                  <input type="hidden" name="id" value="{{ card_product.selected_or_first_available_variant.id }}">
+                  <input type="hidden" name="quantity" value="1">
+                  <button
+                    type="submit"
+                    class="card-product__add-button button button--full-width button--secondary"
+                    onclick="event.stopPropagation();"
+                  >
+                    <span>{{ 'products.product.add_to_cart_button' | t }}</span>
+                  </button>
+                </form>
+              {%- endif -%}
             {%- else -%}
               <span class="sold-out-button">{{ 'products.product.sold_out' | t }}</span>
             {%- endif -%}

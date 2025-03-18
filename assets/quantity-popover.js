@@ -87,3 +87,42 @@ if (!customElements.get('quantity-popover')) {
     }
   );
 }
+
+if (!customElements.get('quantity-input')) {
+  customElements.define(
+    'quantity-input',
+    class QuantityInput extends HTMLElement {
+      constructor() {
+        super();
+        this.input = this.querySelector('input');
+        this.changeEvent = new Event('change', { bubbles: true });
+        this.querySelectorAll('button').forEach(
+          (button) => button.addEventListener('click', this.onButtonClick.bind(this))
+        );
+        
+        // Setze max auf 1 und stelle sicher, dass die Menge nicht überschritten wird
+        if (this.input) {
+          this.input.setAttribute('max', '1');
+          if (parseInt(this.input.value) > 1) {
+            this.input.value = 1;
+            this.input.dispatchEvent(this.changeEvent);
+          }
+        }
+      }
+
+      onButtonClick(event) {
+        event.preventDefault();
+        const previousValue = this.input.value;
+
+        event.target.name === 'plus' ? this.input.stepUp() : this.input.stepDown();
+        
+        // Stelle sicher, dass die Menge nie größer als 1 ist
+        if (parseInt(this.input.value) > 1) {
+          this.input.value = 1;
+        }
+        
+        if (previousValue !== this.input.value) this.input.dispatchEvent(this.changeEvent);
+      }
+    }
+  );
+}

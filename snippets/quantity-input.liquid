@@ -10,6 +10,18 @@
   {% render 'quantity-input' variant: variant %}
 {% endcomment %}
 
+{% assign quantity_name = quantity_name | default: 'quantity' %}
+{% assign show_label = show_label | default: true %}
+{% assign label = label | default: 'Quantity' %}
+{% assign name = name | default: quantity_name %}
+{% assign value = value | default: 1 %}
+{% assign min = min | default: 1 %}
+{% assign max = max | default: 1 %}
+{% assign step = step | default: 1 %}
+{% assign form = form | default: undefined %}
+{% assign readonly = readonly | default: false %}
+{% assign hidden = hidden | default: false %}
+
 <quantity-input class="quantity cart-quantity">
   <button class="quantity__button" name="minus" type="button">
     <span class="visually-hidden">
