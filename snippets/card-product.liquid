@@ -148,7 +148,7 @@
               <div class="card__article-number">
                 <span>
                   {{- 'products.product.article' | t }}
-                  {{ card_product.id -}}
+                  {{ card_product.selected_or_first_available_variant.sku | default: card_product.id -}}
                 </span>
               </div>
               <h3
