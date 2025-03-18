@@ -430,6 +430,9 @@ if (!customElements.get('product-info')) {
         // Auf Warenkorb-Update-Events reagieren
         document.addEventListener('cart:updated', this.handleCartUpdate.bind(this));
         
+        // Ereignis, wenn ein Artikel aus dem Warenkorb entfernt wird
+        document.addEventListener('cart:item:removed', this.handleCartItemRemoved.bind(this));
+        
         // Prüfen, ob das Produkt bereits im Warenkorb ist
         this.checkProductInCart();
       }
@@ -437,6 +440,29 @@ if (!customElements.get('product-info')) {
       handleCartUpdate(event) {
         // Beim Warenkorb-Update den Produkt-Status aktualisieren
         console.log('Warenkorb aktualisiert - aktualisiere Produktstatus...');
+        this.checkProductInCart();
+      }
+      
+      handleCartItemRemoved(event) {
+        // Wenn ein Artikel aus dem Warenkorb entfernt wurde, Produktstatus aktualisieren
+        console.log('Artikel aus dem Warenkorb entfernt - aktualisiere Produktstatus...', event.detail);
+        
+        // Sofort den Button-Status aktualisieren, ohne auf den Server-Aufruf zu warten
+        // Besonders wichtig für Add-Ons wie Certificate of Origin
+        const productForms = document.querySelectorAll('product-form');
+        productForms.forEach(form => {
+          const variantId = parseInt(form.querySelector('[name="id"]')?.value);
+          
+          // Wenn es die gleiche Variante ist, die entfernt wurde
+          if (variantId === event.detail.variantId) {
+            console.log('Entfernter Artikel gefunden auf der aktuellen Seite:', variantId);
+            if (typeof form.updateButtonToAddToCart === 'function') {
+              form.updateButtonToAddToCart();
+            }
+          }
+        });
+        
+        // Zusätzlich noch den regulären Check aufrufen, um sicherzugehen
         this.checkProductInCart();
       }
       
@@ -449,24 +475,39 @@ if (!customElements.get('product-info')) {
             const productInCart = cart.items.some(item => item.product_id === this.productId);
             
             // Submit-Button und Text aktualisieren, wenn das Produkt im Warenkorb ist
-            const button = this.querySelector('button[type="submit"], button[name="add"]');
+            const button = this.querySelector('button[type="submit"], button[name="add"], product-form button[name="add"]');
             if (button) {
+              const productForm = button.closest('product-form');
+              
               if (productInCart) {
                 console.log('Produkt ist im Warenkorb - aktualisiere Button');
-                button.type = 'button';
-                button.setAttribute('onclick', 'event.preventDefault(); document.querySelector("cart-drawer").open();');
-                const buttonText = button.querySelector('span');
-                if (buttonText) {
-                  buttonText.textContent = window.variantStrings.view_cart_button || 'View cart';
+                if (productForm && typeof productForm.updateButtonToViewCart === 'function') {
+                  // Nutze die Methode in product-form, wenn verfügbar
+                  productForm.updateButtonToViewCart();
+                } else {
+                  // Fallback, wenn product-form nicht verfügbar ist
+                  button.type = 'button';
+                  button.setAttribute('onclick', 'event.preventDefault(); document.querySelector("cart-drawer").open();');
+                  const buttonText = button.querySelector('span');
+                  if (buttonText) {
+                    buttonText.textContent = window.variantStrings.view_cart_button || 'View cart';
+                  }
                 }
               } else {
                 // Nur zurücksetzen, wenn der Button nicht deaktiviert ist (z.B. ausverkauft)
                 if (!button.hasAttribute('disabled')) {
-                  button.type = 'submit';
-                  button.removeAttribute('onclick');
-                  const buttonText = button.querySelector('span');
-                  if (buttonText) {
-                    buttonText.textContent = window.variantStrings.add_to_cart || 'Add to cart';
+                  console.log('Produkt ist nicht im Warenkorb - setze Button zurück');
+                  if (productForm && typeof productForm.updateButtonToAddToCart === 'function') {
+                    // Nutze die Methode in product-form, wenn verfügbar
+                    productForm.updateButtonToAddToCart();
+                  } else {
+                    // Fallback, wenn product-form nicht verfügbar ist
+                    button.type = 'submit';
+                    button.removeAttribute('onclick');
+                    const buttonText = button.querySelector('span');
+                    if (buttonText) {
+                      buttonText.textContent = window.variantStrings.addToCart || 'Add to cart';
+                    }
                   }
                 }
               }

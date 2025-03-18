@@ -186,7 +186,22 @@ class CartRemoveButton extends HTMLElement {
     this.addEventListener('click', (event) => {
       event.preventDefault();
       const cartItems = this.closest('cart-items') || this.closest('cart-drawer-items');
+      
+      // Speichere die Varianten-ID des entfernten Elements
+      const variantId = this.querySelector('button')?.dataset?.variantId;
+      
       cartItems.updateQuantity(this.dataset.index, 0);
+      
+      // Löse ein Event aus, wenn ein Artikel entfernt wurde
+      if (variantId) {
+        setTimeout(() => {
+          console.log('Artikel aus dem Warenkorb entfernt:', variantId);
+          document.dispatchEvent(new CustomEvent('cart:item:removed', { 
+            detail: { variantId: parseInt(variantId) }
+          }));
+          document.dispatchEvent(new CustomEvent('cart:updated'));
+        }, 300);
+      }
     });
   }
 }

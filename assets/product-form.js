@@ -15,6 +15,9 @@ if (!customElements.get('product-form')) {
         if (document.querySelector('cart-drawer')) this.submitButton.setAttribute('aria-haspopup', 'dialog');
 
         this.hideErrors = this.dataset.hideErrors === 'true';
+        
+        // Event-Listener für entfernte Warenkorb-Elemente
+        document.addEventListener('cart:item:removed', this.handleCartItemRemoved.bind(this));
       }
 
       onSubmitHandler(evt) {
@@ -74,6 +77,7 @@ if (!customElements.get('product-form')) {
         fetch(`${routes.cart_url}.js`)
           .then(response => response.json())
           .then(cart => {
+            // Prüfen, ob das Produkt bereits im Warenkorb ist (entweder durch Produkt-ID oder Varianten-ID)
             const isInCart = cart.items.some(item => {
               return (productId && item.product_id === productId) || 
                      (variantId && item.variant_id === variantId);
@@ -87,8 +91,7 @@ if (!customElements.get('product-form')) {
               this.submitButton.removeAttribute('aria-disabled');
               
               // Button-Typ ändern und Text aktualisieren
-              this.submitButton.type = 'button';
-              this.submitButtonText.textContent = window.variantStrings.view_cart_button || 'View cart';
+              this.updateButtonToViewCart();
               
               if (this.cart) {
                 this.cart.renderContents(cart);
@@ -134,8 +137,7 @@ if (!customElements.get('product-form')) {
                   this.error = false;
                   
                   // Button-Typ nach dem Hinzufügen ändern
-                  this.submitButton.type = 'button';
-                  this.submitButtonText.textContent = window.variantStrings.view_cart_button || 'View cart';
+                  this.updateButtonToViewCart();
                   
                   const quickAddModal = this.closest('quick-add-modal');
                   if (quickAddModal) {
@@ -205,8 +207,7 @@ if (!customElements.get('product-form')) {
                 this.error = false;
                 
                 // Button-Typ nach dem Hinzufügen ändern
-                this.submitButton.type = 'button';
-                this.submitButtonText.textContent = window.variantStrings.view_cart_button || 'View cart';
+                this.updateButtonToViewCart();
                 
                 const quickAddModal = this.closest('quick-add-modal');
                 if (quickAddModal) {
@@ -268,6 +269,31 @@ if (!customElements.get('product-form')) {
 
       get variantIdInput() {
         return this.form.querySelector('[name=id]');
+      }
+
+      // Neue Methode, um den Button in "Warenkorb anzeigen" zu ändern
+      updateButtonToViewCart() {
+        this.submitButton.type = 'button';
+        this.submitButton.setAttribute('onclick', 'event.preventDefault(); document.querySelector("cart-drawer").open();');
+        this.submitButtonText.textContent = window.variantStrings.view_cart_button || 'View cart';
+      }
+      
+      // Neue Methode, um den Button in "In den Warenkorb" zu ändern
+      updateButtonToAddToCart() {
+        this.submitButton.type = 'submit';
+        this.submitButton.removeAttribute('onclick');
+        this.submitButtonText.textContent = window.variantStrings.addToCart || 'Add to cart';
+      }
+
+      handleCartItemRemoved(event) {
+        // Wenn ein Artikel aus dem Warenkorb entfernt wurde, überprüfen, ob es dieser Artikel ist
+        const currentVariantId = parseInt(this.variantIdInput.value);
+        
+        if (currentVariantId === event.detail.variantId) {
+          console.log('Dieser Artikel wurde aus dem Warenkorb entfernt:', currentVariantId);
+          // Button zurücksetzen
+          this.updateButtonToAddToCart();
+        }
       }
     }
   );
