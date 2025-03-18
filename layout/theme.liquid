@@ -1,6 +1,9 @@
 <!doctype html>
 <html class="js" lang="{{ request.locale.iso_code }}">
   <head>
+    <!-- Cart-Redirect: Verhindert den Zugriff auf die /cart Seite - Muss am Anfang des Head-Bereichs geladen werden -->
+    <script src="{{ 'cart-redirect.js' | asset_url }}"></script>
+
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -14,9 +17,6 @@
     {%- unless settings.type_header_font.system? and settings.type_body_font.system? -%}
       <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
     {%- endunless -%}
-
-    <!-- Cart-Redirect: Verhindert den Zugriff auf die /cart Seite -->
-    <script src="{{ 'cart-redirect.js' | asset_url }}" defer="defer"></script>
 
     <title>
       {{ page_title }}
@@ -322,6 +322,27 @@
   </head>
 
   <body class="gradient{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">
+    {% if template == 'cart' %}
+      <script>
+        // Sofortige Umleitung von der Cart-Seite
+        (function () {
+          console.log('Cart-Seite erkannt - leite sofort um');
+          // Seite verstecken
+          document.body.style.display = 'none';
+          document.documentElement.style.display = 'none';
+
+          // Ladung stoppen
+          if (window.stop) window.stop();
+
+          // Für die Drawer-Öffnung nach Umleitung
+          localStorage.setItem('openCartDrawer', 'true');
+
+          // Zur Startseite umleiten
+          window.location.replace('/');
+        })();
+      </script>
+    {% endif %}
+
     <a class="skip-to-content-link button visually-hidden" href="#MainContent">
       {{ 'accessibility.skip_to_text' | t }}
     </a>

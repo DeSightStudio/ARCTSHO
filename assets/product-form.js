@@ -165,6 +165,11 @@ if (!customElements.get('product-form')) {
                   if (typeof updateProductCards === 'function') {
                     setTimeout(updateProductCards, 100);
                   }
+                  
+                  // Alle Produktkarten aktualisieren
+                  if (typeof updateAllProductCardStates === 'function') {
+                    setTimeout(updateAllProductCardStates, 100);
+                  }
                 })
                 .catch((e) => {
                   console.error(e);
@@ -237,6 +242,11 @@ if (!customElements.get('product-form')) {
                 if (typeof updateProductCards === 'function') {
                   setTimeout(updateProductCards, 100);
                 }
+                
+                // Alle Produktkarten aktualisieren
+                if (typeof updateAllProductCardStates === 'function') {
+                  setTimeout(updateAllProductCardStates, 100);
+                }
               })
               .catch((e) => {
                 console.error(e);
@@ -294,13 +304,25 @@ if (!customElements.get('product-form')) {
       }
 
       handleCartItemRemoved(event) {
+        console.log('Item aus Warenkorb entfernt Event empfangen:', event.detail);
+        
+        if (!event.detail) return;
+        
         // Wenn ein Artikel aus dem Warenkorb entfernt wurde, überprüfen, ob es dieser Artikel ist
         const currentVariantId = parseInt(this.variantIdInput.value);
+        const currentProductId = parseInt(this.form.dataset.productId || this.closest('[data-product-id]')?.dataset.productId);
         
-        if (currentVariantId === event.detail.variantId) {
-          console.log('Dieser Artikel wurde aus dem Warenkorb entfernt:', currentVariantId);
+        // Prüfe sowohl Varianten-ID als auch Produkt-ID für größere Zuverlässigkeit
+        if (currentVariantId === event.detail.variantId || 
+            (currentProductId && event.detail.productId && currentProductId === event.detail.productId)) {
+          console.log('Dieser Artikel wurde aus dem Warenkorb entfernt. Variante:', currentVariantId, 'Produkt:', currentProductId);
           // Button zurücksetzen
           this.updateButtonToAddToCart();
+        } else {
+          // Auch wenn es nicht exakt dieser Artikel ist, trotzdem den Warenkorb prüfen
+          // um den Button-Status zu aktualisieren (für Fälle mit mehreren gleichen Produkten)
+          console.log('Prüfe Warenkorbstatus nach Entfernen eines anderen Artikels');
+          this.checkProductInCart();
         }
       }
 

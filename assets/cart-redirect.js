@@ -1,14 +1,36 @@
 // Dieses Skript verhindert den Zugriff auf die /cart Seite und öffnet stattdessen den Cart-Drawer
+// Sofort ausführen, noch bevor die Seite geladen wird
 (function() {
-  // Prüfen, ob wir uns auf der /cart Seite befinden
+  // Verhindern, dass die Cart-Seite überhaupt angezeigt wird
   if (window.location.pathname === '/cart' || window.location.pathname.endsWith('/cart/')) {
-    console.log('Cart-Seite direkt aufgerufen - leite zur Startseite um und öffne Drawer');
+    console.log('Cart-Seite direkt aufgerufen - sofortige Umleitung zur Startseite');
     
-    // Zur Startseite umleiten
-    window.location.href = '/';
+    // Die aktuelle Seitenladung stoppen
+    if (typeof window.stop === 'function') {
+      window.stop();
+    } 
+    // Für ältere Browser
+    else if (typeof document.execCommand === 'function') {
+      document.execCommand('Stop');
+    }
     
     // Speichere Information im localStorage, dass der Drawer geöffnet werden soll
     localStorage.setItem('openCartDrawer', 'true');
+    
+    // Sofort zur Startseite umleiten, ohne die aktuelle Seite zu laden
+    window.location.replace('/');
+    return; // Weitere Ausführung stoppen
+  }
+  
+  // Verhindern, dass Stylesheets und andere Ressourcen für die Cart-Seite geladen werden
+  if (document.readyState === 'loading') {
+    document.addEventListener('readystatechange', function() {
+      if (document.readyState === 'interactive' && 
+          (window.location.pathname === '/cart' || window.location.pathname.endsWith('/cart/'))) {
+        // Wenn wir immer noch auf der Cart-Seite sind, erneut umleiten
+        window.location.replace('/');
+      }
+    });
   }
   
   // Bei DOMContentLoaded prüfen, ob wir den Drawer öffnen sollen
@@ -24,7 +46,7 @@
           // Flag zurücksetzen
           localStorage.removeItem('openCartDrawer');
         }
-      }, 500); // Kurze Verzögerung, um sicherzustellen dass alles geladen ist
+      }, 100); // Kürzere Verzögerung, um den Drawer schneller zu öffnen
     }
   });
   
@@ -50,50 +72,76 @@
     }
   });
   
-  // Überschreibe die native window.location Verhalten für /cart
-  const originalAssign = window.location.assign;
-  window.location.assign = function(url) {
+  // Überschreibe alle Methoden, die Navigation auslösen können
+  ['assign', 'replace', 'reload'].forEach(method => {
+    const original = window.location[method];
+    window.location[method] = function(url) {
+      if (typeof url === 'string' && (url === '/cart' || url.endsWith('/cart/') || url.includes('/cart?'))) {
+        console.log(`Abgefangener window.location.${method} Aufruf:`, url);
+        
+        const cartDrawer = document.querySelector('cart-drawer');
+        if (cartDrawer) {
+          cartDrawer.open();
+          return; // Verhindere die Weiterleitung
+        } else {
+          // Wenn kein Drawer verfügbar ist, zur Startseite leiten
+          return original.call(this, '/');
+        }
+      }
+      
+      // Ansonsten das normale Verhalten ausführen
+      return original.apply(this, arguments);
+    };
+  });
+  
+  // Überschreiben von window.open
+  const originalOpen = window.open;
+  window.open = function(url, ...args) {
     if (typeof url === 'string' && (url === '/cart' || url.endsWith('/cart/') || url.includes('/cart?'))) {
-      console.log('Abgefangener window.location.assign Aufruf:', url);
+      console.log('Abgefangener window.open Aufruf:', url);
       
       const cartDrawer = document.querySelector('cart-drawer');
       if (cartDrawer) {
         cartDrawer.open();
-        return; // Verhindere die Weiterleitung
+        return null; // Verhindere das Öffnen eines neuen Fensters
+      } else {
+        // Wenn kein Drawer verfügbar ist, zur Startseite leiten
+        return originalOpen.call(this, '/', ...args);
       }
     }
     
     // Ansonsten das normale Verhalten ausführen
-    return originalAssign.apply(this, arguments);
+    return originalOpen.apply(this, arguments);
   };
   
-  // Überschreibe window.location = für /cart
-  const originalDescriptor = Object.getOwnPropertyDescriptor(window, 'location');
-  const originalHref = originalDescriptor?.set || 
-                     function(val) { window.location.href = val; };
-  
-  // Definiere einen Getter und Setter für window.location
+  // Überschreibe window.location = für /cart (fortgeschrittene Methode)
   try {
-    Object.defineProperty(window, 'location', {
-      set: function(url) {
-        if (typeof url === 'string' && (url === '/cart' || url.endsWith('/cart/') || url.includes('/cart?'))) {
-          console.log('Abgefangener window.location = Aufruf:', url);
-          
-          const cartDrawer = document.querySelector('cart-drawer');
-          if (cartDrawer) {
-            cartDrawer.open();
-            return; // Verhindere die Umleitung
+    const originalDescriptor = Object.getOwnPropertyDescriptor(window, 'location');
+    if (originalDescriptor && originalDescriptor.set) {
+      const originalSet = originalDescriptor.set;
+      
+      Object.defineProperty(window, 'location', {
+        ...originalDescriptor,
+        set: function(url) {
+          if (typeof url === 'string' && (url === '/cart' || url.endsWith('/cart/') || url.includes('/cart?'))) {
+            console.log('Abgefangener window.location = Aufruf:', url);
+            
+            const cartDrawer = document.querySelector('cart-drawer');
+            if (cartDrawer) {
+              cartDrawer.open();
+              return; // Verhindere die Umleitung
+            } else {
+              // Wenn kein Drawer verfügbar ist, zur Startseite leiten
+              url = '/';
+            }
           }
+          
+          // Ansonsten das normale Verhalten ausführen
+          originalSet.call(this, url);
         }
-        
-        // Ansonsten das normale Verhalten ausführen
-        originalHref.apply(this, [url]);
-      },
-      get: function() {
-        return window.location;
-      }
-    });
+      });
+    }
   } catch (e) {
-    console.warn('Konnte window.location nicht überschreiben:', e);
+    console.warn('Konnte window.location.set nicht überschreiben:', e);
   }
 })(); 

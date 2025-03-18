@@ -12,6 +12,11 @@
 <script src="{{ 'cart-drawer.js' | asset_url }}" defer="defer"></script>
 <script src="{{ 'quantity-popover.js' | asset_url }}" defer="defer"></script>
 
+<!-- Versteckte Warenkorb-Daten für schnellen Zugriff -->
+<div id="cart-data" style="display: none;" aria-hidden="true">
+  {{ cart | json }}
+</div>
+
 <style>
   .drawer {
     visibility: hidden;
@@ -130,6 +135,7 @@
                               class="button button--tertiary cart-remove-button"
                               aria-label="{{ 'sections.cart.remove_title' | t: title: item.title | escape }}"
                               data-variant-id="{{ item.variant.id }}"
+                              data-product-id="{{ item.product_id }}"
                             >
                               <span class="svg-wrapper">
                                 {{- 'icon-remove.svg' | inline_asset_content -}}

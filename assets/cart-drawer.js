@@ -54,8 +54,20 @@ class CartDrawer extends HTMLElement {
     removeTrapFocus(this.activeElement);
     document.body.classList.remove('overflow-hidden');
     
-    // Event auslösen, um andere Komponenten zu informieren
-    document.dispatchEvent(new CustomEvent('drawer:closed'));
+    // Hole aktuelle Warenkorb-Daten für das Event
+    fetch(`${routes.cart_url}.js`)
+      .then(response => response.json())
+      .then(cartData => {
+        // Event auslösen, um andere Komponenten zu informieren
+        document.dispatchEvent(new CustomEvent('drawer:closed', {
+          detail: { cartData }
+        }));
+      })
+      .catch(error => {
+        console.error('Fehler beim Holen der Warenkorb-Daten:', error);
+        // Trotzdem Event auslösen, aber ohne Daten
+        document.dispatchEvent(new CustomEvent('drawer:closed'));
+      });
   }
 
   setSummaryAccessibility(cartDrawerNote) {
@@ -94,6 +106,15 @@ class CartDrawer extends HTMLElement {
       document.dispatchEvent(new CustomEvent('drawer:opened', { 
         detail: { cartData: parsedState }
       }));
+      
+      // Event-Listener für Entfernen-Buttons hinzufügen
+      const removeButtons = this.querySelectorAll('cart-remove-button button');
+      removeButtons.forEach(button => {
+        // Bestehende Listener entfernen, um Duplikate zu vermeiden
+        button.removeEventListener('click', this.handleRemoveButtonClick);
+        // Neuen Listener hinzufügen
+        button.addEventListener('click', this.handleRemoveButtonClick);
+      });
     });
   }
 
@@ -119,6 +140,22 @@ class CartDrawer extends HTMLElement {
 
   setActiveElement(element) {
     this.activeElement = element;
+  }
+
+  // Handler für Entfernen-Button-Klicks
+  handleRemoveButtonClick(event) {
+    const variantId = parseInt(event.currentTarget.dataset.variantId);
+    const productId = parseInt(event.currentTarget.dataset.productId);
+    
+    if (!variantId) return;
+    
+    // Event auslösen, um andere Komponenten zu informieren
+    document.dispatchEvent(new CustomEvent('cart:item:removed', {
+      detail: { 
+        variantId,
+        productId
+      }
+    }));
   }
 }
 
