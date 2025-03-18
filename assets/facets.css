@@ -1,0 +1,86 @@
+/* Styles für die neuen nicht-klappbaren Filter */
+.filter-heading {
+  margin-bottom: 1rem;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.facets__summary {
+  cursor: default;
+  padding: 1rem 0;
+}
+
+.facets__summary:hover {
+  text-decoration: none;
+}
+
+.mobile-facets__heading {
+  margin-bottom: 1rem;
+  font-weight: 600;
+  font-size: 16px;
+  padding: 1.5rem 0 0 1.5rem;
+}
+
+/* Anpassungen für die Filter-Container ohne Akkordeon-Funktion */
+.facets__disclosure, 
+.facets__disclosure-vertical {
+  margin-bottom: 2rem;
+}
+
+/* Immer offen zeigen */
+.facets__display,
+.facets__display-vertical {
+  display: block;
+}
+
+/* Farbfilter immer sichtbar machen ohne Show-More Button */
+.facets-layout-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
+
+.facets-layout-grid--image {
+  margin-bottom: 1rem;
+}
+
+/* Bubbles für Farben */
+.facets-layout-grid .facets__item {
+  margin-bottom: 0.7rem;
+}
+
+/* Farbbubbles schöner formatieren */
+.facets__label .swatch {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
+}
+
+.facets__label .swatch.active {
+  box-shadow: 0 0 0 2px #000, 0 0 0 3px #fff;
+}
+
+/* Labels unter Farben positionieren */
+.facets__label .facet-checkbox__text {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+/* Show-More-Button ausblenden */
+show-more-button,
+.show-more-item.hidden {
+  display: none;
+}
+
+/* Alle "show-more" Elemente einblenden */
+.show-more-item {
+  display: block !important;
+} 
