@@ -22,9 +22,11 @@ class UnitConverter {
   setupEventListeners() {
     // Auf DOMContentLoaded warten, dann erst Listener hinzufügen
     document.addEventListener('DOMContentLoaded', () => {
-      // Alle Unit-Switcher in der Seite finden und Listener hinzufügen
-      document.querySelectorAll('.unit-switcher input[type="checkbox"]').forEach(checkbox => {
-        checkbox.addEventListener('change', (event) => {
+      // Unit-Switcher Checkbox finden und Listener hinzufügen
+      const unitSwitcherInput = document.getElementById('unit-switcher');
+      
+      if (unitSwitcherInput) {
+        unitSwitcherInput.addEventListener('change', (event) => {
           // Verhindern, dass das Event an Formulare weitergeleitet wird
           event.preventDefault();
           event.stopPropagation();
@@ -32,9 +34,15 @@ class UnitConverter {
           // Umschalten der Einheiten auslösen
           this.handleUnitSwitchChange(event);
           
-          // Hier kein return false, da das Event bereits gestoppt wurde
+          // Debug-Ausgabe
+          console.log('Unit-Switcher wurde geändert:', event.target.checked ? 'imperial' : 'metric');
         }, { capture: true });
-      });
+        
+        // Debug-Ausgabe
+        console.log('Unit-Switcher Listener wurde hinzugefügt.');
+      } else {
+        console.warn('Unit-Switcher Input wurde nicht gefunden.');
+      }
     });
   }
 
@@ -115,56 +123,31 @@ class UnitConverter {
     const isImperial = event.target.checked;
     this.currentUnit = isImperial ? 'imperial' : 'metric';
     
-    // Umschalten der Anzeige bei allen Unit-Switcher der Seite
-    this.updateAllSwitcherTexts(isImperial);
+    console.log('Einheit wurde gewechselt zu:', this.currentUnit);
     
     // Alle konvertierbaren Elemente umrechnen
     this.convertAllUnits();
     
-    // Ereignis auslösen, damit andere Komponenten reagieren können, 
-    // ohne Seiten-Neuladen auszulösen
+    // Ereignis auslösen, damit andere Komponenten reagieren können
     const unitChangeEvent = new CustomEvent('unit:changed', {
       detail: { unit: this.currentUnit },
-      bubbles: false // Auf false setzen, damit es nicht nach oben propagiert
+      bubbles: false // Nicht bubbling, um unerwünschte Effekte zu vermeiden
     });
     document.dispatchEvent(unitChangeEvent);
     
-    // Falsch zurückgeben, um jegliche weitere Event-Verarbeitung zu verhindern
-    return false;
-  }
-  
-  updateAllSwitcherTexts(isImperial) {
-    // Alle Unit-Switcher in der Seite finden und Text aktualisieren
-    document.querySelectorAll('.unit-switcher__text').forEach(textElement => {
-      const textKey = isImperial ? 'products.facets.unit_imperial' : 'products.facets.unit_metric';
-      let newText;
-      
-      // Versuche, Übersetzung zu bekommen
-      try {
-        if (typeof window.theme !== 'undefined' && typeof window.theme.strings !== 'undefined') {
-          const keySections = textKey.split('.');
-          let current = window.theme.strings;
-          
-          for (const section of keySections) {
-            current = current[section];
-            if (current === undefined) break;
-          }
-          
-          newText = current || (isImperial ? 'Imperial' : 'Metric');
-        } else {
-          newText = isImperial ? 'Imperial' : 'Metric';
-        }
-      } catch (e) {
-        newText = isImperial ? 'Imperial' : 'Metric';
-      }
-      
-      textElement.textContent = newText;
-    });
+    return false; // Weitere Event-Verarbeitung verhindern
   }
 
   convertAllUnits() {
-    document.querySelectorAll('.unit-convertible').forEach(element => {
+    // Debug-Ausgabe
+    console.log('Starte Umrechnung aller Einheiten...');
+    
+    const elements = document.querySelectorAll('.unit-convertible');
+    console.log(`${elements.length} konvertierbare Elemente gefunden`);
+    
+    elements.forEach((element, index) => {
       this.convertElement(element);
+      if (index < 3) console.log(`Element ${index+1} konvertiert:`, element.textContent);
     });
   }
 
@@ -222,13 +205,33 @@ class UnitSwitcher extends HTMLElement {
   constructor() {
     super();
     this.input = this.querySelector('input[type="checkbox"]');
-    
-    // Die Input-Change-Events werden bereits vom UnitConverter abgefangen
-    // Hier werden nur Hilfsfunktionen definiert, falls nötig
+    console.log('UnitSwitcher Component initialisiert');
   }
-  
-  // Keine zusätzlichen Event-Handler hier, um Konflikte zu vermeiden
 }
 
 // Definieren des Custom Elements
-customElements.define('unit-switcher', UnitSwitcher); 
+customElements.define('unit-switcher', UnitSwitcher);
+
+// Sofortige Initialisierung des Event-Listeners, falls DOM bereits geladen ist
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+  setTimeout(() => {
+    const unitSwitcherInput = document.getElementById('unit-switcher');
+    if (unitSwitcherInput) {
+      unitSwitcherInput.addEventListener('change', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        window.unitConverter.handleUnitSwitchChange(event);
+        console.log('Unit-Switcher nachträglich initialisiert');
+      }, { capture: true });
+    }
+  }, 100);
+}
+
+// Manuelle Initialisierung für die Fälle, in denen der DOM bereits geladen ist, bevor das Skript eingebunden wird
+document.addEventListener('DOMContentLoaded', () => {
+  if (!window.unitConverterInitialized) {
+    window.unitConverterInitialized = true;
+    console.log('Unit-Converter wurde manuell initialisiert.');
+    window.unitConverter.init();
+  }
+}); 

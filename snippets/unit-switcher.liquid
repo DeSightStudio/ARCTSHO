@@ -8,14 +8,15 @@
 {% endcomment %}
 
 <unit-switcher class="unit-switcher {% if class %}{{ class }}{% endif %}">
-  <label class="unit-switcher__label">
-    <span class="unit-switcher__text">{{ 'products.facets.unit_metric' | t }}</span>
-    <input
-      type="checkbox"
-      class="unit-switcher__checkbox js-unit-switcher-input"
-      aria-label="{{ 'products.facets.unit_switch_label' | t }}"
-    >
-    <span class="unit-switcher__slider"></span>
+  <input
+    type="checkbox"
+    class="unit-switcher__checkbox js-unit-switcher-input"
+    id="unit-switcher"
+    aria-label="{{ 'products.facets.unit_switch_label' | t }}"
+  >
+  <label class="unit-switcher__label" for="unit-switcher">
+    <span class="unit-switcher__metric">{{ 'products.facets.unit_metric' | t }} m / cm / mm</span>
+    <span class="unit-switcher__imperial">{{ 'products.facets.unit_imperial' | t }} yd / ft / in</span>
   </label>
 </unit-switcher>
 
