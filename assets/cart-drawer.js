@@ -2,6 +2,9 @@ class CartDrawer extends HTMLElement {
   constructor() {
     super();
 
+    // Methoden an die Instanz binden für Event-Listeners
+    this.boundHandleRemoveButtonClick = this.handleRemoveButtonClick.bind(this);
+
     this.addEventListener('keyup', (evt) => evt.code === 'Escape' && this.close());
     this.querySelector('#CartDrawer-Overlay').addEventListener('click', this.close.bind(this));
     this.setHeaderCartIconAccessibility();
@@ -111,9 +114,9 @@ class CartDrawer extends HTMLElement {
       const removeButtons = this.querySelectorAll('cart-remove-button button');
       removeButtons.forEach(button => {
         // Bestehende Listener entfernen, um Duplikate zu vermeiden
-        button.removeEventListener('click', this.handleRemoveButtonClick);
+        button.removeEventListener('click', this.boundHandleRemoveButtonClick);
         // Neuen Listener hinzufügen
-        button.addEventListener('click', this.handleRemoveButtonClick);
+        button.addEventListener('click', this.boundHandleRemoveButtonClick);
       });
     });
   }
@@ -156,6 +159,22 @@ class CartDrawer extends HTMLElement {
         productId
       }
     }));
+    
+    // Benutzerdefiniertes Event direkt nach jeder Entfernung auslösen
+    setTimeout(() => {
+      // Cart-Daten abrufen, nachdem der Artikel entfernt wurde
+      fetch(`${routes.cart_url}.js`)
+        .then(response => response.json())
+        .then(cartData => {
+          // Event auslösen um alle Komponenten zu informieren, dass der Warenkorb aktualisiert wurde
+          document.dispatchEvent(new CustomEvent('cart:updated', {
+            detail: { cartData }
+          }));
+        })
+        .catch(error => {
+          console.error('Fehler beim Abrufen der aktualisierten Warenkorb-Daten:', error);
+        });
+    }, 300);
   }
 }
 

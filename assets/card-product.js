@@ -94,21 +94,25 @@ class ProductCard extends HTMLElement {
 
     // Produkt-ID aus dem Formular ermitteln
     const productId = parseInt(form.dataset.productId);
-    if (!productId) {
-      console.error('Keine Produkt-ID gefunden');
+    const variantId = parseInt(form.querySelector('[name="id"]').value);
+    
+    if (!productId || !variantId) {
+      console.error('Keine Produkt-ID oder Varianten-ID gefunden');
       submitButton.removeAttribute('disabled');
       submitButton.classList.remove('loading');
       return;
     }
 
-    // Prüfen, ob das Produkt bereits im Warenkorb ist
+    // Zuerst prüfen, ob das Produkt bereits im Warenkorb ist
     fetch(`${routes.cart_url}.js`)
       .then(response => response.json())
       .then(cart => {
-        // Liste der Produkt-IDs im Warenkorb
-        const cartProductIds = cart.items.map(item => item.product_id);
+        // Prüfen, ob das Produkt bereits im Warenkorb ist
+        const isInCart = cart.items.some(item => {
+          return (item.product_id === productId) || (item.variant_id === variantId);
+        });
         
-        if (cartProductIds.includes(productId)) {
+        if (isInCart) {
           console.log('Produkt bereits im Warenkorb - öffne Drawer');
           
           // Wenn bereits im Warenkorb, nur den Drawer öffnen
@@ -129,17 +133,23 @@ class ProductCard extends HTMLElement {
 
         // FormData erstellen
         const formData = new FormData(form);
+        
         // Menge auf 1 setzen
         formData.set('quantity', '1');
         
         // Sections für den Cart Drawer hinzufügen
-        const cartDrawer = document.querySelector('cart-drawer');
-        if (cartDrawer) {
-          formData.append(
-            'sections',
-            cartDrawer.getSectionsToRender().map((section) => section.id)
-          );
-          formData.append('sections_url', window.location.pathname);
+        if (!formData.get('sections')) {
+          const cartDrawer = document.querySelector('cart-drawer');
+          if (cartDrawer && typeof cartDrawer.getSectionsToRender === 'function') {
+            formData.set('sections', cartDrawer.getSectionsToRender().map(section => section.id).join(','));
+          } else {
+            formData.set('sections', 'cart-drawer,cart-icon-bubble');
+          }
+        }
+        
+        // URL-Pfad für die Sections setzen
+        if (!formData.get('sections_url')) {
+          formData.set('sections_url', window.location.pathname);
         }
 
         // Konfiguration für die Fetch-Anfrage
@@ -170,17 +180,21 @@ class ProductCard extends HTMLElement {
             this.updateButtonToViewCart(form);
             
             // Cart-Drawer Inhalt aktualisieren und öffnen
+            const cartDrawer = document.querySelector('cart-drawer');
             if (cartDrawer) {
               cartDrawer.renderContents(response);
               setTimeout(() => cartDrawer.open(), 100);
             }
             
             // Event auslösen, um andere Komponenten zu informieren
-            document.dispatchEvent(new CustomEvent('cart:updated', { detail: { productId } }));
+            document.dispatchEvent(new CustomEvent('cart:updated', {
+              detail: { cartData: response }
+            }));
+            
             document.dispatchEvent(new CustomEvent('cart:item:added', { 
               detail: { 
                 productId,
-                variantId: parseInt(formData.get('id'))
+                variantId
               } 
             }));
             
@@ -212,23 +226,46 @@ class ProductCard extends HTMLElement {
     const productId = parseInt(this.addToCartForm.dataset.productId);
     if (!productId) return;
     
-    // Prüfen, ob Produkt noch im Warenkorb ist
+    const variantId = parseInt(this.addToCartForm.querySelector('[name="id"]').value);
+    
+    // Direkt prüfen, ob das entfernte Produkt mit dieser Karte übereinstimmt
+    if (event.detail.productId === productId || (variantId && event.detail.variantId === variantId)) {
+      console.log(`Produkt ${productId} wurde entfernt - ändere Button zu "Add to Cart"`);
+      // Direkt zurücksetzen auf "In den Warenkorb"
+      const actionsContainer = this.addToCartForm.closest('.card-product__actions');
+      if (actionsContainer) {
+        const viewCartButton = actionsContainer.querySelector('.card-product__view-cart');
+        if (viewCartButton) {
+          viewCartButton.remove();
+        }
+        this.addToCartForm.style.display = 'block';
+      }
+      return;
+    }
+    
+    // Ansonsten Warenkorb-Status prüfen (für Fälle mit mehreren Instanzen desselben Produkts)
     fetch(`${routes.cart_url}.js`)
       .then(response => response.json())
       .then(cart => {
-        const isInCart = cart.items.some(item => item.product_id === productId);
+        const isInCart = cart.items.some(item => {
+          return (item.product_id === productId) || (variantId && item.variant_id === variantId);
+        });
         
-        if (!isInCart) {
+        const actionsContainer = this.addToCartForm.closest('.card-product__actions');
+        if (!actionsContainer) return;
+        
+        if (!isInCart && this.addToCartForm.style.display === 'none') {
           console.log(`Produkt ${productId} nicht mehr im Warenkorb - ändere Button zu "Add to Cart"`);
           // Zurücksetzen auf "In den Warenkorb"
-          const actionsContainer = this.addToCartForm.closest('.card-product__actions');
-          if (actionsContainer) {
-            const viewCartButton = actionsContainer.querySelector('.card-product__view-cart');
-            if (viewCartButton) {
-              viewCartButton.remove();
-            }
-            this.addToCartForm.style.display = 'block';
+          const viewCartButton = actionsContainer.querySelector('.card-product__view-cart');
+          if (viewCartButton) {
+            viewCartButton.remove();
           }
+          this.addToCartForm.style.display = 'block';
+        } else if (isInCart && this.addToCartForm.style.display !== 'none') {
+          // Wenn im Warenkorb, aber Form sichtbar - zu "Warenkorb anzeigen" ändern
+          console.log(`Produkt ${productId} noch im Warenkorb - ändere Button zu "View Cart"`);
+          this.updateButtonToViewCart(this.addToCartForm);
         }
       })
       .catch(error => {
@@ -245,10 +282,14 @@ class ProductCard extends HTMLElement {
     const productId = parseInt(this.addToCartForm.dataset.productId);
     if (!productId) return;
     
+    const variantId = parseInt(this.addToCartForm.querySelector('[name="id"]').value);
+    
     // Prüfen, ob Warenkorb-Daten im Event enthalten sind
     if (event.detail && event.detail.cartData) {
       const cartItems = event.detail.cartData.items || [];
-      const isInCart = cartItems.some(item => item.product_id === productId);
+      const isInCart = cartItems.some(item => {
+        return (item.product_id === productId) || (variantId && item.variant_id === variantId);
+      });
       
       console.log(`Produkt ${productId} im Warenkorb beim Schließen des Drawers: ${isInCart}`);
       
@@ -267,6 +308,37 @@ class ProductCard extends HTMLElement {
           this.addToCartForm.style.display = 'block';
         }
       }
+    } else {
+      // Wenn keine Daten im Event vorhanden, via API prüfen
+      console.log('Keine Cart-Daten im Event - prüfe via API');
+      fetch(`${routes.cart_url}.js`)
+        .then(response => response.json())
+        .then(cart => {
+          const isInCart = cart.items.some(item => {
+            return (item.product_id === productId) || (variantId && item.variant_id === variantId);
+          });
+          
+          console.log(`Produkt ${productId} im Warenkorb (API-Abfrage): ${isInCart}`);
+          
+          // Button-Status entsprechend aktualisieren
+          const actionsContainer = this.addToCartForm.closest('.card-product__actions');
+          if (actionsContainer) {
+            if (isInCart && this.addToCartForm.style.display !== 'none') {
+              // In den Warenkorb - zu "Warenkorb anzeigen" ändern
+              this.updateButtonToViewCart(this.addToCartForm);
+            } else if (!isInCart && this.addToCartForm.style.display === 'none') {
+              // Nicht im Warenkorb - zurück zu "In den Warenkorb" ändern
+              const viewCartButton = actionsContainer.querySelector('.card-product__view-cart');
+              if (viewCartButton) {
+                viewCartButton.remove();
+              }
+              this.addToCartForm.style.display = 'block';
+            }
+          }
+        })
+        .catch(error => {
+          console.error('Fehler beim Prüfen des Warenkorbs:', error);
+        });
     }
   }
 
@@ -385,116 +457,133 @@ document.addEventListener('DOMContentLoaded', function() {
   const addToCartForms = document.querySelectorAll('.card-product__add-form');
 
   addToCartForms.forEach(form => {
-    form.addEventListener('submit', function(event) {
-      event.preventDefault();
-      event.stopPropagation();
-      
-      console.log('Abgefangenes Produktkarten-Formular-Submit');
-      
-      // Submitbutton deaktivieren, um Doppelklicks zu vermeiden
-      const submitButton = this.querySelector('button[type="submit"]');
+    // Bestehende Event-Listener entfernen, falls vorhanden
+    form.removeEventListener('submit', handleFormSubmit);
+    // Event-Listener hinzufügen
+    form.addEventListener('submit', handleFormSubmit);
+  });
+
+  // Gemeinsamer Event-Handler für alle Formular-Submits
+  function handleFormSubmit(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    console.log('Abgefangenes Produktkarten-Formular-Submit');
+    
+    // Submitbutton deaktivieren, um Doppelklicks zu vermeiden
+    const submitButton = this.querySelector('button[type="submit"]');
+    if (submitButton) {
+      submitButton.setAttribute('disabled', 'disabled');
+      submitButton.classList.add('loading');
+    }
+    
+    // Produkt-ID und Varianten-ID aus dem Formular extrahieren
+    const productId = parseInt(this.dataset.productId);
+    const variantId = parseInt(this.querySelector('[name="id"]').value);
+    
+    if (!productId || !variantId) {
+      console.error('Keine Produkt-ID oder Varianten-ID gefunden');
       if (submitButton) {
-        submitButton.setAttribute('disabled', 'disabled');
-        if (submitButton.classList.contains('loading')) return;
-        submitButton.classList.add('loading');
+        submitButton.removeAttribute('disabled');
+        submitButton.classList.remove('loading');
       }
-      
-      const productId = parseInt(this.dataset.productId);
-      
-      // Zuerst prüfen, ob das Produkt bereits im Warenkorb ist
-      fetch(`${routes.cart_url}.js`)
-        .then(response => response.json())
-        .then(cart => {
-          // Prüfen, ob das Produkt bereits im Warenkorb ist
-          const isInCart = cart.items.some(item => item.product_id === productId);
-          
-          if (isInCart) {
-            console.log('Produkt bereits im Warenkorb - Öffne Drawer');
-            // Wenn bereits im Warenkorb, Drawer öffnen
-            const cartDrawer = document.querySelector('cart-drawer');
-            if (cartDrawer) {
-              cartDrawer.open();
-            }
-            
-            // Button Status ändern
-            updateButtonToViewCart(form);
-            
-            // Submit-Button reaktivieren
-            if (submitButton) {
-              submitButton.removeAttribute('disabled');
-              submitButton.classList.remove('loading');
-            }
-            
-            return;
-          }
-          
-          // FormData erstellen und zum Warenkorb hinzufügen
-          const formData = new FormData(form);
-          
-          // Sicherstellen, dass die Menge auf 1 gesetzt ist
-          formData.set('quantity', '1');
-          
-          // Sections für den Cart Drawer hinzufügen
+      return;
+    }
+    
+    // Zuerst prüfen, ob das Produkt bereits im Warenkorb ist
+    fetch(`${routes.cart_url}.js`)
+      .then(response => response.json())
+      .then(cart => {
+        // Prüfen, ob das Produkt bereits im Warenkorb ist
+        const isInCart = cart.items.some(item => {
+          return (item.product_id === productId) || (item.variant_id === variantId);
+        });
+        
+        if (isInCart) {
+          console.log('Produkt bereits im Warenkorb - Öffne Drawer');
+          // Wenn bereits im Warenkorb, Drawer öffnen
           const cartDrawer = document.querySelector('cart-drawer');
           if (cartDrawer) {
-            formData.append(
-              'sections',
-              cartDrawer.getSectionsToRender().map((section) => section.id)
-            );
-            formData.append('sections_url', window.location.pathname);
+            cartDrawer.open();
           }
           
-          // AJAX-Warenkorb-Hinzufügen mit XMLHttpRequest-Header für JSON-Antwort
-          fetch(routes.cart_add_url, {
-            method: 'POST',
-            headers: {
-              'X-Requested-With': 'XMLHttpRequest' // Wichtig für JSON-Antwort
-            },
-            body: formData
-          })
-          .then(response => response.json())
-          .then(response => {
-            console.log('Produkt zum Warenkorb hinzugefügt', response);
-            
-            // Warenkorb-Drawer öffnen und mit neuen Daten aktualisieren
-            if (cartDrawer) {
-              cartDrawer.renderContents(response); // Wichtig: Drawer mit neuen Daten aktualisieren
-              setTimeout(() => cartDrawer.open(), 100); // Mit Verzögerung öffnen, damit Rendering abgeschlossen ist
+          // Button Status ändern
+          updateButtonToViewCart(this);
+          
+          // Submit-Button reaktivieren
+          if (submitButton) {
+            submitButton.removeAttribute('disabled');
+            submitButton.classList.remove('loading');
+          }
+          
+          return;
+        }
+        
+        // FormData erstellen
+        const formData = new FormData(this);
+        
+        // Sicherstellen, dass die Menge auf 1 gesetzt ist
+        formData.set('quantity', '1');
+        
+        // Sections für den Cart-Drawer hinzufügen
+        if (!formData.get('sections')) {
+          const cartDrawer = document.querySelector('cart-drawer');
+          if (cartDrawer && typeof cartDrawer.getSectionsToRender === 'function') {
+            formData.set('sections', cartDrawer.getSectionsToRender().map(section => section.id).join(','));
+          } else {
+            formData.set('sections', 'cart-drawer,cart-icon-bubble');
+          }
+        }
+        
+        // URL-Pfad für die Sections setzen
+        if (!formData.get('sections_url')) {
+          formData.set('sections_url', window.location.pathname);
+        }
+        
+        // AJAX-Warenkorb-Hinzufügen mit XMLHttpRequest-Header für JSON-Antwort
+        fetch(routes.cart_add_url, {
+          method: 'POST',
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          body: formData
+        })
+        .then(response => response.json())
+        .then(response => {
+          console.log('Produkt zum Warenkorb hinzugefügt', response);
+          
+          // Warenkorb-Drawer öffnen und mit neuen Daten aktualisieren
+          const cartDrawer = document.querySelector('cart-drawer');
+          if (cartDrawer) {
+            cartDrawer.renderContents(response);
+            // Mit kleiner Verzögerung öffnen, damit die Aktualisierung abgeschlossen ist
+            setTimeout(() => cartDrawer.open(), 100);
+          }
+          
+          // Button-Status aktualisieren (von "In den Warenkorb" zu "Warenkorb anzeigen")
+          updateButtonToViewCart(this);
+          
+          // Event auslösen, um andere Komponenten zu informieren
+          document.dispatchEvent(new CustomEvent('cart:updated', {
+            detail: { cartData: response }
+          }));
+          
+          // Zusätzliches Event mit Produkt-ID auslösen
+          document.dispatchEvent(new CustomEvent('cart:item:added', {
+            detail: {
+              variantId: variantId,
+              productId: productId
             }
-            
-            // Button-Status aktualisieren (von "In den Warenkorb" zu "Warenkorb anzeigen")
-            updateButtonToViewCart(form);
-            
-            // Event auslösen, um andere Komponenten zu informieren
-            document.dispatchEvent(new CustomEvent('cart:updated'));
-            
-            // Zusätzliches Event mit Produkt-ID auslösen
-            const variantId = parseInt(formData.get('id'));
-            document.dispatchEvent(new CustomEvent('cart:item:added', {
-              detail: {
-                variantId: variantId,
-                productId: productId
-              }
-            }));
-            
-            // Submit-Button reaktivieren
-            if (submitButton) {
-              submitButton.removeAttribute('disabled');
-              submitButton.classList.remove('loading');
-            }
-          })
-          .catch(error => {
-            console.error('Fehler beim Hinzufügen zum Warenkorb:', error);
-            
-            // Submit-Button im Fehlerfall auch reaktivieren
-            if (submitButton) {
-              submitButton.removeAttribute('disabled');
-              submitButton.classList.remove('loading');
-            }
-          });
+          }));
+          
+          // Submit-Button reaktivieren
+          if (submitButton) {
+            submitButton.removeAttribute('disabled');
+            submitButton.classList.remove('loading');
+          }
         })
         .catch(error => {
-          console.error('Fehler beim Überprüfen des Warenkorbs:', error);
+          console.error('Fehler beim Hinzufügen zum Warenkorb:', error);
           
           // Submit-Button im Fehlerfall auch reaktivieren
           if (submitButton) {
@@ -502,10 +591,17 @@ document.addEventListener('DOMContentLoaded', function() {
             submitButton.classList.remove('loading');
           }
         });
-      
-      return false; // Verhindern der normalen Form-Übermittlung
-    });
-  });
+      })
+      .catch(error => {
+        console.error('Fehler beim Überprüfen des Warenkorbs:', error);
+        
+        // Submit-Button im Fehlerfall auch reaktivieren
+        if (submitButton) {
+          submitButton.removeAttribute('disabled');
+          submitButton.classList.remove('loading');
+        }
+      });
+  }
 });
 
 // Hilfsfunktion für DOM-Ready Events zum Aktualisieren des Button-Status

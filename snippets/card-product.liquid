@@ -304,7 +304,7 @@
               {%- if product_in_cart -%}
                 <button
                   type="button"
-                  class="card-product__add-button button button--full-width button--primary"
+                  class="card-product__view-cart button button--full-width button--primary"
                   onclick="event.stopPropagation(); document.querySelector('cart-drawer').open();"
                 >
                   <span>{{ 'products.product.view_cart_button' | t }}</span>
@@ -316,15 +316,20 @@
                   class="card-product__add-form"
                   onclick="event.stopPropagation();"
                   data-product-id="{{ card_product.id }}"
+                  data-type="add-to-cart-form"
                 >
                   <input type="hidden" name="id" value="{{ card_product.selected_or_first_available_variant.id }}">
                   <input type="hidden" name="quantity" value="1">
+                  <input type="hidden" name="sections" value="cart-drawer,cart-icon-bubble">
+                  <input type="hidden" name="sections_url" value="{{ request.path }}">
                   <button
                     type="submit"
+                    name="add"
                     class="card-product__add-button button button--full-width button--secondary"
                     onclick="event.stopPropagation();"
                   >
                     <span>{{ 'products.product.add_to_cart_button' | t }}</span>
+                    {%- render 'loading-spinner' -%}
                   </button>
                 </form>
               {%- endif -%}

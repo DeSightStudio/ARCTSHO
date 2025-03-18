@@ -346,9 +346,27 @@ if (!customElements.get('product-form')) {
         this.checkProductInCart();
       }
       
-      handleCartUpdate() {
+      handleCartUpdate(event) {
         console.log('Warenkorb aktualisiert - aktualisiere Produktstatus...');
-        this.checkProductInCart();
+        
+        // Wenn Daten im Event vorhanden, direkt damit aktualisieren
+        if (event.detail && event.detail.cartData) {
+          const variantId = parseInt(this.variantIdInput.value);
+          if (!variantId) return;
+          
+          const isInCart = event.detail.cartData.items.some(item => item.variant_id === variantId);
+          
+          if (isInCart) {
+            console.log('Produkt ist im Warenkorb (Event-Daten) - aktualisiere Button auf "View cart"');
+            this.updateButtonToViewCart();
+          } else {
+            console.log('Produkt ist nicht im Warenkorb (Event-Daten) - aktualisiere Button auf "Add to cart"');
+            this.updateButtonToAddToCart();
+          }
+        } else {
+          // Wenn keine Daten im Event, normale Überprüfung durchführen
+          this.checkProductInCart();
+        }
       }
       
       handleDrawerOpened(event) {
@@ -369,9 +387,32 @@ if (!customElements.get('product-form')) {
         }
       }
       
-      handleDrawerClosed() {
+      handleDrawerClosed(event) {
         console.log('Drawer geschlossen - aktualisiere Produktstatus...');
-        this.checkProductInCart();
+        
+        if (!this.variantIdInput) return;
+        const variantId = parseInt(this.variantIdInput.value);
+        if (!variantId) return;
+        
+        const productId = parseInt(this.form.dataset.productId || this.closest('[data-product-id]')?.dataset.productId);
+        
+        // Direkt Daten aus dem Event nutzen, falls vorhanden
+        if (event.detail && event.detail.cartData) {
+          const isInCart = event.detail.cartData.items.some(item => {
+            return (productId && item.product_id === productId) || (item.variant_id === variantId);
+          });
+          
+          console.log(`Produkt ist im Warenkorb nach Drawer-Schließung: ${isInCart}`);
+          
+          if (isInCart) {
+            this.updateButtonToViewCart();
+          } else {
+            this.updateButtonToAddToCart();
+          }
+        } else {
+          // Wenn keine Daten im Event vorhanden, normale Überprüfung durchführen
+          this.checkProductInCart();
+        }
       }
       
       // Methode zum Überprüfen, ob das aktuelle Produkt im Warenkorb ist
@@ -381,11 +422,15 @@ if (!customElements.get('product-form')) {
         const variantId = parseInt(this.variantIdInput.value);
         if (!variantId) return;
         
+        const productId = parseInt(this.form.dataset.productId || this.closest('[data-product-id]')?.dataset.productId);
+        
         fetch(`${routes.cart_url}.js`)
           .then(response => response.json())
           .then(cart => {
-            // Prüfen, ob das aktuelle Produkt im Warenkorb ist
-            const isInCart = cart.items.some(item => item.variant_id === variantId);
+            // Prüfen, ob das aktuelle Produkt im Warenkorb ist (entweder durch Produkt-ID oder Varianten-ID)
+            const isInCart = cart.items.some(item => {
+              return (productId && item.product_id === productId) || (item.variant_id === variantId);
+            });
             
             if (isInCart) {
               console.log('Produkt ist im Warenkorb - aktualisiere Button auf "View cart"');
