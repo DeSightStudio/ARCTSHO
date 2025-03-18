@@ -69,6 +69,7 @@
       enctype="multipart/form-data"
       novalidate="novalidate"
       data-type="add-to-cart-form"
+      data-product-id="{{ product.id }}"
     >
       <input type="hidden" name="form_type" value="product">
       <input type="hidden" name="utf8" value="✓">
@@ -82,13 +83,22 @@
       <div {{ block.shopify_attributes }}>
         <button
           class="product-form__submit button button--full-width {% if show_dynamic_checkout and block.settings.show_dynamic_checkout %}button--secondary{% else %}button--primary{% endif %}"
-          type="submit"
+          type="{% if product_in_cart %}button{% else %}submit{% endif %}"
           name="add"
-          {% if product.selected_or_first_available_variant.available == false or product_in_cart %}
+          {% if product_in_cart %}
+            onclick="event.preventDefault(); document.querySelector('cart-drawer').open();"
+          {% endif %}
+          {% if product.selected_or_first_available_variant.available == false %}
             disabled
           {% endif %}
         >
-          <span>{{ 'products.product.add_to_cart_button' | t }}</span>
+          <span>
+            {% if product_in_cart %}
+              {{ 'products.product.view_cart_button' | t }}
+            {% else %}
+              {{ 'products.product.add_to_cart_button' | t }}
+            {% endif %}
+          </span>
           <div class="loading-overlay__spinner hidden">
             <svg
               aria-hidden="true"

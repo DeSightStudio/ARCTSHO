@@ -21,6 +21,26 @@ if (!customElements.get('product-form')) {
         evt.preventDefault();
         if (this.submitButton.getAttribute('aria-disabled') === 'true') return;
 
+        // Prüfen, ob das Produkt bereits im Warenkorb ist
+        const variantId = parseInt(this.variantIdInput.value);
+        const productId = parseInt(this.form.dataset.productId || this.closest('[data-product-id]')?.dataset.productId);
+        
+        if (!variantId) {
+          console.error('Keine Varianten-ID gefunden');
+          return;
+        }
+        
+        // Wenn bereits im Warenkorb (Button-Typ ist 'button' anstatt 'submit'), nur den Drawer öffnen
+        if (this.submitButton.type === 'button') {
+          console.log('Produkt bereits im Warenkorb - öffne Drawer');
+          if (this.cart) {
+            this.cart.open();
+          } else {
+            window.location = window.routes.cart_url;
+          }
+          return;
+        }
+
         this.handleErrorMessage();
 
         this.submitButton.setAttribute('aria-disabled', true);
@@ -32,6 +52,14 @@ if (!customElements.get('product-form')) {
         delete config.headers['Content-Type'];
 
         const formData = new FormData(this.form);
+        
+        // Prüfen, ob Menge > 1 und auf 1 setzen
+        const quantity = parseInt(formData.get('quantity'));
+        if (quantity > 1) {
+          console.log(`Menge ${quantity} auf 1 begrenzen`);
+          formData.set('quantity', '1');
+        }
+        
         if (this.cart) {
           formData.append(
             'sections',
@@ -42,61 +70,174 @@ if (!customElements.get('product-form')) {
         }
         config.body = formData;
 
-        fetch(`${routes.cart_add_url}`, config)
-          .then((response) => response.json())
-          .then((response) => {
-            if (response.status) {
-              publish(PUB_SUB_EVENTS.cartError, {
-                source: 'product-form',
-                productVariantId: formData.get('id'),
-                errors: response.errors || response.description,
-                message: response.message,
-              });
-              this.handleErrorMessage(response.description);
-
-              const soldOutMessage = this.submitButton.querySelector('.sold-out-message');
-              if (!soldOutMessage) return;
-              this.submitButton.setAttribute('aria-disabled', true);
-              this.submitButtonText.classList.add('hidden');
-              soldOutMessage.classList.remove('hidden');
-              this.error = true;
-              return;
-            } else if (!this.cart) {
-              window.location = window.routes.cart_url;
-              return;
-            }
-
-            if (!this.error)
-              publish(PUB_SUB_EVENTS.cartUpdate, {
-                source: 'product-form',
-                productVariantId: formData.get('id'),
-                cartData: response,
-              });
-            this.error = false;
-            const quickAddModal = this.closest('quick-add-modal');
-            if (quickAddModal) {
-              document.body.addEventListener(
-                'modalClosed',
-                () => {
-                  setTimeout(() => {
-                    this.cart.renderContents(response);
-                  });
-                },
-                { once: true }
-              );
-              quickAddModal.hide(true);
+        // Zuerst prüfen, ob das Produkt bereits im Warenkorb ist
+        fetch(`${routes.cart_url}.js`)
+          .then(response => response.json())
+          .then(cart => {
+            const isInCart = cart.items.some(item => {
+              return (productId && item.product_id === productId) || 
+                     (variantId && item.variant_id === variantId);
+            });
+            
+            if (isInCart) {
+              console.log('Produkt bereits im Warenkorb - öffne Drawer');
+              // Wenn bereits im Warenkorb, nur den Drawer öffnen
+              this.submitButton.classList.remove('loading');
+              this.querySelector('.loading__spinner').classList.add('hidden');
+              this.submitButton.removeAttribute('aria-disabled');
+              
+              // Button-Typ ändern und Text aktualisieren
+              this.submitButton.type = 'button';
+              this.submitButtonText.textContent = window.variantStrings.view_cart_button || 'View cart';
+              
+              if (this.cart) {
+                this.cart.renderContents(cart);
+                this.cart.open();
+              } else {
+                window.location = window.routes.cart_url;
+              }
+              
+              // Event auslösen, um andere Komponenten zu informieren
+              document.dispatchEvent(new CustomEvent('cart:updated'));
             } else {
-              this.cart.renderContents(response);
+              // Wenn nicht im Warenkorb, zum Warenkorb hinzufügen
+              fetch(`${routes.cart_add_url}`, config)
+                .then((response) => response.json())
+                .then((response) => {
+                  if (response.status) {
+                    publish(PUB_SUB_EVENTS.cartError, {
+                      source: 'product-form',
+                      productVariantId: formData.get('id'),
+                      errors: response.errors || response.description,
+                      message: response.message,
+                    });
+                    this.handleErrorMessage(response.description);
+
+                    const soldOutMessage = this.submitButton.querySelector('.sold-out-message');
+                    if (!soldOutMessage) return;
+                    this.submitButton.setAttribute('aria-disabled', true);
+                    this.submitButtonText.classList.add('hidden');
+                    soldOutMessage.classList.remove('hidden');
+                    this.error = true;
+                    return;
+                  } else if (!this.cart) {
+                    window.location = window.routes.cart_url;
+                    return;
+                  }
+
+                  if (!this.error)
+                    publish(PUB_SUB_EVENTS.cartUpdate, {
+                      source: 'product-form',
+                      productVariantId: formData.get('id'),
+                      cartData: response,
+                    });
+                  this.error = false;
+                  
+                  // Button-Typ nach dem Hinzufügen ändern
+                  this.submitButton.type = 'button';
+                  this.submitButtonText.textContent = window.variantStrings.view_cart_button || 'View cart';
+                  
+                  const quickAddModal = this.closest('quick-add-modal');
+                  if (quickAddModal) {
+                    document.body.addEventListener(
+                      'modalClosed',
+                      () => {
+                        setTimeout(() => {
+                          this.cart.renderContents(response);
+                        });
+                      },
+                      { once: true }
+                    );
+                    quickAddModal.hide(true);
+                  } else {
+                    this.cart.renderContents(response);
+                  }
+                  
+                  // Produktkarten aktualisieren, falls die Funktion existiert
+                  if (typeof updateProductCards === 'function') {
+                    setTimeout(updateProductCards, 100);
+                  }
+                })
+                .catch((e) => {
+                  console.error(e);
+                })
+                .finally(() => {
+                  this.submitButton.classList.remove('loading');
+                  if (this.cart && this.cart.classList.contains('is-empty')) this.cart.classList.remove('is-empty');
+                  if (!this.error) this.submitButton.removeAttribute('aria-disabled');
+                  this.querySelector('.loading__spinner').classList.add('hidden');
+                });
             }
           })
-          .catch((e) => {
-            console.error(e);
-          })
-          .finally(() => {
-            this.submitButton.classList.remove('loading');
-            if (this.cart && this.cart.classList.contains('is-empty')) this.cart.classList.remove('is-empty');
-            if (!this.error) this.submitButton.removeAttribute('aria-disabled');
-            this.querySelector('.loading__spinner').classList.add('hidden');
+          .catch(error => {
+            console.error('Fehler beim Überprüfen des Warenkorbs:', error);
+            // Bei Fehler Standard-Verhalten fortsetzen
+            fetch(`${routes.cart_add_url}`, config)
+              .then((response) => response.json())
+              .then((response) => {
+                if (response.status) {
+                  publish(PUB_SUB_EVENTS.cartError, {
+                    source: 'product-form',
+                    productVariantId: formData.get('id'),
+                    errors: response.errors || response.description,
+                    message: response.message,
+                  });
+                  this.handleErrorMessage(response.description);
+
+                  const soldOutMessage = this.submitButton.querySelector('.sold-out-message');
+                  if (!soldOutMessage) return;
+                  this.submitButton.setAttribute('aria-disabled', true);
+                  this.submitButtonText.classList.add('hidden');
+                  soldOutMessage.classList.remove('hidden');
+                  this.error = true;
+                  return;
+                } else if (!this.cart) {
+                  window.location = window.routes.cart_url;
+                  return;
+                }
+
+                if (!this.error)
+                  publish(PUB_SUB_EVENTS.cartUpdate, {
+                    source: 'product-form',
+                    productVariantId: formData.get('id'),
+                    cartData: response,
+                  });
+                this.error = false;
+                
+                // Button-Typ nach dem Hinzufügen ändern
+                this.submitButton.type = 'button';
+                this.submitButtonText.textContent = window.variantStrings.view_cart_button || 'View cart';
+                
+                const quickAddModal = this.closest('quick-add-modal');
+                if (quickAddModal) {
+                  document.body.addEventListener(
+                    'modalClosed',
+                    () => {
+                      setTimeout(() => {
+                        this.cart.renderContents(response);
+                      });
+                    },
+                    { once: true }
+                  );
+                  quickAddModal.hide(true);
+                } else {
+                  this.cart.renderContents(response);
+                }
+                
+                // Produktkarten aktualisieren, falls die Funktion existiert
+                if (typeof updateProductCards === 'function') {
+                  setTimeout(updateProductCards, 100);
+                }
+              })
+              .catch((e) => {
+                console.error(e);
+              })
+              .finally(() => {
+                this.submitButton.classList.remove('loading');
+                if (this.cart && this.cart.classList.contains('is-empty')) this.cart.classList.remove('is-empty');
+                if (!this.error) this.submitButton.removeAttribute('aria-disabled');
+                this.querySelector('.loading__spinner').classList.add('hidden');
+              });
           });
       }
 

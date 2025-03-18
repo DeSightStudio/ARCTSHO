@@ -10,11 +10,25 @@ if (!customElements.get('product-info')) {
       pendingRequestUrl = null;
       preProcessHtmlCallbacks = [];
       postProcessHtmlCallbacks = [];
+      sectionId = undefined;
+      productId = undefined;
+      productUrl = undefined;
+      updateUrl = undefined;
 
       constructor() {
         super();
 
         this.quantityInput = this.querySelector('.quantity__input');
+        this.sectionId = this.dataset.section;
+        this.productId = parseInt(this.dataset.productId);
+        this.productUrl = this.dataset.url;
+        this.updateUrl = this.dataset.updateUrl === 'true';
+
+        this.setupCartUpdateListeners();
+
+        this.productForm = this.querySelector(`product-form[data-section-id="${this.sectionId}"]`);
+        this.submitButton = this.productForm?.querySelector('[type="submit"]');
+        this.variantPicker = this.querySelector('variant-picker');
       }
 
       connectedCallback() {
@@ -410,6 +424,57 @@ if (!customElements.get('product-info')) {
 
       get sectionId() {
         return this.dataset.originalSection || this.dataset.section;
+      }
+
+      setupCartUpdateListeners() {
+        // Auf Warenkorb-Update-Events reagieren
+        document.addEventListener('cart:updated', this.handleCartUpdate.bind(this));
+        
+        // Prüfen, ob das Produkt bereits im Warenkorb ist
+        this.checkProductInCart();
+      }
+      
+      handleCartUpdate(event) {
+        // Beim Warenkorb-Update den Produkt-Status aktualisieren
+        console.log('Warenkorb aktualisiert - aktualisiere Produktstatus...');
+        this.checkProductInCart();
+      }
+      
+      checkProductInCart() {
+        if (!this.productId) return;
+        
+        fetch(`${routes.cart_url}.js`)
+          .then(response => response.json())
+          .then(cart => {
+            const productInCart = cart.items.some(item => item.product_id === this.productId);
+            
+            // Submit-Button und Text aktualisieren, wenn das Produkt im Warenkorb ist
+            const button = this.querySelector('button[type="submit"], button[name="add"]');
+            if (button) {
+              if (productInCart) {
+                console.log('Produkt ist im Warenkorb - aktualisiere Button');
+                button.type = 'button';
+                button.setAttribute('onclick', 'event.preventDefault(); document.querySelector("cart-drawer").open();');
+                const buttonText = button.querySelector('span');
+                if (buttonText) {
+                  buttonText.textContent = window.variantStrings.view_cart_button || 'View cart';
+                }
+              } else {
+                // Nur zurücksetzen, wenn der Button nicht deaktiviert ist (z.B. ausverkauft)
+                if (!button.hasAttribute('disabled')) {
+                  button.type = 'submit';
+                  button.removeAttribute('onclick');
+                  const buttonText = button.querySelector('span');
+                  if (buttonText) {
+                    buttonText.textContent = window.variantStrings.add_to_cart || 'Add to cart';
+                  }
+                }
+              }
+            }
+          })
+          .catch(error => {
+            console.error('Fehler beim Überprüfen des Warenkorbs:', error);
+          });
       }
     }
   );
