@@ -225,7 +225,10 @@
       "filter_selected_accessibility": "{{ type }} ({{ count }} filtri selezionati)",
       "show_more": "Mostra di più",
       "show_less": "Mostra di meno",
-      "filter_and_operator_subtitle": "Seleziona tutte"
+      "filter_and_operator_subtitle": "Seleziona tutte",
+      "unit_metric": "Metrico",
+      "unit_imperial": "Imperiale",
+      "unit_switch_label": "Passa da unità metriche a imperiali"
     }
   },
   "templates": {

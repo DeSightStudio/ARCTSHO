@@ -1,0 +1,105 @@
+/**
+ * Stile für den Einheitenumschalter (Unit Switcher)
+ * Ermöglicht die Umschaltung zwischen metrischen und imperialen Einheiten
+ */
+
+/* Container für den Unit-Switcher außerhalb der Facet-Filter */
+.unit-switcher-container,
+.mobile-unit-switcher-container {
+  margin: 0.5rem 0;
+  padding: 0.5rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  border-bottom: 1px solid rgba(var(--color-foreground), 0.1);
+}
+
+.mobile-unit-switcher-container {
+  border-top: 1px solid rgba(var(--color-foreground), 0.1);
+  justify-content: flex-start;
+  margin-top: 0;
+  padding-left: 1.5rem;
+}
+
+/* Basis-Stile für den Switcher */
+.unit-switcher {
+  display: inline-flex;
+  align-items: center;
+}
+
+.unit-switcher__label {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.unit-switcher__text {
+  margin-right: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.unit-switcher__checkbox {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.unit-switcher__slider {
+  position: relative;
+  display: inline-block;
+  width: 2.8rem;
+  height: 1.5rem;
+  background-color: #ccc;
+  border-radius: 1.5rem;
+  transition: background-color 0.2s;
+}
+
+.unit-switcher__slider::before {
+  content: '';
+  position: absolute;
+  left: 0.2rem;
+  bottom: 0.2rem;
+  width: 1.1rem;
+  height: 1.1rem;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+
+.unit-switcher__checkbox:checked + .unit-switcher__slider {
+  background-color: var(--color-button);
+}
+
+.unit-switcher__checkbox:checked + .unit-switcher__slider::before {
+  transform: translateX(1.3rem);
+}
+
+/* Fokus-Stil für bessere Zugänglichkeit */
+.unit-switcher__checkbox:focus + .unit-switcher__slider {
+  box-shadow: 0 0 0 2px rgba(var(--color-button-rgb), 0.3);
+}
+
+/* Responsive Stile */
+@media screen and (max-width: 749px) {
+  .unit-switcher-container {
+    display: none; /* Desktop-Version auf Mobilgeräten ausblenden */
+  }
+  
+  .unit-switcher__slider {
+    width: 2.5rem;
+    height: 1.3rem;
+  }
+  
+  .unit-switcher__slider::before {
+    width: 0.9rem;
+    height: 0.9rem;
+  }
+  
+  .unit-switcher__checkbox:checked + .unit-switcher__slider::before {
+    transform: translateX(1.2rem);
+  }
+} 

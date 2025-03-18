@@ -234,7 +234,10 @@
       "filter_selected_accessibility": "{{ type }} ({{ count }} Filter ausgewählt)",
       "show_more": "Mehr anzeigen",
       "show_less": "Weniger anzeigen",
-      "filter_and_operator_subtitle": "Allen entsprechen"
+      "filter_and_operator_subtitle": "Alle auswählen",
+      "unit_metric": "Metrisch",
+      "unit_imperial": "Imperial",
+      "unit_switch_label": "Zwischen metrischen und imperialen Einheiten umschalten"
     }
   },
   "templates": {

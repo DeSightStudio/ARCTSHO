@@ -225,7 +225,10 @@
       "sort_button": "Sort",
       "sort_by_label": "Sort by:",
       "to": "To",
-      "clear_filter": "Remove filter"
+      "clear_filter": "Remove filter",
+      "unit_metric": "Metric",
+      "unit_imperial": "Imperial",
+      "unit_switch_label": "Switch between metric and imperial units"
     }
   },
   "templates": {

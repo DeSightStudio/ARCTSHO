@@ -222,10 +222,13 @@
       "sort_by_label": "Trier par :",
       "to": "Destination",
       "clear_filter": "Supprimer le filtre",
-      "filter_selected_accessibility": "{{ type }} ({{ count }} filtres sélectionnés)",
+      "filter_selected_accessibility": "{{ type }} ({{ count }} filtres sélectionnés)",
       "show_more": "Afficher plus",
       "show_less": "Afficher moins",
-      "filter_and_operator_subtitle": "Tout associer"
+      "filter_and_operator_subtitle": "Tout associer",
+      "unit_metric": "Métrique",
+      "unit_imperial": "Impérial",
+      "unit_switch_label": "Basculer entre les unités métriques et impériales"
     }
   },
   "templates": {

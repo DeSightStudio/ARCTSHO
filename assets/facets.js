@@ -5,13 +5,25 @@ class FacetFiltersForm extends HTMLElement {
 
     this.debouncedOnSubmit = debounce((event) => {
       this.onSubmitHandler(event);
-    }, 800);
+    }, 500);
 
     const facetForm = this.querySelector('form');
     facetForm.addEventListener('input', this.debouncedOnSubmit.bind(this));
 
     const facetWrapper = this.querySelector('#FacetsWrapperDesktop');
     if (facetWrapper) facetWrapper.addEventListener('keyup', onKeyUpEscape);
+
+    // Unit Switcher initialisieren, wenn er vorhanden ist
+    this.initUnitSwitcher();
+  }
+
+  // Einheitenumschaltung initialisieren
+  initUnitSwitcher() {
+    const unitSwitcher = this.querySelector('.facet-filters__unit-switcher');
+    if (unitSwitcher && typeof window.unitConverter !== 'undefined') {
+      // Der UnitSwitcher wird bereits durch sein eigenes Script initialisiert
+      // Hier können wir zusätzliche Integrationen mit dem Facets-System hinzufügen
+    }
   }
 
   static setListeners() {

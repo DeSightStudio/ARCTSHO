@@ -1,0 +1,29 @@
+{% comment %}
+  Ermöglicht die Umschaltung zwischen metrischen und imperialen Einheiten im Shop
+
+  Kann in Filter-Modulen oder anderen Bereichen eingebunden werden
+
+  Nutzung:
+  {% render 'unit-switcher', class: 'optional-extra-class' %}
+{% endcomment %}
+
+<unit-switcher class="unit-switcher {% if class %}{{ class }}{% endif %}">
+  <label class="unit-switcher__label">
+    <span class="unit-switcher__text">{{ 'products.facets.unit_metric' | t }}</span>
+    <input
+      type="checkbox"
+      class="unit-switcher__checkbox js-unit-switcher-input"
+      aria-label="{{ 'products.facets.unit_switch_label' | t }}"
+    >
+    <span class="unit-switcher__slider"></span>
+  </label>
+</unit-switcher>
+
+{% comment %}
+  Kopple den erforderlichen JS-Code zum HTML, falls noch nicht geladen
+{% endcomment %}
+{% if unit_converter_loaded != true %}
+  <script src="{{ 'unit-converter.js' | asset_url }}" defer></script>
+  {{ 'unit-switcher.css' | asset_url | stylesheet_tag }}
+  {% assign unit_converter_loaded = true %}
+{% endif %}
