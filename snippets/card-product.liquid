@@ -305,33 +305,152 @@
                 <button
                   type="button"
                   class="card-product__view-cart button button--full-width button--primary"
-                  onclick="event.stopPropagation(); document.querySelector('cart-drawer').open();"
+                  onclick="event.stopPropagation(); event.preventDefault(); document.querySelector('cart-drawer').open();"
                 >
                   <span>{{ 'products.product.view_cart_button' | t }}</span>
                 </button>
               {%- else -%}
-                <form
-                  method="post"
-                  action="{{ routes.cart_add_url }}"
-                  class="card-product__add-form"
-                  onclick="event.stopPropagation();"
-                  data-product-id="{{ card_product.id }}"
-                  data-type="add-to-cart-form"
-                >
-                  <input type="hidden" name="id" value="{{ card_product.selected_or_first_available_variant.id }}">
-                  <input type="hidden" name="quantity" value="1">
-                  <input type="hidden" name="sections" value="cart-drawer,cart-icon-bubble">
-                  <input type="hidden" name="sections_url" value="{{ request.path }}">
-                  <button
-                    type="submit"
-                    name="add"
-                    class="card-product__add-button button button--full-width button--secondary"
+                {%- if quick_add == 'standard' -%}
+                  <div class="card__actions">
+                    <div class="quick-add">
+                      <product-form>
+                        <form
+                          method="post"
+                          action="{{ routes.cart_add_url }}"
+                          id="quick-add-template--{{ section.id }}-{{ card_product.id }}"
+                          accept-charset="UTF-8"
+                          class="form"
+                          enctype="multipart/form-data"
+                          novalidate="novalidate"
+                          data-type="add-to-cart-form"
+                        >
+                          <input
+                            type="hidden"
+                            name="id"
+                            value="{{ card_product.selected_or_first_available_variant.id }}"
+                            disabled
+                          >
+                          <input type="hidden" name="quantity" value="1">
+                          <input type="hidden" name="sections" value="cart-drawer,cart-icon-bubble">
+                          <input type="hidden" name="sections_url" value="{{ request.path }}">
+                          <button
+                            id="quick-add-{{ section.id }}-{{ card_product.id }}"
+                            type="submit"
+                            name="add"
+                            class="quick-add__submit button button--full-width button--secondary"
+                            aria-haspopup="dialog"
+                            aria-labelledby="quick-add-{{ section.id }}-{{ card_product.id }}"
+                            data-product-id="{{ card_product.id }}"
+                          >
+                            <span>{{ 'products.product.add_to_cart_button' | t }}</span>
+                            <div class="loading__spinner hidden">
+                              <svg
+                                aria-hidden="true"
+                                focusable="false"
+                                class="spinner"
+                                viewBox="0 0 66 66"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <circle class="path" fill="none" stroke-width="6" cx="33" cy="33" r="30"></circle>
+                              </svg>
+                            </div>
+                          </button>
+                        </form>
+                      </product-form>
+                    </div>
+                  </div>
+                {%- else -%}
+                  <form
+                    method="post"
+                    action="{{ routes.cart_add_url }}"
+                    class="card-product__add-form"
                     onclick="event.stopPropagation();"
+                    data-product-id="{{ card_product.id }}"
+                    data-type="add-to-cart-form"
+                    data-variant-id="{{ card_product.selected_or_first_available_variant.id }}"
+                    onsubmit="
+                      event.preventDefault(); event.stopPropagation();
+                      const form = this;
+                      const submitBtn = form.querySelector('button[type=submit]');
+                      const spinner = submitBtn.querySelector('.loading__spinner');
+
+                      // Button deaktivieren und Spinner anzeigen
+                      submitBtn.setAttribute('disabled', 'disabled');
+                      submitBtn.classList.add('loading');
+                      if (spinner) spinner.classList.remove('hidden');
+
+                      // FormData erstellen
+                      const formData = new FormData(form);
+
+                      // AJAX-Request
+                      fetch('{{ routes.cart_add_url }}', {
+                        method: 'POST',
+                        headers: {
+                          'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: formData
+                      })
+                      .then(response => response.json())
+                      .then(response => {
+                        // Cart Drawer aktualisieren und öffnen
+                        const cartDrawer = document.querySelector('cart-drawer');
+                        if (cartDrawer) {
+                          cartDrawer.renderContents(response);
+                          setTimeout(() => cartDrawer.open(), 100);
+                        }
+
+                        // Button-Status ändern
+                        const actionsContainer = form.closest('.card-product__actions');
+                        if (actionsContainer) {
+                          form.style.display = 'none';
+
+                          // View Cart Button erstellen
+                          const viewBtn = document.createElement('button');
+                          viewBtn.type = 'button';
+                          viewBtn.className = 'card-product__view-cart button button--full-width button--primary';
+                          viewBtn.setAttribute('onclick', 'event.stopPropagation(); event.preventDefault(); document.querySelector(\'cart-drawer\').open();');
+                          viewBtn.innerHTML = '<span>{{ 'products.product.view_cart_button' | t }}</span>';
+                          actionsContainer.appendChild(viewBtn);
+                        }
+
+                        // Event auslösen
+                        document.dispatchEvent(new CustomEvent('cart:updated', { detail: { cartData: response } }));
+                      })
+                      .catch(error => {
+                        console.error('Fehler:', error);
+                        submitBtn.removeAttribute('disabled');
+                        submitBtn.classList.remove('loading');
+                        if (spinner) spinner.classList.add('hidden');
+                      });
+
+                      return false;
+                    "
                   >
-                    <span>{{ 'products.product.add_to_cart_button' | t }}</span>
-                    {%- render 'loading-spinner' -%}
-                  </button>
-                </form>
+                    <input type="hidden" name="id" value="{{ card_product.selected_or_first_available_variant.id }}">
+                    <input type="hidden" name="quantity" value="1">
+                    <input type="hidden" name="sections" value="cart-drawer,cart-icon-bubble">
+                    <input type="hidden" name="sections_url" value="{{ request.path }}">
+                    <button
+                      type="submit"
+                      name="add"
+                      class="card-product__add-button button button--full-width button--secondary"
+                      onclick="event.stopPropagation();"
+                    >
+                      <span>{{ 'products.product.add_to_cart_button' | t }}</span>
+                      <div class="loading__spinner hidden">
+                        <svg
+                          aria-hidden="true"
+                          focusable="false"
+                          class="spinner"
+                          viewBox="0 0 66 66"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <circle class="path" fill="none" stroke-width="6" cx="33" cy="33" r="30"></circle>
+                        </svg>
+                      </div>
+                    </button>
+                  </form>
+                {%- endif -%}
               {%- endif -%}
             {%- else -%}
               <span class="sold-out-button">{{ 'products.product.sold_out' | t }}</span>
