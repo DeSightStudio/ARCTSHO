@@ -153,6 +153,9 @@ document.addEventListener('click', function(event) {
           // Zum Warenkorb hinzufügen
           fetch(routes.cart_add_url, {
             method: 'POST',
+            headers: {
+              'X-Requested-With': 'XMLHttpRequest'
+            },
             body: formData
           })
           .then(response => response.json())
@@ -165,6 +168,7 @@ document.addEventListener('click', function(event) {
             // Warenkorb-Drawer öffnen
             const cartDrawer = document.querySelector('cart-drawer');
             if (cartDrawer) {
+              cartDrawer.renderContents(data);
               cartDrawer.open();
             }
             

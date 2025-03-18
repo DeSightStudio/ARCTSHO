@@ -53,6 +53,9 @@ class CartDrawer extends HTMLElement {
     this.classList.remove('active');
     removeTrapFocus(this.activeElement);
     document.body.classList.remove('overflow-hidden');
+    
+    // Event auslösen, um andere Komponenten zu informieren
+    document.dispatchEvent(new CustomEvent('drawer:closed'));
   }
 
   setSummaryAccessibility(cartDrawerNote) {
@@ -86,6 +89,11 @@ class CartDrawer extends HTMLElement {
     setTimeout(() => {
       this.querySelector('#CartDrawer-Overlay').addEventListener('click', this.close.bind(this));
       this.open();
+      
+      // Event auslösen, um andere Komponenten zu informieren
+      document.dispatchEvent(new CustomEvent('drawer:opened', { 
+        detail: { cartData: parsedState }
+      }));
     });
   }
 
