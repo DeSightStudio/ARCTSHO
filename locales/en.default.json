@@ -123,7 +123,7 @@
       "sku": "SKU",
       "on_sale": "Sale",
       "product_variants": "Product variants",
-      "plus_vat": "plus VAT",
+      "plus_vat": "+ VAT",
       "add_to_cart_button": "Add to cart",
       "view_cart_button": "View cart",
       "product_specs": {

@@ -6,16 +6,149 @@
                     .card {
                         position: relative;
                         .card__inner {
-
+                            position: relative;
                         }
                         .card__content {
-                            &.static {
+                            position: absolute;
+                            height: 100%;
+                            * {
+                                text-decoration: none !important;
+                                transition: all 0.2s ease-in-out;
+                            }
+                            .card__information {
+                                padding: 0px;
+                                .card-product__link {
+                                    transition: all 0.2s ease-in-out;
+                                    &:hover {
+                                        .card-product__content {
+                                            &.card-product__content--initial {
+                                                z-index: 9;
+                                                background-color: rgba(26,45,28,55%);
+                                                .card-product__headline-container {
+                                                    .card__article-number {
+                                                        span {
+                                                            color: $whiteColor;
+                                                        }
+                                                    }
+                                                }
+                                                .card-product__price-container {
+                                                    .price {
+                                                        .price__container {
+                                                            .price-item {
+                                                                color: $whiteColor;
+                                                            }
+                                                        }
+                                                    }
+                                                    .card-product__price-tax {
+                                                        span {
+                                                            color: $whiteColor;
+                                                        }
+                                                    }
+                                                }
+                                                .card-product__weight {
+                                                    span {
+                                                        color: $whiteColor;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    .card-product__content {
+                                        display: flex;
+                                        height: 100%;
+                                        flex-wrap: wrap;
+                                        padding: 15px;
+                                        &.card-product__content--initial {
+                                            .card-product__headline-container {
+                                                flex: 1 1 100%;
+                                                align-self: self-start;
+                                                margin: 0px;
+                                                .card__article-number {
+                                                    margin: 0px;
+                                                    line-height: 1;
+                                                    span {
+                                                        font-family: 'Cormorant Garamond';
+                                                        color: $mainColorDark;
+                                                        font-size: $fontSizeRegular;
+                                                    }
+                                                }
+                                            }
+                                            .card-product__price-container {
+                                                flex: 0 0 75%;
+                                                align-self: self-end;
+                                                display: flex;
+                                                flex-wrap: wrap;
+                                                flex-direction: row;
+                                                .price {
+                                                    flex: 0 0 auto;
+                                                    .price__container {
+                                                        .price-item {
+                                                            font-family: 'Cormorant Garamond';
+                                                            color: $mainColorDark;
+                                                            font-size: $fontSizeRegular;
+                                                        }
+                                                    }
+                                                }
+                                                .card-product__price-tax {
+                                                    flex: 0 0 auto;
+                                                    margin-left: 5px;
+                                                    span {
+                                                        font-family: 'Cormorant Garamond';
+                                                        color: $mainColorDark;
+                                                        font-size: $fontSizeRegular;
+                                                    }
+                                                }
+                                            }
+                                            .card-product__weight {
+                                                flex: 0 0 25%;
+                                                align-self: self-end;
+                                                margin: 0px;
+                                                text-align: right;
+                                                span {
+                                                    font-family: 'Cormorant Garamond';
+                                                    color: $mainColorDark;
+                                                    font-size: $fontSizeRegular;
+                                                    
+                                                }
+                                            }
+                                        }
+                                        &.card-product__content--hover {
+                                            display: flex;
+                                            height: 100%;
+                                            flex-wrap: wrap;
+                                            padding: 15px;
+                                            flex-direction: column;
+                                            justify-content: center;
+                                            width: max-content;
+                                            z-index: 99;
+                                            h1, h2, h3, h4, h5, h6 {
+                                                font-family: 'Cormorant Garamond';
+                                                font-size: $fontSizeRegular;
+                                                color: $whiteColor;
+                                            }
+                                            .card-product__specs-list {
+                                                margin: 10px 0 20px 0;
+                                                padding: 0px;
+                                                li {
+                                                    font-family: 'Cormorant Garamond';
+                                                    font-size: $fontSizeRegular;
+                                                    color: $whiteColor;
+                                                    margin: 0px;
+                                                    padding: 0px;
+                                                    list-style: none;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            /*&.static {
                                 display: block;
                                 position: absolute;
                             }
                             &.hover {
                                 display: none;
-                            }
+                            }*/
                         }
                     }
                 }
