@@ -1,0 +1,23 @@
+nav {
+    &.breadcrumbs {
+        margin: 0 0 25px 0;
+        @media screen and (max-width: 981px) {
+            margin: 0 0 0px 0;
+        }
+        .breadcrumbs__list {
+            .breadcrumbs__item {
+                a {
+                    font-family: 'Copperplate';
+                    color: $mainColor;
+                    font-weight: 100;
+                    font-size: $fontSizeRegular;
+                    text-decoration: none;
+                    transition: color 0.3s ease;
+                    &:hover {
+                        color: $mainColorDark;
+                    }
+                }
+            }
+        }
+    }
+}

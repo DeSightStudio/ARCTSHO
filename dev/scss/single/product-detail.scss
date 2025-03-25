@@ -1,0 +1,68 @@
+product-info {
+    .product {
+        .product__media-wrapper {
+            media-gallery {
+                .product__media-list {
+                    .product__media-item {
+                        border-radius: 16px;
+                        overflow: hidden;
+                        border: 1px solid $grayColorLight;
+                    }
+                }
+            }
+        }
+        .product__info-wrapper {
+            @media screen and (max-width: 981px) {
+                margin: 30px 0 30px 0px;
+            }
+            .product__sku {
+                font-family: 'Copperplate';
+                color: $mainColor;
+                font-weight: 100;
+                font-size: $fontSizeRegular;
+                text-decoration: none;
+                margin: 0px;
+                color: $grayColor;
+            }
+            .product__title {
+                margin: 10px 0px 15px 0px;
+                h1 {
+                    font-family: 'Cormorant Garamond';
+                    color: $mainColor;
+                    font-size: $fontSizeXLarge !important;
+                    margin: 0px 0px 0px 0px;
+                    line-height: 1;
+                    @include screen(med-small) {
+                        font-size: $fontSizeMedium;
+                    }
+                }
+            }
+            .product__description {
+                font-family: 'Cormorant Garamond';
+                color: $mainColorDark;
+                font-size: $fontSizeRegular;
+                margin: 0px 0px 15px 0px;
+            }
+            .price {
+                flex: 0 0 auto;
+                .price__container {
+                    display: block;
+                    .price-item {
+                        font-family: 'Cormorant Garamond';
+                        color: $mainColorDark;
+                        font-size: $fontSizeLarge;
+                    }
+                }
+                .price__badge-sold-out {
+                    
+                    margin: 0px;
+                    font-size: $fontSizeRegular;
+                    font-family: 'Copperplate';
+                    color: $whiteColor;
+                    font-weight: 100;
+                    background-color: $mainColor;
+                }
+            }
+        }
+    }
+}
