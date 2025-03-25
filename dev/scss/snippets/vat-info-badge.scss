@@ -1,0 +1,35 @@
+.vat-info-badge {
+    flex: 0 0 auto;
+    margin-left: 5px;
+    font-family: 'Cormorant Garamond';
+    color: $mainColorDark;
+    font-size: $fontSizeRegular;
+    * {
+        transition: all 0.2s ease-in-out;
+    }
+    &:hover {
+        * {
+            cursor: pointer;
+        }
+        button {
+            .info-icon {
+                color: $whiteColor !important;
+                background-color: $mainColor !important;
+            }
+        }
+    }
+    button {
+        z-index: 9999;
+        position: relative;
+        background-color: transparent;
+        border: none;
+        outline: none;
+        box-shadow: none;
+        padding: 0px;
+        margin: 0px;
+        .info-icon {
+            width: 25px;
+            height: 25px;
+        }
+    }
+}

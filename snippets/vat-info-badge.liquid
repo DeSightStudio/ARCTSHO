@@ -1,1 +1,24 @@
-{% comment %}VAT Info Badge - wird nicht mehr verwendet, da die Anzeige direkt in card-product erfolgt.{% endcomment %}
+{% comment %}
+  Renders a "zzgl. MwSt." text with an info icon that opens the VAT popup when clicked
+
+  Usage:
+  {% render 'vat-info-badge' %}
+{% endcomment %}
+
+{% comment %}Nur beim ersten Aufrufen des Snippets die CSS-Datei laden{% endcomment %}
+{% if forloop.first or forloop.index0 == null %}
+  {{ 'vat-info-badge.css' | asset_url | stylesheet_tag }}
+{% endif %}
+
+<span class="vat-info-badge">
+  {{ 'products.product.plus_vat' | t }}
+  <button
+    type="button"
+    class="vat-info-icon"
+    data-micromodal-trigger="modal-vat-uid-tva"
+    aria-label="VAT Information"
+    onclick="event.stopPropagation(); event.preventDefault();"
+  >
+    <span class="info-icon">i</span>
+  </button>
+</span>

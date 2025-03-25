@@ -115,7 +115,7 @@
   },
   "products": {
     "product": {
-      "add_to_cart": "In den Warenkorb legen",
+      "add_to_cart": "In den Warenkorb",
       "description": "Beschreibung",
       "on_sale": "Sale",
       "quantity": {
@@ -193,7 +193,7 @@
       "from": "Ab",
       "plus_vat": "+ MwSt.",
       "add_to_cart_button": "In den Warenkorb",
-      "view_cart_button": "Zum Warenkorb",
+      "view_cart_button": "Warenkorb ansehen",
       "product_specs": {
         "length": "Länge",
         "width": "Breite",
@@ -316,12 +316,12 @@
       "learn_more": "Mehr erfahren"
     },
     "cart": {
-      "title": "Dein Warenkorb",
+      "title": "Ihr Warenkorb",
       "caption": "Artikel im Warenkorb",
       "remove_title": "{{ title }} entfernen",
       "note": "Spezielle Bestellanweisungen",
       "checkout": "Auschecken",
-      "empty": "Dein Warenkorb ist leer",
+      "empty": "Ihr Warenkorb ist leer",
       "cart_error": "Beim Aktualisieren deines Warenkorbs ist ein Fehler aufgetreten. Bitte versuche es erneut.",
       "cart_quantity_error_html": "Du kannst deinem Warenkorb nur {{ quantity }} Stück dieses Artikels hinzufügen.",
       "headings": {
@@ -336,7 +336,7 @@
         "title": "Hast du ein Konto?",
         "paragraph_html": "<a href=\"{{ link }}\" class=\"link underlined-link\">Logge dich ein</a>, damit es beim Checkout schneller geht."
       },
-      "estimated_total": "Geschätzte Gesamtkosten",
+      "estimated_total": "Summe (Netto)",
       "new_estimated_total": "Neuer geschätzter Gesamtbetrag",
       "duties_and_taxes_included_shipping_at_checkout_with_policy_html": "Inkl. Zollgebühren und Steuern. Rabatte und <a href=\"{{ link }}\">Versand</a> werden beim Checkout berechnet.",
       "duties_and_taxes_included_shipping_at_checkout_without_policy": "Inkl. Zollgebühren und Steuern. Rabatte und Versand werden beim Checkout berechnet.",

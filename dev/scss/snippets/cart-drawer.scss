@@ -2,6 +2,11 @@
     .cart-drawer__overlay {
         background-color: rgba(5, 71, 10, .2) !important;
     }
+    .drawer__inner {
+        width: 40vw;
+        max-width: 600px;
+        min-width: 40rem;
+    }
     .drawer__header {
         justify-content: center;
         .drawer__heading {
@@ -37,27 +42,48 @@
             * {
                 font-family: 'Cormorant Garamond';
             }
-            .cart-item__media {
-                position: relative;
-            }
-            cart-remove-button {
-                position: absolute;
-                top: 5px;
-                right: -10px;
-                .button {
-                    width: 2.5rem !important;
-                    height: 2.5rem !important;
-                    min-width: 2.5rem !important;
-                    min-height: 2.5rem !important;
-                    max-width: 2.5rem !important;
-                    max-height: 2.5rem !important;
-                    background-color: $accentLight !important;
-                    color: $blackColor !important;
-                    outline: none !important;
-                    box-shadow: none !important;
-                    &:hover {
-                        background-color: $mainColor !important;
-                        color: $whiteColor !important;
+            .cart-item {
+                grid-template: repeat(2, auto) / repeat(3, 1fr);
+                .cart-item__media {
+                    position: relative;
+                    width: 100%;
+                    img {
+                        width: 100%;
+                        object-fit: cover;
+                    }
+                }
+                .cart-item__totals {
+                    display: none;
+                }
+                .cart-item__details {
+                    * {
+                        font-family: 'Cormorant Garamond';
+                        color: $mainColorDark;
+                        font-size: $fontSizeRegular;
+                    }
+                    .h4 {
+                        font-size: $fontSizeMedium;
+                    }
+                }
+                cart-remove-button {
+                    position: absolute;
+                    top: 5px;
+                    right: -10px;
+                    .button {
+                        width: 2.5rem !important;
+                        height: 2.5rem !important;
+                        min-width: 2.5rem !important;
+                        min-height: 2.5rem !important;
+                        max-width: 2.5rem !important;
+                        max-height: 2.5rem !important;
+                        background-color: $accentLight !important;
+                        color: $blackColor !important;
+                        outline: none !important;
+                        box-shadow: none !important;
+                        &:hover {
+                            background-color: $mainColor !important;
+                            color: $whiteColor !important;
+                        }
                     }
                 }
             }
@@ -92,9 +118,28 @@
             }
         }
         .totals {
+            @media screen and (max-width: 1200px) {
+                display: block;
+                width: 100%;
+                margin: 3px 0;
+                flex: 1 1 100%;
+            }
             .totals__total, .totals__total-value {
                 font-weight: bold !important;
                 font-size: $fontSizeMedium !important;
+                @media screen and (max-width: 1200px) {
+                    display: block;
+                    width: 100%;
+                    margin: 5px 0;
+                }
+            }
+            .totals__total {
+                @media screen and (max-width: 1200px) {
+                    font-size: $fontSizeRegular !important;
+                }
+            }
+            .totals__total-value {
+                
             }
         }
         * {
