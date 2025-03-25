@@ -18,19 +18,16 @@
             "text_style": "body"
           }
         },
-        "vendor": {
-          "type": "text",
-          "settings": {
-            "text": "{{ product.vendor }}",
-            "text_style": "uppercase"
-          }
-        },
         "title": {
           "type": "title",
           "settings": {}
         },
         "price": {
           "type": "price",
+          "settings": {}
+        },
+        "description_XYhazL": {
+          "type": "description",
           "settings": {}
         },
         "buy_buttons": {
@@ -43,9 +40,9 @@
       },
       "block_order": [
         "sku_KJfErU",
-        "vendor",
         "title",
         "price",
+        "description_XYhazL",
         "buy_buttons"
       ],
       "settings": {
@@ -57,46 +54,11 @@
         "gallery_layout": "thumbnail_slider",
         "media_position": "left",
         "image_zoom": "hover",
-        "mobile_thumbnails": "hide",
+        "mobile_thumbnails": "show",
         "hide_variants": true,
         "enable_video_looping": false,
         "padding_top": 36,
         "padding_bottom": 12
-      }
-    },
-    "rich_text_iBfyPb": {
-      "type": "rich-text",
-      "blocks": {
-        "heading_YR74nj": {
-          "type": "heading",
-          "settings": {
-            "heading": "{{ product.title }}",
-            "heading_size": "h1"
-          }
-        },
-        "text_BzyYBK": {
-          "type": "text",
-          "settings": {
-            "text": "<p>{{ product.description }}</p>"
-          }
-        }
-      },
-      "block_order": [
-        "heading_YR74nj",
-        "text_BzyYBK"
-      ],
-      "settings": {
-        "desktop_content_position": "left",
-        "content_alignment": "left",
-        "color_scheme": "",
-        "full_width": true,
-        "padding_top": 40,
-        "padding_bottom": 52,
-        "use_arrow_divider": false,
-        "arrow_width": 50,
-        "arrow_position": "bottom",
-        "arrow_color": "#000000",
-        "headline_styling": "Headline Default"
       }
     },
     "related-products": {
@@ -107,20 +69,19 @@
         "products_to_show": 10,
         "columns_desktop": 5,
         "color_scheme": "scheme-1",
-        "image_ratio": "square",
+        "image_ratio": "portrait",
         "image_shape": "default",
         "show_secondary_image": false,
         "show_vendor": false,
         "show_rating": false,
-        "columns_mobile": "2",
-        "padding_top": 36,
-        "padding_bottom": 28
+        "columns_mobile": "1",
+        "padding_top": 12,
+        "padding_bottom": 36
       }
     }
   },
   "order": [
     "main",
-    "rich_text_iBfyPb",
     "related-products"
   ]
 }
