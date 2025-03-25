@@ -10,9 +10,10 @@
     padding: 0.5rem 0;
     display: flex;
     align-items: center;
-    justify-content: flex-end;
-    @media screen and (max-width: 768px) {
-        justify-content: flex-start;
+    justify-content: flex-start;
+    @media screen and (max-width: 981px) {
+        justify-content: center;
+        margin: 0px 0px 10px 0px;
     }
   }
   
@@ -23,10 +24,10 @@
     align-items: stretch;
     border-radius: 8px;
     overflow: hidden;
-    width: 100%;
+    width: auto;
     border: 1px solid #e1e1e1;
     background-color: #f5f5f5;
-    @media screen and (max-width: 768px) {
+    @media screen and (max-width: 981px) {
         width: auto;
     }
   }
