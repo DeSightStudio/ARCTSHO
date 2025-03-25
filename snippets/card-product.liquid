@@ -335,6 +335,37 @@
                 </div>
                 {% render 'price', product: card_product, price_class: '', show_compare_at_price: true %}
               </div>
+              {% if card_product.metafields.next_cart.weight_m != blank %}
+                <div class="card-product__weight">
+                  <span
+                    class="weight-value"
+                    data-original-value="{{ card_product.metafields.next_cart.weight_m }}"
+                    data-unit="g"
+                  >
+                    {{- card_product.metafields.next_cart.weight_m | divided_by: 1000.0 | round: 2 }} kg</span
+                  >
+                </div>
+              {% elsif card_product.metafields.custom.weight_m != blank %}
+                <div class="card-product__weight">
+                  <span
+                    class="weight-value"
+                    data-original-value="{{ card_product.metafields.custom.weight_m }}"
+                    data-unit="g"
+                  >
+                    {{- card_product.metafields.custom.weight_m | divided_by: 1000.0 | round: 2 }} kg</span
+                  >
+                </div>
+              {% elsif card_product.weight > 0 %}
+                <div class="card-product__weight">
+                  <span
+                    class="weight-value"
+                    data-original-value="{{ card_product.weight }}"
+                    data-unit="g"
+                  >
+                    {{ card_product.weight | divided_by: 1000.0 | round: 2 }} kg</span
+                  >
+                </div>
+              {% endif %}
             </div>
 
             {% comment %} Hover-Ansicht: Maße als zusätzliche Details {% endcomment %}

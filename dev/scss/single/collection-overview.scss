@@ -1,160 +1,162 @@
-.card-wrapper {
-    .card {
-        position: relative;
-        .card__inner {
+ul:not(.collection-list) {
+    .card-wrapper {
+        .card {
             position: relative;
-        }
-        .card__content {
-            position: absolute;
-            height: 100%;
-            * {
-                text-decoration: none !important;
+            .card__inner {
+                position: relative;
             }
-            .card__information {
-                padding: 0px;
-                .card-product__link {
-                    .card-product__content {
-                        display: flex;
-                        height: 100%;
-                        flex-wrap: wrap;
-                        padding: 20px;
-                        &.card-product__content--initial {
-                            z-index: 9999 !important;
-                            .card-product__headline-container {
-                                flex: 1 1 100%;
-                                align-self: self-start;
-                                margin: 0px;
-                                .card__article-number {
-                                    line-height: 1;
+            .card__content {
+                position: absolute;
+                height: 100%;
+                * {
+                    text-decoration: none !important;
+                }
+                .card__information {
+                    padding: 0px;
+                    .card-product__link {
+                        .card-product__content {
+                            display: flex;
+                            height: 100%;
+                            flex-wrap: wrap;
+                            padding: 20px;
+                            &.card-product__content--initial {
+                                z-index: 9999 !important;
+                                .card-product__headline-container {
+                                    flex: 1 1 100%;
+                                    align-self: self-start;
+                                    margin: 0px;
+                                    .card__article-number {
+                                        line-height: 1;
+                                        span {
+                                            font-family: 'Cormorant Garamond';
+                                            color: $mainColorDark;
+                                            font-size: $fontSizeRegular;
+                                            font-weight: bold;
+                                        }
+                                    }
+                                    h1, h2, h3, h4, h5, h6 {
+                                        font-family: 'Cormorant Garamond';
+                                        font-size: $fontSizeRegular;
+                                        color: $whiteColor;
+                                        opacity: 0;
+                                        margin: 5px 0px 0px 0px;
+                                    }
+                                }
+                                .card-product__actions {
+                                    opacity: 0;
+                                    width: max-content;
+                                    min-width: 270px;
+                                    margin: 0 0 10px 0;
+                                }
+                                .card-product__price-container {
+                                    flex: 0 0 75%;
+                                    align-self: self-end;
+                                    display: flex;
+                                    flex-wrap: wrap;
+                                    flex-direction: row;
+                                    .price {
+                                        flex: 0 0 auto;
+                                        .price__container {
+                                            .price-item {
+                                                font-family: 'Cormorant Garamond';
+                                                color: $mainColorDark;
+                                                font-size: $fontSizeMedium;
+                                            }
+                                        }
+                                    }
+                                }
+                                .card-product__weight {
+                                    flex: 1 1 auto;
+                                    align-self: self-end;
+                                    margin: 0px;
+                                    text-align: right;
                                     span {
                                         font-family: 'Cormorant Garamond';
                                         color: $mainColorDark;
                                         font-size: $fontSizeRegular;
-                                        font-weight: bold;
+                                        
                                     }
                                 }
-                                h1, h2, h3, h4, h5, h6 {
-                                    font-family: 'Cormorant Garamond';
-                                    font-size: $fontSizeRegular;
-                                    color: $whiteColor;
-                                    opacity: 0;
-                                    margin: 5px 0px 0px 0px;
+                            }
+                            &.card-product__content--hover {
+                                display: flex;
+                                height: 100%;
+                                flex-wrap: wrap;
+                                padding: 15px;
+                                flex-direction: column;
+                                justify-content: center;
+                                width: 100%;
+                                z-index: 99;
+                                .card-product__specs-list {
+                                    margin: 10px 0 20px 0;
+                                    padding: 0px;
+                                    width: max-content;
+                                    min-width: 270px;
+                                    li {
+                                        font-family: 'Cormorant Garamond';
+                                        font-size: $fontSizeRegular;
+                                        color: $whiteColor;
+                                        margin: 0px;
+                                        padding: 0px;
+                                        list-style: none;
+                                    }
                                 }
                             }
-                            .card-product__actions {
-                                opacity: 0;
-                                width: max-content;
-                                min-width: 270px;
-                                margin: 0 0 10px 0;
-                            }
-                            .card-product__price-container {
-                                flex: 0 0 75%;
-                                align-self: self-end;
-                                display: flex;
-                                flex-wrap: wrap;
-                                flex-direction: row;
-                                .price {
-                                    flex: 0 0 auto;
-                                    .price__container {
-                                        .price-item {
-                                            font-family: 'Cormorant Garamond';
-                                            color: $mainColorDark;
-                                            font-size: $fontSizeMedium;
+                        }
+                        &:hover {
+                            .card-product__content {
+                                h1, h2, h3, h4, h5, h6 {
+                                    opacity: 1 !important;
+                                }
+                                .card-product__actions {
+                                    opacity: 1 !important;
+                                }
+                                &.card-product__content--initial {
+                                    z-index: 9999 !important;
+                                    .card-product__headline-container {
+                                        .card__article-number {
+                                            span {
+                                                color: $whiteColor;
+                                            }
                                         }
                                     }
-                                }
-                            }
-                            .card-product__weight {
-                                flex: 0 0 25%;
-                                align-self: self-end;
-                                margin: 0px;
-                                text-align: right;
-                                span {
-                                    font-family: 'Cormorant Garamond';
-                                    color: $mainColorDark;
-                                    font-size: $fontSizeRegular;
-                                    
-                                }
-                            }
-                        }
-                        &.card-product__content--hover {
-                            display: flex;
-                            height: 100%;
-                            flex-wrap: wrap;
-                            padding: 15px;
-                            flex-direction: column;
-                            justify-content: center;
-                            width: 100%;
-                            z-index: 99;
-                            .card-product__specs-list {
-                                margin: 10px 0 20px 0;
-                                padding: 0px;
-                                width: max-content;
-                                min-width: 270px;
-                                li {
-                                    font-family: 'Cormorant Garamond';
-                                    font-size: $fontSizeRegular;
-                                    color: $whiteColor;
-                                    margin: 0px;
-                                    padding: 0px;
-                                    list-style: none;
-                                }
-                            }
-                        }
-                    }
-                    &:hover {
-                        .card-product__content {
-                            h1, h2, h3, h4, h5, h6 {
-                                opacity: 1 !important;
-                            }
-                            .card-product__actions {
-                                opacity: 1 !important;
-                            }
-                            &.card-product__content--initial {
-                                z-index: 9999 !important;
-                                .card-product__headline-container {
-                                    .card__article-number {
+                                    .card-product__price-container {
+                                        .price {
+                                            .price__container {
+                                                .price-item {
+                                                    color: $whiteColor;
+                                                }
+                                            }
+                                        }
+                                        .vat-info-badge {
+                                            color: $whiteColor !important;
+                                            .info-icon {
+                                                color: $whiteColor !important;
+                                                background-color: rgba(255,255,255,0.3);
+                                            }
+                                        }
+                                    }
+                                    .card-product__weight {
                                         span {
                                             color: $whiteColor;
                                         }
                                     }
                                 }
-                                .card-product__price-container {
-                                    .price {
-                                        .price__container {
-                                            .price-item {
-                                                color: $whiteColor;
-                                            }
-                                        }
-                                    }
-                                    .vat-info-badge {
-                                        color: $whiteColor !important;
-                                        .info-icon {
-                                            color: $whiteColor !important;
-                                            background-color: rgba(255,255,255,0.3);
-                                        }
-                                    }
+                                &.card-product__content--hover {
+                                    background-color: rgba(26,45,28,55%);
                                 }
-                                .card-product__weight {
-                                    span {
-                                        color: $whiteColor;
-                                    }
-                                }
-                            }
-                            &.card-product__content--hover {
-                                background-color: rgba(26,45,28,55%);
                             }
                         }
                     }
                 }
+                /*&.static {
+                    display: block;
+                    position: absolute;
+                }
+                &.hover {
+                    display: none;
+                }*/
             }
-            /*&.static {
-                display: block;
-                position: absolute;
-            }
-            &.hover {
-                display: none;
-            }*/
         }
     }
 }

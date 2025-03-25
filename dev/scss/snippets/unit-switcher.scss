@@ -1,0 +1,92 @@
+/**
+ * Stile für den Einheitenumschalter (Unit Switcher)
+ * Ermöglicht die Umschaltung zwischen metrischen und imperialen Einheiten
+ */
+
+/* Container für den Unit-Switcher außerhalb der Facet-Filter */
+
+.unit-switcher-container {
+    margin: 0.5rem 0;
+    padding: 0.5rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    @media screen and (max-width: 768px) {
+        justify-content: flex-start;
+    }
+  }
+  
+  /* Basis-Stile für den Switcher */
+  
+  .unit-switcher {
+    display: inline-flex;
+    align-items: stretch;
+    border-radius: 8px;
+    overflow: hidden;
+    width: 100%;
+    border: 1px solid #e1e1e1;
+    background-color: #f5f5f5;
+    @media screen and (max-width: 768px) {
+        width: auto;
+    }
+  }
+  
+  /* Label-Stile */
+  
+  .unit-switcher__label {
+    position: relative;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    font-family: 'Cormorant Garamond';
+    color: $mainColorDark;
+    font-size: $fontSizeRegular;
+
+  }
+  
+  .unit-switcher__metric, .unit-switcher__imperial {
+    color: #555;
+    transition: background-color 0.2s;
+    user-select: none;
+    padding: 8px 12px;
+    text-align: center;
+    font-weight: bold;
+  }
+  
+  .unit-switcher__metric {
+    background-color: #f5f5f5;
+    color: #333;
+  }
+  
+  .unit-switcher__imperial {
+    background-color: #ffffff;
+    border-left: 1px solid #e1e1e1;
+  }
+
+  .unit-switcher__subtext {
+    font-size: $fontSizeSmall;
+    display: block;
+    font-weight: normal;
+    margin: 0 0 0 0;
+  }
+  
+  /* Versteckte Checkbox */
+  
+  .unit-switcher__checkbox {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  
+    &:checked ~ .unit-switcher__label {
+      .unit-switcher__metric {
+        background-color: #ffffff;
+      }
+  
+      .unit-switcher__imperial {
+        background-color: #e9e9e9;
+      }
+    }
+  }
+  

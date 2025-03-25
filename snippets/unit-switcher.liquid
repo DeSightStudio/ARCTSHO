@@ -15,8 +15,14 @@
     aria-label="{{ 'products.facets.unit_switch_label' | t }}"
   >
   <label class="unit-switcher__label" for="unit-switcher">
-    <span class="unit-switcher__metric">{{ 'products.facets.unit_metric' | t }} m / cm / mm</span>
-    <span class="unit-switcher__imperial">{{ 'products.facets.unit_imperial' | t }} yd / ft / in</span>
+    <span class="unit-switcher__metric">
+      {{- 'products.facets.unit_metric' | t -}}
+      <span class="unit-switcher__subtext"> m / cm / mm</span></span
+    >
+    <span class="unit-switcher__imperial">
+      {{- 'products.facets.unit_imperial' | t -}}
+      <span class="unit-switcher__subtext"> yd / ft / in</span></span
+    >
   </label>
 </unit-switcher>
 
@@ -25,6 +31,5 @@
 {% endcomment %}
 {% if unit_converter_loaded != true %}
   <script src="{{ 'unit-converter.js' | asset_url }}" defer></script>
-  {{ 'unit-switcher.css' | asset_url | stylesheet_tag }}
   {% assign unit_converter_loaded = true %}
 {% endif %}
