@@ -4,9 +4,11 @@ product-info {
             media-gallery {
                 .product__media-list {
                     .product__media-item {
+                        @media screen and (min-width: 981px) {
                         border-radius: 16px;
                         overflow: hidden;
                         border: 1px solid $grayColorLight;
+                        }
                     }
                 }
             }
@@ -63,6 +65,19 @@ product-info {
                     background-color: $mainColor;
                 }
             }
+        }
+    }
+}
+
+product-recommendations {
+    .related-products__heading {
+        font-family: 'Cormorant Garamond';
+        color: $mainColor;
+        font-size: $fontSizeLarge !important;
+        margin: 30px 0px 15px 0px;
+        line-height: 1;
+        @include screen(med-small) {
+            font-size: $fontSizeMedium;
         }
     }
 }
