@@ -36,20 +36,96 @@
         role="list"
       >
         {% assign skip_card_product_styles = false %}
+        {% assign shown_categories = '' %}
+        {% assign shown_products = 0 %}
+        {% assign shown_ids = '' %}
+
+        {% comment %} Erste Runde: Ein Produkt pro Kategorie {% endcomment %}
         {% for recommendation in recommendations.products %}
-          <li class="grid__item">
-            {% render 'card-product',
-              card_product: recommendation,
-              media_aspect_ratio: section.settings.image_ratio,
-              image_shape: section.settings.image_shape,
-              show_secondary_image: section.settings.show_secondary_image,
-              show_vendor: section.settings.show_vendor,
-              show_rating: section.settings.show_rating,
-              skip_styles: skip_card_product_styles
+          {% if shown_products < 10 %}
+            {% unless recommendation.selected_or_first_available_variant.sku == '2226'
+              or recommendation.available == false
             %}
-          </li>
-          {%- assign skip_card_product_styles = true -%}
+              {% assign product_type = recommendation.type | downcase %}
+
+              {% unless shown_categories contains product_type %}
+                <li class="grid__item">
+                  {% render 'card-product',
+                    card_product: recommendation,
+                    media_aspect_ratio: section.settings.image_ratio,
+                    image_shape: section.settings.image_shape,
+                    show_secondary_image: section.settings.show_secondary_image,
+                    show_vendor: section.settings.show_vendor,
+                    show_rating: section.settings.show_rating,
+                    skip_styles: skip_card_product_styles
+                  %}
+                </li>
+                {%- assign skip_card_product_styles = true -%}
+                {% assign shown_categories = shown_categories | append: product_type | append: ',' %}
+                {% assign shown_ids = shown_ids | append: recommendation.id | append: ',' %}
+                {% assign shown_products = shown_products | plus: 1 %}
+              {% endunless %}
+            {% endunless %}
+          {% endif %}
         {% endfor %}
+
+        {% comment %} Zweite Runde: Auffüllen bis 10 Produkte {% endcomment %}
+        {% if shown_products < 10 %}
+          {% for recommendation in recommendations.products %}
+            {% if shown_products < 10 %}
+              {% unless recommendation.selected_or_first_available_variant.sku == '2226'
+                or recommendation.available == false
+              %}
+                {% assign product_type = recommendation.type | downcase %}
+                {% assign id_to_check = recommendation.id | append: ',' %}
+
+                {% comment %} Wenn das Produkt noch nicht angezeigt wurde, zeige es an {% endcomment %}
+                {% unless shown_ids contains id_to_check %}
+                  <li class="grid__item">
+                    {% render 'card-product',
+                      card_product: recommendation,
+                      media_aspect_ratio: section.settings.image_ratio,
+                      image_shape: section.settings.image_shape,
+                      show_secondary_image: section.settings.show_secondary_image,
+                      show_vendor: section.settings.show_vendor,
+                      show_rating: section.settings.show_rating,
+                      skip_styles: skip_card_product_styles
+                    %}
+                  </li>
+                  {%- assign skip_card_product_styles = true -%}
+                  {% assign shown_ids = shown_ids | append: id_to_check %}
+                  {% assign shown_products = shown_products | plus: 1 %}
+                  {% break %}
+                {% endunless %}
+              {% endunless %}
+            {% endif %}
+          {% endfor %}
+
+          {% comment %} Wenn immer noch nicht genug Produkte, fülle mit verfügbaren Produkten auf {% endcomment %}
+          {% if shown_products < 10 %}
+            {% for recommendation in recommendations.products %}
+              {% if shown_products < 10 %}
+                {% unless recommendation.selected_or_first_available_variant.sku == '2226'
+                  or recommendation.available == false
+                %}
+                  <li class="grid__item">
+                    {% render 'card-product',
+                      card_product: recommendation,
+                      media_aspect_ratio: section.settings.image_ratio,
+                      image_shape: section.settings.image_shape,
+                      show_secondary_image: section.settings.show_secondary_image,
+                      show_vendor: section.settings.show_vendor,
+                      show_rating: section.settings.show_rating,
+                      skip_styles: skip_card_product_styles
+                    %}
+                  </li>
+                  {%- assign skip_card_product_styles = true -%}
+                  {% assign shown_products = shown_products | plus: 1 %}
+                {% endunless %}
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+        {% endif %}
       </ul>
     {% endif %}
   </product-recommendations>
