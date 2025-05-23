@@ -645,6 +645,11 @@
 // Slick Slider Initialization
 function initializeSlickSlider() {
     if ($('#collection-slider').length > 0) {
+        const $slider = $('#collection-slider');
+        const autoplay = ($slider.data('autoplay') === true || $slider.data('autoplay') === 'true') &&
+                         !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const speed = parseInt($slider.data('speed')) || 3;
+
         $('#collection-slider .slider-container').slick({
             dots: false,
             infinite: true,
@@ -652,9 +657,45 @@ function initializeSlickSlider() {
             slidesToShow: 1,
             adaptiveHeight: true,
             slidesToScroll: 1,
-            adaptiveHeight: true,
+            autoplay: autoplay,
+            autoplaySpeed: speed * 1000, // Convert seconds to milliseconds
+            pauseOnHover: true,
+            pauseOnFocus: true,
             prevArrow:"<span class='slickNavPrev'><i class='fa-thin fa-chevron-left'></i></span>",
 			nextArrow:"<span class='slickNavNext'><i class='fa-thin fa-chevron-right'></i></span>"
         });
+
+        // Make entire slider items clickable
+        $('#collection-slider').on('click', '.slider-item', function(e) {
+            // Prevent default if clicking on existing links
+            if ($(e.target).is('a') || $(e.target).closest('a').length) {
+                return; // Let the existing link handle the click
+            }
+
+            // Get the collection URL from data attribute or fallback to link
+            const collectionUrl = $(this).data('collection-url') || $(this).find('.category-link').first().attr('href');
+            if (collectionUrl) {
+                window.location.href = collectionUrl;
+            }
+        });
+
+        // Add cursor pointer style to slider items
+        $('#collection-slider .slider-item').css('cursor', 'pointer');
+
+        // Add keyboard navigation support
+        $('#collection-slider').on('keydown', '.slider-item', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                const collectionUrl = $(this).data('collection-url') || $(this).find('.category-link').first().attr('href');
+                if (collectionUrl) {
+                    window.location.href = collectionUrl;
+                }
+            }
+        });
+
+        // Make slider items focusable for keyboard navigation
+        $('#collection-slider .slider-item').attr('tabindex', '0');
+
+        console.log('Collection Slider initialized with autoplay:', autoplay, 'speed:', speed + 's');
     }
 }

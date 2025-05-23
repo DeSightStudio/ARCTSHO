@@ -1,13 +1,22 @@
-<div id="collection-slider">
+<div
+  id="collection-slider"
+  data-autoplay="{{ section.settings.auto_rotate }}"
+  data-speed="{{ section.settings.change_slides_speed | default: 3 }}"
+>
   <div class="slider-container">
     {% for block in section.blocks %}
       {% assign collection = collections[block.settings.collection] %}
       {% if collection != blank %}
-        <div class="slider-item">
+        <div
+          class="slider-item"
+          role="button"
+          aria-label="Zur Kollektion {{ collection.title }} navigieren"
+          data-collection-url="{{ collection.url }}"
+        >
           <div class="slider-background" style="background-image: url('{{ collection.image | img_url: 'master' }}');">
             <div class="slider-content page-width">
               <div class="category-image">
-                <a href="{{ collection.url }}" class="category-link">
+                <a href="{{ collection.url }}" class="category-link" tabindex="-1">
                   <img
                     src="{{ collection.metafields.custom.cutout_image | img_url: 'master' }}"
                     alt="{{ collection.title }}"
@@ -17,7 +26,7 @@
               <div class="category-details">
                 <h2>{{ collection.title }}</h2>
                 <p>{{ collection.description }}</p>
-                <a href="{{ collection.url }}" class="category-link">
+                <a href="{{ collection.url }}" class="category-link" tabindex="-1">
                   {{- 'sections.collection_slider.learn_more' | t }} &rarr;</a
                 >
               </div>
@@ -50,6 +59,24 @@
       ],
       "default": "full_bleed",
       "label": "Layout"
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_rotate",
+      "label": "Automatisch wechseln",
+      "default": true,
+      "info": "Slider wechselt automatisch alle 3 Sekunden zur nächsten Kollektion"
+    },
+    {
+      "type": "range",
+      "id": "change_slides_speed",
+      "min": 2,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "label": "Wechselgeschwindigkeit",
+      "default": 3,
+      "info": "Zeit in Sekunden zwischen automatischen Wechseln"
     }
   ],
   "blocks": [

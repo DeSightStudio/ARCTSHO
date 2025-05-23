@@ -23,6 +23,14 @@
             }
         }
         .slider-item {
+            cursor: pointer;
+            outline: none;
+
+            &:focus {
+                outline: 2px solid rgba($whiteColor, 0.8);
+                outline-offset: 4px;
+            }
+
             .slider-background {
                 background-repeat: no-repeat;
                 background-size: cover;
@@ -92,6 +100,11 @@
                             font-size: $fontSizeMedium;
                             font-weight: bold;
                             text-decoration: none;
+                            transition: color 0.3s ease;
+
+                            &:hover {
+                                color: rgba($whiteColor, 0.8);
+                            }
                         }
                     }
                 }
