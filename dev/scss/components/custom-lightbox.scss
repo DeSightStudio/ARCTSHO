@@ -1,0 +1,316 @@
+// Custom Lightbox - Komplett eigenständige Komponente
+// Designed to match the reference screenshot exactly
+
+// Deaktiviere Shopify Product Modals komplett
+product-modal,
+.product-media-modal {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+// Deaktiviere modal-opener Hover-Effekte
+modal-opener[data-lightbox-disabled] {
+  pointer-events: none !important;
+
+  .product__media-icon {
+    display: none !important;
+  }
+
+  .product__media-toggle {
+    pointer-events: none !important;
+  }
+}
+
+.custom-lightbox {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 99999; // Höher als andere Modals
+  opacity: 0;
+  transition: opacity 0.3s ease;
+
+  &.open {
+    opacity: 1;
+  }
+
+  // Verhindere Scrollen im Hintergrund
+  &.open ~ body,
+  &.open body {
+    overflow: hidden;
+  }
+}
+
+.custom-lightbox__backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.custom-lightbox__container {
+  position: relative;
+  width: 90vw;
+  height: 90vh;
+  max-width: 1200px;
+  max-height: 800px;
+  display: flex;
+  flex-direction: column;
+}
+
+// Close Button (top right)
+.custom-lightbox__close {
+  position: absolute;
+  top: -50px;
+  right: 0;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.2s ease;
+  color: #333;
+
+  &:hover {
+    background: white;
+    transform: scale(1.1);
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+// Main Image Container
+.custom-lightbox__image-container {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #f5f5f5;
+}
+
+.custom-lightbox__image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.custom-lightbox__slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &.active {
+    animation: slideIn 0.3s ease;
+  }
+}
+
+.custom-lightbox__image {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  transition: transform 0.2s ease;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+// Navigation Arrows
+.custom-lightbox__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 5;
+  transition: all 0.2s ease;
+  color: #333;
+
+  &:hover {
+    background: white;
+    transform: translateY(-50%) scale(1.1);
+  }
+
+  &--prev {
+    left: 20px;
+  }
+
+  &--next {
+    right: 20px;
+  }
+
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+// Bottom Controls Bar - Exactly like in screenshot
+.custom-lightbox__controls {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.8);
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  height: 60px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+// Image Counter
+.custom-lightbox__counter {
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  min-width: 60px;
+  text-align: center;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+// Zoom Controls - White buttons like in screenshot
+.custom-lightbox__zoom-controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.custom-lightbox__zoom-btn {
+  background: white;
+  border: none;
+  border-radius: 4px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #333;
+  font-size: 18px;
+  font-weight: bold;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  &:hover:not(:disabled) {
+    background: #f0f0f0;
+    transform: scale(1.05);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// Mobile Responsive
+@media screen and (max-width: 768px) {
+  .custom-lightbox__container {
+    width: 95vw;
+    height: 95vh;
+  }
+
+  .custom-lightbox__close {
+    top: -40px;
+    width: 36px;
+    height: 36px;
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  .custom-lightbox__nav {
+    width: 44px;
+    height: 44px;
+
+    &--prev {
+      left: 10px;
+    }
+
+    &--next {
+      right: 10px;
+    }
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  .custom-lightbox__controls {
+    padding: 12px 15px;
+    height: 50px;
+    gap: 20px;
+  }
+
+  .custom-lightbox__zoom-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+  }
+
+  .custom-lightbox__counter {
+    font-size: 13px;
+  }
+}
+
+// Animation for slide transitions
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// Zoom cursor states
+.custom-lightbox__image {
+  &[style*="scale"] {
+    cursor: grab;
+
+    &:active {
+      cursor: grabbing;
+    }
+  }
+}

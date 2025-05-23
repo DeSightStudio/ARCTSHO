@@ -624,6 +624,9 @@
     });
 })(jQuery);
 
+// Import Custom Lightbox
+// Custom Lightbox wird automatisch initialisiert wenn die Datei geladen wird
+
 // Slick Slider Initialization
 function initializeSlickSlider() {
     if ($('#collection-slider').length > 0) {
