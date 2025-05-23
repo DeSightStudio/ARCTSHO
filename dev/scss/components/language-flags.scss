@@ -1,0 +1,135 @@
+/* ===================================================== */
+/* :::::::::::::: Language Flags Component :::::::::::::: */
+/* ===================================================== */
+
+// Language Flags for External App Language Switcher
+// Targets the DOM structure from external Shopify language switcher app
+
+.desktop-localization-wrapper {
+    
+    // Target the language selector disclosure list
+    .disclosure__list {
+        
+        // Style each language item
+        .disclosure__item {
+            
+            // Target the language links with hreflang attributes
+            .disclosure__link {
+                position: relative;
+                padding-left: 35px !important; // Make space for flag
+                
+                // Flag styling using ::before pseudo-element
+                &::before {
+                    content: '';
+                    position: absolute;
+                    left: 8px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    width: 20px;
+                    height: 15px;
+                    background-size: cover;
+                    background-position: center;
+                    background-repeat: no-repeat;
+                    border-radius: 2px;
+                    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+                    z-index: 9;
+                }
+                
+                // English flag
+                &[hreflang="en"]::before {
+                    background-image: url('{{ "flag-en.png" | asset_url }}');
+                }
+                
+                // German flag
+                &[hreflang="de"]::before {
+                    background-image: url('{{ "flag-de.png" | asset_url }}');
+                }
+                
+                // Italian flag
+                &[hreflang="it"]::before {
+                    background-image: url('{{ "flag-it.png" | asset_url }}');
+                }
+                
+                // French flag
+                &[hreflang="fr"]::before {
+                    background-image: url('{{ "flag-fr.png" | asset_url }}');
+                }
+                
+                // Spanish flag
+                &[hreflang="es"]::before {
+                    background-image: url('{{ "flag-es.png" | asset_url }}');
+                }
+            }
+        }
+    }
+    
+    // Also target the main button (currently selected language)
+    .disclosure__button {
+        position: relative;
+        padding-left: 35px !important; // Make space for flag
+        
+        &::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 15px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-radius: 2px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            z-index: 9;
+        }
+    }
+}
+
+// Dynamic flag for currently selected language in button
+// This will be handled by JavaScript to detect current language
+body[data-locale="en"] .desktop-localization-wrapper .disclosure__button::before {
+    background-image: url('{{ "flag-en.png" | asset_url }}');
+}
+
+body[data-locale="de"] .desktop-localization-wrapper .disclosure__button::before {
+    background-image: url('{{ "flag-de.png" | asset_url }}');
+}
+
+body[data-locale="it"] .desktop-localization-wrapper .disclosure__button::before {
+    background-image: url('{{ "flag-it.png" | asset_url }}');
+}
+
+body[data-locale="fr"] .desktop-localization-wrapper .disclosure__button::before {
+    background-image: url('{{ "flag-fr.png" | asset_url }}');
+}
+
+body[data-locale="es"] .desktop-localization-wrapper .disclosure__button::before {
+    background-image: url('{{ "flag-es.png" | asset_url }}');
+}
+
+// Mobile responsive adjustments
+@media screen and (max-width: 749px) {
+    .desktop-localization-wrapper {
+        .disclosure__link,
+        .disclosure__button {
+            padding-left: 32px !important; // Slightly less padding on mobile
+            
+            &::before {
+                width: 18px;
+                height: 13px;
+                left: 6px;
+            }
+        }
+    }
+}
+
+// Hover effects for better UX
+.desktop-localization-wrapper {
+    .disclosure__link {
+        &:hover::before {
+            transform: translateY(-50%) scale(1.1);
+            transition: transform 0.2s ease;
+        }
+    }
+}

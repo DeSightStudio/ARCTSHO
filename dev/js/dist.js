@@ -50,12 +50,12 @@
                     scrollTop: $(target).offset().top
                 }, 600);
             }
-            
+
             // Funktion, um Platzhalter für Formularfelder zu setzen
             function setupFormPlaceholders() {
                 // Die Platzhalter werden nun durch die Liquid-Übersetzungen im Template gesetzt
                 // und sollten nicht durch JavaScript überschrieben werden
-                
+
                 // Die Platzhalter für die Country-Dropdowns werden in der initCountryDropdown-Funktion gesetzt
             }
 
@@ -65,13 +65,13 @@
                 $('[class*="-width-"]').each(function() {
                     var $element = $(this);
                     var classList = $element.attr('class').split(' ');
-                    
+
                     // Durchsuchen der Klassen nach *-width-XX
                     classList.forEach(function(className) {
                         if (className.indexOf('-width-') !== -1) {
                             var width = className.split('-width-')[1];
                             console.log('Anwenden der dynamischen Breite für ' + className + ': ' + width + '%');
-                            
+
                             // Breite direkt anwenden, falls nötig
                             if ($element.css('width') === 'auto' || !$element.css('width')) {
                                 $element.css('width', width + '%');
@@ -79,7 +79,7 @@
                         }
                     });
                 });
-                
+
                 // Weitere Optimierungen können hier hinzugefügt werden
             }
 
@@ -106,7 +106,7 @@
                             $(phoneInput).val(phoneNumber);
                         }
                     });
-                    
+
                     // Fix für eventuelles Styling-Problem mit dem Container
                     setTimeout(function() {
                         $('.iti').css('width', '100%');
@@ -135,7 +135,7 @@
                             $(contactPhoneInput).val(phoneNumber);
                         }
                     });
-                    
+
                     // Fix für eventuelles Styling-Problem mit dem Container
                     setTimeout(function() {
                         $('.iti').css('width', '100%');
@@ -398,7 +398,7 @@
 
                 if ($('#FooterContactForm-country').length) {
                     const countrySelect = $('#FooterContactForm-country');
-                    
+
                     // Die Option wurde bereits mit Liquid-Übersetzungen erstellt,
                     // wir müssen nur die Länderliste hinzufügen
                     countryList.forEach(country => {
@@ -410,7 +410,7 @@
                 // Also initialize for regular contact form page if it exists
                 if ($('#ContactForm-country').length) {
                     const contactFormCountrySelect = $('#ContactForm-country');
-                    
+
                     // Die Option wurde bereits mit Liquid-Übersetzungen erstellt,
                     // wir müssen nur die Länderliste hinzufügen
                     countryList.forEach(country => {
@@ -420,29 +420,121 @@
                 }
             }
 
+            // Initialize language flags for external language switcher app
+            function initLanguageFlags() {
+                // Set data-locale attribute on body based on current language
+                const currentLanguage = document.documentElement.lang || 'en';
+                document.body.setAttribute('data-locale', currentLanguage);
+
+                // Also try to detect current language from the button text and set flag directly
+                setTimeout(function() {
+                    const languageButton = document.querySelector('.desktop-localization-wrapper .disclosure__button');
+                    if (languageButton) {
+                        const buttonText = languageButton.textContent.trim().toLowerCase();
+                        let detectedLang = currentLanguage;
+
+                        // Map button text to language codes
+                        if (buttonText.includes('english')) detectedLang = 'en';
+                        else if (buttonText.includes('deutsch')) detectedLang = 'de';
+                        else if (buttonText.includes('italiano')) detectedLang = 'it';
+                        else if (buttonText.includes('français')) detectedLang = 'fr';
+                        else if (buttonText.includes('español')) detectedLang = 'es';
+
+                        // Update body data-locale attribute
+                        document.body.setAttribute('data-locale', detectedLang);
+
+                        console.log('Language flags initialized for detected locale:', detectedLang, 'from button text:', buttonText);
+                    }
+                }, 500); // Wait a bit for the external app to load
+
+                console.log('Language flags initialized for locale:', currentLanguage);
+            }
+
+            // Initialize BUCKS currency converter customizations
+            function initBucksCurrencyConverter() {
+                // Wait for BUCKS app to load
+                setTimeout(function() {
+                    // Add currency symbols to the selected currency display
+                    function updateCurrencyDisplay() {
+                        const selectedCurrency = document.querySelector('.bucks-selected');
+                        if (selectedCurrency) {
+                            const currencyText = selectedCurrency.textContent.trim();
+
+                            if (currencyText === 'EUR' && !currencyText.includes('€')) {
+                                selectedCurrency.textContent = 'EUR/€';
+                            } else if (currencyText === 'USD' && !currencyText.includes('$')) {
+                                selectedCurrency.textContent = 'USD/$';
+                            }
+                        }
+
+                        // Update dropdown options
+                        const currencyItems = document.querySelectorAll('.bucksItem');
+                        currencyItems.forEach(function(item) {
+                            const itemText = item.textContent.trim();
+
+                            if (itemText === 'EUR' && !itemText.includes('€')) {
+                                item.textContent = 'EUR/€';
+                            } else if (itemText === 'USD' && !itemText.includes('$')) {
+                                item.textContent = 'USD/$';
+                            }
+                        });
+                    }
+
+                    // Initial update
+                    updateCurrencyDisplay();
+
+                    // Watch for changes in the currency selector
+                    const currencyBox = document.querySelector('.buckscc-currency-box');
+                    if (currencyBox) {
+                        // Use MutationObserver to watch for changes
+                        const observer = new MutationObserver(function(mutations) {
+                            mutations.forEach(function(mutation) {
+                                if (mutation.type === 'childList' || mutation.type === 'characterData') {
+                                    setTimeout(updateCurrencyDisplay, 100);
+                                }
+                            });
+                        });
+
+                        observer.observe(currencyBox, {
+                            childList: true,
+                            subtree: true,
+                            characterData: true
+                        });
+
+                        console.log('BUCKS currency converter customizations initialized');
+                    }
+                }, 1000); // Wait 1 second for BUCKS to load
+            }
+
             // Initialization
             function initialize() {
                 console.log('Initializing contact form components...');
-                
+
                 // Warten bis die Bibliothek geladen ist
                 if (typeof window.intlTelInput === 'undefined') {
                     console.log('intlTelInput not loaded yet, waiting...');
                     setTimeout(initialize, 200);
                     return;
                 }
-                
+
                 // Initialize international telephone input
                 initIntlTelInput();
 
                 // Initialize country dropdown
                 initCountryDropdown();
-                
+
+                // Initialize language flags
+                initLanguageFlags();
+
+                // Initialize BUCKS currency converter
+                initBucksCurrencyConverter();
+
                 // Setup Form Placeholders
                 setupFormPlaceholders();
-                
+
                 // Formularfelder optimieren und dynamische Breite anwenden
                 optimizeFormFields();
-                
+
                 // Event listener for a button to toggle visibility
                 $('#toggle-button').on('click', function() {
                     toggleVisibility('.toggle-target');
@@ -462,12 +554,12 @@
                 // Event-Listener für den VAT ID Button im Warenkorb
                 function initVatIdButton() {
                     console.log('Initialisiere VAT-ID Button im Warenkorb...');
-                    
+
                     // Direkter Event-Listener für den Button
                     $(document).on('click', '#CartDrawer-VatIdButton', function(e) {
                         e.preventDefault();
                         console.log('VAT-ID Button im Warenkorb wurde geklickt');
-                        
+
                         // Prüfen, ob MicroModal verfügbar ist
                         if (typeof window.MicroModal !== 'undefined') {
                             window.MicroModal.show('modal-cart-vat-id');
@@ -476,7 +568,7 @@
                         }
                     });
                 }
-                
+
                 // VAT-ID Button initialisieren
                 initVatIdButton();
 
@@ -486,18 +578,18 @@
 
             // Starte die Initialisierung
             initialize();
-            
+
             // Debug für VAT-ID-Button und Modal
             setTimeout(function() {
                 console.log('Debugging VAT-ID-Button und Modal:');
-                
+
                 // Überprüfen, ob MicroModal geladen ist
                 if (typeof window.MicroModal === 'undefined') {
                     console.error('MicroModal ist nicht geladen!');
                 } else {
                     console.log('MicroModal ist verfügbar:', window.MicroModal);
                 }
-                
+
                 // Überprüfen, ob das Modal existiert
                 const vatIdModal = document.getElementById('modal-cart-vat-id');
                 if (!vatIdModal) {
@@ -505,14 +597,14 @@
                 } else {
                     console.log('Modal "modal-cart-vat-id" gefunden:', vatIdModal);
                 }
-                
+
                 // Überprüfen, ob der Button existiert
                 const vatIdButton = document.getElementById('CartDrawer-VatIdButton');
                 if (!vatIdButton) {
                     console.error('Button "CartDrawer-VatIdButton" nicht gefunden!');
                 } else {
                     console.log('Button "CartDrawer-VatIdButton" gefunden:', vatIdButton);
-                    
+
                     // Direkt einen Click-Event simulieren
                     console.log('Simuliere Klick-Event für VAT-ID-Button...');
                     vatIdButton.addEventListener('click', function(e) {
@@ -527,7 +619,7 @@
                         }
                     });
                 }
-                
+
                 // Direkter Zugang zum Modal (für Tests)
                 window.openVatIdModal = function() {
                     console.log('Manueller Aufruf von openVatIdModal');
@@ -540,7 +632,7 @@
                         }
                     }
                 };
-                
+
                 // Prüfen der Event-Listener
                 console.log('Überprüfe, ob der Button event listeners hat:');
                 const buttonEvents = getEventListeners && vatIdButton ? getEventListeners(vatIdButton) : 'getEventListeners nicht verfügbar';

@@ -1,0 +1,149 @@
+/* ===================================================== */
+/* :::::::::: BUCKS Currency Converter Styling :::::::::: */
+/* ===================================================== */
+
+// Custom styling for BUCKS Currency Converter App
+// Targets the DOM structure from external BUCKS app
+
+.buckscc-currency-box {
+
+    // Main currency wrapper styling
+    .buckscc-currency-wrapper {
+
+        // Style the main select button
+        .buckscc-select {
+
+            // Override the styled select button
+            .buckscc-select-styled {
+                background-color: $mainColor !important;
+                border-radius: 4px;
+                padding: 8px 12px;
+                transition: all 0.3s ease;
+
+                // Hover effect
+                &:hover {
+                    background-color: darken($mainColor, 10%) !important;
+                }
+
+                // Selected currency text styling
+                .bucks-selected {
+                    color: white !important;
+                    font-weight: 500;
+
+                    // Add currency symbols after the currency codes
+                    &::after {
+                        margin-left: 4px;
+                        font-weight: normal;
+                    }
+                }
+
+                // Currency symbols are added via JavaScript
+
+                // Style the dropdown arrow
+                .bucks__folder-collapse_btn {
+                    svg {
+                        stroke: white !important;
+                    }
+                }
+            }
+
+            // Style the dropdown options
+            .buckscc-select-options {
+                background-color: $mainColor !important;
+                border: none !important;
+                border-radius: 4px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                margin-top: 4px;
+
+                // Individual option styling
+                li {
+                    padding: 8px 12px;
+                    transition: background-color 0.2s ease;
+
+                    &:hover {
+                        background-color: darken($mainColor, 15%) !important;
+                    }
+
+                    // Currency item text
+                    .bucksItem {
+                        color: white !important;
+                        font-weight: 500;
+
+                        // Add currency symbols after the currency codes in dropdown
+                        &::after {
+                            margin-left: 4px;
+                            font-weight: normal;
+                            opacity: 0.8;
+                        }
+                    }
+                }
+
+                // Currency symbols in dropdown are added via JavaScript
+            }
+        }
+    }
+}
+
+// Alternative approach using attribute selectors for more reliable targeting
+.buckscc-currency-box {
+
+    // Target by ID for more specific styling
+    #bucksSelector + .buckscc-select-styled {
+        background-color: $mainColor !important;
+
+        // Ensure text is visible
+        .bucks-selected {
+            color: white !important;
+        }
+    }
+
+    // Style options container
+    .buckscc-select-options {
+        background-color: $mainColor !important;
+
+        li {
+            &:hover {
+                background-color: darken($mainColor, 10%) !important;
+            }
+
+            .bucksItem {
+                color: white !important;
+            }
+        }
+    }
+}
+
+// Note: Currency symbols are added via JavaScript
+// since CSS :contains() is not widely supported
+
+// Responsive adjustments
+@media screen and (max-width: 749px) {
+    .buckscc-currency-box {
+        .buckscc-select-styled {
+            padding: 6px 10px;
+            font-size: 14px;
+        }
+
+        .buckscc-select-options li {
+            padding: 6px 10px;
+            font-size: 14px;
+        }
+    }
+}
+
+// Ensure proper z-index for dropdown
+.buckscc-select-options {
+    z-index: 9999 !important;
+    position: absolute !important;
+}
+
+// Additional styling for flag integration if needed
+.buckscc-currency-box {
+    .flagWrapper {
+        .hxoFlag {
+            // Ensure flags are visible on colored background
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+        }
+    }
+}
