@@ -43,20 +43,20 @@
             <h2 class="modal__title" id="modal-certificate-origin-title">
               {{ settings.popup_certificate_origin_headline }}
             </h2>
-            <h3>
-              {{ settings.popup_certificate_origin_abbr }}
-            </h3>
+            {% if settings.popup_certificate_origin_use_arrow_divider %}
+              <div class="arrow-container">
+                <div class="arrow-left"></div>
+                <h3>{{ settings.popup_certificate_origin_abbr }}</h3>
+                <div class="arrow-right"></div>
+              </div>
+            {% else %}
+              <h3>{{ settings.popup_certificate_origin_abbr }}</h3>
+            {% endif %}
           </header>
           <main class="modal__content" id="modal-certificate-origin-content">
             <div class="modal__text">
               {{ settings.popup_certificate_origin_text }}
             </div>
-
-            {% if settings.popup_certificate_origin_bullets != blank %}
-              <div class="modal__bullets">
-                {{ settings.popup_certificate_origin_bullets }}
-              </div>
-            {% endif %}
 
             {% if settings.popup_certificate_origin_more_info != blank %}
               <div class="modal__more-info">
@@ -86,20 +86,20 @@
             <h2 class="modal__title" id="modal-clearance-certificate-title">
               {{ settings.popup_clearance_certificate_headline }}
             </h2>
-            <h3>
-              {{ settings.popup_clearance_certificate_abbr }}
-            </h3>
+            {% if settings.popup_clearance_certificate_use_arrow_divider %}
+              <div class="arrow-container">
+                <div class="arrow-left"></div>
+                <h3>{{ settings.popup_clearance_certificate_abbr }}</h3>
+                <div class="arrow-right"></div>
+              </div>
+            {% else %}
+              <h3>{{ settings.popup_clearance_certificate_abbr }}</h3>
+            {% endif %}
           </header>
           <main class="modal__content" id="modal-clearance-certificate-content">
             <div class="modal__text">
               {{ settings.popup_clearance_certificate_text }}
             </div>
-
-            {% if settings.popup_clearance_certificate_bullets != blank %}
-              <div class="modal__bullets">
-                {{ settings.popup_clearance_certificate_bullets }}
-              </div>
-            {% endif %}
 
             {% if settings.popup_clearance_certificate_more_info != blank %}
               <div class="modal__more-info">

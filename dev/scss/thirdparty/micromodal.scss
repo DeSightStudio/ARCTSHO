@@ -124,29 +124,6 @@
             margin: 15px auto;
             font-size: $fontSizeMedium;
             position: relative;
-            &:after, &:before {
-              content: "";
-              position: absolute;
-              top: 50%;
-              width: 150px;
-              height: 1px;
-              background-color: $mainColor;
-              @include screen(med-small) {
-                  width: 100px;
-              }
-          }
-          &:before {
-              left: 80px;
-              @include screen(med-small) {
-                  left: 50px;
-              }
-          }
-          &:after {
-              right: 80px;
-              @include screen(med-small) {
-                  right: 50px;
-              }
-          }
           }
         }
         .modal__content {
@@ -159,37 +136,7 @@
               font-size: $fontSizeRegular;
             }
           }
-          .modal__bullets {
-            font-family: 'Cormorant Garamond';
-            font-size: $fontSizeRegular;
-            line-height: 1.6;
-            color: $mainColor;
-            margin: 20px 0;
 
-            ul {
-              list-style: none;
-              padding: 0;
-              margin: 0;
-
-              li {
-                position: relative;
-                padding-left: 20px;
-                margin-bottom: 10px;
-
-                &:before {
-                  content: '•';
-                  position: absolute;
-                  left: 0;
-                  color: $mainColor;
-                  font-weight: bold;
-                }
-
-                &:last-child {
-                  margin-bottom: 0;
-                }
-              }
-            }
-          }
 
           .modal__more-info {
             background-color: $accentLight;
@@ -267,6 +214,90 @@
   from { transform: translateY(0); }
   to { transform: translateY(-10%); }
 }
+
+// Arrow-Container für Pop-ups (1:1 wie auf der alten Website)
+.popup-container .modal__header .arrow-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px auto;
+  width: 100%;
+  max-width: 500px;
+
+  h3 {
+    padding: 6px 10px;
+    background-color: $mainColor;
+    color: $whiteColor;
+    font-size: $fontSizeMedium;
+    font-weight: 100;
+    text-align: center;
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  .arrow-left {
+    flex: 1;
+    height: 1px;
+    background-color: $mainColor;
+    position: relative;
+    margin-right: 15px;
+    min-width: 100px;
+    display: block;
+    &::before {
+      content: '';
+      display: block;
+      width: 100%;
+      height: 1px;
+    }
+
+    // Pfeilspitze links
+    &::after {
+      content: '';
+      position: absolute;
+      left: -10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 4px 10px 4px 0;
+      border-color: transparent $mainColor transparent transparent;
+    }
+  }
+
+  .arrow-right {
+    flex: 1;
+    height: 1px;
+    background-color: $mainColor;
+    position: relative;
+    margin-left: 15px;
+    min-width: 100px;
+    display: block;
+    // Inhalt hinzufügen, damit div nicht empty ist
+    &::before {
+      content: '';
+      display: block;
+      width: 100%;
+      height: 1px;
+    }
+
+    // Pfeilspitze rechts
+    &::after {
+      content: '';
+      position: absolute;
+      right: -10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 4px 0 4px 10px;
+      border-color: transparent transparent transparent $mainColor;
+    }
+  }
+}
+
+
 
 
 

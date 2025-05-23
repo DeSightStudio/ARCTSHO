@@ -1539,16 +1539,7 @@
         "label": "Pfeil-Dicke",
         "default": 1
       },
-      {
-        "type": "header",
-        "content": "Certificate of Origin - Bullet-Listen"
-      },
-      {
-        "type": "richtext",
-        "id": "popup_certificate_origin_bullets",
-        "label": "Certificate of Origin Bullet-Punkte (WYSIWYG Editor)",
-        "default": "<ul><li>Is the official certification for mammoth ivory under German law.</li><li>Is issued upon our application by the German chamber for industry and commerce.</li><li>Lists the articles, their individual weights and the total weight.</li><li>Is issued into your name or any other name you wish – only one name and address can be listed per CoO.</li></ul>"
-      },
+
       {
         "type": "header",
         "content": "Clearance Certificate Pop-Up"
@@ -1619,16 +1610,7 @@
         "label": "Pfeil-Dicke",
         "default": 1
       },
-      {
-        "type": "header",
-        "content": "Clearance Certificate - Bullet-Listen"
-      },
-      {
-        "type": "richtext",
-        "id": "popup_clearance_certificate_bullets",
-        "label": "Clearance Certificate Bullet-Punkte (WYSIWYG Editor)",
-        "default": "<ul><li>Is issued by the German Federal Agency for Nature Conservation (BfN).</li><li>Official statement confirming the legal situation.</li><li>The extinct species Mammuthus primigenius is not included in any list of CITES.</li></ul>"
-      },
+
       {
         "type": "header",
         "content": "VAT | UID | TVA Pop-Up"
