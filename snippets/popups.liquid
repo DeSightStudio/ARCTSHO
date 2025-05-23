@@ -2,6 +2,36 @@
   Dieses Snippet enthält alle Pop-Ups und lädt die Inhalte direkt aus den Theme-Einstellungen
 {% endcomment %}
 
+{%- style -%}
+  {% if settings.popup_certificate_origin_use_arrow_divider %}
+  #modal-certificate-origin .modal__header h3:after,
+  #modal-certificate-origin .modal__header h3:before {
+    background-color: {{ settings.popup_certificate_origin_arrow_color | default: '#b9bfb1' }};
+    width: {{ settings.popup_certificate_origin_arrow_width | default: 150 }}px;
+    height: {{ settings.popup_certificate_origin_arrow_thickness | default: 1 }}px;
+  }
+  {% else %}
+  #modal-certificate-origin .modal__header h3:after,
+  #modal-certificate-origin .modal__header h3:before {
+    display: none;
+  }
+  {% endif %}
+
+  {% if settings.popup_clearance_certificate_use_arrow_divider %}
+  #modal-clearance-certificate .modal__header h3:after,
+  #modal-clearance-certificate .modal__header h3:before {
+    background-color: {{ settings.popup_clearance_certificate_arrow_color | default: '#b9bfb1' }};
+    width: {{ settings.popup_clearance_certificate_arrow_width | default: 150 }}px;
+    height: {{ settings.popup_clearance_certificate_arrow_thickness | default: 1 }}px;
+  }
+  {% else %}
+  #modal-clearance-certificate .modal__header h3:after,
+  #modal-clearance-certificate .modal__header h3:before {
+    display: none;
+  }
+  {% endif %}
+{%- endstyle -%}
+
 <div class="popup-container">
   {% comment %} Certificate of Origin Pop-Up {% endcomment %}
   {% if settings.popup_certificate_origin_enable %}
@@ -21,6 +51,13 @@
             <div class="modal__text">
               {{ settings.popup_certificate_origin_text }}
             </div>
+
+            {% if settings.popup_certificate_origin_bullets != blank %}
+              <div class="modal__bullets">
+                {{ settings.popup_certificate_origin_bullets }}
+              </div>
+            {% endif %}
+
             {% if settings.popup_certificate_origin_more_info != blank %}
               <div class="modal__more-info">
                 <div class="modal__more-info-content">
@@ -57,6 +94,13 @@
             <div class="modal__text">
               {{ settings.popup_clearance_certificate_text }}
             </div>
+
+            {% if settings.popup_clearance_certificate_bullets != blank %}
+              <div class="modal__bullets">
+                {{ settings.popup_clearance_certificate_bullets }}
+              </div>
+            {% endif %}
+
             {% if settings.popup_clearance_certificate_more_info != blank %}
               <div class="modal__more-info">
                 <div class="modal__more-info-content">

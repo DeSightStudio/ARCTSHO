@@ -4,21 +4,21 @@
     &[aria-hidden='true'] {
       display: none;
     }
-    
+
     // Eine spezielle Klasse für den Animations-Zustand
     &.is-closing {
       display: block !important;
       pointer-events: none;
-      
+
       .modal__overlay {
         animation: mmfadeOut .3s cubic-bezier(0.0, 0.0, 0.2, 1) forwards;
       }
-      
+
       .modal__container {
         animation: mmslideOut .3s cubic-bezier(0, 0, .2, 1) forwards;
       }
     }
-    
+
     .modal__overlay {
       position: fixed;
       top: 0;
@@ -43,30 +43,30 @@
         @include screen(med-small) {
           width: calc(100% - 20px);
         }
-        
+
         /* Styles für intl-tel-input im Modal */
         .iti {
           width: 100% !important;
           display: block;
           position: relative;
           z-index: 10;
-          
+
           &__country-list {
             z-index: 15;
             position: absolute;
             background-color: white;
           }
-          
+
           &__flag-container {
             z-index: 11;
           }
-          
+
           &__selected-flag {
             background-color: white !important;
             z-index: 11;
           }
         }
-        
+
         .modal__close {
           border: 1px solid $blackColor;
           padding: 5px 11px;
@@ -83,7 +83,7 @@
             cursor: pointer;
           }
         }
-        .modal__header { 
+        .modal__header {
           text-align: center;
           h2 {
             position: relative;
@@ -159,6 +159,38 @@
               font-size: $fontSizeRegular;
             }
           }
+          .modal__bullets {
+            font-family: 'Cormorant Garamond';
+            font-size: $fontSizeRegular;
+            line-height: 1.6;
+            color: $mainColor;
+            margin: 20px 0;
+
+            ul {
+              list-style: none;
+              padding: 0;
+              margin: 0;
+
+              li {
+                position: relative;
+                padding-left: 20px;
+                margin-bottom: 10px;
+
+                &:before {
+                  content: '•';
+                  position: absolute;
+                  left: 0;
+                  color: $mainColor;
+                  font-weight: bold;
+                }
+
+                &:last-child {
+                  margin-bottom: 0;
+                }
+              }
+            }
+          }
+
           .modal__more-info {
             background-color: $accentLight;
             padding: 20px;
@@ -187,28 +219,28 @@
 // Animation für Slide-In-Effekt
 .micromodal-slide {
   display: none;
-  
+
   &.is-open {
     display: block;
   }
-  
+
   &[aria-hidden="false"] .modal__overlay {
     animation: mmfadeIn .3s cubic-bezier(0.0, 0.0, 0.2, 1);
   }
-  
+
   &[aria-hidden="false"] .modal__container {
     animation: mmslideIn .3s cubic-bezier(0, 0, .2, 1);
   }
-  
+
   // Diese Animationen werden durch .is-closing getriggert anstatt durch aria-hidden="true"
   // &[aria-hidden="true"] .modal__overlay {
   //   animation: mmfadeOut .3s cubic-bezier(0.0, 0.0, 0.2, 1);
   // }
-  
+
   // &[aria-hidden="true"] .modal__container {
   //   animation: mmslideOut .3s cubic-bezier(0, 0, .2, 1);
   // }
-  
+
   .modal__container,
   .modal__overlay {
     will-change: transform;
@@ -235,4 +267,6 @@
   from { transform: translateY(0); }
   to { transform: translateY(-10%); }
 }
+
+
 
