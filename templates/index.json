@@ -352,7 +352,7 @@
           "settings": {
             "image": "shopify://shop_images/Exclusivity_a1feb77c-df64-4eda-8fd2-8d67db65bd0d.png",
             "title": "Exclusivity",
-            "text": "<ul><li>Exquisite colours</li><li>Unique character</li><li>Ancient aura</li><li>Magnificent structure</li><li>Luxurious material</li></ul>",
+            "text": "<p>Exquisite colours<br>Unique character<br>Ancient aura<br>Magnificent structure<br>Luxurious material</p>",
             "link_label": "",
             "link": ""
           }
@@ -362,7 +362,7 @@
           "settings": {
             "image": "shopify://shop_images/Reliability_1931e281-3b2a-499b-9f1a-eb7a0aa673a7.png",
             "title": "Reliability",
-            "text": "<ul><li>Official certification</li><li>Immediate availability</li><li>Personal consultation</li><li>Competent assistance</li><li>Privileged access</li></ul>",
+            "text": "<p>Official certification<br>Immediate availability<br>Personal consultation<br>Competent assistance<br>Privileged access</p>",
             "link_label": "",
             "link": ""
           }
@@ -372,7 +372,7 @@
           "settings": {
             "image": "shopify://shop_images/Quality_0820f447-f7f7-4b9b-9d40-76bf226572f1.png",
             "title": "Quality",
-            "text": "<ul><li>Custom-projects</li><li>Tailored service</li><li>Quick responses</li><li>Efficient processes</li><li>On-site inspection</li></ul>",
+            "text": "<p>Custom-projects<br>Tailored service<br>Quick responses<br>Efficient processes<br>On-site inspection</p>",
             "link_label": "",
             "link": ""
           }

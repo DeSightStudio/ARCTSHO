@@ -96,21 +96,36 @@
         .multicolumn-card {
             .multicolumn-card__image-wrapper {
                 .media {
-
+                    @include screen(med-small) {
+                        text-align: center !important;
+                    }
                     img {
-
+                        max-width: 320px;
+                        object-fit: contain;
+                        @include screen(med-small) {
+                            margin: 0px auto !important;
+                            left: 50% !important;
+                            transform: translateX(-50%);
+                        }
                     }
                 }
             }
             .multicolumn-card__info {
+                padding: 0px 50px 50px 50px !important;
+                @include screen(med-small) {
+                    padding: 0px 50px !important;
+                    text-align: center !important;
+                }
+                * {
+                    @include screen(med-small) {
+                        text-align: center !important;
+                    }
+                }
                 h3 {
                     font-family: 'Cormorant Garamond';
                     color: $mainColor;
                     font-size: $fontSizeLarge;
                     margin: 0px 0px 0px 0px;
-                    @include screen(med-small) {
-                        font-size: $fontSizeMedium;
-                    }
                 }
                 .rte {
                     margin: 0px 0px 0px 0px;
@@ -118,7 +133,7 @@
                         font-family: 'Cormorant Garamond';
                         color: $mainColorDark;
                         font-size: $fontSizeMedium;
-                        text-align: center;
+                        text-align: left;
                     }
                     ul {
                         margin: 0px;
