@@ -15,38 +15,36 @@
 
   {% if section.settings.use_arrow_divider %}
   .arrow-divider {
+      background-color: {{ section.settings.arrow_color }};
       width: {{ section.settings.arrow_width }}%;
       height: {{ section.settings.arrow_thickness }}px;
-      background: {{ section.settings.arrow_color }};
+      max-width: 664px;
       position: relative;
       margin: 30px auto;
       display: block !important;
   }
 
-  .arrow-divider::before {
-      content: '';
-      position: absolute;
-      left: -15px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 0;
-      height: 0;
-      border-top: 6px solid transparent;
-      border-bottom: 6px solid transparent;
-      border-right: 15px solid {{ section.settings.arrow_color }};
-  }
-
+  .arrow-divider::before,
   .arrow-divider::after {
       content: '';
       position: absolute;
-      right: -15px;
       top: 50%;
       transform: translateY(-50%);
       width: 0;
       height: 0;
-      border-top: 6px solid transparent;
-      border-bottom: 6px solid transparent;
-      border-left: 15px solid {{ section.settings.arrow_color }};
+      border-style: solid;
+  }
+
+  .arrow-divider::before {
+      left: -10px;
+      border-width: 4px 10px 4px 0;
+      border-color: transparent {{ section.settings.arrow_color }} transparent transparent;
+  }
+
+  .arrow-divider::after {
+      right: -10px;
+      border-width: 4px 0 4px 10px;
+      border-color: transparent transparent transparent {{ section.settings.arrow_color }};
   }
   {% endif %}
 {%- endstyle -%}
