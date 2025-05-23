@@ -46,6 +46,28 @@
     border-color: transparent transparent transparent {{ settings.popup_clearance_certificate_arrow_color | default: '#b9bfb1' }};
   }
   {% endif %}
+
+  {% if settings.popup_vat_uid_tva_use_arrow_divider %}
+  #modal-vat-uid-tva .arrow-container .arrow-left,
+  #modal-vat-uid-tva .arrow-container .arrow-right {
+    width: {{ settings.popup_vat_uid_tva_arrow_width | default: 150 }}px;
+    height: {{ settings.popup_vat_uid_tva_arrow_thickness | default: 1 }}px;
+  }
+
+  #modal-vat-uid-tva .arrow-container .arrow-left::before,
+  #modal-vat-uid-tva .arrow-container .arrow-right::before {
+    background-color: {{ settings.popup_vat_uid_tva_arrow_color | default: '#b9bfb1' }};
+    height: {{ settings.popup_vat_uid_tva_arrow_thickness | default: 1 }}px;
+  }
+
+  #modal-vat-uid-tva .arrow-container .arrow-left::after {
+    border-color: transparent {{ settings.popup_vat_uid_tva_arrow_color | default: '#b9bfb1' }} transparent transparent;
+  }
+
+  #modal-vat-uid-tva .arrow-container .arrow-right::after {
+    border-color: transparent transparent transparent {{ settings.popup_vat_uid_tva_arrow_color | default: '#b9bfb1' }};
+  }
+  {% endif %}
 {%- endstyle -%}
 
 <div class="popup-container">
@@ -145,9 +167,15 @@
             <h2 class="modal__title" id="modal-vat-uid-tva-title">
               {{ settings.popup_vat_uid_tva_headline }}
             </h2>
-            <h3>
-              {{ settings.popup_vat_uid_tva_abbr }}
-            </h3>
+            {% if settings.popup_vat_uid_tva_use_arrow_divider %}
+              <div class="arrow-container">
+                <div class="arrow-left"></div>
+                <h3>{{ settings.popup_vat_uid_tva_abbr }}</h3>
+                <div class="arrow-right"></div>
+              </div>
+            {% else %}
+              <h3>{{ settings.popup_vat_uid_tva_abbr }}</h3>
+            {% endif %}
           </header>
           <main class="modal__content" id="modal-vat-uid-tva-content">
             <div class="modal__columns">

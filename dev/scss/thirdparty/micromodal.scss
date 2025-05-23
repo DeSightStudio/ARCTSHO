@@ -148,6 +148,8 @@
               margin: 0px;
               font-family: 'Cormorant Garamond';
               font-size: $fontSizeRegular;
+              display: block;
+              min-height: 20px;
             }
             a {
               color: $mainColor;
