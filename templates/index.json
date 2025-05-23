@@ -18,16 +18,16 @@
             "collection": "tusks"
           }
         },
-        "collection_6xPRfN": {
-          "type": "collection",
-          "settings": {
-            "collection": "gear"
-          }
-        },
         "collection_Er7dTB": {
           "type": "collection",
           "settings": {
             "collection": "bark-offcuts"
+          }
+        },
+        "collection_9qAxgq": {
+          "type": "collection",
+          "settings": {
+            "collection": ""
           }
         },
         "collection_DGNFwq": {
@@ -36,10 +36,16 @@
             "collection": "collector-s-pieces"
           }
         },
-        "collection_qkc8Vp": {
+        "collection_9xYEE3": {
           "type": "collection",
           "settings": {
             "collection": "handcrafted-jewellery"
+          }
+        },
+        "collection_6bQdeH": {
+          "type": "collection",
+          "settings": {
+            "collection": "pieces"
           }
         },
         "collection_wLkgfq": {
@@ -52,12 +58,6 @@
           "type": "collection",
           "settings": {
             "collection": "offcuts"
-          }
-        },
-        "collection_hc6jbn": {
-          "type": "collection",
-          "settings": {
-            "collection": "men"
           }
         },
         "collection_8KEFWB": {
@@ -81,13 +81,13 @@
       },
       "block_order": [
         "collection_H933gV",
-        "collection_6xPRfN",
         "collection_Er7dTB",
+        "collection_9qAxgq",
         "collection_DGNFwq",
-        "collection_qkc8Vp",
+        "collection_9xYEE3",
+        "collection_6bQdeH",
         "collection_wLkgfq",
         "collection_BrGDqC",
-        "collection_hc6jbn",
         "collection_8KEFWB",
         "collection_TLGUHH",
         "collection_MbzVrV"
@@ -102,7 +102,7 @@
         "heading_BVX4zN": {
           "type": "heading",
           "settings": {
-            "heading": "Our Mammoth Ivory Selectionk",
+            "heading": "Our Mammoth Ivory Selection",
             "heading_size": "h0"
           }
         }
@@ -133,46 +133,10 @@
             "collection": "tusks"
           }
         },
-        "featured_collection_krmUUX": {
-          "type": "featured_collection",
-          "settings": {
-            "collection": "handcrafted-jewellery"
-          }
-        },
         "featured_collection_rAL9Gn": {
           "type": "featured_collection",
           "settings": {
-            "collection": "gear"
-          }
-        },
-        "featured_collection_4EKGm7": {
-          "type": "featured_collection",
-          "settings": {
-            "collection": "bark-offcuts"
-          }
-        },
-        "featured_collection_FCdkgK": {
-          "type": "featured_collection",
-          "settings": {
-            "collection": "bark-offcuts"
-          }
-        },
-        "featured_collection_rq4Y86": {
-          "type": "featured_collection",
-          "settings": {
-            "collection": "men"
-          }
-        },
-        "featured_collection_PfBKC6": {
-          "type": "featured_collection",
-          "settings": {
-            "collection": "mammoth-molar"
-          }
-        },
-        "featured_collection_DizKEf": {
-          "type": "featured_collection",
-          "settings": {
-            "collection": "collector-s-pieces"
+            "collection": "bark"
           }
         },
         "featured_collection_hrxhNQ": {
@@ -181,16 +145,52 @@
             "collection": "training"
           }
         },
-        "featured_collection_nYCHaw": {
+        "featured_collection_rq4Y86": {
           "type": "featured_collection",
           "settings": {
-            "collection": "stabilized-ivory"
+            "collection": "pieces"
           }
         },
         "featured_collection_Cigaz7": {
           "type": "featured_collection",
           "settings": {
             "collection": "scales"
+          }
+        },
+        "featured_collection_PfBKC6": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "mammoth-molar"
+          }
+        },
+        "featured_collection_4EKGm7": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "bark-offcuts"
+          }
+        },
+        "featured_collection_nYCHaw": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "stabilized-ivory"
+          }
+        },
+        "featured_collection_FCdkgK": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "bark-offcuts"
+          }
+        },
+        "featured_collection_krmUUX": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "handcrafted-jewellery"
+          }
+        },
+        "featured_collection_DizKEf": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "collector-s-pieces"
           }
         },
         "featured_collection_Wk47ay": {
@@ -202,16 +202,16 @@
       },
       "block_order": [
         "featured_collection_GDXkm8",
-        "featured_collection_krmUUX",
         "featured_collection_rAL9Gn",
-        "featured_collection_4EKGm7",
-        "featured_collection_FCdkgK",
-        "featured_collection_rq4Y86",
-        "featured_collection_PfBKC6",
-        "featured_collection_DizKEf",
         "featured_collection_hrxhNQ",
-        "featured_collection_nYCHaw",
+        "featured_collection_rq4Y86",
         "featured_collection_Cigaz7",
+        "featured_collection_PfBKC6",
+        "featured_collection_4EKGm7",
+        "featured_collection_nYCHaw",
+        "featured_collection_FCdkgK",
+        "featured_collection_krmUUX",
+        "featured_collection_DizKEf",
         "featured_collection_Wk47ay"
       ],
       "settings": {
@@ -322,7 +322,7 @@
         "heading_87YFjQ": {
           "type": "heading",
           "settings": {
-            "heading": "We provide fast, tracked and insured worldwide shipping.",
+            "heading": "We offer fast, tracked, and insured worldwide shipping",
             "heading_size": "h1"
           }
         }
@@ -407,7 +407,7 @@
         "heading_hb7bgk": {
           "type": "heading",
           "settings": {
-            "heading": "Mammoth ivory is a prehistoric echo of our natural history.It is to be treasured and looked after for the next generation.",
+            "heading": "Mammoth ivory is a prehistoric echo of our natural history. It is to be treasured and looked after for the next generation.",
             "heading_size": "h1"
           }
         }
