@@ -1,38 +1,6 @@
 .rich-text {
     .rich-text__blocks {
         max-width: 100%;
-        .arrow-divider {
-            background-color: #b9bfb1;
-            width: 70%;
-            height: 2px;
-            max-width: 664px;
-            position: relative;
-            margin: 30px auto;
-            display: block !important;
-
-            &::before,
-            &::after {
-                content: '';
-                position: absolute;
-                top: 50%;
-                transform: translateY(-50%);
-                width: 0;
-                height: 0;
-                border-style: solid;
-            }
-
-            &::before {
-                left: -10px;
-                border-width: 4px 10px 4px 0;
-                border-color: transparent #b9bfb1 transparent transparent;
-            }
-
-            &::after {
-                right: -10px;
-                border-width: 4px 0 4px 10px;
-                border-color: transparent transparent transparent #b9bfb1;
-            }
-        }
     }
     &.headline-default {
         .rich-text__heading {

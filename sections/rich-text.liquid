@@ -15,17 +15,36 @@
 
   {% if section.settings.use_arrow_divider %}
   .section-{{ section.id }}-padding .arrow-divider {
-    background-color: {{ section.settings.arrow_color | default: '#b9bfb1' }} !important;
-    width: {{ section.settings.arrow_width | default: 70 }}% !important;
-    height: {{ section.settings.arrow_thickness | default: 2 }}px !important;
+    background-color: {{ section.settings.arrow_color | default: '#b9bfb1' }};
+    width: {{ section.settings.arrow_width | default: 70 }}%;
+    height: {{ section.settings.arrow_thickness | default: 2 }}px;
+    max-width: 664px;
+    position: relative;
+    margin: 30px auto;
+    display: block !important;
+  }
+
+  .section-{{ section.id }}-padding .arrow-divider::before,
+  .section-{{ section.id }}-padding .arrow-divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-style: solid;
   }
 
   .section-{{ section.id }}-padding .arrow-divider::before {
-    border-color: transparent {{ section.settings.arrow_color | default: '#b9bfb1' }} transparent transparent !important;
+    left: -10px;
+    border-width: 4px 10px 4px 0;
+    border-color: transparent {{ section.settings.arrow_color | default: '#b9bfb1' }} transparent transparent;
   }
 
   .section-{{ section.id }}-padding .arrow-divider::after {
-    border-color: transparent transparent transparent {{ section.settings.arrow_color | default: '#b9bfb1' }} !important;
+    right: -10px;
+    border-width: 4px 0 4px 10px;
+    border-color: transparent transparent transparent {{ section.settings.arrow_color | default: '#b9bfb1' }};
   }
   {% endif %}
 {%- endstyle -%}
