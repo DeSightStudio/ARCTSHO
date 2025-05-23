@@ -11,6 +11,14 @@
             font-family: 'Cormorant Garamond';
             color: $mainColor;
             font-size: $fontSizeLarge;
+            font-weight: bold;
+        }
+    }
+    &.headline-default.color-scheme-2 {
+        .rich-text__heading {
+            font-family: 'Cormorant Garamond';
+            color: $mainColor;
+            font-size: $fontSizeLarge;
             font-weight: 400;
             font-style: italic;
         }
