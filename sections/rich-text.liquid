@@ -14,10 +14,14 @@
   }
 
   {% if section.settings.use_arrow_divider %}
+  {% assign arrow_color = section.settings.arrow_color | default: '#b9bfb1' %}
+  {% assign arrow_width = section.settings.arrow_width | default: 70 %}
+  {% assign arrow_thickness = section.settings.arrow_thickness | default: 2 %}
+
   .arrow-divider {
-      background-color: {% if section.settings.arrow_color != blank %}{{ section.settings.arrow_color }}{% else %}#b9bfb1{% endif %};
-      width: {% if section.settings.arrow_width != blank %}{{ section.settings.arrow_width }}%{% else %}70%{% endif %};
-      height: {% if section.settings.arrow_thickness != blank %}{{ section.settings.arrow_thickness }}px{% else %}2px{% endif %};
+      background-color: {{ arrow_color }};
+      width: {{ arrow_width }}%;
+      height: {{ arrow_thickness }}px;
       max-width: 664px;
       position: relative;
       margin: 30px auto;
@@ -38,13 +42,13 @@
   .arrow-divider::before {
       left: -10px;
       border-width: 4px 10px 4px 0;
-      border-color: transparent {% if section.settings.arrow_color != blank %}{{ section.settings.arrow_color }}{% else %}#b9bfb1{% endif %} transparent transparent;
+      border-color: transparent {{ arrow_color }} transparent transparent;
   }
 
   .arrow-divider::after {
       right: -10px;
       border-width: 4px 0 4px 10px;
-      border-color: transparent transparent transparent {% if section.settings.arrow_color != blank %}{{ section.settings.arrow_color }}{% else %}#b9bfb1{% endif %};
+      border-color: transparent transparent transparent {{ arrow_color }};
   }
   {% endif %}
 {%- endstyle -%}
@@ -239,7 +243,7 @@
       "step": 5,
       "unit": "%",
       "label": "Arrow Divider Width",
-      "default": 50
+      "default": 70
     },
     {
       "type": "range",
@@ -249,7 +253,7 @@
       "step": 1,
       "unit": "px",
       "label": "Arrow Line Thickness",
-      "default": 1
+      "default": 2
     },
     {
       "type": "select",
@@ -271,7 +275,7 @@
       "type": "color",
       "id": "arrow_color",
       "label": "Arrow Color",
-      "default": "#000000"
+      "default": "#b9bfb1"
     },
     {
       "type": "header",
