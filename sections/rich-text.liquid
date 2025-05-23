@@ -15,9 +15,9 @@
 
   {% if section.settings.use_arrow_divider %}
   .arrow-divider {
-      background-color: {{ section.settings.arrow_color | default: '#000000' }};
-      width: {{ section.settings.arrow_width | default: 50 }}%;
-      height: {{ section.settings.arrow_thickness | default: 2 }}px;
+      background-color: {% if section.settings.arrow_color != blank %}{{ section.settings.arrow_color }}{% else %}#b9bfb1{% endif %};
+      width: {% if section.settings.arrow_width != blank %}{{ section.settings.arrow_width }}%{% else %}70%{% endif %};
+      height: {% if section.settings.arrow_thickness != blank %}{{ section.settings.arrow_thickness }}px{% else %}2px{% endif %};
       max-width: 664px;
       position: relative;
       margin: 30px auto;
@@ -38,13 +38,13 @@
   .arrow-divider::before {
       left: -10px;
       border-width: 4px 10px 4px 0;
-      border-color: transparent {{ section.settings.arrow_color | default: '#000000' }} transparent transparent;
+      border-color: transparent {% if section.settings.arrow_color != blank %}{{ section.settings.arrow_color }}{% else %}#b9bfb1{% endif %} transparent transparent;
   }
 
   .arrow-divider::after {
       right: -10px;
       border-width: 4px 0 4px 10px;
-      border-color: transparent transparent transparent {{ section.settings.arrow_color | default: '#000000' }};
+      border-color: transparent transparent transparent {% if section.settings.arrow_color != blank %}{{ section.settings.arrow_color }}{% else %}#b9bfb1{% endif %};
   }
   {% endif %}
 {%- endstyle -%}
