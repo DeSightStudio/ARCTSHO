@@ -11,7 +11,7 @@ Diese Custom Lightbox ist eine komplett eigenständige Lösung, die unabhängig 
 - **Shopify Lightbox deaktiviert**: Bestehende Lightbox wird komplett unterbunden
 - **Automatische Erkennung**: Erkennt Produktbilder automatisch
 - **Bildergalerie**: Durchklicken durch alle Produktbilder
-- **Zoom-Funktionalität**: + und - Buttons für Zoom
+- **Zoom-Funktionalität**: + und - Buttons für Zoom (0.1x bis 10x, Schritte: 0.1x)
 - **Tastatursteuerung**: Pfeiltasten, Escape, +/- Tasten
 - **Mausrad-Zoom**: Zoom mit Mausrad
 - **Drag & Drop**: Verschieben von gezoomten Bildern

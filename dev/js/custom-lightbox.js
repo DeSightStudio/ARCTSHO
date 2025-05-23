@@ -9,9 +9,9 @@ class CustomLightbox {
     this.currentSlide = 0;
     this.totalSlides = 0;
     this.zoomLevel = 1;
-    this.maxZoom = 3;
-    this.minZoom = 0.5;
-    this.zoomStep = 0.25;
+    this.maxZoom = 10; // Von 3 auf 10 erhöht
+    this.minZoom = 0.1; // Von 0.5 auf 0.1 reduziert
+    this.zoomStep = 0.1; // Von 0.25 auf 0.1 reduziert für feinere Kontrolle
     this.isDragging = false;
     this.startX = 0;
     this.startY = 0;
@@ -65,17 +65,15 @@ class CustomLightbox {
       if (productImage && this.isProductImage(productImage)) {
         // Füge Click-Handler hinzu, der die Custom Lightbox öffnet
         opener.addEventListener('click', (e) => {
-          console.log('Modal-opener geklickt - öffne Custom Lightbox');
           e.preventDefault();
           e.stopPropagation();
           e.stopImmediatePropagation();
           this.openFromProductImage(productImage);
         }, true); // Capture-Phase
-        console.log('Modal-opener überschrieben:', opener);
       }
     });
 
-    console.log('Shopify Lightbox deaktiviert - Custom Lightbox übernimmt');
+    // Shopify Lightbox erfolgreich deaktiviert
   }
 
 
@@ -191,12 +189,9 @@ class CustomLightbox {
       const productImage = e.target.closest('img[data-media-id], .product__media img, .product-media img, .media img, [data-lightbox-trigger]');
 
       if (productImage && this.isProductImage(productImage)) {
-        console.log('Direkter Bildklick erkannt - öffne Custom Lightbox:', productImage);
         e.preventDefault();
         e.stopPropagation();
         this.openFromProductImage(productImage);
-      } else if (productImage) {
-        console.log('Bild gefunden, aber nicht als Produktbild erkannt:', productImage);
       }
     });
   }
