@@ -27,7 +27,7 @@
                         .card__media {
                             position: relative;
                             img {
-                                object-fit: contain;
+                                object-fit: cover; // Standard für normale Collection-Bilder
                             }
                             &:before {
                                 display: block;
@@ -41,27 +41,43 @@
                             }
                         }
                     }
-                    .card__content {
-                        position: absolute;
-                        left: 0px;
-                        bottom: 0px;
-                        .card__information {
-                            padding: 30px 20px !important;
-                            h3 {
-                                font-family: 'Copperplate';
-                                color: $whiteColor;
-                                font-size: $fontSizeLarge;
-                                margin: 0px 0px 0px 0px;
-                                @include screen(med-small) {
-                                    font-size: $fontSizeMedium;
-                                }
+                }
+
+                // Spezielle Behandlung für cutout_images
+                .card--media {
+                    .card__inner {
+                        .card__media {
+                            img {
+                                object-fit: contain; // Für cutout_images
                             }
-                            h4 {
-                                font-family: 'Cormorant Garamond';
-                                color: $whiteColor;
+                        }
+                    }
+                    // Card content styling wird unten für alle Karten definiert
+                }
+
+                // Card content styling für alle Karten (sowohl cutout als auch normale)
+                .card__content {
+                    position: absolute;
+                    left: 0px;
+                    bottom: 0px;
+                    width: 100%;
+                    z-index: 2;
+                    .card__information {
+                        padding: 30px 20px !important;
+                        h3 {
+                            font-family: 'Copperplate';
+                            color: $whiteColor;
+                            font-size: $fontSizeLarge;
+                            margin: 0px 0px 0px 0px;
+                            @include screen(med-small) {
                                 font-size: $fontSizeMedium;
-                                margin: 0px 0px 0px 0px;
                             }
+                        }
+                        h4 {
+                            font-family: 'Cormorant Garamond';
+                            color: $whiteColor;
+                            font-size: $fontSizeMedium;
+                            margin: 0px 0px 0px 0px;
                         }
                     }
                 }
@@ -77,6 +93,12 @@
                             }
                         }
                     }
+                }
+
+                // Spezifische Regel für All Products Collection - Headline anzeigen
+                .card--all-products.card--standard.card--text:not(.card--horizontal) > .card__content .card__heading:not(.card__heading--placeholder),
+                .card--standard.card--text:not(.card--horizontal) > .card__content .card__heading:not(.card__heading--placeholder) {
+                    display: block !important;
                 }
             }
         }
