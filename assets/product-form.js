@@ -15,7 +15,7 @@ if (!customElements.get('product-form')) {
         if (document.querySelector('cart-drawer')) this.submitButton.setAttribute('aria-haspopup', 'dialog');
 
         this.hideErrors = this.dataset.hideErrors === 'true';
-        
+
         // Event-Listener für Warenkorb-Updates
         this.setupCartUpdateListeners();
       }
@@ -27,12 +27,12 @@ if (!customElements.get('product-form')) {
         // Prüfen, ob das Produkt bereits im Warenkorb ist
         const variantId = parseInt(this.variantIdInput.value);
         const productId = parseInt(this.form.dataset.productId || this.closest('[data-product-id]')?.dataset.productId);
-        
+
         if (!variantId) {
           console.error('Keine Varianten-ID gefunden');
           return;
         }
-        
+
         // Wenn bereits im Warenkorb (Button-Typ ist 'button' anstatt 'submit'), nur den Drawer öffnen
         if (this.submitButton.type === 'button') {
           console.log('Produkt bereits im Warenkorb - öffne Drawer');
@@ -57,14 +57,14 @@ if (!customElements.get('product-form')) {
         delete config.headers['Content-Type'];
 
         const formData = new FormData(this.form);
-        
+
         // Prüfen, ob Menge > 1 und auf 1 setzen
         const quantity = parseInt(formData.get('quantity'));
         if (quantity > 1) {
           console.log(`Menge ${quantity} auf 1 begrenzen`);
           formData.set('quantity', '1');
         }
-        
+
         if (this.cart) {
           formData.append(
             'sections',
@@ -81,20 +81,20 @@ if (!customElements.get('product-form')) {
           .then(cart => {
             // Prüfen, ob das Produkt bereits im Warenkorb ist (entweder durch Produkt-ID oder Varianten-ID)
             const isInCart = cart.items.some(item => {
-              return (productId && item.product_id === productId) || 
+              return (productId && item.product_id === productId) ||
                      (variantId && item.variant_id === variantId);
             });
-            
+
             if (isInCart) {
               console.log('Produkt bereits im Warenkorb - öffne Drawer');
               // Wenn bereits im Warenkorb, nur den Drawer öffnen
               this.submitButton.classList.remove('loading');
               this.querySelector('.loading__spinner').classList.add('hidden');
               this.submitButton.removeAttribute('aria-disabled');
-              
+
               // Button-Typ ändern und Text aktualisieren
               this.updateButtonToViewCart();
-              
+
               if (this.cart) {
                 this.cart.renderContents(cart);
                 this.cart.open();
@@ -103,7 +103,7 @@ if (!customElements.get('product-form')) {
                 console.log('Cart-Drawer nicht gefunden, zeige stattdessen eine Benachrichtigung');
                 this.showToastNotification(window.variantStrings.viewCartMessage || 'Produkt ist bereits im Warenkorb');
               }
-              
+
               // Event auslösen, um andere Komponenten zu informieren
               document.dispatchEvent(new CustomEvent('cart:updated'));
             } else {
@@ -141,10 +141,10 @@ if (!customElements.get('product-form')) {
                       cartData: response,
                     });
                   this.error = false;
-                  
+
                   // Button-Typ nach dem Hinzufügen ändern
                   this.updateButtonToViewCart();
-                  
+
                   const quickAddModal = this.closest('quick-add-modal');
                   if (quickAddModal) {
                     document.body.addEventListener(
@@ -160,12 +160,12 @@ if (!customElements.get('product-form')) {
                   } else {
                     this.cart.renderContents(response);
                   }
-                  
+
                   // Produktkarten aktualisieren, falls die Funktion existiert
                   if (typeof updateProductCards === 'function') {
                     setTimeout(updateProductCards, 100);
                   }
-                  
+
                   // Alle Produktkarten aktualisieren
                   if (typeof updateAllProductCardStates === 'function') {
                     setTimeout(updateAllProductCardStates, 100);
@@ -218,10 +218,10 @@ if (!customElements.get('product-form')) {
                     cartData: response,
                   });
                 this.error = false;
-                
+
                 // Button-Typ nach dem Hinzufügen ändern
                 this.updateButtonToViewCart();
-                
+
                 const quickAddModal = this.closest('quick-add-modal');
                 if (quickAddModal) {
                   document.body.addEventListener(
@@ -237,12 +237,12 @@ if (!customElements.get('product-form')) {
                 } else {
                   this.cart.renderContents(response);
                 }
-                
+
                 // Produktkarten aktualisieren, falls die Funktion existiert
                 if (typeof updateProductCards === 'function') {
                   setTimeout(updateProductCards, 100);
                 }
-                
+
                 // Alle Produktkarten aktualisieren
                 if (typeof updateAllProductCardStates === 'function') {
                   setTimeout(updateAllProductCardStates, 100);
@@ -295,7 +295,7 @@ if (!customElements.get('product-form')) {
         this.submitButton.setAttribute('onclick', 'event.preventDefault(); document.querySelector("cart-drawer").open();');
         this.submitButtonText.textContent = window.variantStrings.view_cart_button || 'View cart';
       }
-      
+
       // Neue Methode, um den Button in "In den Warenkorb" zu ändern
       updateButtonToAddToCart() {
         this.submitButton.type = 'submit';
@@ -305,15 +305,15 @@ if (!customElements.get('product-form')) {
 
       handleCartItemRemoved(event) {
         console.log('Item aus Warenkorb entfernt Event empfangen:', event.detail);
-        
+
         if (!event.detail) return;
-        
+
         // Wenn ein Artikel aus dem Warenkorb entfernt wurde, überprüfen, ob es dieser Artikel ist
         const currentVariantId = parseInt(this.variantIdInput.value);
         const currentProductId = parseInt(this.form.dataset.productId || this.closest('[data-product-id]')?.dataset.productId);
-        
+
         // Prüfe sowohl Varianten-ID als auch Produkt-ID für größere Zuverlässigkeit
-        if (currentVariantId === event.detail.variantId || 
+        if (currentVariantId === event.detail.variantId ||
             (currentProductId && event.detail.productId && currentProductId === event.detail.productId)) {
           console.log('Dieser Artikel wurde aus dem Warenkorb entfernt. Variante:', currentVariantId, 'Produkt:', currentProductId);
           // Button zurücksetzen
@@ -329,33 +329,33 @@ if (!customElements.get('product-form')) {
       setupCartUpdateListeners() {
         // Auf Warenkorb-Update-Events reagieren
         document.addEventListener('cart:updated', this.handleCartUpdate.bind(this));
-        
+
         // Auf Drawer-Open-Event reagieren
         document.addEventListener('drawer:opened', this.handleDrawerOpened.bind(this));
-        
+
         // Auf Drawer-Close-Event reagieren, um den Produkt-Status zu aktualisieren
         document.addEventListener('drawer:closed', this.handleDrawerClosed.bind(this));
-        
+
         // Ereignis, wenn ein Artikel aus dem Warenkorb entfernt wird
         document.addEventListener('cart:item:removed', this.handleCartItemRemoved.bind(this));
-        
+
         // Ereignis, wenn ein Artikel zum Warenkorb hinzugefügt wird
         document.addEventListener('cart:item:added', this.handleCartItemAdded.bind(this));
-        
+
         // Prüfen, ob das Produkt bereits im Warenkorb ist
         this.checkProductInCart();
       }
-      
+
       handleCartUpdate(event) {
         console.log('Warenkorb aktualisiert - aktualisiere Produktstatus...');
-        
+
         // Wenn Daten im Event vorhanden, direkt damit aktualisieren
         if (event.detail && event.detail.cartData) {
           const variantId = parseInt(this.variantIdInput.value);
           if (!variantId) return;
-          
+
           const isInCart = event.detail.cartData.items.some(item => item.variant_id === variantId);
-          
+
           if (isInCart) {
             console.log('Produkt ist im Warenkorb (Event-Daten) - aktualisiere Button auf "View cart"');
             this.updateButtonToViewCart();
@@ -368,42 +368,49 @@ if (!customElements.get('product-form')) {
           this.checkProductInCart();
         }
       }
-      
+
       handleDrawerOpened(event) {
         console.log('Drawer geöffnet - aktualisiere Produktstatus...');
-        
-        // Sofort den Button-Status aktualisieren, ohne auf den Server-Aufruf zu warten
-        if (event.detail && event.detail.cartData) {
-          const variantId = parseInt(this.variantIdInput.value);
-          const isInCart = event.detail.cartData.items.some(item => item.variant_id === variantId);
-          
-          if (isInCart) {
-            console.log('Produkt ist im Warenkorb - aktualisiere Button auf "View cart"');
-            this.updateButtonToViewCart();
+
+        try {
+          // Sofort den Button-Status aktualisieren, ohne auf den Server-Aufruf zu warten
+          if (event.detail && event.detail.cartData && event.detail.cartData.items) {
+            const variantId = parseInt(this.variantIdInput.value);
+            const isInCart = event.detail.cartData.items.some(item => item.variant_id === variantId);
+
+            if (isInCart) {
+              console.log('Produkt ist im Warenkorb - aktualisiere Button auf "View cart"');
+              this.updateButtonToViewCart();
+            }
+          } else {
+            // Wenn keine Cart-Daten im Event vorhanden sind, normale Überprüfung durchführen
+            console.log('Keine Cart-Daten im Event - führe normale Überprüfung durch');
+            this.checkProductInCart();
           }
-        } else {
-          // Wenn keine Cart-Daten im Event vorhanden sind, normale Überprüfung durchführen
+        } catch (error) {
+          console.error('Fehler beim Verarbeiten des Drawer-Opened Events:', error);
+          // Fallback zur normalen Überprüfung
           this.checkProductInCart();
         }
       }
-      
+
       handleDrawerClosed(event) {
         console.log('Drawer geschlossen - aktualisiere Produktstatus...');
-        
+
         if (!this.variantIdInput) return;
         const variantId = parseInt(this.variantIdInput.value);
         if (!variantId) return;
-        
+
         const productId = parseInt(this.form.dataset.productId || this.closest('[data-product-id]')?.dataset.productId);
-        
+
         // Direkt Daten aus dem Event nutzen, falls vorhanden
         if (event.detail && event.detail.cartData) {
           const isInCart = event.detail.cartData.items.some(item => {
             return (productId && item.product_id === productId) || (item.variant_id === variantId);
           });
-          
+
           console.log(`Produkt ist im Warenkorb nach Drawer-Schließung: ${isInCart}`);
-          
+
           if (isInCart) {
             this.updateButtonToViewCart();
           } else {
@@ -414,16 +421,16 @@ if (!customElements.get('product-form')) {
           this.checkProductInCart();
         }
       }
-      
+
       // Methode zum Überprüfen, ob das aktuelle Produkt im Warenkorb ist
       checkProductInCart() {
         if (!this.variantIdInput) return;
-        
+
         const variantId = parseInt(this.variantIdInput.value);
         if (!variantId) return;
-        
+
         const productId = parseInt(this.form.dataset.productId || this.closest('[data-product-id]')?.dataset.productId);
-        
+
         fetch(`${routes.cart_url}.js`)
           .then(response => response.json())
           .then(cart => {
@@ -431,7 +438,7 @@ if (!customElements.get('product-form')) {
             const isInCart = cart.items.some(item => {
               return (productId && item.product_id === productId) || (item.variant_id === variantId);
             });
-            
+
             if (isInCart) {
               console.log('Produkt ist im Warenkorb - aktualisiere Button auf "View cart"');
               this.updateButtonToViewCart();
@@ -448,12 +455,12 @@ if (!customElements.get('product-form')) {
       // Methode, um auf Hinzufügen zum Warenkorb zu reagieren
       handleCartItemAdded(event) {
         if (!event.detail) return;
-        
+
         console.log('Artikel zum Warenkorb hinzugefügt - aktualisiere Produktstatus...', event.detail);
         const currentVariantId = parseInt(this.variantIdInput.value);
         const currentProductId = parseInt(this.form.dataset.productId || this.closest('[data-product-id]')?.dataset.productId);
-        
-        if ((event.detail.variantId && event.detail.variantId === currentVariantId) || 
+
+        if ((event.detail.variantId && event.detail.variantId === currentVariantId) ||
             (event.detail.productId && event.detail.productId === currentProductId)) {
           console.log('Dieser Artikel wurde zum Warenkorb hinzugefügt:', currentVariantId);
           // Button aktualisieren
@@ -474,7 +481,7 @@ if (!customElements.get('product-form')) {
             <span>${message}</span>
           </div>
         `;
-        
+
         // Styles hinzufügen, falls nicht vorhanden
         if (!document.getElementById('cart-notification-toast-styles')) {
           const style = document.createElement('style');
@@ -516,10 +523,10 @@ if (!customElements.get('product-form')) {
           `;
           document.head.appendChild(style);
         }
-        
+
         // Zum Dokument hinzufügen
         document.body.appendChild(notification);
-        
+
         // Nach 3 Sekunden entfernen
         setTimeout(() => {
           notification.classList.add('cart-notification-toast--hiding');

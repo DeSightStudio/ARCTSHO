@@ -1,14 +1,16 @@
-class CartDrawer extends HTMLElement {
-  constructor() {
-    super();
+// Schutz vor doppelten Definitionen
+if (!customElements.get('cart-drawer')) {
+  class CartDrawer extends HTMLElement {
+    constructor() {
+      super();
 
-    // Methoden an die Instanz binden für Event-Listeners
-    this.boundHandleRemoveButtonClick = this.handleRemoveButtonClick.bind(this);
+      // Methoden an die Instanz binden für Event-Listeners
+      this.boundHandleRemoveButtonClick = this.handleRemoveButtonClick.bind(this);
 
-    this.addEventListener('keyup', (evt) => evt.code === 'Escape' && this.close());
-    this.querySelector('#CartDrawer-Overlay').addEventListener('click', this.close.bind(this));
-    this.setHeaderCartIconAccessibility();
-  }
+      this.addEventListener('keyup', (evt) => evt.code === 'Escape' && this.close());
+      this.querySelector('#CartDrawer-Overlay').addEventListener('click', this.close.bind(this));
+      this.setHeaderCartIconAccessibility();
+    }
 
   setHeaderCartIconAccessibility() {
     const cartLink = document.querySelector('#cart-icon-bubble');
@@ -56,7 +58,7 @@ class CartDrawer extends HTMLElement {
     this.classList.remove('active');
     removeTrapFocus(this.activeElement);
     document.body.classList.remove('overflow-hidden');
-    
+
     // Hole aktuelle Warenkorb-Daten für das Event
     fetch(`${routes.cart_url}.js`)
       .then(response => response.json())
@@ -102,22 +104,28 @@ class CartDrawer extends HTMLElement {
     });
 
     setTimeout(() => {
-      this.querySelector('#CartDrawer-Overlay').addEventListener('click', this.close.bind(this));
-      this.open();
-      
-      // Event auslösen, um andere Komponenten zu informieren
-      document.dispatchEvent(new CustomEvent('drawer:opened', { 
-        detail: { cartData: parsedState }
-      }));
-      
-      // Event-Listener für Entfernen-Buttons hinzufügen
-      const removeButtons = this.querySelectorAll('cart-remove-button button');
-      removeButtons.forEach(button => {
-        // Bestehende Listener entfernen, um Duplikate zu vermeiden
-        button.removeEventListener('click', this.boundHandleRemoveButtonClick);
-        // Neuen Listener hinzufügen
-        button.addEventListener('click', this.boundHandleRemoveButtonClick);
-      });
+      try {
+        this.querySelector('#CartDrawer-Overlay').addEventListener('click', this.close.bind(this));
+        this.open();
+
+        // Event auslösen, um andere Komponenten zu informieren
+        document.dispatchEvent(new CustomEvent('drawer:opened', {
+          detail: { cartData: parsedState || {} }
+        }));
+
+        // Event-Listener für Entfernen-Buttons hinzufügen
+        const removeButtons = this.querySelectorAll('cart-remove-button button');
+        removeButtons.forEach(button => {
+          // Bestehende Listener entfernen, um Duplikate zu vermeiden
+          button.removeEventListener('click', this.boundHandleRemoveButtonClick);
+          // Neuen Listener hinzufügen
+          button.addEventListener('click', this.boundHandleRemoveButtonClick);
+        });
+      } catch (error) {
+        console.error('Fehler beim Rendern des Cart-Drawers:', error);
+        // Fallback: Drawer trotzdem öffnen
+        this.open();
+      }
     });
   }
 
@@ -149,17 +157,17 @@ class CartDrawer extends HTMLElement {
   handleRemoveButtonClick(event) {
     const variantId = parseInt(event.currentTarget.dataset.variantId);
     const productId = parseInt(event.currentTarget.dataset.productId);
-    
+
     if (!variantId) return;
-    
+
     // Event auslösen, um andere Komponenten zu informieren
     document.dispatchEvent(new CustomEvent('cart:item:removed', {
-      detail: { 
+      detail: {
         variantId,
         productId
       }
     }));
-    
+
     // Benutzerdefiniertes Event direkt nach jeder Entfernung auslösen
     setTimeout(() => {
       // Cart-Daten abrufen, nachdem der Artikel entfernt wurde
@@ -178,23 +186,27 @@ class CartDrawer extends HTMLElement {
   }
 }
 
-customElements.define('cart-drawer', CartDrawer);
-
-class CartDrawerItems extends CartItems {
-  getSectionsToRender() {
-    return [
-      {
-        id: 'CartDrawer',
-        section: 'cart-drawer',
-        selector: '.drawer__inner',
-      },
-      {
-        id: 'cart-icon-bubble',
-        section: 'cart-icon-bubble',
-        selector: '.shopify-section',
-      },
-    ];
-  }
+  customElements.define('cart-drawer', CartDrawer);
 }
 
-customElements.define('cart-drawer-items', CartDrawerItems);
+// Schutz vor doppelten Definitionen für CartDrawerItems
+if (!customElements.get('cart-drawer-items')) {
+  class CartDrawerItems extends CartItems {
+    getSectionsToRender() {
+      return [
+        {
+          id: 'CartDrawer',
+          section: 'cart-drawer',
+          selector: '.drawer__inner',
+        },
+        {
+          id: 'cart-icon-bubble',
+          section: 'cart-icon-bubble',
+          selector: '.shopify-section',
+        },
+      ];
+    }
+  }
+
+  customElements.define('cart-drawer-items', CartDrawerItems);
+}

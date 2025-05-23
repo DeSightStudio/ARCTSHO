@@ -551,26 +551,8 @@
                     smoothScroll($(this).attr('href'));
                 });
 
-                // Event-Listener für den VAT ID Button im Warenkorb
-                function initVatIdButton() {
-                    console.log('Initialisiere VAT-ID Button im Warenkorb...');
-
-                    // Direkter Event-Listener für den Button
-                    $(document).on('click', '#CartDrawer-VatIdButton', function(e) {
-                        e.preventDefault();
-                        console.log('VAT-ID Button im Warenkorb wurde geklickt');
-
-                        // Prüfen, ob MicroModal verfügbar ist
-                        if (typeof window.MicroModal !== 'undefined') {
-                            window.MicroModal.show('modal-cart-vat-id');
-                        } else {
-                            console.error('MicroModal ist nicht verfügbar');
-                        }
-                    });
-                }
-
-                // VAT-ID Button initialisieren
-                initVatIdButton();
+                // VAT-ID Button wird jetzt zentral über popup-manager.js verwaltet
+                console.log('VAT-ID Button wird über popup-manager.js verwaltet');
 
                 // Slick Slider Initialization
                 initializeSlickSlider();
@@ -758,5 +740,3 @@ function cleanupCopyPasteFormatting() {
         console.log('Cleaned up copy/paste formatting in category-details');
     });
 }
-
-})(jQuery);

@@ -434,36 +434,8 @@
     {% endcomment %}
     <script defer>
       document.addEventListener('DOMContentLoaded', function () {
-        // Direkter Fix für VAT-ID-Button im Cart
-        function fixVatIdButton() {
-          // Warten auf den Button und das Modal
-          const checkInterval = setInterval(function () {
-            const vatIdButton = document.getElementById('CartDrawer-VatIdButton');
-            const vatIdModal = document.getElementById('modal-cart-vat-id');
-
-            if (vatIdButton && vatIdModal && typeof window.MicroModal !== 'undefined') {
-              console.log('VAT-ID-Button und Modal gefunden, füge Event-Listener hinzu');
-
-              // Event-Listener hinzufügen
-              vatIdButton.addEventListener('click', function (e) {
-                e.preventDefault();
-                console.log('VAT-ID-Button geklickt (direkter Listener)');
-                window.MicroModal.show('modal-cart-vat-id');
-              });
-
-              // Erfolg
-              clearInterval(checkInterval);
-            }
-          }, 500);
-
-          // Nach 10 Sekunden abbrechen, falls die Elemente nicht gefunden werden
-          setTimeout(function () {
-            clearInterval(checkInterval);
-          }, 10000);
-        }
-
-        // Fix ausführen
-        fixVatIdButton();
+        // VAT-ID Button wird jetzt zentral über popup-manager.js verwaltet
+        console.log('VAT-ID Button wird über popup-manager.js verwaltet');
 
         // Auch bei Nutzung des Cart-Icons neu initialisieren
         document.addEventListener('click', function (e) {
@@ -472,26 +444,8 @@
           }
         });
 
-        // MicroModal fix für VAT-Info-Badges
-        if (typeof window.MicroModal !== 'undefined') {
-          console.log('MicroModal für VAT-Info-Badges initialisiert');
-
-          // Alle VAT-Info-Icons selektieren und Event-Listener hinzufügen
-          document.querySelectorAll('.vat-info-icon').forEach(function (button) {
-            button.addEventListener('click', function (e) {
-              e.preventDefault();
-              e.stopPropagation();
-
-              const modalId = this.getAttribute('data-micromodal-trigger');
-              if (modalId) {
-                console.log('Öffne VAT-Modal:', modalId);
-                window.MicroModal.show(modalId);
-              }
-            });
-          });
-        } else {
-          console.error('MicroModal ist nicht verfügbar für VAT-Info-Badges!');
-        }
+        // VAT-Info-Badges werden jetzt zentral über popup-manager.js verwaltet
+        console.log('VAT-Info-Badges werden über popup-manager.js verwaltet');
       });
     </script>
   </body>
