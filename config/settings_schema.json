@@ -1522,7 +1522,7 @@
       {
         "type": "range",
         "id": "popup_certificate_origin_arrow_width",
-        "min": 50,
+        "min": 20,
         "max": 300,
         "step": 10,
         "unit": "px",
@@ -1593,7 +1593,7 @@
       {
         "type": "range",
         "id": "popup_clearance_certificate_arrow_width",
-        "min": 50,
+        "min": 20,
         "max": 300,
         "step": 10,
         "unit": "px",

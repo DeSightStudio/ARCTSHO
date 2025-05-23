@@ -121,7 +121,7 @@
             text-align: center;
             display: inline-block;
             text-align: center;
-            margin: 15px auto;
+            margin: 15px;
             font-size: $fontSizeMedium;
             position: relative;
           }
@@ -222,13 +222,12 @@
   justify-content: center;
   margin: 20px auto;
   width: 100%;
-  max-width: 500px;
-
+  max-width: 100%;
   h3 {
-    padding: 6px 10px;
+    padding: 4px 8px;
     background-color: $mainColor;
     color: $whiteColor;
-    font-size: $fontSizeMedium;
+    font-size: $fontSizeRegular;
     font-weight: 100;
     text-align: center;
     margin: 0;
@@ -236,21 +235,23 @@
   }
 
   .arrow-left {
-    flex: 1;
+    flex: 0 0 auto; // Nicht flex: 1, damit width respektiert wird
+    width: 150px; // Standard-Breite, wird von Settings überschrieben
     height: 1px;
-    background-color: $mainColor;
     position: relative;
-    margin-right: 15px;
-    min-width: 100px;
+    margin-right: 5px;
     display: block;
+
+    // Linie (einzige background-color Definition)
     &::before {
       content: '';
       display: block;
       width: 100%;
       height: 1px;
+      background-color: $mainColor;
     }
 
-    // Pfeilspitze links
+    // Pfeilspitze links (am Ende der Linie, zeigt nach außen)
     &::after {
       content: '';
       position: absolute;
@@ -266,22 +267,23 @@
   }
 
   .arrow-right {
-    flex: 1;
+    flex: 0 0 auto; // Nicht flex: 1, damit width respektiert wird
+    width: 150px; // Standard-Breite, wird von Settings überschrieben
     height: 1px;
-    background-color: $mainColor;
     position: relative;
-    margin-left: 15px;
-    min-width: 100px;
+    margin-left: 5px;
     display: block;
-    // Inhalt hinzufügen, damit div nicht empty ist
+
+    // Linie (einzige background-color Definition)
     &::before {
       content: '';
       display: block;
       width: 100%;
       height: 1px;
+      background-color: $mainColor;
     }
 
-    // Pfeilspitze rechts
+    // Pfeilspitze rechts (am Ende der Linie, zeigt nach außen)
     &::after {
       content: '';
       position: absolute;

@@ -6,9 +6,8 @@
   {% if settings.popup_certificate_origin_use_arrow_divider %}
   #modal-certificate-origin .arrow-container .arrow-left,
   #modal-certificate-origin .arrow-container .arrow-right {
-    background-color: {{ settings.popup_certificate_origin_arrow_color | default: '#b9bfb1' }};
+    width: {{ settings.popup_certificate_origin_arrow_width | default: 150 }}px;
     height: {{ settings.popup_certificate_origin_arrow_thickness | default: 1 }}px;
-    min-width: {{ settings.popup_certificate_origin_arrow_width | default: 150 }}px;
   }
 
   #modal-certificate-origin .arrow-container .arrow-left::before,
@@ -29,9 +28,8 @@
   {% if settings.popup_clearance_certificate_use_arrow_divider %}
   #modal-clearance-certificate .arrow-container .arrow-left,
   #modal-clearance-certificate .arrow-container .arrow-right {
-    background-color: {{ settings.popup_clearance_certificate_arrow_color | default: '#b9bfb1' }};
+    width: {{ settings.popup_clearance_certificate_arrow_width | default: 150 }}px;
     height: {{ settings.popup_clearance_certificate_arrow_thickness | default: 1 }}px;
-    min-width: {{ settings.popup_clearance_certificate_arrow_width | default: 150 }}px;
   }
 
   #modal-clearance-certificate .arrow-container .arrow-left::before,
