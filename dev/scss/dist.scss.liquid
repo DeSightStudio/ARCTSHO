@@ -33,6 +33,45 @@
 
 @import "fonts/copperplate/CopperPlate";
 @import "fonts/cormorant-garamond/CormorantGaramond";
+
+// FontAwesome @font-face Deklarationen mit Shopify Asset URLs
+@font-face {
+  font-family: 'Font Awesome 6 Pro';
+  font-style: normal;
+  font-weight: 900;
+  font-display: block;
+  src: url('{{ "fa-solid-900.woff2" | asset_url }}') format('woff2'),
+       url('{{ "fa-solid-900.ttf" | asset_url }}') format('truetype');
+}
+
+@font-face {
+  font-family: 'Font Awesome 6 Pro';
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url('{{ "fa-regular-400.woff2" | asset_url }}') format('woff2'),
+       url('{{ "fa-regular-400.ttf" | asset_url }}') format('truetype');
+}
+
+@font-face {
+  font-family: 'Font Awesome 6 Pro';
+  font-style: normal;
+  font-weight: 300;
+  font-display: block;
+  src: url('{{ "fa-light-300.woff2" | asset_url }}') format('woff2'),
+       url('{{ "fa-light-300.ttf" | asset_url }}') format('truetype');
+}
+
+@font-face {
+  font-family: 'Font Awesome 6 Brands';
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url('{{ "fa-brands-400.woff2" | asset_url }}') format('woff2'),
+       url('{{ "fa-brands-400.ttf" | asset_url }}') format('truetype');
+}
+
+// FontAwesome CSS-Klassen importieren (ohne @font-face Deklarationen)
 @import "fonts/fontawesome-6.6.0/fontawesome";
 
 /* ===================================================== */
