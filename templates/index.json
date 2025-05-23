@@ -93,7 +93,9 @@
         "collection_9xYEE3"
       ],
       "settings": {
-        "layout": "full_bleed"
+        "layout": "full_bleed",
+        "auto_rotate": true,
+        "change_slides_speed": 3
       }
     },
     "rich_text_4JVx9H": {
@@ -418,7 +420,7 @@
       "settings": {
         "desktop_content_position": "center",
         "content_alignment": "center",
-        "color_scheme": "scheme-548c10fa-37f3-441f-92f9-890ada330aca",
+        "color_scheme": "scheme-2",
         "full_width": true,
         "padding_top": 40,
         "padding_bottom": 52,
@@ -426,7 +428,7 @@
         "arrow_width": 50,
         "arrow_position": "top",
         "arrow_color": "#ffffff",
-        "headline_styling": "Headline Default Background"
+        "headline_styling": "Headline Default"
       }
     },
     "exhibition_calendar_AEgfAn": {
