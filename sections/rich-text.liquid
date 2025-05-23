@@ -16,35 +16,37 @@
   {% if section.settings.use_arrow_divider %}
   .arrow-divider {
       width: {{ section.settings.arrow_width }}%;
-      height: 2px;
+      height: {{ section.settings.arrow_thickness }}px;
       background: {{ section.settings.arrow_color }};
       position: relative;
-      margin: 20px auto;
+      margin: 30px auto;
       display: block !important;
   }
 
   .arrow-divider::before {
       content: '';
       position: absolute;
-      left: 0px; /* Abstand links */
+      left: -15px;
       top: 50%;
-      transform: translateY(-50%) rotate(45deg); /* Drehung für linken Pfeil */
-      width: 12px;
-      height: 12px;
-      border-left: 2px solid {{ section.settings.arrow_color }};
-      border-bottom: 2px solid {{ section.settings.arrow_color }};
+      transform: translateY(-50%);
+      width: 0;
+      height: 0;
+      border-top: 6px solid transparent;
+      border-bottom: 6px solid transparent;
+      border-right: 15px solid {{ section.settings.arrow_color }};
   }
 
   .arrow-divider::after {
       content: '';
       position: absolute;
-      right: 0px; /* Abstand rechts */
+      right: -15px;
       top: 50%;
-      transform: translateY(-50%) rotate(45deg); /* Drehung für rechten Pfeil */
-      width: 12px;
-      height: 12px;
-      border-right: 2px solid {{ section.settings.arrow_color }};
-      border-top: 2px solid {{ section.settings.arrow_color }};
+      transform: translateY(-50%);
+      width: 0;
+      height: 0;
+      border-top: 6px solid transparent;
+      border-bottom: 6px solid transparent;
+      border-left: 15px solid {{ section.settings.arrow_color }};
   }
   {% endif %}
 {%- endstyle -%}
@@ -240,6 +242,16 @@
       "unit": "%",
       "label": "Arrow Divider Width",
       "default": 50
+    },
+    {
+      "type": "range",
+      "id": "arrow_thickness",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "unit": "px",
+      "label": "Arrow Line Thickness",
+      "default": 1
     },
     {
       "type": "select",
