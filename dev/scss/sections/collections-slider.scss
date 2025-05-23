@@ -94,6 +94,62 @@
                             font-size: $fontSizeMedium;
                             margin: 20px 0;
                         }
+
+                        // Robuste Normalisierung für alle Text-Elemente
+                        // Verhindert Probleme durch Copy/Paste aus Word etc.
+                        p, span, div, strong, em, b, i, u {
+                            font-family: 'Cormorant Garamond' !important;
+                            color: $whiteColor !important;
+                            font-size: $fontSizeMedium !important;
+                            line-height: 1.4 !important;
+                            font-weight: normal !important;
+                            text-decoration: none !important;
+
+                            // Entfernt alle möglichen Word-Formatierungen
+                            background: none !important;
+                            border: none !important;
+                            padding: 0 !important;
+                            margin: 0 !important;
+
+                            // Spezielle Behandlung für verschachtelte Elemente
+                            * {
+                                font-family: inherit !important;
+                                color: inherit !important;
+                                font-size: inherit !important;
+                                line-height: inherit !important;
+                                font-weight: inherit !important;
+                                text-decoration: inherit !important;
+                                background: none !important;
+                                border: none !important;
+                                padding: 0 !important;
+                                margin: 0 !important;
+                            }
+                        }
+
+                        // Spezielle Behandlung für p-Tags (Absätze sollen Margin behalten)
+                        p {
+                            margin: 20px 0 !important;
+                        }
+
+                        // Catch-all für alle anderen möglichen Elemente aus Word/Copy-Paste
+                        // Überschreibt alle inline-styles und Word-spezifische Formatierungen
+                        * {
+                            &:not(h2):not(.category-link):not(a):not(img) {
+                                font-family: 'Cormorant Garamond' !important;
+                                color: $whiteColor !important;
+                                font-size: $fontSizeMedium !important;
+                                line-height: 1.4 !important;
+                                background: none !important;
+                                border: none !important;
+
+                                // Entfernt Word-spezifische Attribute
+                                mso-style-name: unset !important;
+                                mso-style-type: unset !important;
+                                mso-style-parent: unset !important;
+                                mso-pagination: unset !important;
+                                mso-layout-grid-align: unset !important;
+                            }
+                        }
                         .category-link {
                             font-family: 'Cormorant Garamond';
                             color: $whiteColor;

@@ -696,6 +696,67 @@ function initializeSlickSlider() {
         // Make slider items focusable for keyboard navigation
         $('#collection-slider .slider-item').attr('tabindex', '0');
 
+        // Clean up any problematic formatting from copy/paste (Word, etc.)
+        cleanupCopyPasteFormatting();
+
         console.log('Collection Slider initialized with autoplay:', autoplay, 'speed:', speed + 's');
     }
 }
+
+// Function to clean up problematic formatting from copy/paste operations
+function cleanupCopyPasteFormatting() {
+    // Target the category-details sections specifically
+    $('#collection-slider .category-details').each(function() {
+        const $container = $(this);
+
+        // Remove all inline styles that might come from Word/copy-paste
+        $container.find('*').each(function() {
+            const $element = $(this);
+
+            // Skip h2 and links as they have their own styling
+            if (!$element.is('h2, a, .category-link')) {
+                // Remove problematic attributes
+                $element.removeAttr('style');
+                $element.removeAttr('class');
+                $element.removeAttr('id');
+
+                // Remove Word-specific attributes
+                const wordAttributes = [
+                    'mso-style-name', 'mso-style-type', 'mso-style-parent',
+                    'mso-pagination', 'mso-layout-grid-align', 'mso-style-priority',
+                    'mso-style-qformat', 'mso-style-unhide', 'mso-default-props',
+                    'mso-element', 'mso-element-frame-hspace', 'mso-element-wrap',
+                    'mso-element-anchor-vertical', 'mso-element-anchor-horizontal',
+                    'mso-table-layout-alt', 'mso-height-rule'
+                ];
+
+                wordAttributes.forEach(attr => {
+                    $element.removeAttr(attr);
+                });
+
+                // Clean up font tags and replace with spans
+                if ($element.is('font')) {
+                    $element.replaceWith($('<span>').html($element.html()));
+                }
+
+                // Remove empty elements that might be left over
+                if ($element.is('span, div') && $element.html().trim() === '') {
+                    $element.remove();
+                }
+            }
+        });
+
+        // Normalize nested spans - flatten unnecessary nesting
+        $container.find('span').each(function() {
+            const $span = $(this);
+            if ($span.children().length === 1 && $span.children().first().is('span')) {
+                const $innerSpan = $span.children().first();
+                $span.replaceWith($innerSpan.html());
+            }
+        });
+
+        console.log('Cleaned up copy/paste formatting in category-details');
+    });
+}
+
+})(jQuery);
