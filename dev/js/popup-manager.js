@@ -4,6 +4,13 @@
  *
  * Dieser Manager initialisiert MicroModal und fügt Event-Listener für Pop-Up-Trigger hinzu.
  * Die Pop-Ups selbst werden über das Liquid-Snippet 'popups.liquid' in der theme.liquid geladen.
+ *
+ * WICHTIG: Body-Scroll-Problem behoben (2024)
+ * - Explizite Body-Scroll-Wiederherstellung nach Modal-Schließung
+ * - Regelmäßige Überprüfung des Body-Scroll-Status alle 2 Sekunden
+ * - Fallback-Mechanismen für fehlerhafte Modal-Zustände
+ * - Globale Reset-Funktion: window.closeAllModalsAndResetScroll()
+ * - CSS-Regel für standardmäßig scrollbares Body-Element
  */
 
 // IIFE zum Schutz des globalen Namensraums
@@ -31,6 +38,14 @@
     // Tracking für laufende Animationen
     const animatingModals = {};
 
+    // Globale Funktion zum Zurücksetzen des Body-Scrollings
+    const ensureBodyScrollEnabled = () => {
+      // Entferne alle möglichen overflow-hidden Klassen und Styles
+      document.body.classList.remove('overflow-hidden');
+      document.body.style.overflow = '';
+      console.log('Body-Scrolling explizit wiederhergestellt');
+    };
+
     // Verbesserte Funktion zum Schließen mit Animation
     const closeWithAnimation = (modalId) => {
       const modal = document.getElementById(modalId);
@@ -46,16 +61,29 @@
 
       // Warte, bis die Animation abgeschlossen ist (300ms für die Animation)
       setTimeout(() => {
-        // Entferne die Animations-Klasse
-        modal.classList.remove('is-closing');
+        try {
+          // Entferne die Animations-Klasse
+          modal.classList.remove('is-closing');
 
-        // Markiere als nicht mehr in Animation
-        delete animatingModals[modalId];
+          // Setze aria-hidden auf true
+          modal.setAttribute('aria-hidden', 'true');
 
-        // Lasse MicroModal das Modal normal schließen
-        MicroModal.close(modalId);
+          // Entferne die is-open Klasse
+          modal.classList.remove('is-open');
 
-        console.log(`Animation zum Schließen von ${modalId} abgeschlossen`);
+          // Markiere als nicht mehr in Animation
+          delete animatingModals[modalId];
+
+          // Stelle sicher, dass Body-Scrolling wiederhergestellt wird
+          ensureBodyScrollEnabled();
+
+          console.log(`Animation zum Schließen von ${modalId} abgeschlossen`);
+        } catch (error) {
+          console.error(`Fehler beim Schließen von ${modalId}:`, error);
+          // Fallback: Stelle sicher, dass Body-Scrolling wiederhergestellt wird
+          ensureBodyScrollEnabled();
+          delete animatingModals[modalId];
+        }
       }, 300);
     };
 
@@ -67,8 +95,8 @@
         disableScroll: true,
         disableFocus: false,
         awaitOpenAnimation: true,
-        awaitCloseAnimation: true,
-        // Callbacks angepasst
+        awaitCloseAnimation: false, // Deaktiviert, da wir eigene Animation verwenden
+        // Callbacks vereinfacht
         onShow: modal => {
           console.log(`${modal.id} wird geöffnet`);
           // Stelle sicher, dass keine Animations-Klasse vorhanden ist
@@ -76,19 +104,13 @@
           // Setze aria-hidden auf false für die Öffnen-Animation
           modal.setAttribute('aria-hidden', 'false');
         },
-      onClose: modal => {
-        console.log(`${modal.id} wird durch MicroModal geschlossen`);
-        // Wir fügen Animation nur hinzu, wenn es keine bereits laufende Animation gibt
-        // und wenn dies ein direkter Aufruf von MicroModal.close() ist
-        if (!animatingModals[modal.id] && !modal.classList.contains('is-closing')) {
-          closeWithAnimation(modal.id);
-          // Verhindern, dass MicroModal das Modal direkt schließt
-          return false;
+        onClose: modal => {
+          console.log(`${modal.id} wird durch MicroModal geschlossen`);
+          // Stelle immer sicher, dass Body-Scrolling wiederhergestellt wird
+          ensureBodyScrollEnabled();
+          return true;
         }
-        // Ansonsten ist die Animation abgeschlossen, und wir lassen MicroModal tun, was es tun muss
-        return true;
-      }
-    });
+      });
 
     // Markiere als initialisiert
     window._microModalInitialized = true;
@@ -98,6 +120,59 @@
       console.error('Fehler beim Initialisieren von MicroModal:', error);
       return;
     }
+
+    // Sicherheitsfunktion: Prüfe regelmäßig, ob Body-Scrolling blockiert ist, obwohl keine Modals geöffnet sind
+    const checkBodyScrollState = () => {
+      const openModals = document.querySelectorAll('.modal[aria-hidden="false"]');
+      const bodyHasOverflowHidden = document.body.style.overflow === 'hidden' ||
+                                   document.body.classList.contains('overflow-hidden');
+
+      if (openModals.length === 0 && bodyHasOverflowHidden) {
+        console.warn('Body-Scrolling ist blockiert, obwohl keine Modals geöffnet sind. Korrigiere...');
+        ensureBodyScrollEnabled();
+      }
+    };
+
+    // Prüfe alle 2 Sekunden
+    setInterval(checkBodyScrollState, 2000);
+
+    // Zusätzlicher Event-Listener für Visibility-Änderungen (Tab-Wechsel, etc.)
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) {
+        // Wenn Tab wieder aktiv wird, prüfe Body-Scroll-Status
+        setTimeout(checkBodyScrollState, 100);
+      }
+    });
+
+    // Globale Funktion zum Schließen aller Modals und Zurücksetzen des Body-Scrollings
+    window.closeAllModalsAndResetScroll = () => {
+      console.log('Schließe alle Modals und setze Body-Scrolling zurück');
+
+      // Schließe alle geöffneten Modals
+      const openModals = document.querySelectorAll('.modal[aria-hidden="false"]');
+      openModals.forEach(modal => {
+        if (modal.id) {
+          modal.setAttribute('aria-hidden', 'true');
+          modal.classList.remove('is-open', 'is-closing');
+          delete animatingModals[modal.id];
+        }
+      });
+
+      // Stelle Body-Scrolling sicher wieder her
+      ensureBodyScrollEnabled();
+
+      console.log('Alle Modals geschlossen und Body-Scrolling wiederhergestellt');
+    };
+
+    // Event-Listener für Page-Unload (Sicherheit)
+    window.addEventListener('beforeunload', () => {
+      ensureBodyScrollEnabled();
+    });
+
+    // Event-Listener für Page-Load (falls Seite mit blockiertem Scrolling geladen wird)
+    window.addEventListener('load', () => {
+      setTimeout(checkBodyScrollState, 1000);
+    });
 
     // Funktion zum Hinzufügen von Event-Listenern zu VAT-Info-Icons
     function attachVatIconListeners() {
