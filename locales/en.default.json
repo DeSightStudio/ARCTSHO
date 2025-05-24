@@ -99,7 +99,7 @@
   },
   "blogs": {
     "article": {
-      "blog": "Blog",
+      "blog": "Articles",
       "read_more_title": "Read more: {{ title }}",
       "comments": {
         "one": "{{ count }} comment",
@@ -567,7 +567,7 @@
       "country": "Country",
       "vat_id": "VAT ID",
       "select_country": "Select Country",
-      "enter_vat_id": "Please enter a VAT ID",
+      "enter_vat_id": "Please enter a valid VAT registration number",
       "country_not_supported": "Country code not supported",
       "invalid_format": "Invalid format. Example: DE123456789",
       "validating": "Validation in progress...",
@@ -612,8 +612,8 @@
     }
   },
   "collections": {
-    "products_available_html": "{{ count }} Products available",
-    "product_available_html": "{{ count }} Product available"
+    "products_available_html": "{{ count }} Products",
+    "product_available_html": "{{ count }} Product"
   },
   "shopify": {
     "checkout": {

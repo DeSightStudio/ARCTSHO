@@ -90,7 +90,7 @@
   },
   "blogs": {
     "article": {
-      "blog": "Blog",
+      "blog": "Articoli",
       "read_more_title": "Leggi di più: {{ title }}",
       "comments": {
         "one": "{{ count }} commento",
@@ -557,7 +557,7 @@
       "country": "Paese",
       "vat_id": "Partita IVA",
       "select_country": "Seleziona un paese",
-      "enter_vat_id": "Inserisci una Partita IVA",
+      "enter_vat_id": "Inserisci un numero di registrazione IVA valido",
       "country_not_supported": "Codice paese non supportato",
       "invalid_format": "Formato non valido. Esempio: IT12345678901",
       "validating": "Convalida in corso...",
@@ -598,5 +598,9 @@
       "expanded": "Modulo destinatario del buono regalo espanso",
       "collapsed": "Modulo destinatario del buono regalo compresso"
     }
+  },
+  "collections": {
+    "products_available_html": "{{ count }} Prodotti",
+    "product_available_html": "{{ count }} Prodotto"
   }
 }

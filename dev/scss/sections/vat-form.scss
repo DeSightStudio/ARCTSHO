@@ -38,7 +38,7 @@
       border-radius: 8px;
       padding: 1rem;
       background-color: $accentLight;
-      
+
       h1, h2, h3, h4, h5, h6 {
         font-family: Cormorant Garamond;
         color: $mainColor;
@@ -46,11 +46,11 @@
         margin: 0;
         font-weight: bold;
     }
-      
+
       .cart-items-table {
         width: 100%;
         border-collapse: collapse;
-        
+
         th, td {
           padding: 0.5rem;
           text-align: left;
@@ -61,18 +61,18 @@
           font-family: Cormorant Garamond;
           font-weight: bold;
         }
-        
+
         th {
-          
+
         }
-        
+
         .cart-item-name {
           font-size: $fontSizeRegular !important;
           color: $mainColor;
           font-family: Cormorant Garamond;
           font-weight: bold;
         }
-        
+
         .cart-item-sku {
           font-size: $fontSizeSmall;
           color: #666;
@@ -80,7 +80,7 @@
           font-size: $fontSizeSmall !important;
           font-family: Cormorant Garamond;
         }
-        
+
         tfoot {
           td {
             padding-top: 1rem;
@@ -93,22 +93,22 @@
         }
       }
     }
-    
+
     .form-field-group {
       display: flex;
       gap: 1rem;
       margin-bottom: 1rem;
-      
+
       @media screen and (max-width: 749px) {
         flex-direction: column;
         gap: 0.5rem;
       }
     }
-    
+
     .form-field {
       margin-bottom: 1rem;
       width: 100%;
-      
+
       label {
         display: block;
         margin-bottom: 0.5rem;
@@ -117,7 +117,17 @@
         font-size: $fontSizeRegular !important;
         font-family: Cormorant Garamond;
       }
-      
+
+      &.vat-field-full-width {
+        width: 100%;
+        margin-bottom: 1.5rem;
+
+        .vat-id-validation-status.validation-error {
+          color: #dc3545 !important;
+          background-color: #fff0f0 !important;
+        }
+      }
+
       input, select {
         width: 100%;
         padding: 12px;
@@ -140,7 +150,7 @@
                 -webkit-transform: none;
             }
         }
-        
+
         &::placeholder {
             color: #666;
             opacity: 1;
@@ -151,42 +161,42 @@
         }
       }
     }
-    
+
     .form-submit-group {
       display: flex;
       justify-content: flex-end;
       gap: 1rem;
       margin-top: 1.5rem;
-      
+
       @media screen and (max-width: 749px) {
         flex-direction: column;
         gap: 0.5rem;
       }
     }
-    
+
     .form-success, .form-error {
       margin-bottom: 1.5rem;
       padding: 1rem;
       border-radius: 0.25rem;
     }
-    
+
     .form-success {
       background-color: rgba(0, 128, 0, 0.1);
       color: darkgreen;
     }
-    
+
     .form-error {
       background-color: rgba(220, 53, 69, 0.1);
       color: #dc3545;
-      
+
       ul {
         padding-left: 1.25rem;
         margin-top: 0.5rem;
       }
     }
   }
-  
+
   .cart-drawer__vat-id-button {
     margin: 1rem 0;
-  } 
+  }
 }

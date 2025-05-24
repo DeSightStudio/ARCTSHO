@@ -290,9 +290,10 @@ class UnitConverter {
             element.dataset.metricValue = originalValue;
             element.dataset.metricUnit = unit || 'g';
 
-            // Für Gewichte, die initial als Textinhalt in cm gezeigt werden, korrigieren wir das
-            if (element.textContent.trim().endsWith('cm')) {
-              // Wenn der Text mit "cm" endet, aber es ein Gewicht ist, auf kg korrigieren
+            // Gewichtslogik: unter 1000g in Gramm, ab 1000g in Kilogramm
+            if (originalValue < 1000) {
+              element.textContent = `${originalValue} g`;
+            } else {
               const kgValue = (originalValue / 1000).toFixed(2);
               element.textContent = `${kgValue} kg`;
             }
@@ -397,9 +398,14 @@ class UnitConverter {
         convertedValue = (metricValue / 10).toFixed(1);
         unitText = 'cm';
       } else if (element.classList.contains('unit-weight')) {
-        // Gramm zu Kilogramm umrechnen
-        convertedValue = (metricValue / 1000).toFixed(2);
-        unitText = 'kg';
+        // Gewichtslogik: unter 1000g in Gramm, ab 1000g in Kilogramm
+        if (metricValue < 1000) {
+          convertedValue = metricValue;
+          unitText = 'g';
+        } else {
+          convertedValue = (metricValue / 1000).toFixed(2);
+          unitText = 'kg';
+        }
       }
     }
 

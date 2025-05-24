@@ -99,7 +99,7 @@
   },
   "blogs": {
     "article": {
-      "blog": "Blog",
+      "blog": "Artikel",
       "read_more_title": "Weiterlesen: {{ title }}",
       "comments": {
         "one": "{{ count }} Kommentar",
@@ -554,7 +554,7 @@
       "country": "Land",
       "vat_id": "USt-IdNr.",
       "select_country": "Land auswählen",
-      "enter_vat_id": "Bitte geben Sie eine USt-IdNr. ein",
+      "enter_vat_id": "Bitte geben Sie eine gültige USt-Registrierungsnummer ein",
       "country_not_supported": "Ländercode nicht unterstützt",
       "invalid_format": "Ungültiges Format. Beispiel: DE123456789",
       "validating": "Überprüfung läuft...",
@@ -597,7 +597,7 @@
     }
   },
   "collections": {
-    "products_available_html": "{{ count }} Produkte verfügbar",
-    "product_available_html": "{{ count }} Produkt verfügbar"
+    "products_available_html": "{{ count }} Produkte",
+    "product_available_html": "{{ count }} Produkt"
   }
 }

@@ -90,7 +90,7 @@
   },
   "blogs": {
     "article": {
-      "blog": "Blog",
+      "blog": "Artículos",
       "read_more_title": "Más información: {{ title }}",
       "comments": {
         "one": "{{ count }} comentario",
@@ -554,7 +554,7 @@
       "country": "País",
       "vat_id": "Número de IVA",
       "select_country": "Seleccionar un país",
-      "enter_vat_id": "Por favor, introduce un número de IVA",
+      "enter_vat_id": "Por favor, introduce un número de registro de IVA válido",
       "country_not_supported": "Código de país no compatible",
       "invalid_format": "Formato inválido. Ejemplo: ES12345678X",
       "validating": "Validación en curso...",
@@ -595,5 +595,9 @@
       "expanded": "Formulario del destinatario de la tarjeta de regalo expandido",
       "collapsed": "Formulario del destinatario de tarjeta de regalo contraído"
     }
+  },
+  "collections": {
+    "products_available_html": "{{ count }} Productos",
+    "product_available_html": "{{ count }} Producto"
   }
 }

@@ -53,10 +53,11 @@ product-info {
                         font-family: 'Cormorant Garamond';
                         color: $mainColorDark;
                         font-size: $fontSizeLarge;
+                        font-weight: bold;
                     }
                 }
                 .price__badge-sold-out {
-                    
+
                     margin: 0px;
                     font-size: $fontSizeRegular;
                     font-family: 'Copperplate';

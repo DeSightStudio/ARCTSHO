@@ -29,7 +29,8 @@
         // Convert weight
         $('.metric-weight').each(function() {
             const gValue = parseFloat($(this).text());
-            const lbValue = (gValue * gToLb).toFixed(2);
+            // g zu lb (1 g = 0.00220462 lb)
+            const lbValue = (gValue * 0.00220462).toFixed(2);
             $(this).text(lbValue + ' lb');
         });
     }

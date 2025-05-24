@@ -90,7 +90,7 @@
   },
   "blogs": {
     "article": {
-      "blog": "Blog",
+      "blog": "Articles",
       "read_more_title": "Lire la suite : {{ title }}",
       "comments": {
         "one": "{{ count }} commentaire",
@@ -554,7 +554,7 @@
       "country": "Pays",
       "vat_id": "Numéro de TVA",
       "select_country": "Sélectionner un pays",
-      "enter_vat_id": "Veuillez saisir un numéro de TVA",
+      "enter_vat_id": "Veuillez saisir un numéro d'enregistrement TVA valide",
       "country_not_supported": "Code pays non pris en charge",
       "invalid_format": "Format invalide. Exemple : FR12345678901",
       "validating": "Validation en cours...",
@@ -595,5 +595,9 @@
       "expanded": "Formulaire de destinataire de carte-cadeau agrandi",
       "collapsed": "Formulaire de destinataire de carte-cadeau réduit"
     }
+  },
+  "collections": {
+    "products_available_html": "{{ count }} Produits",
+    "product_available_html": "{{ count }} Produit"
   }
 }

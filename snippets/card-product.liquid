@@ -341,33 +341,48 @@
                 {% render 'price', product: card_product, price_class: '', show_compare_at_price: true %}
                 {% if card_product.metafields.next_cart.weight_m != blank %}
                   <div class="card-product__weight">
+                    {% assign weight_value = card_product.metafields.next_cart.weight_m | plus: 0 %}
                     <span
                       class="weight-value"
-                      data-original-value="{{ card_product.metafields.next_cart.weight_m }}"
+                      data-original-value="{{ weight_value }}"
                       data-unit="g"
                     >
-                      {{- card_product.metafields.next_cart.weight_m | divided_by: 1000.0 | round: 2 }} kg</span
-                    >
+                      {% if weight_value < 1000 %}
+                        {{- weight_value }} g
+                      {% else %}
+                        {{- weight_value | divided_by: 1000.0 | round: 2 }} kg
+                      {% endif %}
+                    </span>
                   </div>
                 {% elsif card_product.metafields.custom.weight_m != blank %}
                   <div class="card-product__weight">
+                    {% assign weight_value = card_product.metafields.custom.weight_m | plus: 0 %}
                     <span
                       class="weight-value"
-                      data-original-value="{{ card_product.metafields.custom.weight_m }}"
+                      data-original-value="{{ weight_value }}"
                       data-unit="g"
                     >
-                      {{- card_product.metafields.custom.weight_m | divided_by: 1000.0 | round: 2 }} kg</span
-                    >
+                      {% if weight_value < 1000 %}
+                        {{- weight_value }} g
+                      {% else %}
+                        {{- weight_value | divided_by: 1000.0 | round: 2 }} kg
+                      {% endif %}
+                    </span>
                   </div>
                 {% elsif card_product.weight > 0 %}
                   <div class="card-product__weight">
+                    {% assign weight_value = card_product.weight | plus: 0 %}
                     <span
                       class="weight-value"
-                      data-original-value="{{ card_product.weight }}"
+                      data-original-value="{{ weight_value }}"
                       data-unit="g"
                     >
-                      {{ card_product.weight | divided_by: 1000.0 | round: 2 }} kg</span
-                    >
+                      {% if weight_value < 1000 %}
+                        {{- weight_value }} g
+                      {% else %}
+                        {{- weight_value | divided_by: 1000.0 | round: 2 }} kg
+                      {% endif %}
+                    </span>
                   </div>
                 {% endif %}
               </div>
@@ -379,73 +394,94 @@
                 {% if card_product.metafields.next_cart.ts_dimensions_length_m != blank %}
                   <li class="card-product__specs-item">
                     <span class="card-product__specs-label">{{ 'products.product.product_specs.length' | t }}</span>
+                    {% assign length_value = card_product.metafields.next_cart.ts_dimensions_length_m | plus: 0 %}
                     <span
                       class="card-product__specs-value"
                       data-spec-type="length"
-                      data-original-value="{{ card_product.metafields.next_cart.ts_dimensions_length_m }}"
+                      data-original-value="{{ length_value }}"
                       data-unit="mm"
                     >
-                      {{- card_product.metafields.next_cart.ts_dimensions_length_m | divided_by: 10.0 | round: 1 }}
-                      cm</span
-                    >
+                      {% if length_value < 10 %}
+                        {{- length_value }} mm
+                      {% else %}
+                        {{- length_value | divided_by: 10.0 | round: 1 }} cm
+                      {% endif %}
+                    </span>
                   </li>
                 {% endif %}
 
                 {% if card_product.metafields.next_cart.ts_dimensions_width_m != blank %}
                   <li class="card-product__specs-item">
                     <span class="card-product__specs-label">{{ 'products.product.product_specs.width' | t }}</span>
+                    {% assign width_value = card_product.metafields.next_cart.ts_dimensions_width_m | plus: 0 %}
                     <span
                       class="card-product__specs-value"
                       data-spec-type="width"
-                      data-original-value="{{ card_product.metafields.next_cart.ts_dimensions_width_m }}"
+                      data-original-value="{{ width_value }}"
                       data-unit="mm"
                     >
-                      {{- card_product.metafields.next_cart.ts_dimensions_width_m | divided_by: 10.0 | round: 1 }}
-                      cm</span
-                    >
+                      {% if width_value < 10 %}
+                        {{- width_value }} mm
+                      {% else %}
+                        {{- width_value | divided_by: 10.0 | round: 1 }} cm
+                      {% endif %}
+                    </span>
                   </li>
                 {% endif %}
 
                 {% if card_product.metafields.next_cart.ts_dimensions_height_m != blank %}
                   <li class="card-product__specs-item">
                     <span class="card-product__specs-label">{{ 'products.product.product_specs.height' | t }}</span>
+                    {% assign height_value = card_product.metafields.next_cart.ts_dimensions_height_m | plus: 0 %}
                     <span
                       class="card-product__specs-value"
                       data-spec-type="height"
-                      data-original-value="{{ card_product.metafields.next_cart.ts_dimensions_height_m }}"
+                      data-original-value="{{ height_value }}"
                       data-unit="mm"
                     >
-                      {{- card_product.metafields.next_cart.ts_dimensions_height_m | divided_by: 10.0 | round: 1 }}
-                      cm</span
-                    >
+                      {% if height_value < 10 %}
+                        {{- height_value }} mm
+                      {% else %}
+                        {{- height_value | divided_by: 10.0 | round: 1 }} cm
+                      {% endif %}
+                    </span>
                   </li>
                 {% endif %}
 
                 {% if card_product.metafields.next_cart.ts_dimensions_diameter != blank %}
                   <li class="card-product__specs-item">
                     <span class="card-product__specs-label">{{ 'products.product.product_specs.diameter' | t }}</span>
+                    {% assign diameter_value = card_product.metafields.next_cart.ts_dimensions_diameter | plus: 0 %}
                     <span
                       class="card-product__specs-value"
                       data-spec-type="diameter"
-                      data-original-value="{{ card_product.metafields.next_cart.ts_dimensions_diameter }}"
+                      data-original-value="{{ diameter_value }}"
                       data-unit="mm"
                     >
-                      {{- card_product.metafields.next_cart.ts_dimensions_diameter | divided_by: 10.0 | round: 1 }}
-                      cm</span
-                    >
+                      {% if diameter_value < 10 %}
+                        {{- diameter_value }} mm
+                      {% else %}
+                        {{- diameter_value | divided_by: 10.0 | round: 1 }} cm
+                      {% endif %}
+                    </span>
                   </li>
                 {% endif %}
 
                 {% if card_product.metafields.next_cart.weight_m != blank %}
                   <li class="card-product__specs-item">
                     <span class="card-product__specs-label">{{ 'products.product.product_specs.weight' | t }}</span>
+                    {% assign weight_value = card_product.metafields.next_cart.weight_m | plus: 0 %}
                     <span
                       class="card-product__specs-value"
                       data-spec-type="weight"
-                      data-original-value="{{ card_product.metafields.next_cart.weight_m }}"
+                      data-original-value="{{ weight_value }}"
                       data-unit="g"
                     >
-                      {{- card_product.metafields.next_cart.weight_m | divided_by: 1000.0 | round: 2 }} kg
+                      {% if weight_value < 1000 %}
+                        {{- weight_value }} g
+                      {% else %}
+                        {{- weight_value | divided_by: 1000.0 | round: 2 }} kg
+                      {% endif %}
                     </span>
                   </li>
                 {% endif %}

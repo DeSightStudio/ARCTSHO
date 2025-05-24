@@ -170,6 +170,7 @@ product-recommendations {
                                                 font-family: 'Cormorant Garamond';
                                                 color: $mainColorDark;
                                                 font-size: $fontSizeRegular; // Kleinere Schrift für Related Products
+                                                font-weight: bold;
                                             }
                                         }
                                     }
@@ -185,6 +186,7 @@ product-recommendations {
                                         font-family: 'Cormorant Garamond';
                                         color: $mainColorDark;
                                         font-size: $fontSizeSmall; // Kleinere Schrift für Related Products
+                                        font-weight: bold;
                                     }
                                 }
                             }
