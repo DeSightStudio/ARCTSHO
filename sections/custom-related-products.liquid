@@ -1,0 +1,293 @@
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+{{ 'component-price.css' | asset_url | stylesheet_tag }}
+{{ 'section-related-products.css' | asset_url | stylesheet_tag }}
+
+{% if section.settings.image_shape == 'blob' %}
+  {{ 'mask-blobs.css' | asset_url | stylesheet_tag }}
+{%- endif -%}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="color-{{ section.settings.color_scheme }} gradient">
+  <product-recommendations
+    class="related-products page-width section-{{ section.id }}-padding isolate{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+    data-url="{{ routes.product_recommendations_url }}?limit=10"
+    data-section-id="{{ section.id }}"
+    data-product-id="{{ product.id }}"
+  >
+    {%- comment -%} Einfache Produktauswahl: Sammle alle verfügbaren Produkte {%- endcomment -%}
+    {%- assign excluded_handles = 'all,alle-produkte,tous-les-produits,todos-los-productos,tutti-i-prodotti,all-products'
+      | split: ','
+    -%}
+    {%- assign excluded_titles = 'All Products,Alle Produkte,Tous les produits,Todos los productos,Tutti i prodotti'
+      | split: ','
+    -%}
+
+    {%- comment -%} Direkte Produktauswahl ohne Arrays {%- endcomment -%}
+    {%- assign products_shown = 0 -%}
+    {%- assign used_product_ids = '' -%}
+
+    {%- comment -%} Conditional wrapper wie in der originalen Section {%- endcomment -%}
+    {%- if products_shown > 0 or true -%}
+      <h2 class="related-products__heading inline-richtext {{ section.settings.heading_size }}">
+        {{ section.settings.heading }}
+      </h2>
+      <ul
+        class="grid product-grid grid--{{ section.settings.columns_desktop }}-col-desktop grid--{{ section.settings.columns_mobile }}-col-tablet-down"
+        role="list"
+      >
+        {%- assign skip_card_product_styles = false -%}
+
+        {%- for collection in collections -%}
+          {%- if products_shown < 10 and collection.published -%}
+            {%- unless excluded_handles contains collection.handle or excluded_titles contains collection.title -%}
+              {%- assign found_in_collection = false -%}
+
+              {%- for collection_product in collection.products -%}
+                {%- unless found_in_collection or products_shown >= 10 -%}
+                  {%- if collection_product.available
+                    and collection_product.id != product.id
+                    and collection_product.selected_or_first_available_variant.sku != '2226'
+                  -%}
+                    {%- assign product_id_check = ',' | append: collection_product.id | append: ',' -%}
+                    {%- unless used_product_ids contains product_id_check -%}
+                      <li class="grid__item">
+                        {% render 'card-product',
+                          card_product: collection_product,
+                          media_aspect_ratio: section.settings.image_ratio,
+                          image_shape: section.settings.image_shape,
+                          show_secondary_image: section.settings.show_secondary_image,
+                          show_vendor: section.settings.show_vendor,
+                          show_rating: section.settings.show_rating,
+                          skip_styles: skip_card_product_styles
+                        %}
+                      </li>
+                      {%- assign skip_card_product_styles = true -%}
+                      {%- assign used_product_ids = used_product_ids | append: product_id_check -%}
+                      {%- assign products_shown = products_shown | plus: 1 -%}
+                      {%- assign found_in_collection = true -%}
+                    {%- endunless -%}
+                  {%- endif -%}
+                {%- endunless -%}
+              {%- endfor -%}
+            {%- endunless -%}
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+
+    {%- if products_shown == 0 -%}
+      <div style="background: #ffeeee; padding: 20px; margin: 10px 0; border: 1px solid #ffcccc;">
+        <strong>Keine Related Products gefunden!</strong><br>
+        Mögliche Gründe: Keine verfügbaren Produkte in Collections oder alle Produkte sind ausverkauft.
+      </div>
+    {%- endif -%}
+  </product-recommendations>
+  {% if section.settings.image_shape == 'arch' %}
+    {{ 'mask-arch.svg' | inline_asset_content }}
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Custom Related Products",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Shows exactly 10 products from different collections (max 1 per collection)"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "default": "Related Products",
+      "label": "Heading"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "Small"
+        },
+        {
+          "value": "h1",
+          "label": "Medium"
+        },
+        {
+          "value": "h0",
+          "label": "Large"
+        },
+        {
+          "value": "hxl",
+          "label": "Extra large"
+        },
+        {
+          "value": "hxxl",
+          "label": "XX-Large"
+        }
+      ],
+      "default": "h1",
+      "label": "Heading size"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "default": 4,
+      "label": "Number of columns on desktop"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "info": "Color scheme for cards",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Product cards"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "Adapt to image"
+        },
+        {
+          "value": "portrait",
+          "label": "Portrait"
+        },
+        {
+          "value": "square",
+          "label": "Square"
+        }
+      ],
+      "default": "adapt",
+      "label": "Image ratio",
+      "info": "Add images by editing your products"
+    },
+    {
+      "type": "select",
+      "id": "image_shape",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "arch",
+          "label": "Arch"
+        },
+        {
+          "value": "blob",
+          "label": "Blob"
+        },
+        {
+          "value": "chevronleft",
+          "label": "Chevron left"
+        },
+        {
+          "value": "chevronright",
+          "label": "Chevron right"
+        },
+        {
+          "value": "diamond",
+          "label": "Diamond"
+        },
+        {
+          "value": "parallelogram",
+          "label": "Parallelogram"
+        },
+        {
+          "value": "round",
+          "label": "Round"
+        }
+      ],
+      "default": "default",
+      "label": "Image shape"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_secondary_image",
+      "default": false,
+      "label": "Show second product image on hover"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "default": false,
+      "label": "Show product vendor"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating",
+      "default": false,
+      "label": "Show product rating",
+      "info": "To display a rating, add a product rating app"
+    },
+    {
+      "type": "header",
+      "content": "Mobile layout"
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "default": "2",
+      "label": "Number of columns on mobile",
+      "options": [
+        {
+          "value": "1",
+          "label": "1 column"
+        },
+        {
+          "value": "2",
+          "label": "2 columns"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 36
+    }
+  ]
+}
+{% endschema %}

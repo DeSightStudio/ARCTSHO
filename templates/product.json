@@ -89,12 +89,11 @@
         "padding_bottom": 12
       }
     },
-    "related-products": {
-      "type": "related-products",
+    "custom-related-products": {
+      "type": "custom-related-products",
       "settings": {
         "heading": "Related Products",
         "heading_size": "h2",
-        "products_to_show": 10,
         "columns_desktop": 5,
         "color_scheme": "scheme-1",
         "image_ratio": "portrait",
@@ -112,6 +111,6 @@
     "breadcrumb_ngzLfm",
     "back_button_example",
     "main",
-    "related-products"
+    "custom-related-products"
   ]
 }
