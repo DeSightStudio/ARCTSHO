@@ -6,6 +6,9 @@
   {{ 'mask-blobs.css' | asset_url | stylesheet_tag }}
 {%- endif -%}
 
+<script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'card-product.js' | asset_url }}" defer="defer"></script>
+
 {%- style -%}
   .section-{{ section.id }}-padding {
     padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
@@ -71,7 +74,9 @@
                           show_secondary_image: section.settings.show_secondary_image,
                           show_vendor: section.settings.show_vendor,
                           show_rating: section.settings.show_rating,
-                          skip_styles: skip_card_product_styles
+                          skip_styles: skip_card_product_styles,
+                          section_id: section.id,
+                          quick_add: 'standard'
                         %}
                       </li>
                       {%- assign skip_card_product_styles = true -%}

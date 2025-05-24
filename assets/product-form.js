@@ -6,13 +6,20 @@ if (!customElements.get('product-form')) {
         super();
 
         this.form = this.querySelector('form');
+        if (!this.form) {
+          console.warn('ProductForm: Kein form Element gefunden');
+          return;
+        }
+
         this.variantIdInput.disabled = false;
         this.form.addEventListener('submit', this.onSubmitHandler.bind(this));
         this.cart = document.querySelector('cart-notification') || document.querySelector('cart-drawer');
         this.submitButton = this.querySelector('[type="submit"]');
-        this.submitButtonText = this.submitButton.querySelector('span');
+        this.submitButtonText = this.submitButton?.querySelector('span');
 
-        if (document.querySelector('cart-drawer')) this.submitButton.setAttribute('aria-haspopup', 'dialog');
+        if (document.querySelector('cart-drawer') && this.submitButton) {
+          this.submitButton.setAttribute('aria-haspopup', 'dialog');
+        }
 
         this.hideErrors = this.dataset.hideErrors === 'true';
 
@@ -276,31 +283,41 @@ if (!customElements.get('product-form')) {
       }
 
       toggleSubmitButton(disable = true, text) {
+        if (!this.submitButton) return;
+
         if (disable) {
           this.submitButton.setAttribute('disabled', 'disabled');
-          if (text) this.submitButtonText.textContent = text;
+          if (text && this.submitButtonText) this.submitButtonText.textContent = text;
         } else {
           this.submitButton.removeAttribute('disabled');
-          this.submitButtonText.textContent = window.variantStrings.addToCart;
+          if (this.submitButtonText) this.submitButtonText.textContent = window.variantStrings.addToCart;
         }
       }
 
       get variantIdInput() {
-        return this.form.querySelector('[name=id]');
+        return this.form?.querySelector('[name=id]');
       }
 
       // Neue Methode, um den Button in "Warenkorb anzeigen" zu ändern
       updateButtonToViewCart() {
+        if (!this.submitButton) return;
+
         this.submitButton.type = 'button';
         this.submitButton.setAttribute('onclick', 'event.preventDefault(); document.querySelector("cart-drawer").open();');
-        this.submitButtonText.textContent = window.variantStrings.view_cart_button || 'View cart';
+        if (this.submitButtonText) {
+          this.submitButtonText.textContent = window.variantStrings.view_cart_button || 'View cart';
+        }
       }
 
       // Neue Methode, um den Button in "In den Warenkorb" zu ändern
       updateButtonToAddToCart() {
+        if (!this.submitButton) return;
+
         this.submitButton.type = 'submit';
         this.submitButton.removeAttribute('onclick');
-        this.submitButtonText.textContent = window.variantStrings.addToCart || 'Add to cart';
+        if (this.submitButtonText) {
+          this.submitButtonText.textContent = window.variantStrings.addToCart || 'Add to cart';
+        }
       }
 
       handleCartItemRemoved(event) {

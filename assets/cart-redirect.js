@@ -75,23 +75,25 @@
   // Überschreibe alle Methoden, die Navigation auslösen können
   ['assign', 'replace', 'reload'].forEach(method => {
     const original = window.location[method];
-    window.location[method] = function(url) {
-      if (typeof url === 'string' && (url === '/cart' || url.endsWith('/cart/') || url.includes('/cart?'))) {
-        console.log(`Abgefangener window.location.${method} Aufruf:`, url);
+    if (typeof original === 'function') {
+      window.location[method] = function(url) {
+        if (typeof url === 'string' && (url === '/cart' || url.endsWith('/cart/') || url.includes('/cart?'))) {
+          console.log(`Abgefangener window.location.${method} Aufruf:`, url);
 
-        const cartDrawer = document.querySelector('cart-drawer');
-        if (cartDrawer) {
-          cartDrawer.open();
-          return; // Verhindere die Weiterleitung
-        } else {
-          // Wenn kein Drawer verfügbar ist, zur Startseite leiten
-          return original.call(this, '/');
+          const cartDrawer = document.querySelector('cart-drawer');
+          if (cartDrawer) {
+            cartDrawer.open();
+            return; // Verhindere die Weiterleitung
+          } else {
+            // Wenn kein Drawer verfügbar ist, zur Startseite leiten
+            return original.call(this, '/');
+          }
         }
-      }
 
-      // Ansonsten das normale Verhalten ausführen
-      return original.apply(this, arguments);
-    };
+        // Ansonsten das normale Verhalten ausführen
+        return original.apply(this, arguments);
+      };
+    }
   });
 
   // Überschreiben von window.open

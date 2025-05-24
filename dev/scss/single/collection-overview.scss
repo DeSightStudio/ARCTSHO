@@ -1,9 +1,15 @@
 #ProductGridContainer, product-recommendations {
+    .grid__item {
+
+    }
     .card-wrapper {
         .card {
             position: relative;
             .card__inner {
                 position: relative;
+            }
+            .card-product__add-button {
+                font-size: $fontSizeSmall;
             }
             .card__content {
                 position: absolute;
@@ -30,13 +36,13 @@
                                         span {
                                             font-family: 'Cormorant Garamond';
                                             color: $mainColorDark;
-                                            font-size: $fontSizeRegular;
+                                            font-size: $fontSizeSmall;
                                             font-weight: bold;
                                         }
                                     }
                                     h1, h2, h3, h4, h5, h6 {
                                         font-family: 'Cormorant Garamond';
-                                        font-size: $fontSizeRegular;
+                                        font-size: $fontSizeSmall;
                                         color: $whiteColor;
                                         opacity: 0;
                                         margin: 5px 0px 0px 0px;
@@ -58,11 +64,14 @@
                                     flex-direction: row;
                                     .price {
                                         flex: 0 0 auto;
+                                        .vat-info-badge {
+                                            font-size: $fontSizeSmall;
+                                        }
                                         .price__container {
                                             .price-item {
                                                 font-family: 'Cormorant Garamond';
                                                 color: $mainColorDark;
-                                                font-size: $fontSizeMedium;
+                                                font-size: $fontSizeSmall;
                                             }
                                         }
                                     }
@@ -75,8 +84,7 @@
                                     span {
                                         font-family: 'Cormorant Garamond';
                                         color: $mainColorDark;
-                                        font-size: $fontSizeRegular;
-                                        
+                                        font-size: $fontSizeSmall;
                                     }
                                 }
                             }
@@ -97,7 +105,7 @@
                                     width: 100%;
                                     li {
                                         font-family: 'Cormorant Garamond';
-                                        font-size: $fontSizeRegular;
+                                        font-size: $fontSizeSmall;
                                         color: $whiteColor;
                                         margin: 0px;
                                         padding: 0px;

@@ -26,7 +26,7 @@ if (!customElements.get('product-info')) {
 
         this.setupCartUpdateListeners();
 
-        this.productForm = this.querySelector(`product-form[data-section-id="${this.sectionId}"]`);
+        this.productForm = this.querySelector(`product-form[data-section-id="${this.sectionId}"]`) || this.querySelector('product-form');
         this.submitButton = this.productForm?.querySelector('[type="submit"]');
         this.variantPicker = this.querySelector('variant-picker');
       }
@@ -429,37 +429,37 @@ if (!customElements.get('product-info')) {
       setupCartUpdateListeners() {
         // Auf Warenkorb-Update-Events reagieren
         document.addEventListener('cart:updated', this.handleCartUpdate.bind(this));
-        
+
         // Ereignis, wenn ein Artikel aus dem Warenkorb entfernt wird
         document.addEventListener('cart:item:removed', this.handleCartItemRemoved.bind(this));
-        
+
         // Ereignis, wenn ein Artikel zum Warenkorb hinzugefügt wird
         document.addEventListener('cart:item:added', this.handleCartItemAdded.bind(this));
-        
+
         // Auf Drawer öffnen/schließen reagieren
         document.addEventListener('drawer:opened', this.handleCartUpdate.bind(this));
         document.addEventListener('drawer:closed', this.handleCartUpdate.bind(this));
-        
+
         // Prüfen, ob das Produkt bereits im Warenkorb ist
         this.checkProductInCart();
       }
-      
+
       handleCartUpdate(event) {
         // Beim Warenkorb-Update den Produkt-Status aktualisieren
         console.log('Warenkorb aktualisiert - aktualisiere Produktstatus...');
         this.checkProductInCart();
       }
-      
+
       handleCartItemRemoved(event) {
         // Wenn ein Artikel aus dem Warenkorb entfernt wurde, Produktstatus aktualisieren
         console.log('Artikel aus dem Warenkorb entfernt - aktualisiere Produktstatus...', event.detail);
-        
+
         // Sofort den Button-Status aktualisieren, ohne auf den Server-Aufruf zu warten
         // Besonders wichtig für Add-Ons wie Certificate of Origin
         const productForms = document.querySelectorAll('product-form');
         productForms.forEach(form => {
           const variantId = parseInt(form.querySelector('[name="id"]')?.value);
-          
+
           // Wenn es die gleiche Variante ist, die entfernt wurde
           if (variantId === event.detail.variantId) {
             console.log('Entfernter Artikel gefunden auf der aktuellen Seite:', variantId);
@@ -468,24 +468,24 @@ if (!customElements.get('product-info')) {
             }
           }
         });
-        
+
         // Zusätzlich noch den regulären Check aufrufen, um sicherzugehen
         this.checkProductInCart();
       }
-      
+
       handleCartItemAdded(event) {
         // Wenn ein Artikel zum Warenkorb hinzugefügt wurde, Produktstatus aktualisieren
         console.log('Artikel zum Warenkorb hinzugefügt - aktualisiere Produktstatus...', event.detail);
-        
+
         // Sofortiges Update für PDP-Buttons
         if (this.productId && event.detail && event.detail.productId === this.productId) {
           console.log('Dieses Produkt wurde zum Warenkorb hinzugefügt:', this.productId);
-          
+
           // Submit-Button und Text aktualisieren, wenn das Produkt im Warenkorb ist
           const button = this.querySelector('button[type="submit"], button[name="add"], product-form button[name="add"]');
           if (button) {
             const productForm = button.closest('product-form');
-            
+
             if (productForm && typeof productForm.updateButtonToViewCart === 'function') {
               // Nutze die Methode in product-form, wenn verfügbar
               productForm.updateButtonToViewCart();
@@ -500,24 +500,24 @@ if (!customElements.get('product-info')) {
             }
           }
         }
-        
+
         // Zusätzlich noch die reguläre Überprüfung durchführen
         this.checkProductInCart();
       }
-      
+
       checkProductInCart() {
         if (!this.productId) return;
-        
+
         fetch(`${routes.cart_url}.js`)
           .then(response => response.json())
           .then(cart => {
             const productInCart = cart.items.some(item => item.product_id === this.productId);
-            
+
             // Submit-Button und Text aktualisieren, wenn das Produkt im Warenkorb ist
             const button = this.querySelector('button[type="submit"], button[name="add"], product-form button[name="add"]');
             if (button) {
               const productForm = button.closest('product-form');
-              
+
               if (productInCart) {
                 console.log('Produkt ist im Warenkorb - aktualisiere Button');
                 if (productForm && typeof productForm.updateButtonToViewCart === 'function') {

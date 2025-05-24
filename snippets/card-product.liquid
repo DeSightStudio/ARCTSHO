@@ -263,7 +263,12 @@
                               },
                               body: formData
                             })
-                            .then(response => response.json())
+                            .then(response => {
+                              if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                              }
+                              return response.json();
+                            })
                             .then(response => {
                               // Cart Drawer aktualisieren und öffnen
                               const cartDrawer = document.querySelector('cart-drawer');
