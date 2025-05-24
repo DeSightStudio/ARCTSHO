@@ -6,18 +6,87 @@
 // Targets the DOM structure from external Shopify language switcher app
 
 .desktop-localization-wrapper {
-    
+
+    // Target the dropdown wrapper
+    .disclosure__list-wrapper {
+        // Kompakteres Dropdown
+        padding: 0 !important;
+        margin: 0 !important;
+        border-radius: 12px;
+        box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.25);
+        background: $mainColor !important; // Hauptfarbe als Hintergrund
+        border: 1px solid transparent !important;
+        min-width: 160px !important; // Reduzierte Mindestbreite
+    }
+
     // Target the language selector disclosure list
     .disclosure__list {
-        
+        // Reduziere Abstände zwischen Sprachen
+        padding: 4px 0 !important; // Minimaler Padding oben/unten
+        margin: 0 !important;
+        max-height: none !important; // Entferne Höhenbegrenzung
+        overflow: visible !important; // Kein Scrollen nötig
+        height: auto !important; // Automatische Höhe
+        background: transparent !important; // Transparenter Hintergrund
+
         // Style each language item
         .disclosure__item {
-            
+            // Entferne Leerzeilen zwischen Items
+            margin: 0 !important;
+            padding: 0 !important;
+            line-height: 1 !important;
+
             // Target the language links with hreflang attributes
             .disclosure__link {
                 position: relative;
                 padding-left: 35px !important; // Make space for flag
-                
+                padding-top: 8px !important; // Reduzierter oberer Abstand
+                padding-bottom: 8px !important; // Reduzierter unterer Abstand
+                padding-right: 12px !important;
+                margin: 0 !important;
+                line-height: 1.2 !important;
+                display: block !important;
+                text-decoration: none !important;
+                color: $whiteColor !important; // Weiße Schrift auf grünem Hintergrund
+                font-size: 14px !important;
+                transition: background-color 0.2s ease;
+
+                // Hover-Effekt
+                &:hover {
+                    background-color: rgba($whiteColor, 0.1) !important;
+                    color: $whiteColor !important;
+                }
+
+                // Aktive Sprache
+                &[aria-current="true"] {
+                    background-color: rgba($whiteColor, 0.15) !important;
+                    font-weight: 500 !important;
+                    color: $whiteColor !important;
+                }
+
+                // Verstecke das Standard-Checkmark
+                .icon-checkmark,
+                svg {
+                    display: none !important;
+                }
+
+                // FontAwesome Check-Circle Icon rechtsbündig für aktive Sprache
+                &[aria-current="true"]::after {
+                    content: '\f058'; // FontAwesome circle-check
+                    font-family: 'Font Awesome 6 Pro';
+                    font-weight: 900;
+                    position: absolute;
+                    right: 8px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    color: $whiteColor !important;
+                    font-size: 14px;
+                    z-index: 10;
+                    display: inline-block;
+                    -webkit-font-smoothing: antialiased;
+                    -moz-osx-font-smoothing: grayscale;
+                }
+
                 // Flag styling using ::before pseudo-element
                 &::before {
                     content: '';
@@ -34,27 +103,27 @@
                     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
                     z-index: 9;
                 }
-                
+
                 // English flag
                 &[hreflang="en"]::before {
                     background-image: url('{{ "flag-en.png" | asset_url }}');
                 }
-                
+
                 // German flag
                 &[hreflang="de"]::before {
                     background-image: url('{{ "flag-de.png" | asset_url }}');
                 }
-                
+
                 // Italian flag
                 &[hreflang="it"]::before {
                     background-image: url('{{ "flag-it.png" | asset_url }}');
                 }
-                
+
                 // French flag
                 &[hreflang="fr"]::before {
                     background-image: url('{{ "flag-fr.png" | asset_url }}');
                 }
-                
+
                 // Spanish flag
                 &[hreflang="es"]::before {
                     background-image: url('{{ "flag-es.png" | asset_url }}');
@@ -62,12 +131,12 @@
             }
         }
     }
-    
+
     // Also target the main button (currently selected language)
     .disclosure__button {
         position: relative;
         padding-left: 35px !important; // Make space for flag
-        
+
         &::before {
             content: '';
             position: absolute;
@@ -81,7 +150,7 @@
             background-repeat: no-repeat;
             border-radius: 2px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-            z-index: 9;
+            z-index: 1;
         }
     }
 }
@@ -114,7 +183,7 @@ body[data-locale="es"] .desktop-localization-wrapper .disclosure__button::before
         .disclosure__link,
         .disclosure__button {
             padding-left: 32px !important; // Slightly less padding on mobile
-            
+
             &::before {
                 width: 18px;
                 height: 13px;

@@ -19,6 +19,24 @@ class CustomLightbox {
     this.translateY = 0;
     this.images = [];
 
+    // Smart Resolution Loading System
+    this.resolutionCache = new Map(); // Cache für geladene Auflösungen
+    this.currentResolution = 'base'; // Aktuelle Auflösung
+    this.isLoadingResolution = false; // Verhindert mehrfaches gleichzeitiges Laden
+    this.zoomThresholds = [1, 3, 6, 10]; // Zoom-Level für Auflösungswechsel
+    this.resolutionSizes = {
+      'base': 1600,    // Standard Auflösung
+      'medium': 2400,  // Mittlere Auflösung für 3-6x Zoom
+      'high': 3200,    // Hohe Auflösung für 6-10x Zoom
+      'ultra': null    // Original/maximale Auflösung
+    };
+
+    // Debounce für Mausrad-Zoom
+    this.zoomDebounceTimer = null;
+    this.zoomDebounceDelay = 150; // ms
+    this.lastZoomTime = 0;
+    this.zoomChangeThreshold = 0.5; // Mindest-Zoom-Änderung für Resolution-Check
+
     this.init();
   }
 
@@ -237,6 +255,212 @@ class CustomLightbox {
     return src;
   }
 
+  /**
+   * Generiert Shopify Bild-URL für spezifische Auflösung
+   * @param {string} src - Original Bild-URL
+   * @param {string} resolution - Auflösungs-Key ('base', 'medium', 'high', 'ultra')
+   * @returns {string} - URL mit angepasster Auflösung
+   */
+  getImageUrlForResolution(src, resolution) {
+    if (!src || !src.includes('shopify')) {
+      return src;
+    }
+
+    // Entferne bestehende Größenparameter
+    let cleanSrc = src.replace(/(_\d+x\d*|_\d*x\d+|_compact|_grande|_large|_medium|_small|_thumb)(\.|@)/, '$2');
+
+    // Für 'ultra' Resolution verwende Original ohne Größenparameter
+    if (resolution === 'ultra') {
+      return cleanSrc;
+    }
+
+    const size = this.resolutionSizes[resolution];
+    if (!size) {
+      return src; // Fallback zur Original-URL
+    }
+
+    // Füge Größenparameter hinzu
+    if (cleanSrc.includes('?')) {
+      return cleanSrc.replace('?', `_${size}x?`);
+    } else {
+      const extension = cleanSrc.split('.').pop();
+      return cleanSrc.replace(`.${extension}`, `_${size}x.${extension}`);
+    }
+  }
+
+  /**
+   * Bestimmt die optimale Auflösung basierend auf Zoom-Level
+   * @param {number} zoomLevel - Aktueller Zoom-Level
+   * @returns {string} - Auflösungs-Key
+   */
+  getOptimalResolution(zoomLevel) {
+    if (zoomLevel >= 6) return 'high';
+    if (zoomLevel >= 3) return 'medium';
+    return 'base';
+  }
+
+  /**
+   * Lädt Bild in höherer Auflösung nach
+   * @param {string} targetResolution - Ziel-Auflösung
+   * @returns {Promise} - Promise für Ladevorgang
+   */
+  async loadHigherResolution(targetResolution) {
+    if (this.isLoadingResolution || !this.images[this.currentSlide]) {
+      return;
+    }
+
+    const currentImage = this.images[this.currentSlide];
+    const cacheKey = `${this.currentSlide}-${targetResolution}`;
+
+    // Prüfe Cache
+    if (this.resolutionCache.has(cacheKey)) {
+      this.swapImageResolution(this.resolutionCache.get(cacheKey), targetResolution);
+      return;
+    }
+
+    this.isLoadingResolution = true;
+    this.showLoadingIndicator();
+
+    try {
+      const highResUrl = this.getImageUrlForResolution(currentImage.src, targetResolution);
+
+      // Preload das Bild
+      const img = new Image();
+
+      await new Promise((resolve, reject) => {
+        img.onload = () => {
+          // Cache das geladene Bild
+          this.resolutionCache.set(cacheKey, highResUrl);
+          resolve();
+        };
+
+        img.onerror = () => {
+          console.warn(`Failed to load ${targetResolution} resolution for image ${this.currentSlide}`);
+          reject(new Error('Image load failed'));
+        };
+
+        img.src = highResUrl;
+      });
+
+      // Tausche das Bild aus
+      this.swapImageResolution(highResUrl, targetResolution);
+
+    } catch (error) {
+      console.warn('Resolution loading failed:', error);
+    } finally {
+      this.isLoadingResolution = false;
+      this.hideLoadingIndicator();
+    }
+  }
+
+  /**
+   * Tauscht das aktuelle Bild gegen höhere Auflösung aus
+   * @param {string} newSrc - Neue Bild-URL
+   * @param {string} resolution - Auflösungs-Key
+   */
+  swapImageResolution(newSrc, resolution) {
+    const image = this.imageWrapper.querySelector('.custom-lightbox__image');
+    if (!image) return;
+
+    // Smooth transition
+    image.style.transition = 'opacity 0.2s ease';
+    image.style.opacity = '0.8';
+    image.classList.add('loading-resolution');
+
+    // Lade neues Bild
+    const newImg = new Image();
+    newImg.onload = () => {
+      image.src = newSrc;
+      image.style.opacity = '1';
+      image.classList.remove('loading-resolution');
+      this.currentResolution = resolution;
+
+      // Update Quality Indicator
+      this.updateQualityIndicator(resolution);
+
+      // Entferne Transition nach dem Laden
+      setTimeout(() => {
+        image.style.transition = '';
+      }, 200);
+    };
+    newImg.src = newSrc;
+  }
+
+  /**
+   * Zeigt Loading-Indikator an
+   */
+  showLoadingIndicator() {
+    let indicator = this.lightbox.querySelector('.resolution-loading-indicator');
+    if (!indicator) {
+      indicator = document.createElement('div');
+      indicator.className = 'resolution-loading-indicator';
+      indicator.innerHTML = `
+        <div class="loading-spinner"></div>
+        <span>Höhere Auflösung wird geladen...</span>
+      `;
+      this.lightbox.appendChild(indicator);
+    }
+    indicator.style.display = 'flex';
+  }
+
+  /**
+   * Versteckt Loading-Indikator
+   */
+  hideLoadingIndicator() {
+    const indicator = this.lightbox.querySelector('.resolution-loading-indicator');
+    if (indicator) {
+      indicator.style.display = 'none';
+    }
+  }
+
+  /**
+   * Aktualisiert den Quality-Indikator
+   * @param {string} resolution - Aktuelle Auflösung
+   */
+  updateQualityIndicator(resolution) {
+    let indicator = this.lightbox.querySelector('.custom-lightbox__quality-indicator');
+    if (!indicator) {
+      indicator = document.createElement('div');
+      indicator.className = 'custom-lightbox__quality-indicator';
+      this.lightbox.appendChild(indicator);
+    }
+
+    // Entferne alte Klassen
+    indicator.classList.remove('base', 'medium', 'high', 'ultra');
+
+    // Füge neue Klasse hinzu
+    indicator.classList.add(resolution);
+
+    // Zeige Indikator kurz an
+    indicator.classList.add('show');
+
+    // Verstecke nach 2 Sekunden
+    setTimeout(() => {
+      indicator.classList.remove('show');
+    }, 2000);
+  }
+
+  /**
+   * Prüft ob eine höhere Auflösung geladen werden sollte
+   * @param {number} newZoomLevel - Neuer Zoom-Level
+   */
+  checkResolutionUpgrade(newZoomLevel) {
+    const optimalResolution = this.getOptimalResolution(newZoomLevel);
+
+    // Prüfe ob ein Upgrade nötig ist
+    const resolutionOrder = ['base', 'medium', 'high', 'ultra'];
+    const currentIndex = resolutionOrder.indexOf(this.currentResolution);
+    const optimalIndex = resolutionOrder.indexOf(optimalResolution);
+
+    if (optimalIndex > currentIndex) {
+      // Debounce das Laden um Performance zu schonen
+      clearTimeout(this.zoomDebounceTimer);
+      this.zoomDebounceTimer = setTimeout(() => {
+        this.loadHigherResolution(optimalResolution);
+      }, this.zoomDebounceDelay);
+    }
+  }
+
   open(slideIndex = 0) {
     if (this.images.length === 0) return;
 
@@ -270,7 +494,44 @@ class CustomLightbox {
     setTimeout(() => {
       this.lightbox.style.display = 'none';
       this.resetZoom();
+      this.cleanupCache();
     }, 300);
+  }
+
+  /**
+   * Bereinigt den Resolution-Cache um Memory zu sparen
+   */
+  cleanupCache() {
+    // Behalte nur die letzten 3 Bilder im Cache
+    const maxCachedImages = 3;
+    const cacheKeys = Array.from(this.resolutionCache.keys());
+
+    // Gruppiere nach Slide-Index
+    const slideGroups = {};
+    cacheKeys.forEach(key => {
+      const slideIndex = parseInt(key.split('-')[0]);
+      if (!slideGroups[slideIndex]) {
+        slideGroups[slideIndex] = [];
+      }
+      slideGroups[slideIndex].push(key);
+    });
+
+    // Sortiere Slides nach Index (neueste zuerst)
+    const sortedSlides = Object.keys(slideGroups)
+      .map(Number)
+      .sort((a, b) => b - a);
+
+    // Entferne alte Slides aus dem Cache
+    if (sortedSlides.length > maxCachedImages) {
+      const slidesToRemove = sortedSlides.slice(maxCachedImages);
+      slidesToRemove.forEach(slideIndex => {
+        slideGroups[slideIndex].forEach(key => {
+          this.resolutionCache.delete(key);
+        });
+      });
+    }
+
+    console.log(`Cache cleanup: ${this.resolutionCache.size} items remaining`);
   }
 
   previousSlide() {
@@ -296,16 +557,62 @@ class CustomLightbox {
 
     const currentImage = this.images[this.currentSlide];
 
+    // Reset Resolution-System für neues Bild
+    this.currentResolution = 'base';
+
+    // Verwende High-Res URL für initiales Laden
+    const initialSrc = this.getHighResImageUrl(currentImage.src);
+
+    // Cache die Basis-Auflösung
+    const baseCacheKey = `${this.currentSlide}-base`;
+    this.resolutionCache.set(baseCacheKey, initialSrc);
+
     this.imageWrapper.innerHTML = `
       <div class="custom-lightbox__slide active">
         <img
-          src="${currentImage.src}"
+          src="${initialSrc}"
           alt="${currentImage.alt}"
           class="custom-lightbox__image"
           loading="lazy"
         >
       </div>
     `;
+
+    // Preload nächste Auflösung im Hintergrund für bessere UX
+    setTimeout(() => {
+      this.preloadNextResolution();
+    }, 500);
+  }
+
+  /**
+   * Lädt die nächste Auflösung im Hintergrund vor
+   */
+  async preloadNextResolution() {
+    if (!this.images[this.currentSlide] || this.isLoadingResolution) return;
+
+    const currentImage = this.images[this.currentSlide];
+    const mediumCacheKey = `${this.currentSlide}-medium`;
+
+    // Preload nur wenn noch nicht im Cache
+    if (!this.resolutionCache.has(mediumCacheKey)) {
+      try {
+        const mediumResUrl = this.getImageUrlForResolution(currentImage.src, 'medium');
+        const img = new Image();
+
+        img.onload = () => {
+          this.resolutionCache.set(mediumCacheKey, mediumResUrl);
+          console.log(`Preloaded medium resolution for slide ${this.currentSlide}`);
+        };
+
+        img.onerror = () => {
+          console.warn(`Failed to preload medium resolution for slide ${this.currentSlide}`);
+        };
+
+        img.src = mediumResUrl;
+      } catch (error) {
+        console.warn('Preloading failed:', error);
+      }
+    }
   }
 
   updateCounter() {
@@ -321,17 +628,25 @@ class CustomLightbox {
 
   zoomIn() {
     if (this.zoomLevel < this.maxZoom) {
+      const oldZoomLevel = this.zoomLevel;
       this.zoomLevel += this.zoomStep;
       this.updateImageTransform();
       this.updateZoomButtons();
+
+      // Prüfe ob höhere Auflösung benötigt wird
+      this.checkResolutionUpgrade(this.zoomLevel);
     }
   }
 
   zoomOut() {
     if (this.zoomLevel > this.minZoom) {
+      const oldZoomLevel = this.zoomLevel;
       this.zoomLevel -= this.zoomStep;
       this.updateImageTransform();
       this.updateZoomButtons();
+
+      // Bei Zoom-Out ist normalerweise kein Resolution-Downgrade nötig
+      // da höhere Auflösungen auch bei niedrigeren Zoom-Levels scharf bleiben
     }
   }
 
@@ -339,8 +654,18 @@ class CustomLightbox {
     this.zoomLevel = 1;
     this.translateX = 0;
     this.translateY = 0;
+    this.currentResolution = 'base'; // Reset auf Basis-Auflösung
     this.updateImageTransform();
     this.updateZoomButtons();
+
+    // Cache für aktuelles Bild leeren um bei erneutem Zoom frisch zu laden
+    const currentImageCacheKeys = Array.from(this.resolutionCache.keys())
+      .filter(key => key.startsWith(`${this.currentSlide}-`));
+    currentImageCacheKeys.forEach(key => {
+      if (!key.endsWith('-base')) { // Basis-Auflösung behalten
+        this.resolutionCache.delete(key);
+      }
+    });
   }
 
   updateImageTransform() {
@@ -387,10 +712,30 @@ class CustomLightbox {
     if (!this.isOpen) return;
 
     e.preventDefault();
+
+    const currentTime = Date.now();
+    const oldZoomLevel = this.zoomLevel;
+
+    // Normaler Zoom
     if (e.deltaY < 0) {
       this.zoomIn();
     } else {
       this.zoomOut();
+    }
+
+    // Intelligentes Debouncing für Resolution-Upgrade
+    // Nur bei signifikanten Zoom-Änderungen und nicht zu häufig
+    const zoomChange = Math.abs(this.zoomLevel - oldZoomLevel);
+    const timeSinceLastCheck = currentTime - this.lastZoomTime;
+
+    if (zoomChange >= this.zoomChangeThreshold && timeSinceLastCheck > 100) {
+      this.lastZoomTime = currentTime;
+
+      // Zusätzliches Debouncing für Mausrad-Zoom
+      clearTimeout(this.zoomDebounceTimer);
+      this.zoomDebounceTimer = setTimeout(() => {
+        this.checkResolutionUpgrade(this.zoomLevel);
+      }, this.zoomDebounceDelay);
     }
   }
 
