@@ -9,17 +9,10 @@
  */
 {
   "sections": {
-    "main": {
-      "type": "main-page",
-      "settings": {
-        "padding_top": 28,
-        "padding_bottom": 28
-      }
-    },
-    "rich_text_JVAjQh": {
+    "rich_text_mfQYwG": {
       "type": "rich-text",
       "blocks": {
-        "heading_agDnA6": {
+        "heading_wT4YBB": {
           "type": "heading",
           "settings": {
             "heading": "{{ page.title }}",
@@ -28,9 +21,8 @@
         }
       },
       "block_order": [
-        "heading_agDnA6"
+        "heading_wT4YBB"
       ],
-      "name": "t:sections.rich-text.presets.name",
       "settings": {
         "desktop_content_position": "center",
         "content_alignment": "center",
@@ -38,17 +30,24 @@
         "full_width": true,
         "padding_top": 40,
         "padding_bottom": 52,
-        "use_arrow_divider": false,
-        "arrow_width": 70,
-        "arrow_thickness": 2,
+        "use_arrow_divider": true,
+        "arrow_width": 25,
+        "arrow_thickness": 1,
         "arrow_position": "bottom",
-        "arrow_color": "#b9bfb1",
-        "headline_styling": "Headline Default"
+        "arrow_color": "#05470a",
+        "headline_styling": "Headline Icon Light"
+      }
+    },
+    "main": {
+      "type": "main-page",
+      "settings": {
+        "padding_top": 28,
+        "padding_bottom": 28
       }
     }
   },
   "order": [
-    "rich_text_JVAjQh",
+    "rich_text_mfQYwG",
     "main"
   ]
 }
