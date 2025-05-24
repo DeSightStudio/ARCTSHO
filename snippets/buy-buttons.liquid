@@ -60,50 +60,44 @@
           {%- render 'gift-card-recipient-form', product: product, form: form, section: section -%}
         {%- endif -%}
 
-        <div class="product-form__buttons">
-          {%- liquid
-            assign check_against_inventory = true
-            if product.selected_or_first_available_variant.inventory_management != 'shopify' or product.selected_or_first_available_variant.inventory_policy == 'continue'
-              assign check_against_inventory = false
-            endif
-            if product.selected_or_first_available_variant.quantity_rule.min > product.selected_or_first_available_variant.inventory_quantity and check_against_inventory
-              assign quantity_rule_soldout = true
-            endif
-          -%}
-          <button
-            id="ProductSubmitButton-{{ section_id }}"
-            type="{% if product.selected_or_first_available_variant.available == false or quantity_rule_soldout or product.selected_or_first_available_variant == null %}submit{% else %}{% assign product_in_cart = false %}{% for item in cart.items %}{% if item.product_id == product.id %}{% assign product_in_cart = true %}{% break %}{% endif %}{% endfor %}{% if product_in_cart %}button{% else %}submit{% endif %}{% endif %}"
-            {% if product_in_cart %}
-              onclick="event.preventDefault(); document.querySelector('cart-drawer').open();"
-            {% endif %}
-            name="add"
-            class="product-form__submit button button--full-width {% if show_dynamic_checkout %}button--secondary{% else %}button--primary{% endif %}"
-            {% if product.selected_or_first_available_variant.available == false
-              or quantity_rule_soldout
-              or product.selected_or_first_available_variant == null
-            %}
-              disabled
-            {% endif %}
-          >
-            <span>
-              {%- if product.selected_or_first_available_variant == null -%}
-                {{ 'products.product.unavailable' | t }}
-              {%- elsif product.selected_or_first_available_variant.available == false or quantity_rule_soldout -%}
-                {{ 'products.product.sold_out' | t }}
-              {%- else -%}
+        {%- liquid
+          assign check_against_inventory = true
+          if product.selected_or_first_available_variant.inventory_management != 'shopify' or product.selected_or_first_available_variant.inventory_policy == 'continue'
+            assign check_against_inventory = false
+          endif
+          if product.selected_or_first_available_variant.quantity_rule.min > product.selected_or_first_available_variant.inventory_quantity and check_against_inventory
+            assign quantity_rule_soldout = true
+          endif
+        -%}
+
+        {%- unless product.selected_or_first_available_variant.available == false
+          or quantity_rule_soldout
+          or product.selected_or_first_available_variant == null
+        -%}
+          <div class="product-form__buttons">
+            <button
+              id="ProductSubmitButton-{{ section_id }}"
+              type="{% assign product_in_cart = false %}{% for item in cart.items %}{% if item.product_id == product.id %}{% assign product_in_cart = true %}{% break %}{% endif %}{% endfor %}{% if product_in_cart %}button{% else %}submit{% endif %}"
+              {% if product_in_cart %}
+                onclick="event.preventDefault(); document.querySelector('cart-drawer').open();"
+              {% endif %}
+              name="add"
+              class="product-form__submit button button--full-width {% if show_dynamic_checkout %}button--secondary{% else %}button--primary{% endif %}"
+            >
+              <span>
                 {% if product_in_cart %}
                   {{ 'products.product.view_cart_button' | t }}
                 {% else %}
                   {{ 'products.product.add_to_cart' | t }}
                 {% endif %}
-              {%- endif -%}
-            </span>
-            {%- render 'loading-spinner' -%}
-          </button>
-          {%- if show_dynamic_checkout -%}
-            {{ form | payment_button }}
-          {%- endif -%}
-        </div>
+              </span>
+              {%- render 'loading-spinner' -%}
+            </button>
+            {%- if show_dynamic_checkout -%}
+              {{ form | payment_button }}
+            {%- endif -%}
+          </div>
+        {%- endunless -%}
       {%- endform -%}
     </product-form>
   {%- else -%}
