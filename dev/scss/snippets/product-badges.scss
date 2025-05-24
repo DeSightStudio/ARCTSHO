@@ -1,0 +1,107 @@
+/* ===================================
+   PRODUCT BADGES - SOLD OUT / VERKAUFT
+   =================================== */
+
+/* Badge Container */
+.card__badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* Base Badge Styling */
+.badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: left;
+  border-radius: 0;
+  pointer-events: auto;
+}
+
+/* Top Right Badge - Horizontales Banner Design 1:1 wie Referenz */
+.badge--top-right {
+  position: absolute;
+  top: 0.5rem;
+  right: 0;
+  bottom: auto;
+  left: auto;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem 0.25rem 0.5rem;
+  z-index: 3;
+  border-radius: 0;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  pointer-events: auto;
+  color: white;
+  background-color: #e53e3e;
+
+  /* Horizontales Banner-Design 1:1 wie Referenz mit schärferem Pfeil */
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 50%, calc(100% - 8px) 100%, 0 100%);
+  min-width: 60px;
+  text-align: left;
+  line-height: 1.1;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Verkauft Badge Styling - 1:1 wie Referenz-Screenshot */
+.badge--top-right.color-scheme-accent-2,
+.badge--top-right[class*="sold_out"],
+.badge--top-right.color-scheme-3 {
+  background-color: #e53e3e !important;
+  color: white !important;
+  font-weight: 600 !important;
+  font-size: 0.7rem !important;
+  padding: 0.25rem 0.75rem 0.25rem 0.5rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.02em !important;
+  line-height: 1.1 !important;
+  text-align: left !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  border: none;
+}
+
+/* Card Content - Inhalt am unteren Rand ausrichten (überall: collections, related, etc.) */
+.card-product__content {
+  align-items: end;
+}
+
+/* Bottom Section Wrapper - für Button und Preis zusammen */
+.card-product__bottom-section {
+  width: 100%;
+}
+
+/* Button Actions - ganze Breite, mittig */
+.card-product__actions {
+  width: 100%;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.card-product__actions .button {
+  width: 100%;
+  text-align: center;
+}
+
+/* Preis Container - zweispaltig: links Preis, rechts Gewicht */
+.card-product__price-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.card-product__price-container .price {
+  flex: 1;
+  text-align: left;
+}
+
+.card-product__weight {
+  flex-shrink: 0;
+  text-align: right;
+  font-weight: bold;
+}

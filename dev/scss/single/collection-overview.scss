@@ -51,7 +51,8 @@
                                 .card-product__actions {
                                     opacity: 0;
                                     width: max-content;
-                                    margin: 0 auto 10px auto;
+                                    margin: 0 auto 20px auto;
+                                    align-self: flex-end;
                                     * {
                                         margin: 0px !important;
                                     }

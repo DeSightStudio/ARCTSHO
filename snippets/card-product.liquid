@@ -60,6 +60,29 @@
       >
         {%- if card_product.featured_media -%}
           <div class="card__media{% if image_shape and image_shape != 'default' %} shape--{{ image_shape }} color-{{ settings.card_color_scheme }} gradient{% endif %}">
+            {%- comment -%} Badge über dem Bild {%- endcomment -%}
+            <div class="card__badge {{ settings.badge_position }}">
+              {%- if card_product.available == false -%}
+                <span
+                  id="StandardBadge-{{ section_id }}-{{ card_product.id }}"
+                  class="badge badge--top-right color-{{ settings.sold_out_badge_color_scheme }}"
+                >
+                  {{ 'products.product.sold_out' | t }}
+                </span>
+              {%- elsif card_product.compare_at_price > card_product.price and card_product.available -%}
+                <span
+                  id="StandardBadge-{{ section_id }}-{{ card_product.id }}"
+                  class="badge badge--bottom-left color-{{ settings.sale_badge_color_scheme }}"
+                >
+                  {{- 'products.product.on_sale' | t -}}
+                </span>
+              {%- endif -%}
+
+              {% comment %} Neu Badge - basierend auf "new" Tag {% endcomment %}
+              {% if card_product.tags contains 'new' or card_product.tags contains 'neu' %}
+                <span class="badge badge--top-right color-accent-1"> Neu </span>
+              {% endif %}
+            </div>
             <div class="media media--transparent media--hover-effect">
               {% comment %}theme-check-disable ImgLazyLoading{% endcomment %}
               <img
@@ -109,28 +132,7 @@
         {%- endif -%}
         <div class="card__content">
           <div class="card__information">
-            <div class="card__badge {{ settings.badge_position }}">
-              {%- if card_product.available == false -%}
-                <span
-                  id="NoMediaStandardBadge-{{ section_id }}-{{ card_product.id }}"
-                  class="badge badge--bottom-left color-{{ settings.sold_out_badge_color_scheme }}"
-                >
-                  {{ 'products.product.sold_out' | t }}
-                </span>
-              {%- elsif card_product.compare_at_price > card_product.price and card_product.available -%}
-                <span
-                  id="NoMediaStandardBadge-{{ section_id }}-{{ card_product.id }}"
-                  class="badge badge--bottom-left color-{{ settings.sale_badge_color_scheme }}"
-                >
-                  {{- 'products.product.on_sale' | t -}}
-                </span>
-              {%- endif -%}
-
-              {% comment %} Neu Badge - basierend auf "new" Tag {% endcomment %}
-              {% if card_product.tags contains 'new' or card_product.tags contains 'neu' %}
-                <span class="badge badge--top-right color-accent-1"> Neu </span>
-              {% endif %}
-            </div>
+            {%- comment -%} Badge wurde nach oben über das Bild verschoben {%- endcomment -%}
           </div>
         </div>
       </div>
@@ -161,9 +163,10 @@
                   </h3>
                 </div>
               </div>
-              {% comment %} Initiale Ansicht: Preis, MwSt, Gewicht {% endcomment %}
-              <div class="card-product__price-container">
-                {% comment %} Add to Cart Button (außerhalb des Link-Bereichs) {% endcomment %}
+
+              {% comment %} Wrapper für Button und Preis - damit sie zusammenbleiben {% endcomment %}
+              <div class="card-product__bottom-section">
+                {% comment %} Add to Cart Button - direkt vor Preis {% endcomment %}
                 <div class="card-product__actions">
                   {%- if card_product.available -%}
                     {%- assign product_in_cart = false -%}
@@ -335,59 +338,69 @@
                       {%- endif -%}
                     {%- endif -%}
                   {%- else -%}
-                    <span class="sold-out-button">{{ 'products.product.sold_out' | t }}</span>
+                    <button
+                      type="button"
+                      class="card-product__view-cart button button--full-width button--secondary button--disabled"
+                      disabled
+                      onclick="event.stopPropagation();"
+                    >
+                      <span>{{ 'products.product.not_available' | t }}</span>
+                    </button>
                   {%- endif -%}
                 </div>
-                {% render 'price', product: card_product, price_class: '', show_compare_at_price: true %}
-                {% if card_product.metafields.next_cart.weight_m != blank %}
-                  <div class="card-product__weight">
-                    {% assign weight_value = card_product.metafields.next_cart.weight_m | plus: 0 %}
-                    <span
-                      class="weight-value"
-                      data-original-value="{{ weight_value }}"
-                      data-unit="g"
-                    >
-                      {% if weight_value < 1000 %}
-                        {{- weight_value }} g
-                      {% else %}
-                        {{- weight_value | divided_by: 1000.0 | round: 2 }} kg
-                      {% endif %}
-                    </span>
-                  </div>
-                {% elsif card_product.metafields.custom.weight_m != blank %}
-                  <div class="card-product__weight">
-                    {% assign weight_value = card_product.metafields.custom.weight_m | plus: 0 %}
-                    <span
-                      class="weight-value"
-                      data-original-value="{{ weight_value }}"
-                      data-unit="g"
-                    >
-                      {% if weight_value < 1000 %}
-                        {{- weight_value }} g
-                      {% else %}
-                        {{- weight_value | divided_by: 1000.0 | round: 2 }} kg
-                      {% endif %}
-                    </span>
-                  </div>
-                {% elsif card_product.weight > 0 %}
-                  <div class="card-product__weight">
-                    {% assign weight_value = card_product.weight | plus: 0 %}
-                    <span
-                      class="weight-value"
-                      data-original-value="{{ weight_value }}"
-                      data-unit="g"
-                    >
-                      {% if weight_value < 1000 %}
-                        {{- weight_value }} g
-                      {% else %}
-                        {{- weight_value | divided_by: 1000.0 | round: 2 }} kg
-                      {% endif %}
-                    </span>
-                  </div>
-                {% endif %}
+
+                {% comment %} Preis und Gewicht - zweispaltig {% endcomment %}
+                <div class="card-product__price-container">
+                  {% render 'price', product: card_product, price_class: '', show_compare_at_price: true %}
+                  {% if card_product.metafields.next_cart.weight_m != blank %}
+                    <div class="card-product__weight">
+                      {% assign weight_value = card_product.metafields.next_cart.weight_m | plus: 0 %}
+                      <span
+                        class="weight-value"
+                        data-original-value="{{ weight_value }}"
+                        data-unit="g"
+                      >
+                        {% if weight_value < 1000 %}
+                          {{- weight_value }} g
+                        {% else %}
+                          {{- weight_value | divided_by: 1000.0 | round: 2 }} kg
+                        {% endif %}
+                      </span>
+                    </div>
+                  {% elsif card_product.metafields.custom.weight_m != blank %}
+                    <div class="card-product__weight">
+                      {% assign weight_value = card_product.metafields.custom.weight_m | plus: 0 %}
+                      <span
+                        class="weight-value"
+                        data-original-value="{{ weight_value }}"
+                        data-unit="g"
+                      >
+                        {% if weight_value < 1000 %}
+                          {{- weight_value }} g
+                        {% else %}
+                          {{- weight_value | divided_by: 1000.0 | round: 2 }} kg
+                        {% endif %}
+                      </span>
+                    </div>
+                  {% elsif card_product.weight > 0 %}
+                    <div class="card-product__weight">
+                      {% assign weight_value = card_product.weight | plus: 0 %}
+                      <span
+                        class="weight-value"
+                        data-original-value="{{ weight_value }}"
+                        data-unit="g"
+                      >
+                        {% if weight_value < 1000 %}
+                          {{- weight_value }} g
+                        {% else %}
+                          {{- weight_value | divided_by: 1000.0 | round: 2 }} kg
+                        {% endif %}
+                      </span>
+                    </div>
+                  {% endif %}
+                </div>
               </div>
             </div>
-
             {% comment %} Hover-Ansicht: Maße als zusätzliche Details {% endcomment %}
             <div class="card-product__content card-product__content--hover">
               <ul class="card-product__specs-list">

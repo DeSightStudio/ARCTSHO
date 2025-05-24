@@ -251,15 +251,15 @@
   .card__article-number {
     font-size: 0.8rem;
   }
-  
+
   .product-price-container {
     margin-top: 0.4rem;
   }
-  
+
   .product-price-tax {
     font-size: 0.75rem;
   }
-  
+
   .product-weight {
     font-size: 0.8rem;
     margin-top: 0.4rem;
@@ -617,6 +617,8 @@
   color: rgba(var(--color-foreground), 0.75);
 }
 
+/* Layout styling moved to dev/scss/snippets/product-badges.scss */
+
 .product-price-container {
   display: flex;
   flex-direction: column;
@@ -801,15 +803,15 @@
   .card__article-number {
     font-size: 0.8rem;
   }
-  
+
   .card-product__price-container {
     margin-top: 0.4rem;
   }
-  
+
   .card-product__price-tax {
     font-size: 0.75rem;
   }
-  
+
   .card-product__weight {
     font-size: 0.8rem;
     margin-top: 0.4rem;
@@ -821,22 +823,62 @@
 }
 
 /* Badge-Anpassungen */
-.badge--top-right {
+.card__badge {
+  position: absolute;
   top: 0;
+  left: 0;
   right: 0;
-  bottom: auto;
-  left: auto;
-  font-weight: bold;
-  padding: 0.25rem 0.5rem;
+  bottom: 0;
   z-index: 3;
+  pointer-events: none;
 }
+
+/* Badge styling moved to dev/scss/snippets/product-badges.scss */
 
 .color-accent-1 {
   background-color: rgb(5, 71, 10); /* Dunkelgrün */
   color: #ffffff;
 }
 
-/* Ausverkauft-Button Styling */
+/* Badge styling moved to dev/scss/snippets/product-badges.scss */
+
+/* Spezifisches Styling für das Verkauft-Badge basierend auf den Shopify-Einstellungen */
+.color-scheme-3 {
+  --color-background: 211, 47, 47;
+  --color-foreground: 255, 255, 255;
+}
+
+/* Nicht Lieferbar Button Styling */
+.card-product__view-cart.button--disabled {
+  background-color: rgba(100, 100, 100, 0.15) !important;
+  color: #666 !important;
+  opacity: 1 !important;
+  cursor: not-allowed !important;
+  border: 1px solid rgba(100, 100, 100, 0.3) !important;
+}
+
+.card-product__view-cart.button--disabled:hover {
+  background-color: rgba(100, 100, 100, 0.15) !important;
+  color: #666 !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.card-product__not-available.button--disabled {
+  background-color: rgba(100, 100, 100, 0.15);
+  color: #666;
+  opacity: 1;
+  cursor: not-allowed;
+  border: 1px solid rgba(100, 100, 100, 0.3);
+}
+
+.card-product__not-available.button--disabled:hover {
+  background-color: rgba(100, 100, 100, 0.15);
+  color: #666;
+  transform: none;
+}
+
+/* Ausverkauft-Button Styling (Legacy) */
 .card-product__add-button.button--disabled {
   background-color: rgb(100, 100, 100, 0.15);
   color: #666;
@@ -844,7 +886,7 @@
   cursor: not-allowed;
 }
 
-/* Ausverkauft-Text in der Karte */
+/* Ausverkauft-Text in der Karte (Legacy) */
 .ausverkauft-container {
   width: 100%;
   text-align: center;
@@ -854,4 +896,16 @@
   color: #666;
   font-size: 1.1rem;
   border-radius: 2px;
+}
+
+.sold-out-button {
+  width: 100%;
+  text-align: center;
+  padding: 10px 0;
+  background-color: rgba(100, 100, 100, 0.1);
+  font-weight: 500;
+  color: #666;
+  font-size: 1.1rem;
+  border-radius: 2px;
+  display: block;
 }
