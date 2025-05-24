@@ -126,13 +126,17 @@
       </small>
     </div>
     {%- if show_badges -%}
-      <span class="badge price__badge-sale color-{{ settings.sale_badge_color_scheme }}">
-        {{ 'products.product.on_sale' | t }}
-      </span>
+      {%- if compare_at_price > price and available -%}
+        <span class="badge price__badge-sale color-{{ settings.sale_badge_color_scheme }}">
+          {{ 'products.product.on_sale' | t }}
+        </span>
+      {%- endif -%}
 
-      <span class="verkauft-badge-rot">
-        {{ 'products.product.sold_out' | t }}
-      </span>
+      {%- if available == false -%}
+        <span class="verkauft-badge-rot">
+          {{ 'products.product.sold_out' | t }}
+        </span>
+      {%- endif -%}
     {%- endif -%}
   </div>
 {% endunless %}
