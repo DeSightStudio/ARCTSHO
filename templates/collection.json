@@ -9,6 +9,50 @@
  */
 {
   "sections": {
+    "breadcrumb_VEH7hq": {
+      "type": "breadcrumb",
+      "name": "Breadcrumb",
+      "settings": {
+        "hide_breadcrumbs": false,
+        "home_text": "Home",
+        "show_collection_in_product": true,
+        "excluded_collection_handles": "all,alle-produkte,tous-les-produits,todos-los-productos,tutti-i-prodotti",
+        "show_tags_in_collection": true,
+        "show_tags_in_blog": true,
+        "color_scheme": "",
+        "padding_top": 20,
+        "padding_bottom": 20
+      }
+    },
+    "rich_text_qB7bVz": {
+      "type": "rich-text",
+      "blocks": {
+        "heading_BWgVH9": {
+          "type": "heading",
+          "settings": {
+            "heading": "{{ collection.title }}",
+            "heading_size": "h1"
+          }
+        }
+      },
+      "block_order": [
+        "heading_BWgVH9"
+      ],
+      "settings": {
+        "desktop_content_position": "center",
+        "content_alignment": "center",
+        "color_scheme": "",
+        "full_width": true,
+        "padding_top": 40,
+        "padding_bottom": 52,
+        "use_arrow_divider": true,
+        "arrow_width": 25,
+        "arrow_thickness": 1,
+        "arrow_position": "bottom",
+        "arrow_color": "#05470a",
+        "headline_styling": "Headline Icon Light"
+      }
+    },
     "image_banner_jfejw4": {
       "type": "image-banner",
       "blocks": {
@@ -61,30 +105,16 @@
         "quick_add": "standard",
         "enable_filtering": true,
         "filter_type": "vertical",
-        "enable_sorting": false,
+        "enable_sorting": true,
         "columns_mobile": "1",
         "padding_top": 36,
         "padding_bottom": 36
-      }
-    },
-    "breadcrumb_VEH7hq": {
-      "type": "breadcrumb",
-      "name": "Breadcrumb",
-      "settings": {
-        "hide_breadcrumbs": false,
-        "home_text": "Home",
-        "show_collection_in_product": true,
-        "excluded_collection_handles": "all,alle-produkte,tous-les-produits,todos-los-productos,tutti-i-prodotti",
-        "show_tags_in_collection": true,
-        "show_tags_in_blog": true,
-        "color_scheme": "",
-        "padding_top": 20,
-        "padding_bottom": 20
       }
     }
   },
   "order": [
     "breadcrumb_VEH7hq",
+    "rich_text_qB7bVz",
     "image_banner_jfejw4",
     "banner",
     "product-grid"
