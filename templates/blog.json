@@ -9,6 +9,50 @@
  */
 {
   "sections": {
+    "breadcrumb_nXbiPH": {
+      "type": "breadcrumb",
+      "name": "Breadcrumb",
+      "settings": {
+        "hide_breadcrumbs": false,
+        "home_text": "Home",
+        "show_collection_in_product": true,
+        "excluded_collection_handles": "all,alle-produkte,tous-les-produits,todos-los-productos,tutti-i-prodotti",
+        "show_tags_in_collection": true,
+        "show_tags_in_blog": true,
+        "color_scheme": "",
+        "padding_top": 20,
+        "padding_bottom": 20
+      }
+    },
+    "rich_text_M9AdaK": {
+      "type": "rich-text",
+      "blocks": {
+        "heading_Uw8mDi": {
+          "type": "heading",
+          "settings": {
+            "heading": "Articles",
+            "heading_size": "h1"
+          }
+        }
+      },
+      "block_order": [
+        "heading_Uw8mDi"
+      ],
+      "settings": {
+        "desktop_content_position": "center",
+        "content_alignment": "center",
+        "color_scheme": "",
+        "full_width": true,
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "use_arrow_divider": true,
+        "arrow_width": 20,
+        "arrow_thickness": 1,
+        "arrow_position": "bottom",
+        "arrow_color": "#05470a",
+        "headline_styling": "Headline Icon Light"
+      }
+    },
     "main": {
       "type": "main-blog",
       "settings": {
@@ -23,6 +67,8 @@
     }
   },
   "order": [
+    "breadcrumb_nXbiPH",
+    "rich_text_M9AdaK",
     "main"
   ]
 }
