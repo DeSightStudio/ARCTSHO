@@ -162,13 +162,12 @@
 
                         .cart-item__spec {
                             display: flex;
-                            justify-content: space-between;
+                            justify-content: flex-start;
                             align-items: center;
-                            margin-bottom: 2px;
-
+                            margin-bottom: 5px;
                             .cart-item__spec-label,
                             .cart-item__spec-value {
-                                font-size: 10px !important;
+                                font-size: 12px !important;
                                 color: $grayColor !important;
                                 font-family: 'Cormorant Garamond' !important;
                                 line-height: 1.2;
