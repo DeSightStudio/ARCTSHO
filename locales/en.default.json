@@ -143,6 +143,7 @@
       "plus_vat": "+ VAT",
       "add_to_cart_button": "Add to cart",
       "view_cart_button": "View cart",
+      "request_only_button": "Request only",
       "product_specs": {
         "length": "Length",
         "width": "Width",

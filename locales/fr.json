@@ -193,6 +193,7 @@
       "plus_vat": "+ TVA",
       "add_to_cart_button": "Ajouter au panier",
       "view_cart_button": "Voir le panier",
+      "request_only_button": "Sur demande",
       "product_specs": {
         "length": "Longueur",
         "width": "Largeur",

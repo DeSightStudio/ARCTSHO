@@ -70,34 +70,62 @@
           endif
         -%}
 
-        {%- unless product.selected_or_first_available_variant.available == false
-          or quantity_rule_soldout
-          or product.selected_or_first_available_variant == null
+        {%- liquid
+          assign is_request_only = false
+          if product.metafields.custom.only_upon_request == true
+            assign is_request_only = true
+          endif
         -%}
+
+        {%- if is_request_only -%}
           <div class="product-form__buttons">
             <button
               id="ProductSubmitButton-{{ section_id }}"
-              type="{% assign product_in_cart = false %}{% for item in cart.items %}{% if item.product_id == product.id %}{% assign product_in_cart = true %}{% break %}{% endif %}{% endfor %}{% if product_in_cart %}button{% else %}submit{% endif %}"
-              {% if product_in_cart %}
-                onclick="event.preventDefault(); document.querySelector('cart-drawer').open();"
-              {% endif %}
-              name="add"
-              class="product-form__submit button button--full-width {% if show_dynamic_checkout %}button--secondary{% else %}button--primary{% endif %}"
+              type="button"
+              name="request"
+              class="product-form__submit button button--full-width button--primary request-only-button"
+              data-micromodal-trigger="modal-request-only"
+              data-product-id="{{ product.id }}"
+              data-product-title="{{ product.title | escape }}"
+              data-product-url="{{ product.url }}"
+              data-product-sku="{{ product.selected_or_first_available_variant.sku | default: product.variants.first.sku }}"
+              data-product-price="{{ product.selected_or_first_available_variant.price | money_without_currency }}"
             >
               <span>
-                {% if product_in_cart %}
-                  {{ 'products.product.view_cart_button' | t }}
-                {% else %}
-                  {{ 'products.product.add_to_cart' | t }}
-                {% endif %}
+                {{ 'products.product.request_only_button' | t }}
               </span>
-              {%- render 'loading-spinner' -%}
             </button>
-            {%- if show_dynamic_checkout -%}
-              {{ form | payment_button }}
-            {%- endif -%}
           </div>
-        {%- endunless -%}
+        {%- else -%}
+          {%- unless product.selected_or_first_available_variant.available == false
+            or quantity_rule_soldout
+            or product.selected_or_first_available_variant == null
+          -%}
+            <div class="product-form__buttons">
+              <button
+                id="ProductSubmitButton-{{ section_id }}"
+                type="{% assign product_in_cart = false %}{% for item in cart.items %}{% if item.product_id == product.id %}{% assign product_in_cart = true %}{% break %}{% endif %}{% endfor %}{% if product_in_cart %}button{% else %}submit{% endif %}"
+                {% if product_in_cart %}
+                  onclick="event.preventDefault(); document.querySelector('cart-drawer').open();"
+                {% endif %}
+                name="add"
+                class="product-form__submit button button--full-width {% if show_dynamic_checkout %}button--secondary{% else %}button--primary{% endif %}"
+              >
+                <span>
+                  {% if product_in_cart %}
+                    {{ 'products.product.view_cart_button' | t }}
+                  {% else %}
+                    {{ 'products.product.add_to_cart' | t }}
+                  {% endif %}
+                </span>
+                {%- render 'loading-spinner' -%}
+              </button>
+              {%- if show_dynamic_checkout -%}
+                {{ form | payment_button }}
+              {%- endif -%}
+            </div>
+          {%- endunless -%}
+        {%- endif -%}
       {%- endform -%}
     </product-form>
   {%- else -%}

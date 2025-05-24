@@ -193,6 +193,7 @@
       "plus_vat": "+ IVA",
       "add_to_cart_button": "Añadir al carrito",
       "view_cart_button": "Ver carrito",
+      "request_only_button": "Solo bajo petición",
       "product_specs": {
         "length": "Longitud",
         "width": "Anchura",

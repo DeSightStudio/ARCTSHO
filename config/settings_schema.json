@@ -1738,6 +1738,196 @@
         "id": "cart_popup_vat_id_success_message",
         "label": "VAT ID Erfolgsmeldung",
         "default": "<p>Vielen Dank! Ihre USt-IdNr. wurde erfolgreich gespeichert.</p>"
+      },
+      {
+        "type": "header",
+        "content": "Nur auf Anfrage Pop-Up"
+      },
+      {
+        "type": "checkbox",
+        "id": "request_only_popup_enable",
+        "label": "\"Nur auf Anfrage\" Pop-Up aktivieren",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "request_only_button_label_de",
+        "label": "Button-Label (DE)",
+        "default": "Nur auf Anfrage"
+      },
+      {
+        "type": "text",
+        "id": "request_only_button_label_en",
+        "label": "Button-Label (EN)",
+        "default": "Request only"
+      },
+      {
+        "type": "text",
+        "id": "request_only_button_label_it",
+        "label": "Button-Label (IT)",
+        "default": "Solo su richiesta"
+      },
+      {
+        "type": "text",
+        "id": "request_only_button_label_es",
+        "label": "Button-Label (ES)",
+        "default": "Solo bajo petición"
+      },
+      {
+        "type": "text",
+        "id": "request_only_button_label_fr",
+        "label": "Button-Label (FR)",
+        "default": "Sur demande"
+      },
+      {
+        "type": "text",
+        "id": "request_only_popup_headline_de",
+        "label": "Pop-up Headline (DE)",
+        "default": "Produktanfrage"
+      },
+      {
+        "type": "text",
+        "id": "request_only_popup_headline_en",
+        "label": "Pop-up Headline (EN)",
+        "default": "Product Inquiry"
+      },
+      {
+        "type": "text",
+        "id": "request_only_popup_headline_it",
+        "label": "Pop-up Headline (IT)",
+        "default": "Richiesta Prodotto"
+      },
+      {
+        "type": "text",
+        "id": "request_only_popup_headline_es",
+        "label": "Pop-up Headline (ES)",
+        "default": "Consulta de Producto"
+      },
+      {
+        "type": "text",
+        "id": "request_only_popup_headline_fr",
+        "label": "Pop-up Headline (FR)",
+        "default": "Demande de Produit"
+      },
+      {
+        "type": "richtext",
+        "id": "request_only_popup_text_de",
+        "label": "Pop-up Text (DE)",
+        "default": "<p>Dieses Produkt ist nur auf Anfrage erhältlich. Bitte füllen Sie das Formular aus und wir werden uns schnellstmöglich bei Ihnen melden.</p>"
+      },
+      {
+        "type": "richtext",
+        "id": "request_only_popup_text_en",
+        "label": "Pop-up Text (EN)",
+        "default": "<p>This product is available upon request only. Please fill out the form and we will contact you as soon as possible.</p>"
+      },
+      {
+        "type": "richtext",
+        "id": "request_only_popup_text_it",
+        "label": "Pop-up Text (IT)",
+        "default": "<p>Questo prodotto è disponibile solo su richiesta. Si prega di compilare il modulo e vi contatteremo il prima possibile.</p>"
+      },
+      {
+        "type": "richtext",
+        "id": "request_only_popup_text_es",
+        "label": "Pop-up Text (ES)",
+        "default": "<p>Este producto está disponible solo bajo petición. Por favor complete el formulario y nos pondremos en contacto con usted lo antes posible.</p>"
+      },
+      {
+        "type": "richtext",
+        "id": "request_only_popup_text_fr",
+        "label": "Pop-up Text (FR)",
+        "default": "<p>Ce produit n'est disponible que sur demande. Veuillez remplir le formulaire et nous vous contacterons dans les plus brefs délais.</p>"
+      },
+      {
+        "type": "text",
+        "id": "request_only_submit_label_de",
+        "label": "Submit Button-Label (DE)",
+        "default": "Anfrage senden"
+      },
+      {
+        "type": "text",
+        "id": "request_only_submit_label_en",
+        "label": "Submit Button-Label (EN)",
+        "default": "Send inquiry"
+      },
+      {
+        "type": "text",
+        "id": "request_only_submit_label_it",
+        "label": "Submit Button-Label (IT)",
+        "default": "Invia richiesta"
+      },
+      {
+        "type": "text",
+        "id": "request_only_submit_label_es",
+        "label": "Submit Button-Label (ES)",
+        "default": "Enviar consulta"
+      },
+      {
+        "type": "text",
+        "id": "request_only_submit_label_fr",
+        "label": "Submit Button-Label (FR)",
+        "default": "Envoyer la demande"
+      },
+      {
+        "type": "text",
+        "id": "request_only_cancel_label_de",
+        "label": "Cancel Button-Label (DE)",
+        "default": "Abbrechen"
+      },
+      {
+        "type": "text",
+        "id": "request_only_cancel_label_en",
+        "label": "Cancel Button-Label (EN)",
+        "default": "Cancel"
+      },
+      {
+        "type": "text",
+        "id": "request_only_cancel_label_it",
+        "label": "Cancel Button-Label (IT)",
+        "default": "Annulla"
+      },
+      {
+        "type": "text",
+        "id": "request_only_cancel_label_es",
+        "label": "Cancel Button-Label (ES)",
+        "default": "Cancelar"
+      },
+      {
+        "type": "text",
+        "id": "request_only_cancel_label_fr",
+        "label": "Cancel Button-Label (FR)",
+        "default": "Annuler"
+      },
+      {
+        "type": "richtext",
+        "id": "request_only_success_message_de",
+        "label": "Erfolgsmeldung (DE)",
+        "default": "<p>Vielen Dank! Ihre Anfrage wurde erfolgreich gesendet. Wir werden uns schnellstmöglich bei Ihnen melden.</p>"
+      },
+      {
+        "type": "richtext",
+        "id": "request_only_success_message_en",
+        "label": "Success Message (EN)",
+        "default": "<p>Thank you! Your inquiry has been sent successfully. We will contact you as soon as possible.</p>"
+      },
+      {
+        "type": "richtext",
+        "id": "request_only_success_message_it",
+        "label": "Messaggio di Successo (IT)",
+        "default": "<p>Grazie! La vostra richiesta è stata inviata con successo. Vi contatteremo il prima possibile.</p>"
+      },
+      {
+        "type": "richtext",
+        "id": "request_only_success_message_es",
+        "label": "Mensaje de Éxito (ES)",
+        "default": "<p>¡Gracias! Su consulta ha sido enviada exitosamente. Nos pondremos en contacto con usted lo antes posible.</p>"
+      },
+      {
+        "type": "richtext",
+        "id": "request_only_success_message_fr",
+        "label": "Message de Succès (FR)",
+        "default": "<p>Merci ! Votre demande a été envoyée avec succès. Nous vous contacterons dans les plus brefs délais.</p>"
       }
     ]
   }

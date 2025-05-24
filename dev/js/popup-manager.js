@@ -264,6 +264,43 @@
 
     // Zentrale Event-Delegation für alle VAT-Buttons und MicroModal-Trigger
     document.addEventListener('click', function(e) {
+      // Request-Only-Button
+      const requestOnlyButton = e.target.closest('.request-only-button');
+      if (requestOnlyButton) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('Request-Only-Button wurde geklickt');
+
+        // Produktdaten aus den data-Attributen extrahieren
+        const productData = {
+          id: requestOnlyButton.dataset.productId,
+          title: requestOnlyButton.dataset.productTitle,
+          url: requestOnlyButton.dataset.productUrl,
+          sku: requestOnlyButton.dataset.productSku,
+          price: requestOnlyButton.dataset.productPrice
+        };
+
+        console.log('Produktdaten für Request-Only:', productData);
+
+        // Formular mit Produktdaten aktualisieren
+        if (typeof window.updateRequestOnlyForm === 'function') {
+          window.updateRequestOnlyForm(productData);
+        } else {
+          console.warn('updateRequestOnlyForm Funktion nicht gefunden');
+        }
+
+        try {
+          if (typeof MicroModal !== 'undefined') {
+            MicroModal.show('modal-request-only');
+          } else {
+            console.error('MicroModal ist nicht verfügbar');
+          }
+        } catch (error) {
+          console.error('Fehler beim Öffnen des Request-Only-Modals:', error);
+        }
+        return;
+      }
+
       // VAT-ID-Button im Cart
       const vatIdButton = e.target.closest('#CartDrawer-VatIdButton');
       if (vatIdButton) {
@@ -362,5 +399,32 @@
         }, 500);
       }
     }
+
+    // Observer für dynamisch geladene Related Products
+    const observer = new MutationObserver(function(mutations) {
+      mutations.forEach(function(mutation) {
+        if (mutation.type === 'childList') {
+          mutation.addedNodes.forEach(function(node) {
+            if (node.nodeType === Node.ELEMENT_NODE) {
+              // Prüfe, ob neue Request-Only Buttons hinzugefügt wurden
+              const newRequestButtons = node.querySelectorAll ? node.querySelectorAll('.request-only-button') : [];
+              if (newRequestButtons.length > 0) {
+                console.log(`${newRequestButtons.length} neue Request-Only Buttons in Related Products gefunden`);
+                // Die Event-Delegation sollte automatisch funktionieren
+              }
+            }
+          });
+        }
+      });
+    });
+
+    // Observer für Related Products Container starten
+    const relatedProductsContainers = document.querySelectorAll('product-recommendations');
+    relatedProductsContainers.forEach(container => {
+      observer.observe(container, {
+        childList: true,
+        subtree: true
+      });
+    });
   });
 })();

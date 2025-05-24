@@ -200,3 +200,169 @@
     margin: 1rem 0;
   }
 }
+
+// Request Only Form Styles
+#requestOnlyFormContainer {
+  .request-only-form {
+    margin-top: 1.5rem;
+    * {
+      box-shadow: none !important;
+      overflow: hidden !important;
+    }
+
+    // Product Summary Table (same as cart items table)
+    .product-summary {
+      margin-bottom: 1.5rem;
+
+      h3 {
+        color: $mainColor;
+        font-family: Cormorant Garamond;
+        font-size: $fontSizeRegular;
+        margin-bottom: 1rem;
+      }
+
+      .product-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1rem;
+
+        th, td {
+          padding: 0.75rem;
+          text-align: left;
+          border-bottom: 1px solid $grayColorLight;
+          font-family: Cormorant Garamond;
+        }
+
+        th {
+          background-color: #f8f9fa;
+          font-weight: 600;
+          color: $mainColor;
+          font-size: $fontSizeSmall;
+        }
+
+        td {
+          font-size: $fontSizeSmall;
+
+          .product-item-name {
+            font-weight: 500;
+            color: #333;
+          }
+        }
+
+        @media screen and (max-width: 749px) {
+          th, td {
+            padding: 0.5rem;
+            font-size: 12px;
+          }
+        }
+      }
+    }
+
+    .form-field-group {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+
+      @media screen and (max-width: 749px) {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+    }
+
+    .form-field {
+      margin-bottom: 1rem;
+      width: 100%;
+
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: $mainColor;
+        font-weight: 400;
+        font-size: $fontSizeRegular !important;
+        font-family: Cormorant Garamond;
+      }
+
+      input, select, textarea {
+        width: 100%;
+        padding: 12px;
+        background-color: white;
+        border: 1px solid $grayColor;
+        border-radius: 8px;
+        color: #333;
+        outline: none;
+        overflow: hidden !important;
+        font-size: 14px !important;
+        font-family: 'Cormorant Garamond';
+
+        &:focus {
+          outline: none;
+          border: 1px solid $mainColor;
+          color: #0a5d17;
+          &::placeholder {
+            color: #0a5d17;
+            opacity: 1;
+            transform: none;
+            -webkit-transform: none;
+          }
+        }
+
+        &::placeholder {
+          color: #666;
+          opacity: 1;
+          transition: color 0.3s ease;
+          transform: none !important;
+          -webkit-transform: none !important;
+          position: static !important;
+        }
+      }
+
+      // Specific textarea adjustments for resizing and scrolling
+      textarea {
+        resize: vertical; // Only allow vertical resizing (not width)
+        overflow-y: auto !important; // Enable vertical scrolling (override the hidden)
+        overflow-x: hidden !important; // Disable horizontal scrolling
+        min-height: 100px; // Minimum height
+        max-width: 100%;
+      }
+    }
+
+    .form-submit-group {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+      margin-top: 1.5rem;
+
+      @media screen and (max-width: 749px) {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+    }
+
+    .form-success, .form-error {
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      border-radius: 0.25rem;
+    }
+
+    .form-success {
+      background-color: rgba(0, 128, 0, 0.1);
+      color: darkgreen;
+    }
+
+    .form-error {
+      background-color: rgba(220, 53, 69, 0.1);
+      color: #dc3545;
+
+      ul {
+        padding-left: 1.25rem;
+        margin-top: 0.5rem;
+      }
+    }
+  }
+}
+
+// Request Only Button Styles
+.request-only-button {
+  // Inherit all button styles from existing button classes
+  // No additional styling needed as it uses the same classes as add-to-cart button
+}

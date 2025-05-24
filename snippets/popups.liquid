@@ -984,4 +984,425 @@
       });
     </script>
   {% endif %}
+
+  {% comment %} Request Only Product Pop-Up {% endcomment %}
+  {% if settings.request_only_popup_enable %}
+    <div class="modal micromodal-slide" id="modal-request-only" aria-hidden="true">
+      <div class="modal__overlay" tabindex="-1" data-custom-close>
+        <div
+          class="modal__container"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-request-only-title"
+        >
+          <button class="modal__close" aria-label="Close modal" data-custom-close>x</button>
+          <header class="modal__header">
+            <h2 class="modal__title" id="modal-request-only-title">
+              {% liquid
+                case request.locale.iso_code
+                  when 'de'
+                    echo settings.request_only_popup_headline_de
+                  when 'en'
+                    echo settings.request_only_popup_headline_en
+                  when 'it'
+                    echo settings.request_only_popup_headline_it
+                  when 'es'
+                    echo settings.request_only_popup_headline_es
+                  when 'fr'
+                    echo settings.request_only_popup_headline_fr
+                  else
+                    echo settings.request_only_popup_headline_de
+                endcase
+              %}
+            </h2>
+          </header>
+          <main class="modal__content" id="modal-request-only-content">
+            <div class="modal__text">
+              {% liquid
+                case request.locale.iso_code
+                  when 'de'
+                    echo settings.request_only_popup_text_de
+                  when 'en'
+                    echo settings.request_only_popup_text_en
+                  when 'it'
+                    echo settings.request_only_popup_text_it
+                  when 'es'
+                    echo settings.request_only_popup_text_es
+                  when 'fr'
+                    echo settings.request_only_popup_text_fr
+                  else
+                    echo settings.request_only_popup_text_de
+                endcase
+              %}
+            </div>
+
+            <div id="requestOnlyFormContainer">
+              {%- form 'contact', id: 'requestOnlyForm', class: 'request-only-form' -%}
+                {% if form.posted_successfully? %}
+                  <div class="form-success">
+                    {% liquid
+                      case request.locale.iso_code
+                        when 'de'
+                          echo settings.request_only_success_message_de
+                        when 'en'
+                          echo settings.request_only_success_message_en
+                        when 'it'
+                          echo settings.request_only_success_message_it
+                        when 'es'
+                          echo settings.request_only_success_message_es
+                        when 'fr'
+                          echo settings.request_only_success_message_fr
+                        else
+                          echo settings.request_only_success_message_de
+                      endcase
+                    %}
+                  </div>
+                  <script>
+                    setTimeout(function () {
+                      if (typeof MicroModal !== 'undefined') {
+                        MicroModal.close('modal-request-only');
+                      }
+                    }, 3000);
+                  </script>
+                {% elsif form.errors %}
+                  <div class="form-error">
+                    <h2>
+                      {% liquid
+                        case request.locale.iso_code
+                          when 'de'
+                            echo 'Bitte korrigieren Sie folgende Fehler:'
+                          when 'en'
+                            echo 'Please correct the following errors:'
+                          when 'it'
+                            echo 'Si prega di correggere i seguenti errori:'
+                          when 'es'
+                            echo 'Por favor corrija los siguientes errores:'
+                          when 'fr'
+                            echo 'Veuillez corriger les erreurs suivantes:'
+                          else
+                            echo 'Bitte korrigieren Sie folgende Fehler:'
+                        endcase
+                      %}
+                    </h2>
+                    <ul>
+                      {% for field in form.errors %}
+                        <li>
+                          <a href="#RequestOnlyForm-{{ field }}">
+                            {{ form.errors.translated_fields[field] | capitalize }}
+                            {{ form.errors.messages[field] }}
+                          </a>
+                        </li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                {% endif %}
+
+                <input type="hidden" name="contact[form_type]" value="Product Request Form">
+
+                {% comment %} Produktdaten hinzufügen {% endcomment %}
+                <input type="hidden" id="requestOnlyForm-product_id" name="contact[product_id]" value="">
+                <input type="hidden" id="requestOnlyForm-product_title" name="contact[product_title]" value="">
+                <input type="hidden" id="requestOnlyForm-product_url" name="contact[product_url]" value="">
+                <input type="hidden" id="requestOnlyForm-product_sku" name="contact[product_sku]" value="">
+                <input type="hidden" id="requestOnlyForm-product_price" name="contact[product_price]" value="">
+
+                <div class="product-summary" id="requestOnlyForm-product-summary">
+                  <h3>
+                    {% liquid
+                      case request.locale.iso_code
+                        when 'de'
+                          echo 'Angefragtes Produkt'
+                        when 'en'
+                          echo 'Requested Product'
+                        when 'it'
+                          echo 'Prodotto Richiesto'
+                        when 'es'
+                          echo 'Producto Solicitado'
+                        when 'fr'
+                          echo 'Produit Demandé'
+                        else
+                          echo 'Angefragtes Produkt'
+                      endcase
+                    %}
+                  </h3>
+                  <table class="product-table">
+                    <thead>
+                      <tr>
+                        <th>{{ 'sections.cart.headings.product' | t }}</th>
+                        <th>{{ 'products.product.sku' | t }}</th>
+                        <th>{{ 'sections.cart.headings.price' | t }}</th>
+                      </tr>
+                    </thead>
+                    <tbody id="requestOnlyForm-product-details">
+                      <tr>
+                        <td>
+                          <div class="product-item-name" id="requestOnlyForm-display-title">-</div>
+                        </td>
+                        <td id="requestOnlyForm-display-sku">-</td>
+                        <td id="requestOnlyForm-display-price">-</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <div class="form-field-group">
+                  <div class="form-field">
+                    <label for="RequestOnlyForm-firstName">
+                      {{- 'customer.vat_form.first_name' | t }}
+                      <span aria-hidden="true">*</span></label
+                    >
+                    <input
+                      type="text"
+                      id="RequestOnlyForm-firstName"
+                      name="contact[first_name]"
+                      value="{% if form.first_name %}{{ form.first_name }}{% endif %}"
+                      autocomplete="given-name"
+                      required
+                    >
+                  </div>
+                  <div class="form-field">
+                    <label for="RequestOnlyForm-lastName">
+                      {{- 'customer.vat_form.last_name' | t }}
+                      <span aria-hidden="true">*</span></label
+                    >
+                    <input
+                      type="text"
+                      id="RequestOnlyForm-lastName"
+                      name="contact[last_name]"
+                      value="{% if form.last_name %}{{ form.last_name }}{% endif %}"
+                      autocomplete="family-name"
+                      required
+                    >
+                  </div>
+                </div>
+
+                <div class="form-field-group">
+                  <div class="form-field">
+                    <label for="RequestOnlyForm-email">
+                      {{- 'customer.vat_form.email' | t }}
+                      <span aria-hidden="true">*</span></label
+                    >
+                    <input
+                      type="email"
+                      id="RequestOnlyForm-email"
+                      name="contact[email]"
+                      value="{% if form.email %}{{ form.email }}{% endif %}"
+                      autocomplete="email"
+                      spellcheck="false"
+                      autocapitalize="off"
+                      required
+                    >
+                  </div>
+                  <div class="form-field">
+                    <label for="RequestOnlyForm-phone">
+                      {{- 'customer.vat_form.phone' | t }}
+                    </label>
+                    <input
+                      type="tel"
+                      id="RequestOnlyForm-phone"
+                      name="contact[phone]"
+                      value="{% if form.phone %}{{ form.phone }}{% endif %}"
+                      autocomplete="tel"
+                    >
+                  </div>
+                </div>
+
+                <div class="form-field">
+                  <label for="RequestOnlyForm-message">
+                    {% liquid
+                      case request.locale.iso_code
+                        when 'de'
+                          echo 'Nachricht'
+                        when 'en'
+                          echo 'Message'
+                        when 'it'
+                          echo 'Messaggio'
+                        when 'es'
+                          echo 'Mensaje'
+                        when 'fr'
+                          echo 'Message'
+                        else
+                          echo 'Nachricht'
+                      endcase
+                    %}
+                  </label>
+                  <textarea
+                    id="RequestOnlyForm-message"
+                    name="contact[body]"
+                    rows="4"
+                    placeholder="
+                      {% liquid
+                        case request.locale.iso_code
+                          when 'de'
+                            echo 'Ihre Nachricht bezüglich des Produkts...'
+                          when 'en'
+                            echo 'Your message regarding the product...'
+                          when 'it'
+                            echo 'Il vostro messaggio riguardo al prodotto...'
+                          when 'es'
+                            echo 'Su mensaje sobre el producto...'
+                          when 'fr'
+                            echo 'Votre message concernant le produit...'
+                          else
+                            echo 'Ihre Nachricht bezüglich des Produkts...'
+                        endcase
+                      %}
+                    "
+                  ></textarea>
+                </div>
+
+                <div class="form-submit-group">
+                  <button type="button" class="button button--secondary btn-cancel" data-custom-close>
+                    {% liquid
+                      case request.locale.iso_code
+                        when 'de'
+                          echo settings.request_only_cancel_label_de
+                        when 'en'
+                          echo settings.request_only_cancel_label_en
+                        when 'it'
+                          echo settings.request_only_cancel_label_it
+                        when 'es'
+                          echo settings.request_only_cancel_label_es
+                        when 'fr'
+                          echo settings.request_only_cancel_label_fr
+                        else
+                          echo settings.request_only_cancel_label_de
+                      endcase
+                    %}
+                  </button>
+                  <button type="submit" class="button button--primary" id="requestOnlyForm-submit">
+                    {% liquid
+                      case request.locale.iso_code
+                        when 'de'
+                          echo settings.request_only_submit_label_de
+                        when 'en'
+                          echo settings.request_only_submit_label_en
+                        when 'it'
+                          echo settings.request_only_submit_label_it
+                        when 'es'
+                          echo settings.request_only_submit_label_es
+                        when 'fr'
+                          echo settings.request_only_submit_label_fr
+                        else
+                          echo settings.request_only_submit_label_de
+                      endcase
+                    %}
+                  </button>
+                </div>
+              {%- endform -%}
+            </div>
+          </main>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Script zum Aktualisieren der Produktinformationen im Request-Only-Formular
+      document.addEventListener('DOMContentLoaded', function () {
+        // Funktion, um das Request-Only-Formular zu aktualisieren
+        function updateRequestOnlyForm(productData) {
+          // Prüfen, ob das Modal und die Formulare existieren
+          const modal = document.getElementById('modal-request-only');
+          if (!modal) return;
+
+          console.log('Aktualisiere Request-Only Formular mit Produktdaten...', productData);
+
+          // Produktdaten in versteckte Felder eintragen
+          const productIdField = document.getElementById('requestOnlyForm-product_id');
+          const productTitleField = document.getElementById('requestOnlyForm-product_title');
+          const productUrlField = document.getElementById('requestOnlyForm-product_url');
+          const productSkuField = document.getElementById('requestOnlyForm-product_sku');
+          const productPriceField = document.getElementById('requestOnlyForm-product_price');
+
+          if (productIdField && productData.id) {
+            productIdField.value = productData.id;
+          }
+          if (productTitleField && productData.title) {
+            productTitleField.value = productData.title;
+          }
+          if (productUrlField && productData.url) {
+            productUrlField.value = window.location.origin + productData.url;
+          }
+          if (productSkuField && productData.sku) {
+            productSkuField.value = productData.sku;
+          }
+          if (productPriceField && productData.price) {
+            productPriceField.value = productData.price;
+          }
+
+          // Produktanzeige in der Tabelle aktualisieren
+          const displayTitle = document.getElementById('requestOnlyForm-display-title');
+          const displaySku = document.getElementById('requestOnlyForm-display-sku');
+          const displayPrice = document.getElementById('requestOnlyForm-display-price');
+
+          if (displayTitle && productData.title) {
+            displayTitle.textContent = productData.title;
+          }
+          if (displaySku && productData.sku) {
+            displaySku.textContent = productData.sku;
+          }
+          if (displayPrice && productData.price) {
+            // Formatiere den Preis
+            const price = parseFloat(productData.price);
+            if (!isNaN(price)) {
+              const formattedPrice = new Intl.NumberFormat(window.Shopify?.locale || 'de-DE', {
+                style: 'currency',
+                currency: window.Shopify?.currency?.active || 'EUR',
+              }).format(price);
+              displayPrice.textContent = formattedPrice;
+            } else {
+              displayPrice.textContent = productData.price;
+            }
+          }
+
+          // Nachricht vorausfüllen
+          const messageField = document.getElementById('RequestOnlyForm-message');
+          if (messageField && productData.title) {
+            const locale = document.documentElement.lang || 'de';
+            let messageText = `Hallo,\n\nich interessiere mich für das Produkt "${productData.title}"`;
+            if (productData.sku) {
+              messageText += ` (SKU: ${productData.sku})`;
+            }
+            messageText += '.\n\nBitte kontaktieren Sie mich für weitere Informationen.\n\nVielen Dank!';
+
+            switch (locale) {
+              case 'en':
+                messageText = `Hello,\n\nI am interested in the product "${productData.title}"`;
+                if (productData.sku) {
+                  messageText += ` (SKU: ${productData.sku})`;
+                }
+                messageText += '.\n\nPlease contact me for more information.\n\nThank you!';
+                break;
+              case 'it':
+                messageText = `Ciao,\n\nsono interessato al prodotto "${productData.title}"`;
+                if (productData.sku) {
+                  messageText += ` (SKU: ${productData.sku})`;
+                }
+                messageText += '.\n\nVi prego di contattarmi per ulteriori informazioni.\n\nGrazie!';
+                break;
+              case 'es':
+                messageText = `Hola,\n\nestoy interesado en el producto "${productData.title}"`;
+                if (productData.sku) {
+                  messageText += ` (SKU: ${productData.sku})`;
+                }
+                messageText += '.\n\nPor favor contáctenme para más información.\n\n¡Gracias!';
+                break;
+              case 'fr':
+                messageText = `Bonjour,\n\nje suis intéressé par le produit "${productData.title}"`;
+                if (productData.sku) {
+                  messageText += ` (SKU: ${productData.sku})`;
+                }
+                messageText += ".\n\nVeuillez me contacter pour plus d'informations.\n\nMerci !";
+                break;
+            }
+
+            messageField.value = messageText;
+          }
+        }
+
+        // Globale Funktion für andere Scripts verfügbar machen
+        window.updateRequestOnlyForm = updateRequestOnlyForm;
+      });
+    </script>
+  {% endif %}
 </div>

@@ -1151,6 +1151,9 @@ class ProductRecommendations extends HTMLElement {
 
         if (recommendations?.innerHTML.trim().length) {
           this.innerHTML = recommendations.innerHTML;
+
+          // Nach dem Laden der Related Products: Request-Only Buttons initialisieren
+          this.initializeRequestOnlyButtons();
         }
 
         if (!this.querySelector('slideshow-component') && this.classList.contains('complementary-products')) {
@@ -1164,6 +1167,59 @@ class ProductRecommendations extends HTMLElement {
       .catch((e) => {
         console.error(e);
       });
+  }
+
+  initializeRequestOnlyButtons() {
+    // Stelle sicher, dass MicroModal verfügbar ist
+    if (typeof MicroModal === 'undefined') {
+      console.warn('MicroModal nicht verfügbar für Request-Only Buttons');
+      return;
+    }
+
+    // Finde alle Request-Only Buttons in den neu geladenen Related Products
+    const requestOnlyButtons = this.querySelectorAll('.request-only-button');
+    console.log(`Initialisiere ${requestOnlyButtons.length} Request-Only Buttons in Related Products`);
+
+    requestOnlyButtons.forEach(button => {
+      // Entferne bestehende Event-Listener (falls vorhanden)
+      button.removeEventListener('click', this.handleRequestOnlyClick);
+
+      // Füge Event-Listener hinzu
+      button.addEventListener('click', this.handleRequestOnlyClick.bind(this));
+    });
+  }
+
+  handleRequestOnlyClick(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const button = event.currentTarget;
+    console.log('Request-Only Button in Related Products geklickt:', button);
+
+    // Produktdaten aus den data-Attributen extrahieren
+    const productData = {
+      id: button.dataset.productId,
+      title: button.dataset.productTitle,
+      url: button.dataset.productUrl,
+      sku: button.dataset.productSku,
+      price: button.dataset.productPrice
+    };
+
+    console.log('Produktdaten für Request-Only (Related Products):', productData);
+
+    // Formular mit Produktdaten aktualisieren
+    if (typeof window.updateRequestOnlyForm === 'function') {
+      window.updateRequestOnlyForm(productData);
+    } else {
+      console.warn('updateRequestOnlyForm Funktion nicht gefunden');
+    }
+
+    // Modal öffnen
+    try {
+      MicroModal.show('modal-request-only');
+    } catch (error) {
+      console.error('Fehler beim Öffnen des Request-Only-Modals (Related Products):', error);
+    }
   }
 }
 

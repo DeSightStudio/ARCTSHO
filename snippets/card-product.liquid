@@ -169,7 +169,28 @@
               <div class="card-product__bottom-section">
                 {% comment %} Add to Cart Button - direkt vor Preis {% endcomment %}
                 <div class="card-product__actions">
-                  {%- if card_product.available -%}
+                  {%- liquid
+                    assign is_request_only = false
+                    if card_product.metafields.custom.only_upon_request == true
+                      assign is_request_only = true
+                    endif
+                  -%}
+
+                  {%- if is_request_only -%}
+                    <button
+                      type="button"
+                      class="card-product__request-only button button--full-width button--primary request-only-button"
+                      onclick="event.stopPropagation(); event.preventDefault();"
+                      data-micromodal-trigger="modal-request-only"
+                      data-product-id="{{ card_product.id }}"
+                      data-product-title="{{ card_product.title | escape }}"
+                      data-product-url="{{ card_product.url }}"
+                      data-product-sku="{{ card_product.selected_or_first_available_variant.sku | default: card_product.variants.first.sku }}"
+                      data-product-price="{{ card_product.selected_or_first_available_variant.price | money_without_currency }}"
+                    >
+                      <span>{{ 'products.product.request_only_button' | t }}</span>
+                    </button>
+                  {%- elsif card_product.available -%}
                     {%- assign product_in_cart = false -%}
                     {%- for item in cart.items -%}
                       {%- if item.product_id == card_product.id -%}
