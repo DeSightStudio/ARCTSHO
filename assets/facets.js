@@ -105,6 +105,9 @@ class FacetFiltersForm extends HTMLElement {
       .forEach((element) => {
         element.classList.add('scroll-trigger--cancel');
       });
+
+    // Request-Only Buttons nach AJAX-Loading initialisieren
+    FacetFiltersForm.initializeRequestOnlyButtons();
   }
 
   static renderProductCount(html) {
@@ -278,6 +281,26 @@ class FacetFiltersForm extends HTMLElement {
     sortedItems.forEach(item => productGrid.appendChild(item));
   }
 
+  static initializeRequestOnlyButtons() {
+    // Finde alle Request-Only Buttons in den neu geladenen Produktkarten
+    const requestOnlyButtons = document.querySelectorAll('#ProductGridContainer .request-only-button');
+    console.log(`Gefunden: ${requestOnlyButtons.length} Request-Only Buttons nach Collection AJAX-Loading`);
+
+    // Da wir Event-Delegation verwenden, müssen wir nur sicherstellen, dass die Buttons korrekt markiert sind
+    // Die Event-Delegation in popup-manager.js sollte automatisch funktionieren
+    requestOnlyButtons.forEach(button => {
+      // Stelle sicher, dass alle data-Attribute korrekt gesetzt sind
+      if (!button.dataset.productId) {
+        console.warn('Request-Only Button ohne product-id gefunden:', button);
+      }
+    });
+
+    // Trigger ein Custom Event, um andere Scripts zu informieren
+    document.dispatchEvent(new CustomEvent('collection:request-only-buttons:loaded', {
+      detail: { count: requestOnlyButtons.length }
+    }));
+  }
+
   static updateURLHash(searchParams) {
     history.pushState({ searchParams }, '', `${window.location.pathname}${searchParams && '?'.concat(searchParams)}`);
   }
@@ -342,6 +365,7 @@ FacetFiltersForm.setListeners();
 // Sortiere Produkte beim ersten Laden der Seite
 document.addEventListener('DOMContentLoaded', () => {
   FacetFiltersForm.sortProductsByAvailability();
+  FacetFiltersForm.initializeRequestOnlyButtons();
 });
 
 class PriceRange extends HTMLElement {
