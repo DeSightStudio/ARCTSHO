@@ -842,11 +842,7 @@
 
 /* Badge styling moved to dev/scss/snippets/product-badges.scss */
 
-/* Spezifisches Styling für das Verkauft-Badge basierend auf den Shopify-Einstellungen */
-.color-scheme-3 {
-  --color-background: 211, 47, 47;
-  --color-foreground: 255, 255, 255;
-}
+/* Badge styling moved to dev/scss/snippets/product-badges.scss */
 
 /* Nicht Lieferbar Button Styling */
 .card-product__view-cart.button--disabled {

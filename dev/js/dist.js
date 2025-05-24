@@ -800,3 +800,6 @@ function cleanupCopyPasteFormatting() {
 
 // Import Back Button Manager
 // Back Button Manager wird automatisch initialisiert wenn die Datei geladen wird
+
+// Import New Product Badge Manager
+// New Product Badge Manager wird automatisch initialisiert wenn die Datei geladen wird

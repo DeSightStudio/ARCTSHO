@@ -41,7 +41,11 @@
       assign ratio = 1
     endif
   -%}
-  <div class="card-wrapper product-card-wrapper underline-links-hover">
+  <div
+    class="card-wrapper product-card-wrapper underline-links-hover"
+    data-created-at="{{ card_product.created_at | date: '%Y-%m-%dT%H:%M:%SZ' }}"
+    data-product-id="{{ card_product.id }}"
+  >
     <div
       class="
         card card--{{ settings.card_style }}
@@ -65,7 +69,7 @@
               {%- if card_product.available == false -%}
                 <span
                   id="StandardBadge-{{ section_id }}-{{ card_product.id }}"
-                  class="badge badge--top-right color-{{ settings.sold_out_badge_color_scheme }}"
+                  class="verkauft-badge-rot"
                 >
                   {{ 'products.product.sold_out' | t }}
                 </span>
@@ -78,10 +82,7 @@
                 </span>
               {%- endif -%}
 
-              {% comment %} Neu Badge - basierend auf "new" Tag {% endcomment %}
-              {% if card_product.tags contains 'new' or card_product.tags contains 'neu' %}
-                <span class="badge badge--top-right color-accent-1"> Neu </span>
-              {% endif %}
+              {% comment %} Neu Badge wird jetzt durch JavaScript basierend auf created_at hinzugefügt {% endcomment %}
             </div>
             <div class="media media--transparent media--hover-effect">
               {% comment %}theme-check-disable ImgLazyLoading{% endcomment %}

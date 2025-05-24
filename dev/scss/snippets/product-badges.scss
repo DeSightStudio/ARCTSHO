@@ -22,47 +22,43 @@
   pointer-events: auto;
 }
 
-/* Top Right Badge - Horizontales Banner Design 1:1 wie Referenz */
-.badge--top-right {
-  position: absolute;
-  top: 0.5rem;
-  right: 0;
-  bottom: auto;
-  left: auto;
-  font-weight: 600;
-  padding: 0.25rem 0.75rem 0.25rem 0.5rem;
-  z-index: 3;
-  border-radius: 0;
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-  pointer-events: auto;
-  color: white;
-  background-color: #e53e3e;
-
-  /* Horizontales Banner-Design 1:1 wie Referenz mit schärferem Pfeil */
-  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 50%, calc(100% - 8px) 100%, 0 100%);
-  min-width: 60px;
-  text-align: left;
-  line-height: 1.1;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+/* Neu Badge - Grün - Exakt wie das JavaScript Badge */
+.badge--new,
+.badge--top-right.badge--new {
+  position: absolute !important;
+  top: 10px !important;
+  right: 10px !important;
+  background: #38a169 !important; /* rgb(56, 161, 105) */
+  color: white !important;
+  padding: 6px 12px !important;
+  font-size: 12px !important;
+  font-weight: bold !important;
+  z-index: 999 !important;
+  border-radius: 4px !important;
+  text-transform: uppercase !important;
+  border: none !important;
+  line-height: 1 !important;
+  text-align: center !important;
+  pointer-events: auto !important;
 }
 
-/* Verkauft Badge Styling - 1:1 wie Referenz-Screenshot */
-.badge--top-right.color-scheme-accent-2,
-.badge--top-right[class*="sold_out"],
-.badge--top-right.color-scheme-3 {
-  background-color: #e53e3e !important;
+/* VERKAUFT Badge - Exakt 1:1 kopiert vom JavaScript Neu Badge, nur rot statt grün */
+.verkauft-badge-rot {
+  position: absolute !important;
+  top: 10px !important;
+  right: 10px !important;
+  background: #e53e3e !important; /* Rot für "Verkauft" */
   color: white !important;
-  font-weight: 600 !important;
-  font-size: 0.7rem !important;
-  padding: 0.25rem 0.75rem 0.25rem 0.5rem !important;
+  padding: 6px 12px !important;
+  font-size: 12px !important;
+  font-weight: bold !important;
+  z-index: 999 !important;
+  border-radius: 4px !important;
   text-transform: uppercase !important;
-  letter-spacing: 0.02em !important;
-  line-height: 1.1 !important;
-  text-align: left !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-  border: none;
+  border: none !important;
+  line-height: 1 !important;
+  text-align: center !important;
+  pointer-events: auto !important;
 }
 
 /* Card Content - Inhalt am unteren Rand ausrichten (überall: collections, related, etc.) */
