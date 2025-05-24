@@ -81,6 +81,40 @@ product-recommendations {
             font-size: $fontSizeMedium;
         }
     }
+
+    // Ensure 2 columns on mobile for related products
+    .grid.product-grid {
+        @media screen and (max-width: 749px) and (min-width: 481px) {
+            &.grid--2-col-tablet-down .grid__item {
+                width: calc(50% - var(--grid-mobile-horizontal-spacing) / 2) !important;
+                max-width: calc(50% - var(--grid-mobile-horizontal-spacing) / 2) !important;
+            }
+            // Force 2 columns even if set to 1 column
+            &.grid--1-col-tablet-down .grid__item {
+                width: calc(50% - var(--grid-mobile-horizontal-spacing) / 2) !important;
+                max-width: calc(50% - var(--grid-mobile-horizontal-spacing) / 2) !important;
+            }
+        }
+
+        // 1 column for very small phones
+        @media screen and (max-width: 480px) {
+            &.grid--2-col-tablet-down .grid__item,
+            &.grid--1-col-tablet-down .grid__item {
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+        }
+    }
+
+    // Reduce font size for cart button in related products on mobile
+    @media screen and (max-width: 749px) {
+        .card-product__add-button,
+        .card-product__add-button.button,
+        .button.card-product__add-button,
+        .grid__item .button {
+            font-size: 14px !important;
+        }
+    }
     .card__content {
         overflow: hidden;
         display: flex;

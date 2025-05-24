@@ -32,7 +32,7 @@
         {{ section.settings.heading }}
       </h2>
       <ul
-        class="grid product-grid grid--{{ section.settings.columns_desktop }}-col-desktop grid--{{ section.settings.columns_mobile }}-col-tablet-down"
+        class="grid product-grid grid--{{ section.settings.columns_desktop }}-col-desktop grid--{% if section.settings.columns_mobile == '1' %}2{% else %}{{ section.settings.columns_mobile }}{% endif %}-col-tablet-down"
         role="list"
       >
         {% assign skip_card_product_styles = false %}
