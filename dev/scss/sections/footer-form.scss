@@ -66,7 +66,13 @@ footer {
     .text-area {
         height: 100%;
         min-height: 150px;
-        resize: vertical;
+        resize: none !important; /* Resize komplett deaktiviert */
+    }
+
+    /* Button-Container in der rechten Spalte */
+    .contact__button {
+        align-self: stretch; /* Nimmt die volle Breite der rechten Spalte ein */
+        margin-top: 1.5rem;
     }
 }
 
@@ -77,9 +83,6 @@ footer {
     overflow: hidden !important;
     &:after, &::after {
       display: none !important;
-    }
-    &:focus, &:active {
-
     }
     &__label {
         /* Für das Shopify-Theme-Label überschreiben */
@@ -98,6 +101,7 @@ footer {
     }
     textarea {
       height: 230px !important;
+      resize: none !important; /* Resize komplett deaktiviert */
     }
     select {
       height: 45px !important;
@@ -176,12 +180,15 @@ footer {
 /* Button-Styles */
 .contact__button {
     margin-top: 1.5rem;
+    display: flex;
+    justify-content: center; /* Zentriert den Button relativ zum Question-Feld */
+    width: 100%;
 
     .button {
         background-color: #0a5d17;
         color: white;
         border: none;
-        padding: 0.75rem 2rem;
+        padding: 0.75rem 3rem; /* Breiterer Button durch mehr horizontales Padding */
         font-weight: bold;
         cursor: pointer;
         transition: background-color 0.3s;
@@ -249,6 +256,21 @@ footer {
     box-shadow: none !important;
     border-radius: 8px !important;
     background-clip: padding-box !important;
+}
+
+/* TEXTAREA RESIZE KOMPLETT DEAKTIVIERT */
+/* Alle Textareas haben resize: none */
+textarea.text-area.field__input,
+.contact__form-container textarea.text-area,
+.footer-form textarea.text-area,
+.contact__fields-right textarea.text-area,
+#FooterContactForm-body.text-area,
+textarea#FooterContactForm-body,
+.field textarea,
+.field .text-area,
+textarea.field__input {
+    resize: none !important;
+    overflow: hidden !important;
 }
 
 /* Fix für Platzhalterverschiebung im Safari und Firefox */

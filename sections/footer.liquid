@@ -214,18 +214,16 @@
   <div class="footer__bottom-row">
     <div class="page-width">
       <div class="footer__bottom-content">
-        {%- if section.settings.show_copyright -%}
-          <div class="footer__bottom-item footer__copyright-text">
-            © {{ 'now' | date: '%Y' }} - Arctic Antiques GmbH
-          </div>
-        {%- endif -%}
-
         {%- if section.settings.show_credit -%}
           <div class="footer__bottom-item footer__credit">
             <a href="https://www.desightstudio.com" target="_blank" rel="noopener sponsored">
               Made with <i class="fa fa-heart" aria-hidden="true"></i> by DeSight Studio<sup>®</sup>
             </a>
           </div>
+        {%- endif -%}
+
+        {%- if section.settings.show_copyright -%}
+          <div class="footer__bottom-item footer__copyright-text">© Arctic Antiques GmbH {{ 'now' | date: '%Y' }}</div>
         {%- endif -%}
 
         {%- if section.settings.show_payment_icons -%}

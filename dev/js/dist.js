@@ -457,6 +457,30 @@
                 console.log('External Links Manager wird initialisiert...');
             }
 
+            // Textarea Resize ist komplett deaktiviert
+            function disableTextareaResize() {
+                console.log('Textarea Resize wird deaktiviert...');
+
+                // Warte bis DOM geladen ist
+                setTimeout(function() {
+                    // Finde alle Textareas und deaktiviere Resize komplett
+                    const textareas = document.querySelectorAll(
+                        'textarea.text-area.field__input, ' +
+                        '#FooterContactForm-body, ' +
+                        '.footer-form textarea, ' +
+                        '.contact__fields-right textarea'
+                    );
+
+                    textareas.forEach(function(textarea) {
+                        // Deaktiviere Resize komplett
+                        textarea.style.resize = 'none';
+                        textarea.style.overflow = 'hidden';
+
+                        console.log('Textarea Resize deaktiviert für:', textarea.id || 'unnamed textarea');
+                    });
+                }, 500);
+            }
+
             // Initialize BUCKS currency converter customizations
             function initBucksCurrencyConverter() {
                 // Wait for BUCKS app to load
@@ -566,6 +590,9 @@
 
                 // External Links Manager Initialization
                 initExternalLinks();
+
+                // Textarea Resize Deaktivierung
+                disableTextareaResize();
             }
 
             // Starte die Initialisierung
