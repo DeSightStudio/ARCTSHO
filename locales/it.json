@@ -176,6 +176,7 @@
       "inventory_out_of_stock": "Esaurito",
       "inventory_out_of_stock_continue_selling": "Disponibile",
       "sku": "SKU",
+      "article": "Articolo",
       "volume_pricing": {
         "title": "Prezzi basati sui volumi",
         "note": "Prezzi basati sui volumi disponibili",
