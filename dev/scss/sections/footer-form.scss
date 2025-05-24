@@ -11,7 +11,7 @@ footer {
 .footer-contact-form {
     width: 100%;
     margin-top: 1rem;
-    
+
     .footer-contact-form__heading {
         color: white;
         font-size: 1.2rem;
@@ -25,15 +25,15 @@ footer {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    
+
     @media screen and (min-width: 750px) {
         flex-direction: row;
-        
+
         .contact__fields-left {
             flex: 1;
             margin-right: 1.5rem;
         }
-        
+
         .contact__fields-right {
             flex: 1;
             display: flex;
@@ -47,7 +47,7 @@ footer {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    
+
     .field {
         margin-bottom: 0;
     }
@@ -57,12 +57,12 @@ footer {
 .contact__fields-right {
     display: flex;
     flex-direction: column;
-    
+
     .field {
         flex-grow: 1;
         margin-bottom: 1.5rem;
     }
-    
+
     .text-area {
         height: 100%;
         min-height: 150px;
@@ -79,7 +79,7 @@ footer {
       display: none !important;
     }
     &:focus, &:active {
-      
+
     }
     &__label {
         /* Für das Shopify-Theme-Label überschreiben */
@@ -120,8 +120,9 @@ footer {
         color: #333;
         outline: none;
         overflow: hidden !important;
-        font-size: 14px !important;
+        font-size: 18px !important;
         font-family: 'Cormorant Garamond';
+        font-weight: bold;
         &:focus {
             outline: none;
             border: 1px solid #ffffff;
@@ -133,7 +134,7 @@ footer {
                 -webkit-transform: none;
             }
         }
-        
+
         &::placeholder {
             color: #666;
             opacity: 1;
@@ -143,7 +144,7 @@ footer {
             position: static !important;
         }
     }
-    
+
     select.field__input {
         appearance: none;
         background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23666666%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
@@ -151,18 +152,21 @@ footer {
         background-position: right 1rem top 50%;
         background-size: 0.65rem auto;
         padding-right: 2rem;
-        height: 3.4rem;
+        padding-top: 8px !important;
+        padding-bottom: 8px !important;
+        padding-left: 8px !important;
+        height: 48px !important;
         text-overflow: ellipsis;
         white-space: nowrap;
         overflow: hidden;
         color: #333;
         font-size: 1rem;
-        
+
         option {
             color: #333;
             background-color: white;
         }
-        
+
         &:not([value=""]):not(:focus) {
             color: #333;
         }
@@ -172,7 +176,7 @@ footer {
 /* Button-Styles */
 .contact__button {
     margin-top: 1.5rem;
-    
+
     .button {
         background-color: #0a5d17;
         color: white;
@@ -182,7 +186,7 @@ footer {
         cursor: pointer;
         transition: background-color 0.3s;
         border-radius: 50px;
-        
+
         &:hover {
             background-color: rgba(10, 93, 23, 0.9);
         }
@@ -197,32 +201,32 @@ footer {
 
 .iti__selected-dial-code {
   color: $mainColor !important;
-  font-family: 'Cormorant Garamond';   
+  font-family: 'Cormorant Garamond';
   font-size: 14px !important;
 }
 
 .iti {
     width: 100% !important;
     display: block;
-    
+
     &__flag {
         background-image: url("https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/img/flags.png") !important;
         display: block !important;
     }
-    
+
     @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
         .iti__flag {
             background-image: url("https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/img/flags@2x.png") !important;
         }
     }
-    
+
     &__selected-flag {
         background-color: white !important;
         border-right: 1px solid rgba(0, 0, 0, 0.1);
         padding: 0 10px;
         height: 42px !important;
     }
-    
+
     .iti__tel-input {
         border-radius: 8px !important;
     }
@@ -257,18 +261,98 @@ textarea:focus::placeholder {
     position: static !important;
 }
 
+/* Text-Auswahl (Selection) Styles für Footer-Formularfelder */
+.footer-form {
+    .field__input::selection,
+    .text-area::selection,
+    input::selection,
+    textarea::selection,
+    select::selection {
+        background-color: $mainColor !important;
+        color: $whiteColor !important;
+    }
+
+    /* Für WebKit-Browser (Safari, Chrome) */
+    .field__input::-webkit-selection,
+    .text-area::-webkit-selection,
+    input::-webkit-selection,
+    textarea::-webkit-selection,
+    select::-webkit-selection {
+        background-color: $mainColor !important;
+        color: $whiteColor !important;
+    }
+
+    /* Für Mozilla Firefox */
+    .field__input::-moz-selection,
+    .text-area::-moz-selection,
+    input::-moz-selection,
+    textarea::-moz-selection,
+    select::-moz-selection {
+        background-color: $mainColor !important;
+        color: $whiteColor !important;
+    }
+}
+
+/* Globale Text-Auswahl (Selection) Styles für alle Formularfelder */
+.field__input::selection,
+.text-area::selection,
+input[type="text"]::selection,
+input[type="email"]::selection,
+input[type="tel"]::selection,
+input[type="password"]::selection,
+input[type="search"]::selection,
+input[type="url"]::selection,
+input[type="number"]::selection,
+textarea::selection,
+select::selection {
+    background-color: $mainColor !important;
+    color: $whiteColor !important;
+}
+
+/* Für WebKit-Browser (Safari, Chrome) - Globale Styles */
+.field__input::-webkit-selection,
+.text-area::-webkit-selection,
+input[type="text"]::-webkit-selection,
+input[type="email"]::-webkit-selection,
+input[type="tel"]::-webkit-selection,
+input[type="password"]::-webkit-selection,
+input[type="search"]::-webkit-selection,
+input[type="url"]::-webkit-selection,
+input[type="number"]::-webkit-selection,
+textarea::-webkit-selection,
+select::-webkit-selection {
+    background-color: $mainColor !important;
+    color: $whiteColor !important;
+}
+
+/* Für Mozilla Firefox - Globale Styles */
+.field__input::-moz-selection,
+.text-area::-moz-selection,
+input[type="text"]::-moz-selection,
+input[type="email"]::-moz-selection,
+input[type="tel"]::-moz-selection,
+input[type="password"]::-moz-selection,
+input[type="search"]::-moz-selection,
+input[type="url"]::-moz-selection,
+input[type="number"]::-moz-selection,
+textarea::-moz-selection,
+select::-moz-selection {
+    background-color: $mainColor !important;
+    color: $whiteColor !important;
+}
+
 /* Spezifische Anpassungen für Mobile */
 @media screen and (max-width: 749px) {
     .contact__form-container {
         flex-direction: column;
     }
-    
+
     .contact__fields-left,
     .contact__fields-right {
         width: 100%;
     }
-    
+
     .contact__fields-right .text-area {
         min-height: 150px;
     }
-} 
+}
