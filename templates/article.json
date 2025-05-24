@@ -50,6 +50,35 @@
       ],
       "settings": {}
     },
+    "rich_text_9THtfW": {
+      "type": "rich-text",
+      "blocks": {
+        "heading_NAQTd6": {
+          "type": "heading",
+          "settings": {
+            "heading": "Our Mammoth Ivory Selection",
+            "heading_size": "h0"
+          }
+        }
+      },
+      "block_order": [
+        "heading_NAQTd6"
+      ],
+      "settings": {
+        "desktop_content_position": "center",
+        "content_alignment": "center",
+        "color_scheme": "",
+        "full_width": true,
+        "padding_top": 40,
+        "padding_bottom": 52,
+        "use_arrow_divider": false,
+        "arrow_width": 50,
+        "arrow_thickness": 2,
+        "arrow_position": "bottom",
+        "arrow_color": "#000000",
+        "headline_styling": "Headline Icon Light"
+      }
+    },
     "collection_list_6VbVqK": {
       "type": "collection-list",
       "blocks": {
@@ -153,10 +182,10 @@
         "padding_bottom": 36
       }
     },
-    "rich_text_9THtfW": {
+    "rich_text_xFCwfH": {
       "type": "rich-text",
       "blocks": {
-        "heading_NAQTd6": {
+        "heading_A34Kc3": {
           "type": "heading",
           "settings": {
             "heading": "Other Articles",
@@ -165,7 +194,7 @@
         }
       },
       "block_order": [
-        "heading_NAQTd6"
+        "heading_A34Kc3"
       ],
       "settings": {
         "desktop_content_position": "center",
@@ -203,8 +232,9 @@
   "order": [
     "image_banner_VTaJVW",
     "main",
-    "collection_list_6VbVqK",
     "rich_text_9THtfW",
+    "collection_list_6VbVqK",
+    "rich_text_xFCwfH",
     "featured_blog_YmPF76"
   ]
 }
