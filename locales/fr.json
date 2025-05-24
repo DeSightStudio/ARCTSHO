@@ -55,6 +55,10 @@
       "next_slide": "Faire glisser vers la droite",
       "previous_slide": "Faire glisser vers la gauche",
       "name": "Carrousel"
+    },
+    "breadcrumbs": {
+      "home": "Accueil",
+      "aria_label": "Navigation par fil d'Ariane"
     }
   },
   "newsletter": {

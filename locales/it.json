@@ -55,6 +55,10 @@
       "next_slide": "Scorri verso destra",
       "previous_slide": "Scorri verso sinistra",
       "name": "Cursore"
+    },
+    "breadcrumbs": {
+      "home": "Home",
+      "aria_label": "Navigazione breadcrumb"
     }
   },
   "newsletter": {

@@ -55,6 +55,10 @@
       "next_slide": "Diapositiva a la derecha",
       "previous_slide": "Diapositiva a la izquierda",
       "name": "Carrusel"
+    },
+    "breadcrumbs": {
+      "home": "Inicio",
+      "aria_label": "Navegación de migas de pan"
     }
   },
   "newsletter": {

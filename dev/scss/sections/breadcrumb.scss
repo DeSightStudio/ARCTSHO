@@ -1,0 +1,219 @@
+/**
+ * Breadcrumb Section Styles
+ * Erweiterte Styles für die neue Breadcrumb-Section
+ * Basiert auf den bestehenden Breadcrumb-Styles aus snippets/breadcrumb.scss
+ */
+
+.breadcrumb-section {
+    // Section-spezifische Styles
+    .breadcrumbs {
+        margin: 0;
+
+        @media screen and (max-width: 981px) {
+            margin: 0;
+        }
+
+        .breadcrumbs__list {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0;
+
+            .breadcrumbs__item {
+                display: inline-flex;
+                align-items: center;
+                position: relative;
+
+                // Separator zwischen Breadcrumb-Items
+                &:not(:last-child):after {
+                    content: '';
+                    display: inline-block;
+                    width: 0.2em;
+                    height: 0.2em;
+                    border-style: solid;
+                    border-width: 0.1em 0.1em 0 0;
+                    transform: rotate(45deg);
+                    margin: 0 0.5em;
+                    vertical-align: middle;
+                    position: relative;
+                    top: -0.05em;
+                    color: $mainColor;
+                    border-color: $mainColor;
+                }
+
+                .breadcrumbs__link {
+                    font-family: 'Copperplate', serif;
+                    color: $mainColor;
+                    font-weight: 100;
+                    font-size: $fontSizeRegular;
+                    text-decoration: none;
+                    transition: color 0.3s ease;
+                    padding: 0.25em 0;
+                    display: inline-block;
+                    line-height: 1.4;
+
+                    &:hover {
+                        color: $mainColorDark;
+                        text-decoration: underline;
+                    }
+
+                    // Aktueller Seiten-Link (aria-current="page")
+                    &[aria-current='page'] {
+                        color: $mainColorDark;
+                        font-weight: normal;
+                        text-decoration: none;
+                        cursor: default;
+
+                        &:hover {
+                            text-decoration: none;
+                            color: $mainColorDark;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Responsive Anpassungen
+    @media screen and (max-width: 768px) {
+        .breadcrumbs {
+            .breadcrumbs__list {
+                .breadcrumbs__item {
+                    .breadcrumbs__link {
+                        font-size: calc(#{$fontSizeRegular} * 0.9);
+                        padding: 0.2em 0;
+                    }
+
+                    &:not(:last-child):after {
+                        margin: 0 0.3em;
+                    }
+                }
+            }
+        }
+    }
+
+    @media screen and (max-width: 480px) {
+        .breadcrumbs {
+            .breadcrumbs__list {
+                .breadcrumbs__item {
+                    .breadcrumbs__link {
+                        font-size: calc(#{$fontSizeRegular} * 0.85);
+                    }
+
+                    &:not(:last-child):after {
+                        margin: 0 0.25em;
+                        width: 0.15em;
+                        height: 0.15em;
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Section Padding Styles werden über CSS Custom Properties in der Liquid-Datei gesetzt
+
+// Color Scheme Anpassungen für verschiedene Farbschemas
+.color-scheme-1 {
+    .breadcrumb-section {
+        .breadcrumbs {
+            .breadcrumbs__list {
+                .breadcrumbs__item {
+                    .breadcrumbs__link {
+                        color: $mainColor;
+
+                        &:hover {
+                            color: $mainColorDark;
+                        }
+
+                        &[aria-current='page'] {
+                            color: $mainColorDark;
+                        }
+                    }
+
+                    &:not(:last-child):after {
+                        border-color: $mainColor;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.color-scheme-2 {
+    .breadcrumb-section {
+        .breadcrumbs {
+            .breadcrumbs__list {
+                .breadcrumbs__item {
+                    .breadcrumbs__link {
+                        color: $blackColor;
+
+                        &:hover {
+                            color: $mainColor;
+                        }
+
+                        &[aria-current='page'] {
+                            color: $grayColorDark;
+                        }
+                    }
+
+                    &:not(:last-child):after {
+                        border-color: $blackColor;
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Accessibility Verbesserungen
+.breadcrumbs {
+    // Screen Reader Unterstützung
+    [aria-current='page'] {
+        font-weight: 500;
+    }
+
+    // Focus States für Keyboard Navigation
+    .breadcrumbs__link {
+        &:focus {
+            outline: 2px solid $mainColor;
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+    }
+}
+
+// Animation für bessere UX
+.breadcrumb-section {
+    .breadcrumbs {
+        .breadcrumbs__list {
+            .breadcrumbs__item {
+                .breadcrumbs__link {
+                    position: relative;
+
+                    &:before {
+                        content: '';
+                        position: absolute;
+                        bottom: 0;
+                        left: 0;
+                        width: 0;
+                        height: 1px;
+                        background-color: $mainColorDark;
+                        transition: width 0.3s ease;
+                    }
+
+                    &:hover:before {
+                        width: 100%;
+                    }
+
+                    &[aria-current='page']:before {
+                        display: none;
+                    }
+                }
+            }
+        }
+    }
+}

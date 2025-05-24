@@ -64,6 +64,10 @@
       "next_slide": "Nach rechts schieben",
       "previous_slide": "Nach links schieben",
       "name": "Slider"
+    },
+    "breadcrumbs": {
+      "home": "Startseite",
+      "aria_label": "Breadcrumb-Navigation"
     }
   },
   "newsletter": {
