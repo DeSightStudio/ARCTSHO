@@ -219,6 +219,7 @@
       "apply": "Apply",
       "clear": "Clear",
       "clear_all": "Remove all",
+      "reset_filters": "Reset filters",
       "from": "From",
       "filter_and_sort": "Filter and sort",
       "filter_by_label": "Filter:",

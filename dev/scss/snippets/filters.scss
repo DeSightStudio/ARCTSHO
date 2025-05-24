@@ -59,6 +59,11 @@
                         margin: 15px 0px 0px 0px;
                         display: block;
                     }
+                    .facets__summary-label {
+                        .facets__selected {
+                            display: none;
+                        }
+                    }
                 }
                 .facets__header-vertical {
                     text-decoration: none !important;
@@ -149,6 +154,19 @@
     .active-facets-vertical-filter, .active-facets__button-wrapper {
         display: block !important;
     }
+    .active-facets__button-wrapper {
+        @media screen and (max-width: 981px) {
+            width: 100%;
+            text-align: center;
+            margin: 15px 0;
+            border-top: 1px solid #e9e9e9;
+            border-bottom: 1px solid #e9e9e9;
+            padding: 10px 0px 20px 0px;
+            a {
+                margin: 0px;
+            }
+        }
+    }
     facet-remove {
         .active-facets__button {
             margin: 8px 4px 0 0 !important;
@@ -161,11 +179,61 @@
                 border-radius: 50px;
                 border: 1px solid $mainColor;
                 font-family: 'Cormorant Garamond';
-                color: $whiteColor;
+                color: $blackColor;
                 font-size: $fontSizeSmall;
                 line-height: 1;
-                background-color: $mainColor;
+                background-color: $grayColorLight;
             }
         }
+    }
+}
+
+/* Filter Reset Button Styling */
+.facets-reset-button {
+    @include button-style($mainColor, $whiteColor, 50px);
+    display: inline-block;
+    padding: 8px 16px !important;
+    margin: 8px 4px 0 0 !important;
+    font-family: 'Cormorant Garamond' !important;
+    font-size: $fontSizeSmall !important;
+    line-height: 1 !important;
+    text-decoration: none !important;
+    border: 1px solid $mainColor !important;
+    @include transition(all 0.3s ease);
+
+    @media screen and (max-width: 981px) {
+        margin: 8px 8px 0 0 !important;
+    }
+
+    &:hover {
+        background-color: darken($mainColor, 10%) !important;
+        border-color: darken($mainColor, 10%) !important;
+        text-decoration: none !important;
+    }
+
+    span {
+        color: $whiteColor !important;
+        font-family: 'Cormorant Garamond' !important;
+        font-size: $fontSizeSmall !important;
+    }
+}
+
+/* Mobile specific styling for reset button */
+.mobile-facets__clear.facets-reset-button {
+    @include button-style($mainColor, $whiteColor, 50px);
+    display: inline-block;
+    padding: 8px 16px !important;
+    margin: 0 10px 0 0 !important;
+    font-family: 'Cormorant Garamond' !important;
+    font-size: $fontSizeSmall !important;
+    line-height: 1 !important;
+    text-decoration: none !important;
+    border: 1px solid $mainColor !important;
+    @include transition(all 0.3s ease);
+
+    &:hover {
+        background-color: darken($mainColor, 10%) !important;
+        border-color: darken($mainColor, 10%) !important;
+        text-decoration: none !important;
     }
 }

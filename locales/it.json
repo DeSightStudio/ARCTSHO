@@ -207,6 +207,7 @@
       "apply": "Applica",
       "clear": "Cancella",
       "clear_all": "Rimuovi tutto",
+      "reset_filters": "Ripristina filtri",
       "from": "Da",
       "filter_and_sort": "Filtra e ordina",
       "filter_by_label": "Filtra:",

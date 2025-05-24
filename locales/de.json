@@ -218,6 +218,7 @@
       "apply": "Anwenden",
       "clear": "Löschen",
       "clear_all": "Alle entfernen",
+      "reset_filters": "Filter zurücksetzen",
       "from": "Von",
       "filter_and_sort": "Filtern und sortieren",
       "filter_by_label": "Filter:",

@@ -19,6 +19,7 @@
 {%- liquid
   assign sort_by = results.sort_by | default: results.default_sort_by
   assign total_active_values = 0
+  assign total_active_filters = 0
   assign default_presentation = 'text'
   if results.url
     assign results_url = results.url
@@ -26,6 +27,18 @@
     assign terms = results.terms | escape
     assign results_url = '?q=' | append: terms | append: '&options%5Bprefix%5D=last&sort_by=' | append: sort_by
   endif
+
+  # Calculate total active filters for conditional display
+  for filter in results.filters
+    assign total_active_filters = total_active_filters | plus: filter.active_values.size
+    if filter.type == 'price_range'
+      assign min = filter.min_value.value
+      assign max = filter.max_value.value
+      if min != null or max != null
+        assign total_active_filters = total_active_filters | plus: 1
+      endif
+    endif
+  endfor
 -%}
 
 <div class="facets-container{% if filter_type == 'drawer' %} facets-container-drawer{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}">
@@ -56,13 +69,15 @@
             {% comment %} Pills are right below the title for filter type vertical {% endcomment %}
             {%- if filter_type == 'vertical' -%}
               <div class="active-facets active-facets-desktop">
-                <div class="active-facets-vertical-filter">
-                  <facet-remove class="active-facets__button-wrapper">
-                    <a href="{{ results_url }}" class="active-facets__button-remove underlined-link">
-                      <span>{{ 'products.facets.clear_all' | t }}</span>
-                    </a>
-                  </facet-remove>
-                </div>
+                {%- if total_active_filters > 0 -%}
+                  <div class="active-facets-vertical-filter">
+                    <facet-remove class="active-facets__button-wrapper">
+                      <a href="{{ results_url }}" class="active-facets__button-remove facets-reset-button">
+                        <span>{{ 'products.facets.reset_filters' | t }}</span>
+                      </a>
+                    </facet-remove>
+                  </div>
+                {%- endif -%}
                 {%- for filter in results.filters -%}
                   {%- for value in filter.active_values -%}
                     <facet-remove>
@@ -333,11 +348,13 @@
                   {%- endif -%}
                 {% endif %}
               {%- endfor -%}
-              <facet-remove class="active-facets__button-wrapper">
-                <a href="{{ results_url }}" class="active-facets__button-remove underlined-link">
-                  <span>{{ 'products.facets.clear_all' | t }}</span>
-                </a>
-              </facet-remove>
+              {%- if total_active_filters > 0 -%}
+                <facet-remove class="active-facets__button-wrapper">
+                  <a href="{{ results_url }}" class="active-facets__button-remove facets-reset-button">
+                    <span>{{ 'products.facets.reset_filters' | t }}</span>
+                  </a>
+                </facet-remove>
+              {%- endif -%}
             </div>
           {%- endif -%}
         {% endif %}
@@ -627,11 +644,13 @@
               {%- endif -%}
 
               <div class="mobile-facets__footer">
-                <facet-remove class="mobile-facets__clear-wrapper">
-                  <a href="{{ results_url }}" class="mobile-facets__clear underlined-link">
-                    {{- 'products.facets.clear_all' | t -}}
-                  </a>
-                </facet-remove>
+                {%- if total_active_filters > 0 -%}
+                  <facet-remove class="mobile-facets__clear-wrapper">
+                    <a href="{{ results_url }}" class="mobile-facets__clear facets-reset-button">
+                      {{- 'products.facets.reset_filters' | t -}}
+                    </a>
+                  </facet-remove>
+                {%- endif -%}
                 <button
                   type="button"
                   class="button button--primary"
@@ -690,11 +709,13 @@
         {%- endif -%}
       {%- endif -%}
     {%- endfor -%}
-    <facet-remove class="active-facets__button-wrapper">
-      <a href="{{ results_url }}" class="active-facets__button-remove underlined-link">
-        <span>{{ 'products.facets.clear_all' | t }}</span>
-      </a>
-    </facet-remove>
+    {%- if total_active_filters > 0 -%}
+      <facet-remove class="active-facets__button-wrapper">
+        <a href="{{ results_url }}" class="active-facets__button-remove facets-reset-button">
+          <span>{{ 'products.facets.reset_filters' | t }}</span>
+        </a>
+      </facet-remove>
+    {%- endif -%}
   </div>
   {% comment %} Sort, product count and filter pills at the end when filter is type of Drawer for the correct tabbing order {% endcomment %}
   {%- if enable_sorting and filter_type == 'drawer' -%}
@@ -799,11 +820,13 @@
               {%- endif -%}
             {%- endif -%}
           {%- endfor -%}
-          <facet-remove class="active-facets__button-wrapper">
-            <a href="{{ results_url }}" class="active-facets__button-remove underlined-link">
-              <span>{{ 'products.facets.clear_all' | t }}</span>
-            </a>
-          </facet-remove>
+          {%- if total_active_filters > 0 -%}
+            <facet-remove class="active-facets__button-wrapper">
+              <a href="{{ results_url }}" class="active-facets__button-remove facets-reset-button">
+                <span>{{ 'products.facets.reset_filters' | t }}</span>
+              </a>
+            </facet-remove>
+          {%- endif -%}
         </div>
       </form>
     </facet-filters-form>
