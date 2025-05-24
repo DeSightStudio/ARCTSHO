@@ -71,18 +71,74 @@
             * {
                 font-family: 'Cormorant Garamond';
             }
+
+            // Mobile: Table-Layout überschreiben
+            @include screen(med-small) {
+                .cart-items {
+                    display: block !important;
+                }
+
+                .cart-items tbody {
+                    display: block !important;
+                }
+            }
+
             .cart-item {
+                // Desktop Layout
                 grid-template: repeat(2, auto) / repeat(3, 1fr);
+
+                // Mobile Layout - Kachel-Design
+                @include screen(med-small) {
+                    display: block !important;
+                    grid-template: none !important;
+                    border: 1px solid $grayColorLight;
+                    border-radius: 12px;
+                    padding: 10px;
+                    margin-bottom: 15px;
+                    background-color: $whiteColor;
+                    position: relative;
+
+                    // Alle TD-Elemente als Block anzeigen
+                    td {
+                        display: block !important;
+                        width: 100% !important;
+                        padding: 0 !important;
+                        border: none !important;
+
+                        // Totals TD komplett verstecken
+                        &.cart-item__totals {
+                            display: none !important;
+                        }
+                    }
+                }
+
                 .cart-item__media {
                     position: relative;
                     width: 100%;
+
+                    // Mobile: Bild vollflächig
+                    @include screen(med-small) {
+                        width: 100%;
+                        margin-bottom: 10px;
+                    }
+
                     img {
                         width: 100%;
                         object-fit: cover;
+
+                        // Mobile: Border-Radius für Bild
+                        @include screen(med-small) {
+                            border-radius: 8px;
+                        }
                     }
                 }
                 .cart-item__totals {
                     display: none;
+
+                    // Mobile: Komplett verstecken
+                    @include screen(med-small) {
+                        display: none !important;
+                    }
                 }
                 .cart-item__details {
                     * {
@@ -94,19 +150,25 @@
                         font-size: $fontSizeMedium;
                     }
 
+                    // Mobile: Volle Breite und unter dem Bild
+                    @include screen(med-small) {
+                        width: 100% !important;
+                        grid-column: auto !important;
+                    }
+
                     // Produktspezifikationen Styling
                     .cart-item__specs {
                         margin-top: 8px;
 
                         .cart-item__spec {
                             display: flex;
-                            justify-content: flex-start;
+                            justify-content: space-between;
                             align-items: center;
-                            margin-bottom: 5px;
+                            margin-bottom: 2px;
 
                             .cart-item__spec-label,
                             .cart-item__spec-value {
-                                font-size: 12px !important;
+                                font-size: 10px !important;
                                 color: $grayColor !important;
                                 font-family: 'Cormorant Garamond' !important;
                                 line-height: 1.2;
@@ -123,10 +185,26 @@
                         }
                     }
                 }
+                .cart-item__quantity {
+                    // Mobile: Unter den Details positionieren
+                    @include screen(med-small) {
+                        grid-column: auto !important;
+                        margin-top: 10px;
+                        width: 100%;
+                    }
+                }
+
                 cart-remove-button {
                     position: absolute;
                     top: 5px;
                     right: -10px;
+
+                    // Mobile: Anpassung der Position für Kachel-Layout
+                    @include screen(med-small) {
+                        top: 15px;
+                        right: 15px;
+                    }
+
                     .button {
                         width: 2.5rem !important;
                         height: 2.5rem !important;
