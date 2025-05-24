@@ -1,0 +1,203 @@
+/**
+ * Main Page Section Styles
+ * Angepasste Styles für Seiten-Inhalte mit Garamond-Font und $mainColor
+ */
+
+.page-content {
+    // Text-Formatierung wie bei anderen Seiten
+    font-family: 'Cormorant Garamond', serif !important;
+    font-size: $fontSizeMedium !important; // 22px
+    color: $mainColor !important;
+    line-height: 1.6 !important;
+    font-weight: normal !important;
+
+    // Spezifische P-Tag Formatierung
+    p {
+        font-family: 'Cormorant Garamond', serif !important;
+        font-size: $fontSizeMedium !important;
+        color: $mainColor !important;
+        line-height: 1.6 !important;
+        font-weight: normal !important;
+        margin: 0px 0px 20px 0;
+        &:last-child {
+            margin-bottom: 0 !important;
+        }
+    }
+
+    // Überschreibt Standard-RTE-Styles
+    div, span, li, td, th {
+        font-family: 'Cormorant Garamond', serif !important;
+        font-size: $fontSizeMedium !important;
+        color: $mainColor !important;
+        line-height: 1.6 !important;
+    }
+
+    // Headlines in Seiten-Inhalten
+    h1, h2, h3, h4, h5, h6 {
+        font-family: 'Cormorant Garamond', serif !important;
+        color: $mainColor !important;
+        font-weight: bold;
+        margin-bottom: 1em;
+        margin-top: 1.5em;
+
+        &:first-child {
+            margin-top: 0;
+        }
+    }
+
+    h1 {
+        font-size: calc(#{$fontSizeMedium} * 1.8) !important; // ~40px
+    }
+
+    h2 {
+        font-size: calc(#{$fontSizeMedium} * 1.5) !important; // ~33px
+    }
+
+    h3 {
+        font-size: calc(#{$fontSizeMedium} * 1.3) !important; // ~29px
+    }
+
+    h4, h5, h6 {
+        font-size: calc(#{$fontSizeMedium} * 1.1) !important; // ~24px
+    }
+
+    // Links
+    a {
+        color: $mainColor !important;
+        text-decoration: underline;
+        transition: color 0.3s ease;
+
+        &:hover {
+            color: $mainColorDark !important;
+            text-decoration: none;
+        }
+    }
+
+    // Listen
+    ul, ol {
+        margin: 1em 0;
+        padding-left: 2em;
+
+        li {
+            margin-bottom: 0.5em;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
+
+    // Tabellen
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 2em 0;
+
+        th, td {
+            padding: 0.75em;
+            border: 1px solid rgba($mainColor, 0.2);
+            text-align: left;
+        }
+
+        th {
+            background-color: rgba($mainColor, 0.1);
+            font-weight: bold;
+        }
+    }
+
+    // Blockquotes
+    blockquote {
+        border-left: 4px solid $mainColor;
+        padding-left: 1.5em;
+        margin: 2em 0;
+        font-style: italic;
+        color: $mainColorDark !important;
+    }
+
+    // Bilder
+    img {
+        max-width: 100%;
+        height: auto;
+        margin: 1em 0;
+        border-radius: 4px;
+    }
+}
+
+// Responsive Anpassungen
+@media screen and (max-width: 768px) {
+    .page-content {
+        font-size: calc(#{$fontSizeMedium} * 0.9) !important; // ~20px auf Mobile
+
+        p {
+            font-size: calc(#{$fontSizeMedium} * 0.9) !important;
+            font-family: 'Cormorant Garamond', serif !important;
+            color: $mainColor !important;
+            line-height: 1.6 !important;
+        }
+
+        div, span, li, td, th {
+            font-size: calc(#{$fontSizeMedium} * 0.9) !important;
+        }
+
+        h1 {
+            font-size: calc(#{$fontSizeMedium} * 1.6) !important; // ~35px
+        }
+
+        h2 {
+            font-size: calc(#{$fontSizeMedium} * 1.4) !important; // ~31px
+        }
+
+        h3 {
+            font-size: calc(#{$fontSizeMedium} * 1.2) !important; // ~26px
+        }
+
+        h4, h5, h6 {
+            font-size: $fontSizeMedium !important; // 22px
+        }
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .page-content {
+        font-size: calc(#{$fontSizeMedium} * 0.85) !important; // ~19px auf sehr kleinen Screens
+
+        p {
+            font-size: calc(#{$fontSizeMedium} * 0.85) !important;
+            font-family: 'Cormorant Garamond', serif !important;
+            color: $mainColor !important;
+            line-height: 1.6 !important;
+        }
+
+        div, span, li, td, th {
+            font-size: calc(#{$fontSizeMedium} * 0.85) !important;
+        }
+    }
+
+    // Spezifische P-Tag Responsive Styles für sehr kleine Screens
+    .page-width .page-content p,
+    .section .page-content p,
+    .rte.page-content p,
+    div.page-content p {
+        font-size: calc(#{$fontSizeMedium} * 0.85) !important;
+        font-family: 'Cormorant Garamond', serif !important;
+        color: $mainColor !important;
+        line-height: 1.6 !important;
+    }
+}
+
+// Überschreibt alle möglichen Standard-Styles für robuste Formatierung
+.section .page-content {
+    * {
+        font-family: 'Cormorant Garamond', serif !important;
+        color: $mainColor !important;
+    }
+
+    // Spezielle Behandlung für eingefügte HTML-Elemente (z.B. aus Word)
+    span[style*="font-family"],
+    div[style*="font-family"],
+    p[style*="font-family"] {
+        font-family: 'Cormorant Garamond', serif !important;
+        font-size: $fontSizeMedium !important;
+        color: $mainColor !important;
+    }
+}

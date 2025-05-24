@@ -8,8 +8,9 @@ footer {
             .footer__blocks-wrapper {
                 display: flex;
                 flex-wrap: wrap;
-                justify-content: space-around;
-                gap: 0px !important;
+                justify-content: space-between;
+                padding: 0 30px;
+                gap: 30px !important;
                 @media screen and (max-width: 749px) {
                     flex-direction: column;
                     
