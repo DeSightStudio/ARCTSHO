@@ -44,9 +44,25 @@
         "padding_top": 28,
         "padding_bottom": 28
       }
+    },
+    "breadcrumb_XVQMNY": {
+      "type": "breadcrumb",
+      "name": "Breadcrumb",
+      "settings": {
+        "hide_breadcrumbs": false,
+        "home_text": "Home",
+        "show_collection_in_product": true,
+        "excluded_collection_handles": "all,alle-produkte,tous-les-produits,todos-los-productos,tutti-i-prodotti",
+        "show_tags_in_collection": true,
+        "show_tags_in_blog": true,
+        "color_scheme": "",
+        "padding_top": 20,
+        "padding_bottom": 20
+      }
     }
   },
   "order": [
+    "breadcrumb_XVQMNY",
     "rich_text_mfQYwG",
     "main"
   ]
