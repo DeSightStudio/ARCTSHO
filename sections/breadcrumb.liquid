@@ -1,19 +1,16 @@
 {%- comment -%}
   Breadcrumb Section
   Erstellt eine mehrschichtige Breadcrumb-Navigation für verschiedene Seitentypen
-  Unterstützt: Collection Pages, Produktseiten, reguläre Seiten, Blog-Artikel
 {%- endcomment -%}
 
 {%- liquid
   assign show_breadcrumbs = true
   assign current_template = template | split: '.' | first
 
-  # Breadcrumbs auf bestimmten Seiten ausblenden
   if template == 'index' or template == 'cart' or template == 'list-collections' or template == '404'
     assign show_breadcrumbs = false
   endif
 
-  # Wenn Section-Setting zum Ausblenden gesetzt ist
   if section.settings.hide_breadcrumbs
     assign show_breadcrumbs = false
   endif
@@ -52,20 +49,64 @@
               </li>
 
             {%- when 'product' -%}
-              {%- comment -%} Zeige Collection falls verfügbar {%- endcomment -%}
-              {%- if collection.url and section.settings.show_collection_in_product -%}
-                <li class="breadcrumbs__item">
-                  <a class="breadcrumbs__link" href="{{ collection.url }}">
-                    {{ collection.title }}
-                  </a>
-                </li>
-              {%- elsif product.collections.size > 0 and section.settings.show_collection_in_product -%}
-                {%- assign first_collection = product.collections.first -%}
-                <li class="breadcrumbs__item">
-                  <a class="breadcrumbs__link" href="{{ first_collection.url }}">
-                    {{ first_collection.title }}
-                  </a>
-                </li>
+              {%- comment -%} Zeige Collection falls verfügbar, aber überspringe "All Products" {%- endcomment -%}
+              {%- if section.settings.show_collection_in_product -%}
+                {%- liquid
+                  assign selected_collection = null
+                  assign excluded_handles = section.settings.excluded_collection_handles | split: ','
+                  assign excluded_titles = 'All Products,Alle Produkte,Tous les produits,Todos los productos,Tutti i prodotti' | split: ','
+
+                  # Prüfe zuerst die aktuelle Collection (falls von Collection-Seite kommend)
+                  if collection.url
+                    assign is_excluded = false
+                    for excluded_handle in excluded_handles
+                      if collection.handle == excluded_handle
+                        assign is_excluded = true
+                        break
+                      endif
+                    endfor
+                    for excluded_title in excluded_titles
+                      if collection.title == excluded_title
+                        assign is_excluded = true
+                        break
+                      endif
+                    endfor
+                    unless is_excluded
+                      assign selected_collection = collection
+                    endunless
+                  endif
+
+                  # Falls keine gültige Collection gefunden, suche die erste gültige Collection
+                  if selected_collection == null
+                    for product_collection in product.collections
+                      assign is_excluded = false
+                      for excluded_handle in excluded_handles
+                        if product_collection.handle == excluded_handle
+                          assign is_excluded = true
+                          break
+                        endif
+                      endfor
+                      for excluded_title in excluded_titles
+                        if product_collection.title == excluded_title
+                          assign is_excluded = true
+                          break
+                        endif
+                      endfor
+                      unless is_excluded
+                        assign selected_collection = product_collection
+                        break
+                      endunless
+                    endfor
+                  endif
+                -%}
+
+                {%- if selected_collection -%}
+                  <li class="breadcrumbs__item">
+                    <a class="breadcrumbs__link" href="{{ selected_collection.url }}">
+                      {{ selected_collection.title }}
+                    </a>
+                  </li>
+                {%- endif -%}
               {%- endif -%}
 
               <li class="breadcrumbs__item">
@@ -147,14 +188,7 @@
   "name": "Breadcrumb",
   "tag": "section",
   "class": "section",
-  "disabled_on": {
-    "groups": ["header", "footer"]
-  },
   "settings": [
-    {
-      "type": "header",
-      "content": "Allgemeine Einstellungen"
-    },
     {
       "type": "checkbox",
       "id": "hide_breadcrumbs",
@@ -165,18 +199,20 @@
       "type": "text",
       "id": "home_text",
       "label": "Text für Home-Link",
-      "default": "Home",
-      "info": "Leer lassen für automatische Übersetzung"
-    },
-    {
-      "type": "header",
-      "content": "Anzeige-Optionen"
+      "default": "Home"
     },
     {
       "type": "checkbox",
       "id": "show_collection_in_product",
       "default": true,
       "label": "Collection in Produkt-Breadcrumbs anzeigen"
+    },
+    {
+      "type": "text",
+      "id": "excluded_collection_handles",
+      "label": "Ausgeschlossene Collection-Handles",
+      "default": "all,alle-produkte,tous-les-produits,todos-los-productos,tutti-i-prodotti",
+      "info": "Komma-getrennte Liste von Collection-Handles die übersprungen werden sollen"
     },
     {
       "type": "checkbox",
@@ -195,10 +231,6 @@
       "id": "color_scheme",
       "label": "Farbschema",
       "default": "scheme-1"
-    },
-    {
-      "type": "header",
-      "content": "Abstände"
     },
     {
       "type": "range",
