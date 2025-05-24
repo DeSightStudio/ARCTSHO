@@ -80,4 +80,34 @@ product-recommendations {
             font-size: $fontSizeMedium;
         }
     }
+    .card__content {
+        overflow: hidden;
+        display: flex;
+        .card__information {
+            max-width: 100%;
+        }
+        /*.card-product__specs-list {
+            max-width: 100%;
+            min-width: 260px !important;
+        }
+        .card__information {
+            width: calc(100% - 15px);
+            .card-product__content {
+                padding: 28px !important;
+            }
+        }
+        .card-product__price-container {
+            max-width: 100%;
+        }*/
+    }
+    /*.card-product__actions {
+        min-width: 255px !important;
+    }*/
+    h1, h2, h3, h4, h5, h6 {
+        font-family: 'Cormorant Garamond';
+        font-size: $fontSizeSmall;
+        color: $whiteColor;
+        opacity: 0;
+        margin: 5px 0px 0px 0px;
+    }
 }

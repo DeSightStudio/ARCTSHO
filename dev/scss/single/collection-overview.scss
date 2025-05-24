@@ -45,7 +45,6 @@
                                 .card-product__actions {
                                     opacity: 0;
                                     width: max-content;
-                                    min-width: 270px;
                                     margin: 0 auto 10px auto;
                                     * {
                                         margin: 0px !important;
@@ -94,7 +93,8 @@
                                     margin: 10px 0 20px 0;
                                     padding: 0px;
                                     width: max-content;
-                                    min-width: 270px;
+                                    display: block;
+                                    width: 100%;
                                     li {
                                         font-family: 'Cormorant Garamond';
                                         font-size: $fontSizeRegular;
@@ -102,6 +102,9 @@
                                         margin: 0px;
                                         padding: 0px;
                                         list-style: none;
+                                        display: flex;
+                                        justify-content: space-between;
+                                        align-items: center;
                                     }
                                 }
                             }

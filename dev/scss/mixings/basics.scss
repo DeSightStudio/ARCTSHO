@@ -161,7 +161,7 @@ $breakpoint-med-small: 990px;
 $breakpoint-med: 1025px;
 $breakpoint-large: 1140px;
 $breakpoint-x-large: 1240px;
-$breakpoint-xx-large: 1400px;
+$breakpoint-xx-large: 1600px;
 
 @mixin screen($size, $type: max, $pixels: $breakpoint-x-small) {
   @if $size == 'x-small' {
