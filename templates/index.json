@@ -342,7 +342,7 @@
         "padding_bottom": 0,
         "use_arrow_divider": true,
         "arrow_width": 20,
-        "arrow_thickness": 5,
+        "arrow_thickness": 1,
         "arrow_position": "top",
         "arrow_color": "#05470a",
         "headline_styling": "Headline Default"
@@ -426,7 +426,7 @@
         "full_width": true,
         "padding_top": 40,
         "padding_bottom": 52,
-        "use_arrow_divider": true,
+        "use_arrow_divider": false,
         "arrow_width": 50,
         "arrow_thickness": 2,
         "arrow_position": "top",
@@ -471,9 +471,9 @@
         "padding_top": 40,
         "padding_bottom": 52,
         "use_arrow_divider": true,
-        "arrow_width": 100,
-        "arrow_thickness": 2,
-        "arrow_position": "top",
+        "arrow_width": 20,
+        "arrow_thickness": 1,
+        "arrow_position": "bottom",
         "arrow_color": "#05470a",
         "headline_styling": "Headline Icon Light"
       }

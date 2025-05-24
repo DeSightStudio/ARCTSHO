@@ -46,7 +46,7 @@
         "padding_top": 40,
         "padding_bottom": 52,
         "use_arrow_divider": true,
-        "arrow_width": 25,
+        "arrow_width": 20,
         "arrow_thickness": 1,
         "arrow_position": "bottom",
         "arrow_color": "#05470a",

@@ -71,11 +71,11 @@
         "full_width": true,
         "padding_top": 40,
         "padding_bottom": 52,
-        "use_arrow_divider": false,
-        "arrow_width": 50,
-        "arrow_thickness": 2,
+        "use_arrow_divider": true,
+        "arrow_width": 10,
+        "arrow_thickness": 1,
         "arrow_position": "bottom",
-        "arrow_color": "#000000",
+        "arrow_color": "#05470a",
         "headline_styling": "Headline Icon Light"
       }
     },
@@ -203,11 +203,11 @@
         "full_width": true,
         "padding_top": 40,
         "padding_bottom": 52,
-        "use_arrow_divider": false,
-        "arrow_width": 50,
-        "arrow_thickness": 2,
+        "use_arrow_divider": true,
+        "arrow_width": 20,
+        "arrow_thickness": 1,
         "arrow_position": "bottom",
-        "arrow_color": "#000000",
+        "arrow_color": "#05470a",
         "headline_styling": "Headline Icon Light"
       }
     },
