@@ -95,7 +95,13 @@
         aria-label="{{ 'general.slider.name' | t }}"
       >
         {% assign skip_card_product_styles = false %}
-        {%- for product in section.settings.collection.products limit: section.settings.products_to_show -%}
+
+        {% comment %} Sortiere Produkte: Verfügbare zuerst, dann ausverkaufte {% endcomment %}
+        {% assign available_products = section.settings.collection.products | where: 'available', true %}
+        {% assign soldout_products = section.settings.collection.products | where: 'available', false %}
+        {% assign sorted_products = available_products | concat: soldout_products %}
+
+        {%- for product in sorted_products limit: section.settings.products_to_show -%}
           <li
             id="Slide-{{ section.id }}-{{ forloop.index }}"
             class="grid__item{% if show_mobile_slider or show_desktop_slider %} slider__slide{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"

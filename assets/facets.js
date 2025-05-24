@@ -96,6 +96,9 @@ class FacetFiltersForm extends HTMLElement {
       .parseFromString(html, 'text/html')
       .getElementById('ProductGridContainer').innerHTML;
 
+    // Sortiere Produkte nach Verfügbarkeit (verfügbare zuerst, dann ausverkaufte)
+    FacetFiltersForm.sortProductsByAvailability();
+
     document
       .getElementById('ProductGridContainer')
       .querySelectorAll('.scroll-trigger')
@@ -250,6 +253,31 @@ class FacetFiltersForm extends HTMLElement {
     }
   }
 
+  static sortProductsByAvailability() {
+    const productGrid = document.querySelector('#product-grid');
+    if (!productGrid) return;
+
+    const productItems = Array.from(productGrid.querySelectorAll('.grid__item'));
+    if (productItems.length === 0) return;
+
+    // Sortiere Produkte: verfügbare zuerst, dann ausverkaufte
+    const sortedItems = productItems.sort((a, b) => {
+      const aIsSoldOut = a.querySelector('.badge')?.textContent?.trim().toLowerCase().includes('ausverkauft') ||
+                        a.querySelector('.badge')?.textContent?.trim().toLowerCase().includes('sold out') ||
+                        a.querySelector('.product-form__buttons')?.style.display === 'none';
+      const bIsSoldOut = b.querySelector('.badge')?.textContent?.trim().toLowerCase().includes('ausverkauft') ||
+                        b.querySelector('.badge')?.textContent?.trim().toLowerCase().includes('sold out') ||
+                        b.querySelector('.product-form__buttons')?.style.display === 'none';
+
+      // Verfügbare Produkte (false) kommen vor ausverkauften (true)
+      if (aIsSoldOut === bIsSoldOut) return 0;
+      return aIsSoldOut ? 1 : -1;
+    });
+
+    // Füge die sortierten Elemente wieder in das Grid ein
+    sortedItems.forEach(item => productGrid.appendChild(item));
+  }
+
   static updateURLHash(searchParams) {
     history.pushState({ searchParams }, '', `${window.location.pathname}${searchParams && '?'.concat(searchParams)}`);
   }
@@ -310,6 +338,11 @@ FacetFiltersForm.searchParamsInitial = window.location.search.slice(1);
 FacetFiltersForm.searchParamsPrev = window.location.search.slice(1);
 customElements.define('facet-filters-form', FacetFiltersForm);
 FacetFiltersForm.setListeners();
+
+// Sortiere Produkte beim ersten Laden der Seite
+document.addEventListener('DOMContentLoaded', () => {
+  FacetFiltersForm.sortProductsByAvailability();
+});
 
 class PriceRange extends HTMLElement {
   constructor() {

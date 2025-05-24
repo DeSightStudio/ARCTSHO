@@ -257,7 +257,22 @@
                 role="list"
               >
                 {%- assign skip_card_product_styles = false -%}
-                {%- for item in search.results -%}
+
+                {% comment %} Sortiere Suchergebnisse: Verfügbare Produkte zuerst, dann ausverkaufte {% endcomment %}
+                {% assign product_results = search.results | where: 'object_type', 'product' %}
+                {% assign available_products = product_results | where: 'available', true %}
+                {% assign soldout_products = product_results | where: 'available', false %}
+                {% assign other_results = '' | split: ',' %}
+
+                {% for item in search.results %}
+                  {% unless item.object_type == 'product' %}
+                    {% assign other_results = other_results | concat: item %}
+                  {% endunless %}
+                {% endfor %}
+
+                {% assign sorted_results = available_products | concat: soldout_products | concat: other_results %}
+
+                {%- for item in sorted_results -%}
                   {% assign lazy_load = false %}
                   {%- if forloop.index > 2 -%}
                     {%- assign lazy_load = true -%}

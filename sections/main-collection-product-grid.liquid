@@ -160,7 +160,13 @@
               "
             >
               {% assign skip_card_product_styles = false %}
-              {%- for product in collection.products -%}
+
+              {% comment %} Sortiere Produkte: Verfügbare zuerst, dann ausverkaufte {% endcomment %}
+              {% assign available_products = collection.products | where: 'available', true %}
+              {% assign soldout_products = collection.products | where: 'available', false %}
+              {% assign sorted_products = available_products | concat: soldout_products %}
+
+              {%- for product in sorted_products -%}
                 {% assign lazy_load = false %}
                 {%- if forloop.index > 2 -%}
                   {%- assign lazy_load = true -%}
