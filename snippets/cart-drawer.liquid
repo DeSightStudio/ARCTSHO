@@ -193,6 +193,158 @@
                             </div>
                           {%- endif -%}
 
+                          {%- comment -%} Produktspezifikationen (Maße, Gewicht) {%- endcomment -%}
+                          <div class="cart-item__specs">
+                            {%- assign has_specs = false -%}
+
+                            {%- comment -%} Gewicht anzeigen {%- endcomment -%}
+                            {%- if item.product.metafields.next_cart.weight_m != blank -%}
+                              {%- assign has_specs = true -%}
+                              <div class="cart-item__spec">
+                                <span class="cart-item__spec-label">
+                                  {{- 'products.product.product_specs.weight' | t }}:</span
+                                >
+                                {% assign weight_value = item.product.metafields.next_cart.weight_m | plus: 0 %}
+                                <span
+                                  class="cart-item__spec-value weight-value metric-value metric-weight"
+                                  data-original-value="{{ weight_value }}"
+                                  data-unit="g"
+                                  data-metric-value="{{ weight_value }}"
+                                  data-metric-unit="g"
+                                >
+                                  {% if weight_value < 1000 %}
+                                    {{- weight_value }} g
+                                  {% else %}
+                                    {{- weight_value | divided_by: 1000.0 | round: 2 }} kg
+                                  {% endif %}
+                                </span>
+                              </div>
+                            {%- elsif item.product.metafields.custom.weight_m != blank -%}
+                              {%- assign has_specs = true -%}
+                              <div class="cart-item__spec">
+                                <span class="cart-item__spec-label">
+                                  {{- 'products.product.product_specs.weight' | t }}:</span
+                                >
+                                {% assign weight_value = item.product.metafields.custom.weight_m | plus: 0 %}
+                                <span
+                                  class="cart-item__spec-value weight-value metric-value metric-weight"
+                                  data-original-value="{{ weight_value }}"
+                                  data-unit="g"
+                                  data-metric-value="{{ weight_value }}"
+                                  data-metric-unit="g"
+                                >
+                                  {% if weight_value < 1000 %}
+                                    {{- weight_value }} g
+                                  {% else %}
+                                    {{- weight_value | divided_by: 1000.0 | round: 2 }} kg
+                                  {% endif %}
+                                </span>
+                              </div>
+                            {%- elsif item.product.weight > 0 -%}
+                              {%- assign has_specs = true -%}
+                              <div class="cart-item__spec">
+                                <span class="cart-item__spec-label">
+                                  {{- 'products.product.product_specs.weight' | t }}:</span
+                                >
+                                {% assign weight_value = item.product.weight | plus: 0 %}
+                                <span
+                                  class="cart-item__spec-value weight-value metric-value metric-weight"
+                                  data-original-value="{{ weight_value }}"
+                                  data-unit="g"
+                                  data-metric-value="{{ weight_value }}"
+                                  data-metric-unit="g"
+                                >
+                                  {% if weight_value < 1000 %}
+                                    {{- weight_value }} g
+                                  {% else %}
+                                    {{- weight_value | divided_by: 1000.0 | round: 2 }} kg
+                                  {% endif %}
+                                </span>
+                              </div>
+                            {%- endif -%}
+
+                            {%- comment -%} Länge anzeigen {%- endcomment -%}
+                            {%- if item.product.metafields.next_cart.ts_dimensions_length_m != blank -%}
+                              {%- assign has_specs = true -%}
+                              <div class="cart-item__spec">
+                                <span class="cart-item__spec-label">
+                                  {{- 'products.product.product_specs.length' | t }}:</span
+                                >
+                                {% assign length_value = item.product.metafields.next_cart.ts_dimensions_length_m
+                                  | plus: 0
+                                %}
+                                <span
+                                  class="cart-item__spec-value metric-value metric-length"
+                                  data-spec-type="length"
+                                  data-original-value="{{ length_value }}"
+                                  data-unit="mm"
+                                  data-metric-value="{{ length_value }}"
+                                  data-metric-unit="mm"
+                                >
+                                  {% if length_value < 10 %}
+                                    {{- length_value }} mm
+                                  {% else %}
+                                    {{- length_value | divided_by: 10.0 | round: 1 }} cm
+                                  {% endif %}
+                                </span>
+                              </div>
+                            {%- endif -%}
+
+                            {%- comment -%} Breite anzeigen {%- endcomment -%}
+                            {%- if item.product.metafields.next_cart.ts_dimensions_width_m != blank -%}
+                              {%- assign has_specs = true -%}
+                              <div class="cart-item__spec">
+                                <span class="cart-item__spec-label">
+                                  {{- 'products.product.product_specs.width' | t }}:</span
+                                >
+                                {% assign width_value = item.product.metafields.next_cart.ts_dimensions_width_m
+                                  | plus: 0
+                                %}
+                                <span
+                                  class="cart-item__spec-value metric-value metric-length"
+                                  data-spec-type="width"
+                                  data-original-value="{{ width_value }}"
+                                  data-unit="mm"
+                                  data-metric-value="{{ width_value }}"
+                                  data-metric-unit="mm"
+                                >
+                                  {% if width_value < 10 %}
+                                    {{- width_value }} mm
+                                  {% else %}
+                                    {{- width_value | divided_by: 10.0 | round: 1 }} cm
+                                  {% endif %}
+                                </span>
+                              </div>
+                            {%- endif -%}
+
+                            {%- comment -%} Höhe anzeigen {%- endcomment -%}
+                            {%- if item.product.metafields.next_cart.ts_dimensions_height_m != blank -%}
+                              {%- assign has_specs = true -%}
+                              <div class="cart-item__spec">
+                                <span class="cart-item__spec-label">
+                                  {{- 'products.product.product_specs.height' | t }}:</span
+                                >
+                                {% assign height_value = item.product.metafields.next_cart.ts_dimensions_height_m
+                                  | plus: 0
+                                %}
+                                <span
+                                  class="cart-item__spec-value metric-value metric-length"
+                                  data-spec-type="height"
+                                  data-original-value="{{ height_value }}"
+                                  data-unit="mm"
+                                  data-metric-value="{{ height_value }}"
+                                  data-metric-unit="mm"
+                                >
+                                  {% if height_value < 10 %}
+                                    {{- height_value }} mm
+                                  {% else %}
+                                    {{- height_value | divided_by: 10.0 | round: 1 }} cm
+                                  {% endif %}
+                                </span>
+                              </div>
+                            {%- endif -%}
+                          </div>
+
                           {%- if item.product.has_only_default_variant == false
                             or item.properties.size != 0
                             or item.selling_plan_allocation != null

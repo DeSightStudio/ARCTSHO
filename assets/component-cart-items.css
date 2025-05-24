@@ -109,6 +109,35 @@ cart-items .title-wrapper-with-link {
   font-weight: 400;
 }
 
+/* Produktspezifikationen Styling für Haupt-Warenkorb */
+.cart-item__specs {
+  margin-top: 8px;
+}
+
+.cart-item__spec {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2px;
+}
+
+.cart-item__spec-label,
+.cart-item__spec-value {
+  font-size: 10px !important;
+  color: #8e8e8e !important;
+  font-family: 'Cormorant Garamond' !important;
+  line-height: 1.2;
+}
+
+.cart-item__spec-label {
+  font-weight: normal;
+}
+
+.cart-item__spec-value {
+  font-weight: 500;
+  text-align: right;
+}
+
 .product-option {
   font-size: 1.4rem;
   word-break: break-word;

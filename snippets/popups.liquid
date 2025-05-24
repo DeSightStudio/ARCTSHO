@@ -225,6 +225,23 @@
 
             <div id="vatIdCartFormContainer">
               {%- form 'contact', id: 'vatIdCartForm', class: 'vat-id-form' -%}
+                <div class="form-field vat-field-full-width">
+                  <label for="ContactForm-vatId">
+                    {{- 'customer.vat_form.vat_id' | t }}
+                    <span aria-hidden="true">*</span></label
+                  >
+                  <div class="vat-id-input-wrapper">
+                    <input
+                      type="text"
+                      id="ContactForm-vatId"
+                      name="contact[vat_id]"
+                      value="{% if form.vat_id %}{{ form.vat_id }}{% endif %}"
+                      required
+                    >
+                    <div id="vatIdValidationStatus" class="vat-id-validation-status"></div>
+                  </div>
+                  <div id="vatIdValidationMessage" class="vat-id-validation-message"></div>
+                </div>
                 {% if form.posted_successfully? %}
                   <div class="form-success">
                     {{ settings.cart_popup_vat_id_success_message }}
@@ -456,24 +473,6 @@
                       required
                     >
                   </div>
-                </div>
-
-                <div class="form-field vat-field-full-width">
-                  <label for="ContactForm-vatId">
-                    {{- 'customer.vat_form.vat_id' | t }}
-                    <span aria-hidden="true">*</span></label
-                  >
-                  <div class="vat-id-input-wrapper">
-                    <input
-                      type="text"
-                      id="ContactForm-vatId"
-                      name="contact[vat_id]"
-                      value="{% if form.vat_id %}{{ form.vat_id }}{% endif %}"
-                      required
-                    >
-                    <div id="vatIdValidationStatus" class="vat-id-validation-status"></div>
-                  </div>
-                  <div id="vatIdValidationMessage" class="vat-id-validation-message"></div>
                 </div>
 
                 <div class="form-field-group">

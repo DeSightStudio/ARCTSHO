@@ -93,6 +93,35 @@
                     .h4 {
                         font-size: $fontSizeMedium;
                     }
+
+                    // Produktspezifikationen Styling
+                    .cart-item__specs {
+                        margin-top: 8px;
+
+                        .cart-item__spec {
+                            display: flex;
+                            justify-content: flex-start;
+                            align-items: center;
+                            margin-bottom: 5px;
+
+                            .cart-item__spec-label,
+                            .cart-item__spec-value {
+                                font-size: 12px !important;
+                                color: $grayColor !important;
+                                font-family: 'Cormorant Garamond' !important;
+                                line-height: 1.2;
+                            }
+
+                            .cart-item__spec-label {
+                                font-weight: normal;
+                            }
+
+                            .cart-item__spec-value {
+                                font-weight: 500;
+                                text-align: right;
+                            }
+                        }
+                    }
                 }
                 cart-remove-button {
                     position: absolute;
@@ -132,7 +161,7 @@
         }
         #Details-CartDrawer {
             .summary__title {
-                
+
             }
             label {
                 display: none !important;
@@ -168,7 +197,7 @@
                 }
             }
             .totals__total-value {
-                
+
             }
         }
         * {
