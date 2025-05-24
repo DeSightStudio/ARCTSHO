@@ -450,6 +450,13 @@
                 console.log('Language flags initialized for locale:', currentLanguage);
             }
 
+            // Initialize external links manager
+            function initExternalLinks() {
+                // External Links Manager wird automatisch über das separate Modul geladen
+                // Diese Funktion kann für zusätzliche Konfigurationen verwendet werden
+                console.log('External Links Manager wird initialisiert...');
+            }
+
             // Initialize BUCKS currency converter customizations
             function initBucksCurrencyConverter() {
                 // Wait for BUCKS app to load
@@ -556,6 +563,9 @@
 
                 // Slick Slider Initialization
                 initializeSlickSlider();
+
+                // External Links Manager Initialization
+                initExternalLinks();
             }
 
             // Starte die Initialisierung

@@ -63,7 +63,10 @@ footer {
                     }
                 }
             }
-            
+            .footer-block.grid__item + .footer-block.grid__item {
+                width: auto !important;
+                justify-self: flex-end !important;
+            }
             // Dynamische Newsletter-Breiten basierend auf den Einstellungen
             @for $i from 0 through 10 {
                 $width: $i * 10;
