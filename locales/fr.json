@@ -59,6 +59,10 @@
     "breadcrumbs": {
       "home": "Accueil",
       "aria_label": "Navigation par fil d'Ariane"
+    },
+    "back_button": {
+      "text": "Retour",
+      "aria_label": "Retour à la page précédente"
     }
   },
   "newsletter": {

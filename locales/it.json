@@ -59,6 +59,10 @@
     "breadcrumbs": {
       "home": "Home",
       "aria_label": "Navigazione breadcrumb"
+    },
+    "back_button": {
+      "text": "Indietro",
+      "aria_label": "Torna alla pagina precedente"
     }
   },
   "newsletter": {

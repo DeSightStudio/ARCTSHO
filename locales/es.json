@@ -59,6 +59,10 @@
     "breadcrumbs": {
       "home": "Inicio",
       "aria_label": "Navegación de migas de pan"
+    },
+    "back_button": {
+      "text": "Atrás",
+      "aria_label": "Volver a la página anterior"
     }
   },
   "newsletter": {

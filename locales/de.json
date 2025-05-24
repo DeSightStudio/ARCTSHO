@@ -68,6 +68,10 @@
     "breadcrumbs": {
       "home": "Startseite",
       "aria_label": "Breadcrumb-Navigation"
+    },
+    "back_button": {
+      "text": "Zurück",
+      "aria_label": "Zurück zur vorherigen Seite"
     }
   },
   "newsletter": {

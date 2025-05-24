@@ -537,6 +537,20 @@
                 }, 1000); // Wait 1 second for BUCKS to load
             }
 
+            // Initialize Back Button Manager
+            function initBackButtonManager() {
+                // Back Button Manager wird automatisch über das separate Modul geladen
+                // Diese Funktion kann für zusätzliche Konfigurationen verwendet werden
+                console.log('Back Button Manager wird initialisiert...');
+
+                // Prüfe ob der Back Button Manager verfügbar ist
+                if (typeof window.backButtonManager !== 'undefined') {
+                    console.log('Back Button Manager ist verfügbar');
+                } else {
+                    console.log('Back Button Manager wird geladen...');
+                }
+            }
+
             // Initialization
             function initialize() {
                 console.log('Initializing contact form components...');
@@ -593,6 +607,9 @@
 
                 // Textarea Resize Deaktivierung
                 disableTextareaResize();
+
+                // Back Button Manager Initialization
+                initBackButtonManager();
             }
 
             // Starte die Initialisierung
@@ -780,3 +797,6 @@ function cleanupCopyPasteFormatting() {
         console.log('Cleaned up copy/paste formatting in category-details');
     });
 }
+
+// Import Back Button Manager
+// Back Button Manager wird automatisch initialisiert wenn die Datei geladen wird
