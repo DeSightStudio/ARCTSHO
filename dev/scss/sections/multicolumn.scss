@@ -94,6 +94,7 @@
     }
     &.shopifydefault {
         .multicolumn-card {
+            text-align: center;
             .multicolumn-card__image-wrapper {
                 .media {
                     @include screen(med-small) {
@@ -102,16 +103,19 @@
                     img {
                         max-width: 320px;
                         object-fit: contain;
+                        margin: 0px auto !important;
+                        left: 50% !important;
+                        transform: translateX(-50%);
                         @include screen(med-small) {
-                            margin: 0px auto !important;
-                            left: 50% !important;
-                            transform: translateX(-50%);
+                            
                         }
                     }
                 }
             }
             .multicolumn-card__info {
                 padding: 0px 50px 50px 50px !important;
+                text-align: left;
+                display: inline-block;
                 @include screen(med-small) {
                     padding: 0px 50px !important;
                     text-align: center !important;
@@ -129,6 +133,7 @@
                 }
                 .rte {
                     margin: 0px 0px 0px 0px;
+                    display: inline-block;
                     p {
                         font-family: 'Cormorant Garamond';
                         color: $mainColorDark;
