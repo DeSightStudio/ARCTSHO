@@ -50,6 +50,109 @@
       ],
       "settings": {}
     },
+    "collection_list_6VbVqK": {
+      "type": "collection-list",
+      "blocks": {
+        "featured_collection_Kiabxh": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "tusks"
+          }
+        },
+        "featured_collection_BhcitV": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "pieces"
+          }
+        },
+        "featured_collection_HEGzLQ": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "bark"
+          }
+        },
+        "featured_collection_N8PfRJ": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "training"
+          }
+        },
+        "featured_collection_czY7E6": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "offcuts"
+          }
+        },
+        "featured_collection_pRdncH": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "scales"
+          }
+        },
+        "featured_collection_frHUBq": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "mammoth-molar"
+          }
+        },
+        "featured_collection_mwNbPr": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "collector-s-pieces"
+          }
+        },
+        "featured_collection_kpmUfF": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "bark-offcuts"
+          }
+        },
+        "featured_collection_8wiVAy": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "stabilized-ivory"
+          }
+        },
+        "featured_collection_LbaVTF": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "handcrafted-jewellery"
+          }
+        },
+        "featured_collection_VWb9Ye": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "all-products"
+          }
+        }
+      },
+      "block_order": [
+        "featured_collection_Kiabxh",
+        "featured_collection_BhcitV",
+        "featured_collection_HEGzLQ",
+        "featured_collection_N8PfRJ",
+        "featured_collection_czY7E6",
+        "featured_collection_pRdncH",
+        "featured_collection_frHUBq",
+        "featured_collection_mwNbPr",
+        "featured_collection_kpmUfF",
+        "featured_collection_8wiVAy",
+        "featured_collection_LbaVTF",
+        "featured_collection_VWb9Ye"
+      ],
+      "settings": {
+        "title": "",
+        "heading_size": "h1",
+        "image_ratio": "square",
+        "columns_desktop": 3,
+        "color_scheme": "",
+        "show_view_all": false,
+        "columns_mobile": "1",
+        "swipe_on_mobile": false,
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
     "rich_text_9THtfW": {
       "type": "rich-text",
       "blocks": {
@@ -73,6 +176,7 @@
         "padding_bottom": 52,
         "use_arrow_divider": false,
         "arrow_width": 50,
+        "arrow_thickness": 2,
         "arrow_position": "bottom",
         "arrow_color": "#000000",
         "headline_styling": "Headline Icon Light"
@@ -90,119 +194,16 @@
         "show_image": true,
         "show_date": false,
         "show_author": false,
-        "show_view_all": false,
+        "show_view_all": true,
         "padding_top": 0,
-        "padding_bottom": 0
-      }
-    },
-    "collection_list_EnLiFU": {
-      "type": "collection-list",
-      "blocks": {
-        "featured_collection_Uwdp6p": {
-          "type": "featured_collection",
-          "settings": {
-            "collection": "gear"
-          }
-        },
-        "featured_collection_UkTYgB": {
-          "type": "featured_collection",
-          "settings": {
-            "collection": "bark-offcuts"
-          }
-        },
-        "featured_collection_Lhefbw": {
-          "type": "featured_collection",
-          "settings": {
-            "collection": "collector-s-pieces"
-          }
-        },
-        "featured_collection_MDUWjg": {
-          "type": "featured_collection",
-          "settings": {
-            "collection": "handcrafted-jewellery"
-          }
-        },
-        "featured_collection_j8jVXY": {
-          "type": "featured_collection",
-          "settings": {
-            "collection": "mammoth-molar"
-          }
-        },
-        "featured_collection_NbQVkV": {
-          "type": "featured_collection",
-          "settings": {
-            "collection": "offcuts"
-          }
-        },
-        "featured_collection_i6aJWK": {
-          "type": "featured_collection",
-          "settings": {
-            "collection": "men"
-          }
-        },
-        "featured_collection_yX9UnD": {
-          "type": "featured_collection",
-          "settings": {
-            "collection": "scales"
-          }
-        },
-        "featured_collection_eAzhwL": {
-          "type": "featured_collection",
-          "settings": {
-            "collection": "training"
-          }
-        },
-        "featured_collection_73WMAw": {
-          "type": "featured_collection",
-          "settings": {
-            "collection": "stabilized-ivory"
-          }
-        },
-        "featured_collection_mt8EVL": {
-          "type": "featured_collection",
-          "settings": {
-            "collection": "tusks"
-          }
-        },
-        "featured_collection_3T3KdE": {
-          "type": "featured_collection",
-          "settings": {
-            "collection": "all-products"
-          }
-        }
-      },
-      "block_order": [
-        "featured_collection_Uwdp6p",
-        "featured_collection_UkTYgB",
-        "featured_collection_Lhefbw",
-        "featured_collection_MDUWjg",
-        "featured_collection_j8jVXY",
-        "featured_collection_NbQVkV",
-        "featured_collection_i6aJWK",
-        "featured_collection_yX9UnD",
-        "featured_collection_eAzhwL",
-        "featured_collection_73WMAw",
-        "featured_collection_mt8EVL",
-        "featured_collection_3T3KdE"
-      ],
-      "settings": {
-        "title": "Our Mammoth Ivory Selection",
-        "heading_size": "h1",
-        "image_ratio": "square",
-        "columns_desktop": 3,
-        "color_scheme": "",
-        "show_view_all": false,
-        "columns_mobile": "2",
-        "swipe_on_mobile": false,
-        "padding_top": 36,
-        "padding_bottom": 36
+        "padding_bottom": 60
       }
     }
   },
   "order": [
     "image_banner_VTaJVW",
     "main",
-    "collection_list_EnLiFU",
+    "collection_list_6VbVqK",
     "rich_text_9THtfW",
     "featured_blog_YmPF76"
   ]
