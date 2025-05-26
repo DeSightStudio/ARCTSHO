@@ -223,15 +223,30 @@ class CustomLightbox {
 
     // Filtere nur echte Produktbilder
     const productImages = Array.from(allImages).filter(img => this.isProductImage(img));
+    console.log('Found product images:', productImages.length);
 
-    this.images = productImages.map(img => ({
-      src: this.getHighResImageUrl(img.src || img.dataset.src),
-      alt: img.alt || '',
-      mediaId: img.dataset.mediaId || null
-    }));
+    this.images = productImages.map((img, index) => {
+      const originalSrc = img.src || img.dataset.src;
+      const highResSrc = this.getHighResImageUrl(originalSrc);
+
+      console.log(`Image ${index}:`, {
+        original: originalSrc,
+        highRes: highResSrc,
+        alt: img.alt,
+        mediaId: img.dataset.mediaId
+      });
+
+      return {
+        src: highResSrc,
+        originalSrc: originalSrc, // Behalte Original als Fallback
+        alt: img.alt || '',
+        mediaId: img.dataset.mediaId || null
+      };
+    });
 
     // Finde Index des geklickten Bildes
     const clickedIndex = productImages.indexOf(clickedImage);
+    console.log('Clicked image index:', clickedIndex);
 
     this.open(clickedIndex >= 0 ? clickedIndex : 0);
   }
@@ -239,19 +254,47 @@ class CustomLightbox {
   getHighResImageUrl(src) {
     // Shopify Bildgrößen-URL anpassen für hohe Auflösung
     if (src && src.includes('shopify')) {
-      // Entferne bestehende Größenparameter und setze hohe Auflösung
-      let highResSrc = src.replace(/(_\d+x\d*|_\d*x\d+|_compact|_grande|_large|_medium|_small|_thumb)(\.|@)/, '$2');
+      console.log('Original src:', src);
 
-      // Füge hohe Auflösung hinzu (1600px Breite für Lightbox)
-      if (highResSrc.includes('?')) {
-        highResSrc = highResSrc.replace('?', '_1600x?');
-      } else {
-        const extension = highResSrc.split('.').pop();
-        highResSrc = highResSrc.replace(`.${extension}`, `_1600x.${extension}`);
+      try {
+        // Robustere URL-Behandlung für verschiedene Shopify-Formate
+        let highResSrc = src;
+
+        // Entferne bestehende Größenparameter - erweiterte Regex für alle Shopify-Größen
+        highResSrc = highResSrc.replace(/(_\d+x\d*|_\d*x\d+|_compact|_grande|_large|_medium|_small|_thumb|_pico|_icon|_master)(\.|@|$)/, '$2');
+        console.log('After size removal:', highResSrc);
+
+        // Fallback: Wenn keine Größenparameter gefunden wurden, verwende Original
+        if (highResSrc === src) {
+          console.log('No size parameters found, using original URL');
+          return src;
+        }
+
+        // Füge hohe Auflösung hinzu (1600px Breite für Lightbox)
+        if (highResSrc.includes('?')) {
+          highResSrc = highResSrc.replace('?', '_1600x?');
+        } else {
+          // Finde die Dateiendung sicherer
+          const urlParts = highResSrc.split('.');
+          if (urlParts.length > 1) {
+            const extension = urlParts.pop();
+            const basePath = urlParts.join('.');
+            highResSrc = `${basePath}_1600x.${extension}`;
+          } else {
+            // Keine Dateiendung gefunden, verwende Original
+            console.warn('No file extension found, using original URL');
+            return src;
+          }
+        }
+
+        console.log('Final high-res URL:', highResSrc);
+        return highResSrc;
+      } catch (error) {
+        console.error('Error processing Shopify URL:', error);
+        return src; // Fallback zur Original-URL
       }
-
-      return highResSrc;
     }
+    console.log('Non-Shopify src:', src);
     return src;
   }
 
@@ -262,29 +305,60 @@ class CustomLightbox {
    * @returns {string} - URL mit angepasster Auflösung
    */
   getImageUrlForResolution(src, resolution) {
+    console.log('getImageUrlForResolution called with:', { src, resolution });
+
     if (!src || !src.includes('shopify')) {
+      console.log('Non-Shopify URL, returning as-is:', src);
       return src;
     }
 
-    // Entferne bestehende Größenparameter
-    let cleanSrc = src.replace(/(_\d+x\d*|_\d*x\d+|_compact|_grande|_large|_medium|_small|_thumb)(\.|@)/, '$2');
+    try {
+      // Entferne bestehende Größenparameter - erweiterte Regex
+      let cleanSrc = src.replace(/(_\d+x\d*|_\d*x\d+|_compact|_grande|_large|_medium|_small|_thumb|_pico|_icon|_master)(\.|@|$)/, '$2');
+      console.log('Clean src after size removal:', cleanSrc);
 
-    // Für 'ultra' Resolution verwende Original ohne Größenparameter
-    if (resolution === 'ultra') {
-      return cleanSrc;
-    }
+      // Fallback: Wenn keine Größenparameter gefunden wurden, verwende Original
+      if (cleanSrc === src) {
+        console.log('No size parameters found in URL, using original');
+        return src;
+      }
 
-    const size = this.resolutionSizes[resolution];
-    if (!size) {
+      // Für 'ultra' Resolution verwende Original ohne Größenparameter
+      if (resolution === 'ultra') {
+        console.log('Ultra resolution, returning clean src:', cleanSrc);
+        return cleanSrc;
+      }
+
+      const size = this.resolutionSizes[resolution];
+      console.log('Resolution size mapping:', { resolution, size });
+
+      if (!size) {
+        console.log('No size found for resolution, returning original:', src);
+        return src; // Fallback zur Original-URL
+      }
+
+      // Füge Größenparameter hinzu
+      let finalUrl;
+      if (cleanSrc.includes('?')) {
+        finalUrl = cleanSrc.replace('?', `_${size}x?`);
+      } else {
+        // Sichere Behandlung der Dateiendung
+        const urlParts = cleanSrc.split('.');
+        if (urlParts.length > 1) {
+          const extension = urlParts.pop();
+          const basePath = urlParts.join('.');
+          finalUrl = `${basePath}_${size}x.${extension}`;
+        } else {
+          console.warn('No file extension found, returning original URL');
+          return src;
+        }
+      }
+
+      console.log('Final URL for resolution:', finalUrl);
+      return finalUrl;
+    } catch (error) {
+      console.error('Error processing URL for resolution:', error);
       return src; // Fallback zur Original-URL
-    }
-
-    // Füge Größenparameter hinzu
-    if (cleanSrc.includes('?')) {
-      return cleanSrc.replace('?', `_${size}x?`);
-    } else {
-      const extension = cleanSrc.split('.').pop();
-      return cleanSrc.replace(`.${extension}`, `_${size}x.${extension}`);
     }
   }
 
@@ -553,30 +627,56 @@ class CustomLightbox {
   }
 
   updateSlideContent() {
-    if (!this.images[this.currentSlide]) return;
+    console.log('updateSlideContent called, currentSlide:', this.currentSlide);
+    console.log('Available images:', this.images);
+
+    if (!this.images[this.currentSlide]) {
+      console.error('No image found for slide:', this.currentSlide);
+      return;
+    }
 
     const currentImage = this.images[this.currentSlide];
+    console.log('Current image data:', currentImage);
 
     // Reset Resolution-System für neues Bild
     this.currentResolution = 'base';
 
     // Verwende High-Res URL für initiales Laden
     const initialSrc = this.getHighResImageUrl(currentImage.src);
+    console.log('Initial src for lightbox:', initialSrc);
 
     // Cache die Basis-Auflösung
     const baseCacheKey = `${this.currentSlide}-base`;
     this.resolutionCache.set(baseCacheKey, initialSrc);
 
-    this.imageWrapper.innerHTML = `
-      <div class="custom-lightbox__slide active">
-        <img
-          src="${initialSrc}"
-          alt="${currentImage.alt}"
-          class="custom-lightbox__image"
-          loading="lazy"
-        >
-      </div>
-    `;
+    // Erstelle Bild-Element mit Fallback-Logik
+    const slideDiv = document.createElement('div');
+    slideDiv.className = 'custom-lightbox__slide active';
+
+    const img = document.createElement('img');
+    img.src = initialSrc;
+    img.alt = currentImage.alt;
+    img.className = 'custom-lightbox__image';
+    img.loading = 'lazy';
+
+    // Error-Handler mit Fallback zur Original-URL
+    img.onerror = () => {
+      console.error('Failed to load high-res image:', initialSrc);
+      if (currentImage.originalSrc && initialSrc !== currentImage.originalSrc) {
+        console.log('Trying fallback to original URL:', currentImage.originalSrc);
+        img.src = currentImage.originalSrc;
+      } else {
+        console.error('No fallback available for image');
+      }
+    };
+
+    img.onload = () => {
+      console.log('Successfully loaded image:', img.src);
+    };
+
+    slideDiv.appendChild(img);
+    this.imageWrapper.innerHTML = '';
+    this.imageWrapper.appendChild(slideDiv);
 
     // Preload nächste Auflösung im Hintergrund für bessere UX
     setTimeout(() => {
