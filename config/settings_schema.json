@@ -11,9 +11,14 @@
     "name": "t:settings_schema.logo.name",
     "settings": [
       {
+        "type": "header",
+        "content": "Default Logo"
+      },
+      {
         "type": "image_picker",
         "id": "logo",
-        "label": "t:settings_schema.logo.settings.logo_image.label"
+        "label": "t:settings_schema.logo.settings.logo_image.label",
+        "info": "Used as fallback when no language-specific logo is set"
       },
       {
         "type": "range",
@@ -24,6 +29,78 @@
         "default": 100,
         "unit": "px",
         "label": "t:settings_schema.logo.settings.logo_width.label"
+      },
+      {
+        "type": "header",
+        "content": "Language-Specific Logos - Normal (Dark)"
+      },
+      {
+        "type": "image_picker",
+        "id": "logo_de",
+        "label": "German Logo (DE) - Normal",
+        "info": "Normal logo for German language. Falls back to default logo if not set."
+      },
+      {
+        "type": "image_picker",
+        "id": "logo_en",
+        "label": "English Logo (EN) - Normal",
+        "info": "Normal logo for English language. Falls back to default logo if not set."
+      },
+      {
+        "type": "image_picker",
+        "id": "logo_it",
+        "label": "Italian Logo (IT) - Normal",
+        "info": "Normal logo for Italian language. Falls back to default logo if not set."
+      },
+      {
+        "type": "image_picker",
+        "id": "logo_fr",
+        "label": "French Logo (FR) - Normal",
+        "info": "Normal logo for French language. Falls back to default logo if not set."
+      },
+      {
+        "type": "image_picker",
+        "id": "logo_es",
+        "label": "Spanish Logo (ES) - Normal",
+        "info": "Normal logo for Spanish language. Falls back to default logo if not set."
+      },
+      {
+        "type": "header",
+        "content": "Language-Specific Logos - White"
+      },
+      {
+        "type": "image_picker",
+        "id": "logo_white_de",
+        "label": "German Logo (DE) - White",
+        "info": "White logo for German language on dark backgrounds. Falls back to normal logo if not set."
+      },
+      {
+        "type": "image_picker",
+        "id": "logo_white_en",
+        "label": "English Logo (EN) - White",
+        "info": "White logo for English language on dark backgrounds. Falls back to normal logo if not set."
+      },
+      {
+        "type": "image_picker",
+        "id": "logo_white_it",
+        "label": "Italian Logo (IT) - White",
+        "info": "White logo for Italian language on dark backgrounds. Falls back to normal logo if not set."
+      },
+      {
+        "type": "image_picker",
+        "id": "logo_white_fr",
+        "label": "French Logo (FR) - White",
+        "info": "White logo for French language on dark backgrounds. Falls back to normal logo if not set."
+      },
+      {
+        "type": "image_picker",
+        "id": "logo_white_es",
+        "label": "Spanish Logo (ES) - White",
+        "info": "White logo for Spanish language on dark backgrounds. Falls back to normal logo if not set."
+      },
+      {
+        "type": "header",
+        "content": "Other Settings"
       },
       {
         "type": "image_picker",
@@ -1286,9 +1363,14 @@
         "label": "t:settings_schema.brand_information.settings.brand_description.label"
       },
       {
+        "type": "header",
+        "content": "Default Brand Image"
+      },
+      {
         "type": "image_picker",
         "id": "brand_image",
-        "label": "t:settings_schema.brand_information.settings.brand_image.label"
+        "label": "t:settings_schema.brand_information.settings.brand_image.label",
+        "info": "Used as fallback when no language-specific brand image is set"
       },
       {
         "type": "range",
@@ -1299,6 +1381,74 @@
         "default": 100,
         "unit": "px",
         "label": "t:settings_schema.brand_information.settings.brand_image_width.label"
+      },
+      {
+        "type": "header",
+        "content": "Language-Specific Brand Images - Normal (Dark)"
+      },
+      {
+        "type": "image_picker",
+        "id": "brand_image_de",
+        "label": "German Brand Image (DE) - Normal",
+        "info": "Normal brand image for German language. Falls back to default brand image if not set."
+      },
+      {
+        "type": "image_picker",
+        "id": "brand_image_en",
+        "label": "English Brand Image (EN) - Normal",
+        "info": "Normal brand image for English language. Falls back to default brand image if not set."
+      },
+      {
+        "type": "image_picker",
+        "id": "brand_image_it",
+        "label": "Italian Brand Image (IT) - Normal",
+        "info": "Normal brand image for Italian language. Falls back to default brand image if not set."
+      },
+      {
+        "type": "image_picker",
+        "id": "brand_image_fr",
+        "label": "French Brand Image (FR) - Normal",
+        "info": "Normal brand image for French language. Falls back to default brand image if not set."
+      },
+      {
+        "type": "image_picker",
+        "id": "brand_image_es",
+        "label": "Spanish Brand Image (ES) - Normal",
+        "info": "Normal brand image for Spanish language. Falls back to default brand image if not set."
+      },
+      {
+        "type": "header",
+        "content": "Language-Specific Brand Images - White"
+      },
+      {
+        "type": "image_picker",
+        "id": "brand_image_white_de",
+        "label": "German Brand Image (DE) - White",
+        "info": "White brand image for German language on dark backgrounds. Falls back to normal brand image if not set."
+      },
+      {
+        "type": "image_picker",
+        "id": "brand_image_white_en",
+        "label": "English Brand Image (EN) - White",
+        "info": "White brand image for English language on dark backgrounds. Falls back to normal brand image if not set."
+      },
+      {
+        "type": "image_picker",
+        "id": "brand_image_white_it",
+        "label": "Italian Brand Image (IT) - White",
+        "info": "White brand image for Italian language on dark backgrounds. Falls back to normal brand image if not set."
+      },
+      {
+        "type": "image_picker",
+        "id": "brand_image_white_fr",
+        "label": "French Brand Image (FR) - White",
+        "info": "White brand image for French language on dark backgrounds. Falls back to normal brand image if not set."
+      },
+      {
+        "type": "image_picker",
+        "id": "brand_image_white_es",
+        "label": "Spanish Brand Image (ES) - White",
+        "info": "White brand image for Spanish language on dark backgrounds. Falls back to normal brand image if not set."
       }
     ]
   },

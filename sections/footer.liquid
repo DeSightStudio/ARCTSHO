@@ -38,7 +38,13 @@
       assign has_social_icons = false
     endif
 
-    if settings.brand_image == blank and settings.brand_headline == blank and settings.brand_description == blank
+    # Check if any brand content exists (including language-specific images and white variants)
+    assign has_brand_image = false
+    if settings.brand_image != blank or settings.brand_image_de != blank or settings.brand_image_en != blank or settings.brand_image_it != blank or settings.brand_image_fr != blank or settings.brand_image_es != blank or settings.brand_image_white_de != blank or settings.brand_image_white_en != blank or settings.brand_image_white_it != blank or settings.brand_image_white_fr != blank or settings.brand_image_white_es != blank
+      assign has_brand_image = true
+    endif
+
+    if has_brand_image == false and settings.brand_headline == blank and settings.brand_description == blank
       assign brand_empty = true
     endif
   -%}
@@ -47,7 +53,7 @@
     and has_social_icons == true
     or section.settings.enable_follow_on_shop
   -%}
-    {%- unless only_empty_brand -%}
+    {%- unless brand_empty -%}
       <div class="footer__content-top page-width">
         {%- if section.blocks.size > 0 -%}
           {%- liquid
@@ -104,31 +110,13 @@
                     {%- endif -%}
                   {%- when 'brand_information' -%}
                     <div class="footer-block__brand-info">
-                      {%- if settings.brand_image != blank -%}
-                        {%- assign brand_image_height = settings.brand_image_width
-                          | divided_by: settings.brand_image.aspect_ratio
-                        -%}
-                        <div
-                          class="footer-block__image-wrapper"
-                          style="max-width: min(100%, {{ settings.brand_image_width }}px);"
-                        >
-                          <a
-                            href="javascript:void(0)"
-                            onclick="window.scrollTo({top: 0, behavior: 'smooth'})"
-                            class="smooth-scroll"
-                          >
-                            {{
-                              settings.brand_image
-                              | image_url: width: 1100
-                              | image_tag:
-                                loading: 'lazy',
-                                widths: '50, 100, 150, 200, 300, 400, 550, 800, 1100',
-                                height: brand_image_height,
-                                width: settings.brand_image_width
-                            }}
-                          </a>
-                        </div>
-                      {%- endif -%}
+                      {%- render 'language-specific-brand-image',
+                        image_width: settings.brand_image_width,
+                        color_scheme: section.settings.color_scheme,
+                        wrapper_class: 'footer-block__image-wrapper',
+                        loading: 'lazy',
+                        link_class: 'smooth-scroll'
+                      -%}
                       {%- if settings.brand_headline != blank -%}
                         <h2 class="footer-block__heading rte">{{ settings.brand_headline }}</h2>
                       {%- endif -%}

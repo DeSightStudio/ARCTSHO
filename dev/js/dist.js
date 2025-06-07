@@ -426,6 +426,20 @@
                 const currentLanguage = document.documentElement.lang || 'en';
                 document.body.setAttribute('data-locale', currentLanguage);
 
+                // Listen for language changes to update logos dynamically
+                document.addEventListener('DOMContentLoaded', function() {
+                    const languageForms = document.querySelectorAll('localization-form');
+                    languageForms.forEach(form => {
+                        form.addEventListener('change', function() {
+                            // Small delay to allow form submission and page reload
+                            setTimeout(() => {
+                                const newLanguage = document.documentElement.lang || 'en';
+                                document.body.setAttribute('data-locale', newLanguage);
+                            }, 100);
+                        });
+                    });
+                });
+
                 // Also try to detect current language from the button text and set flag directly
                 setTimeout(function() {
                     const languageButton = document.querySelector('.desktop-localization-wrapper .disclosure__button');

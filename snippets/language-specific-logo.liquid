@@ -1,0 +1,121 @@
+{%- comment -%}
+  Renders the appropriate logo based on current language and color scheme
+
+  Accepts:
+    - logo_class: CSS classes to apply to the logo image
+    - logo_width: Width setting for the logo
+    - logo_height: Height setting for the logo
+    - sizes: Responsive sizes attribute
+    - widths: Responsive widths attribute
+    - preload: Whether to preload the image
+    - wrapper_class: CSS classes for the logo wrapper div
+    - color_scheme: Color scheme ID to determine if white logo should be used
+    - force_white: Force white logo regardless of color scheme (true/false)
+{%- endcomment -%}
+
+{%- liquid
+  # Get current language code
+  assign current_language = localization.language.iso_code
+
+  # Determine if we should use white logo
+  assign use_white_logo = false
+
+  # Check if force_white is set
+  if force_white == true or force_white == 'true'
+    assign use_white_logo = true
+  endif
+
+  # Check color scheme for dark backgrounds (scheme-3 and higher typically have dark backgrounds)
+  if color_scheme and use_white_logo == false
+    case color_scheme
+      when 'scheme-3'
+        assign use_white_logo = true
+      when 'scheme-4'
+        assign use_white_logo = true
+      when 'scheme-5'
+        assign use_white_logo = true
+      when 'scheme-548c10fa-37f3-441f-92f9-890ada330aca'
+        assign use_white_logo = true
+    endcase
+  endif
+
+  # Determine which logo to use based on current language and white/normal preference
+  assign selected_logo = settings.logo
+
+  # Check if language-specific logo exists
+  case current_language
+    when 'de'
+      if use_white_logo and settings.logo_white_de != blank
+        assign selected_logo = settings.logo_white_de
+      elsif settings.logo_de != blank
+        assign selected_logo = settings.logo_de
+      endif
+    when 'en'
+      if use_white_logo and settings.logo_white_en != blank
+        assign selected_logo = settings.logo_white_en
+      elsif settings.logo_en != blank
+        assign selected_logo = settings.logo_en
+      endif
+    when 'it'
+      if use_white_logo and settings.logo_white_it != blank
+        assign selected_logo = settings.logo_white_it
+      elsif settings.logo_it != blank
+        assign selected_logo = settings.logo_it
+      endif
+    when 'fr'
+      if use_white_logo and settings.logo_white_fr != blank
+        assign selected_logo = settings.logo_white_fr
+      elsif settings.logo_fr != blank
+        assign selected_logo = settings.logo_fr
+      endif
+    when 'es'
+      if use_white_logo and settings.logo_white_es != blank
+        assign selected_logo = settings.logo_white_es
+      elsif settings.logo_es != blank
+        assign selected_logo = settings.logo_es
+      endif
+  endcase
+
+  # Set default values if not provided
+  unless logo_class
+    assign logo_class = 'header__heading-logo'
+  endunless
+
+  unless logo_width
+    assign logo_width = settings.logo_width
+  endunless
+
+  unless wrapper_class
+    assign wrapper_class = 'header__heading-logo-wrapper'
+  endunless
+-%}
+
+{%- if selected_logo != blank -%}
+  <div class="{{ wrapper_class }}">
+    {%- assign logo_alt = selected_logo.alt | default: shop.name | escape -%}
+    {%- assign calculated_logo_height = logo_width | divided_by: selected_logo.aspect_ratio -%}
+
+    {%- unless sizes -%}
+      {%- capture sizes -%}(max-width: {{ logo_width | times: 2 }}px) 50vw, {{ logo_width }}px{%- endcapture -%}
+    {%- endunless -%}
+
+    {%- unless widths -%}
+      {%- capture widths -%}{{ logo_width }}, {{ logo_width | times: 1.5 | round }}, {{ logo_width | times: 2 }}{%- endcapture -%}
+    {%- endunless -%}
+
+    {{
+      selected_logo
+      | image_url: width: 600
+      | image_tag:
+        class: logo_class,
+        widths: widths,
+        height: calculated_logo_height,
+        width: logo_width,
+        alt: logo_alt,
+        sizes: sizes,
+        preload: preload
+    }}
+  </div>
+{%- else -%}
+  <span class="h2">{{ shop.name }}</span>
+{%- endif -%}
