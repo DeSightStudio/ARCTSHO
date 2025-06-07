@@ -15,6 +15,7 @@
       "type": "header",
       "settings": {
         "logo_position": "top-left",
+        "logo_mode": "white",
         "menu": "main-menu",
         "menu_type_desktop": "dropdown",
         "sticky_header_type": "always",
