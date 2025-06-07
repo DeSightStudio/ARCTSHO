@@ -21,7 +21,7 @@
         "show_tags_in_blog": true,
         "color_scheme": "",
         "padding_top": 20,
-        "padding_bottom": 20
+        "padding_bottom": 0
       }
     },
     "rich_text_qB7bVz": {
@@ -107,7 +107,7 @@
         "filter_type": "vertical",
         "enable_sorting": true,
         "columns_mobile": "1",
-        "padding_top": 36,
+        "padding_top": 0,
         "padding_bottom": 36
       }
     }
