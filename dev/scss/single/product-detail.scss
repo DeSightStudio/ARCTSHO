@@ -112,7 +112,7 @@ product-recommendations {
         .card-product__add-button.button,
         .button.card-product__add-button,
         .grid__item .button {
-            font-size: 14px !important;
+            font-size: 18px !important;
         }
     }
     .card__content {
@@ -140,7 +140,7 @@ product-recommendations {
     }*/
     h1, h2, h3, h4, h5, h6 {
         font-family: 'Cormorant Garamond';
-        font-size: $fontSizeSmall;
+        font-size: $fontSizeRegular;
         color: $whiteColor;
         opacity: 0;
         margin: 5px 0px 0px 0px;

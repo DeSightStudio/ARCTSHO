@@ -169,7 +169,7 @@
   text-align: center;
 
   .predictive-search__item-heading {
-    @include font-size(24px);
+    @include font-size(28px);
     font-family: 'Copperplate', serif;
     color: $blackColor !important;
     margin: 0 0 4px 0 !important;
@@ -185,7 +185,7 @@
   }
 
   .predictive-search__item-vendor {
-    @include font-size(11px);
+    @include font-size(14px);
     color: $grayColor !important;
     margin-bottom: 4px;
     text-transform: uppercase;
@@ -193,7 +193,7 @@
   }
 
   .price {
-    @include font-size(32px);
+    @include font-size(36px);
     color: $mainColor !important;
     font-family: 'Copperplate', serif;
     font-weight: 600;
@@ -222,7 +222,7 @@
   color: $whiteColor;
   border: none;
   border-radius: 8px;
-  @include font-size(14px);
+  @include font-size(18px);
   font-weight: 600;
   text-align: center;
   cursor: pointer;
@@ -346,7 +346,7 @@ predictive-search[loading] .predictive-search {
         padding: 6px 0 !important;
 
         .predictive-search__item-heading {
-          @include font-size(24px);
+          @include font-size(28px);
           color: $blackColor !important;
         }
       }

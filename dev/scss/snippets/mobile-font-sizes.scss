@@ -1,0 +1,90 @@
+/* ===================================
+   MOBILE FONT SIZE OVERRIDES
+   Responsive Schriftgrößen für bessere Lesbarkeit auf großen Displays
+   =================================== */
+
+/* Mobile Responsive Anpassungen für Produktkarten */
+@media screen and (max-width: 749px) {
+  .card__article-number {
+    font-size: 1rem !important; /* Erhöht von 0.8rem */
+  }
+
+  .card-product__price-container {
+    margin-top: 0.4rem;
+    
+    .price-item {
+      font-size: $fontSizeRegular !important; /* Nutzt neue Variable */
+    }
+  }
+
+  .card-product__price-tax {
+    font-size: 1rem !important; /* Erhöht von 0.75rem */
+  }
+
+  .card-product__weight {
+    font-size: 1rem !important; /* Erhöht von 0.8rem */
+    margin-top: 0.4rem;
+  }
+
+  .card-product__specs-item {
+    font-size: 1rem !important; /* Erhöht von 0.8rem */
+  }
+
+  /* Vat Info Badge Mobile */
+  .vat-info-badge {
+    font-size: $fontSizeRegular !important;
+  }
+
+  /* Button Text Mobile */
+  .card-product__add-button {
+    font-size: $fontSizeRegular !important;
+  }
+}
+
+/* Tablet Responsive Anpassungen */
+@media screen and (min-width: 750px) and (max-width: 990px) {
+  .card__article-number {
+    font-size: $fontSizeRegular;
+  }
+
+  .card-product__price-container {
+    .price-item {
+      font-size: $fontSizeRegular;
+    }
+  }
+
+  .card-product__weight {
+    font-size: $fontSizeRegular;
+  }
+
+  .vat-info-badge {
+    font-size: $fontSizeRegular;
+  }
+}
+
+/* Desktop Responsive Anpassungen (ab 990px) */
+@media screen and (min-width: 990px) {
+  .card__article-number {
+    font-size: $fontSizeRegular;
+  }
+
+  .card-product__price-container {
+    .price-item {
+      font-size: $fontSizeRegular;
+      font-weight: bold;
+    }
+  }
+
+  .card-product__weight {
+    font-size: $fontSizeRegular;
+    font-weight: bold;
+  }
+
+  .vat-info-badge {
+    font-size: $fontSizeRegular;
+  }
+
+  .card-product__add-button {
+    font-size: $fontSizeRegular;
+  }
+}

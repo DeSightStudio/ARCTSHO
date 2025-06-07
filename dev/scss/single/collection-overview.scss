@@ -9,7 +9,7 @@
                 position: relative;
             }
             .card-product__add-button {
-                font-size: $fontSizeSmall;
+                font-size: $fontSizeRegular;
             }
             .card__content {
                 position: absolute;
@@ -36,13 +36,13 @@
                                         span {
                                             font-family: 'Cormorant Garamond';
                                             color: $mainColorDark;
-                                            font-size: $fontSizeSmall;
+                                            font-size: $fontSizeRegular;
                                             font-weight: bold;
                                         }
                                     }
                                     h1, h2, h3, h4, h5, h6 {
                                         font-family: 'Cormorant Garamond';
-                                        font-size: $fontSizeSmall;
+                                        font-size: $fontSizeRegular;
                                         color: $whiteColor;
                                         opacity: 0;
                                         margin: 5px 0px 0px 0px;
@@ -66,13 +66,13 @@
                                     .price {
                                         flex: 0 0 auto;
                                         .vat-info-badge {
-                                            font-size: $fontSizeSmall;
+                                            font-size: $fontSizeRegular;
                                         }
                                         .price__container {
                                             .price-item {
                                                 font-family: 'Cormorant Garamond';
                                                 color: $mainColorDark;
-                                                font-size: $fontSizeSmall;
+                                                font-size: $fontSizeRegular;
                                             }
                                         }
                                     }
@@ -85,7 +85,7 @@
                                     span {
                                         font-family: 'Cormorant Garamond';
                                         color: $mainColorDark;
-                                        font-size: $fontSizeSmall;
+                                        font-size: $fontSizeRegular;
                                     }
                                 }
                             }
