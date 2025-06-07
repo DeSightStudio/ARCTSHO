@@ -418,6 +418,9 @@
       <script src="{{ 'predictive-search.js' | asset_url }}" defer="defer"></script>
     {%- endif -%}
 
+    <!-- CartStateManager muss vor allen anderen Cart-Scripts geladen werden -->
+    <script src="{{ 'cart-state-manager.js' | asset_url }}" defer="defer"></script>
+
     <script src="{{ 'cart.js' | asset_url }}" defer="defer"></script>
 
     {%- if settings.cart_type == 'drawer' -%}

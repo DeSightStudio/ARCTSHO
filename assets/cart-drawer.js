@@ -178,9 +178,19 @@ if (!customElements.get('cart-drawer')) {
           document.dispatchEvent(new CustomEvent('cart:updated', {
             detail: { cartData }
           }));
+
+          // Zusätzlich CartStateManager informieren (falls verfügbar)
+          if (window.cartStateManager) {
+            window.cartStateManager.updateCartData(cartData);
+          }
         })
         .catch(error => {
           console.error('Fehler beim Abrufen der aktualisierten Warenkorb-Daten:', error);
+
+          // Auch bei Fehlern CartStateManager über Update informieren
+          if (window.cartStateManager) {
+            window.cartStateManager.scheduleUpdate();
+          }
         });
     }, 300);
   }

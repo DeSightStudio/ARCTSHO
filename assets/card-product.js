@@ -449,6 +449,216 @@ class ProductCard extends HTMLElement {
 // Element registrieren
 customElements.define('product-card', ProductCard);
 
+// Gemeinsamer Event-Handler für alle Formular-Submits (global definiert)
+function handleFormSubmit(event) {
+  event.preventDefault();
+  event.stopPropagation();
+
+  console.log('CardProduct: Abgefangenes Produktkarten-Formular-Submit');
+
+  // Submitbutton deaktivieren, um Doppelklicks zu vermeiden
+  const submitButton = this.querySelector('button[type="submit"]');
+  if (!submitButton) {
+    console.error('CardProduct: Kein Submit-Button gefunden');
+    return;
+  }
+
+  // Prüfe, ob Button bereits deaktiviert ist (verhindert Doppelklicks)
+  if (submitButton.hasAttribute('disabled')) {
+    console.log('CardProduct: Button bereits deaktiviert, ignoriere Submit');
+    return;
+  }
+
+  submitButton.setAttribute('disabled', 'disabled');
+  submitButton.classList.add('loading');
+
+  // Lade-Spinner anzeigen
+  const loadingSpinner = submitButton.querySelector('.loading__spinner');
+  if (loadingSpinner) {
+    loadingSpinner.classList.remove('hidden');
+  }
+
+  // Produkt-ID und Varianten-ID aus dem Formular extrahieren
+  const productId = parseInt(this.dataset.productId);
+  const variantIdInput = this.querySelector('[name="id"]');
+  const variantId = variantIdInput ? parseInt(variantIdInput.value) : null;
+
+  console.log('CardProduct: Verarbeite Submit für Produkt', { productId, variantId });
+
+  if (!productId || !variantId) {
+    console.error('CardProduct: Keine Produkt-ID oder Varianten-ID gefunden', { productId, variantId });
+    if (submitButton) {
+      submitButton.removeAttribute('disabled');
+      submitButton.classList.remove('loading');
+      if (loadingSpinner) {
+        loadingSpinner.classList.add('hidden');
+      }
+    }
+    return;
+  }
+
+  // Zuerst prüfen, ob das Produkt bereits im Warenkorb ist
+  console.log('CardProduct: Prüfe Warenkorb-Status');
+  fetch(`${routes.cart_url}.js`)
+    .then(response => response.json())
+    .then(cart => {
+      console.log('CardProduct: Warenkorb-Daten erhalten:', cart);
+
+      // Prüfen, ob das Produkt bereits im Warenkorb ist
+      const isInCart = cart.items.some(item => {
+        return (item.product_id === productId) || (item.variant_id === variantId);
+      });
+
+      console.log('CardProduct: Produkt im Warenkorb:', isInCart);
+
+      if (isInCart) {
+        console.log('CardProduct: Produkt bereits im Warenkorb - Öffne Drawer');
+        // Wenn bereits im Warenkorb, Drawer öffnen
+        const cartDrawer = document.querySelector('cart-drawer');
+        if (cartDrawer) {
+          cartDrawer.open();
+        }
+
+        // Button Status ändern
+        updateButtonToViewCart(this);
+
+        // Submit-Button reaktivieren
+        if (submitButton) {
+          submitButton.removeAttribute('disabled');
+          submitButton.classList.remove('loading');
+          if (loadingSpinner) {
+            loadingSpinner.classList.add('hidden');
+          }
+        }
+
+        return;
+      }
+
+      // FormData erstellen
+      const formData = new FormData(this);
+
+      // Sicherstellen, dass die Menge auf 1 gesetzt ist
+      formData.set('quantity', '1');
+
+      // Sections für den Cart-Drawer hinzufügen
+      if (!formData.get('sections')) {
+        const cartDrawer = document.querySelector('cart-drawer');
+        if (cartDrawer && typeof cartDrawer.getSectionsToRender === 'function') {
+          formData.set('sections', cartDrawer.getSectionsToRender().map(section => section.id).join(','));
+        } else {
+          formData.set('sections', 'cart-drawer,cart-icon-bubble');
+        }
+      }
+
+      // URL-Pfad für die Sections setzen
+      if (!formData.get('sections_url')) {
+        formData.set('sections_url', window.location.pathname);
+      }
+
+      // AJAX-Warenkorb-Hinzufügen mit XMLHttpRequest-Header für JSON-Antwort
+      console.log('CardProduct: Füge Produkt zum Warenkorb hinzu');
+      fetch(routes.cart_add_url, {
+        method: 'POST',
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: formData
+      })
+      .then(response => response.json())
+      .then(response => {
+        console.log('CardProduct: Produkt zum Warenkorb hinzugefügt', response);
+
+        if (response.status) {
+          console.error('CardProduct: Fehler beim Hinzufügen:', response);
+          return;
+        }
+
+        // Warenkorb-Drawer öffnen und mit neuen Daten aktualisieren
+        const cartDrawer = document.querySelector('cart-drawer');
+        if (cartDrawer) {
+          cartDrawer.renderContents(response);
+          // Mit kleiner Verzögerung öffnen, damit die Aktualisierung abgeschlossen ist
+          setTimeout(() => cartDrawer.open(), 100);
+        }
+
+        // Button-Status aktualisieren (von "In den Warenkorb" zu "Warenkorb anzeigen")
+        updateButtonToViewCart(this);
+
+        // Event auslösen, um andere Komponenten zu informieren
+        document.dispatchEvent(new CustomEvent('cart:updated', {
+          detail: { cartData: response }
+        }));
+
+        // Zusätzliches Event mit Produkt-ID auslösen
+        document.dispatchEvent(new CustomEvent('cart:item:added', {
+          detail: {
+            variantId: variantId,
+            productId: productId
+          }
+        }));
+
+        console.log('CardProduct: Events ausgelöst, Button reaktiviert');
+
+        // Submit-Button reaktivieren
+        if (submitButton) {
+          submitButton.removeAttribute('disabled');
+          submitButton.classList.remove('loading');
+          if (loadingSpinner) {
+            loadingSpinner.classList.add('hidden');
+          }
+        }
+      })
+      .catch(error => {
+        console.error('CardProduct: Fehler beim Hinzufügen zum Warenkorb:', error);
+
+        // Submit-Button im Fehlerfall auch reaktivieren
+        if (submitButton) {
+          submitButton.removeAttribute('disabled');
+          submitButton.classList.remove('loading');
+          if (loadingSpinner) {
+            loadingSpinner.classList.add('hidden');
+          }
+        }
+      });
+    })
+    .catch(error => {
+      console.error('CardProduct: Fehler beim Überprüfen des Warenkorbs:', error);
+
+      // Submit-Button im Fehlerfall auch reaktivieren
+      if (submitButton) {
+        submitButton.removeAttribute('disabled');
+        submitButton.classList.remove('loading');
+        if (loadingSpinner) {
+          loadingSpinner.classList.add('hidden');
+        }
+      }
+    });
+}
+
+// Globale Funktion zur Wiederherstellung der Event-Listener
+window.reinitializeCardProductListeners = function() {
+  console.log('CardProduct: Wiederherstellung der Event-Listener');
+
+  // Alle Produktkarten-Formulare neu registrieren
+  const addToCartForms = document.querySelectorAll('.card-product__add-form');
+  addToCartForms.forEach(form => {
+    if (!form.hasAttribute('data-card-product-listener')) {
+      form.addEventListener('submit', handleFormSubmit);
+      form.setAttribute('data-card-product-listener', 'true');
+      console.log('CardProduct: Event-Listener für Formular wiederhergestellt');
+    }
+  });
+};
+
+// Event-Listener für Seitennavigation
+if ('navigation' in window) {
+  window.navigation.addEventListener('navigate', () => {
+    setTimeout(() => {
+      window.reinitializeCardProductListeners();
+    }, 100);
+  });
+}
+
 // DOM-Ready Event
 document.addEventListener('DOMContentLoaded', function() {
   // Alle Produktkarten mit der Web Component verbinden
@@ -468,21 +678,54 @@ document.addEventListener('DOMContentLoaded', function() {
   // Initialisiere Produktkarten-Status basierend auf dem aktuellen Warenkorb
   initializeProductCardStates();
 
-  // Event-Listener für Warenkorb-Aktualisierungen
+  // Event-Listener für das neue CartStateManager System
+  document.addEventListener('cart:state:updated', function(event) {
+    console.log('CardProduct: CartStateManager Event erhalten', event.detail);
+
+    if (event.detail && event.detail.cartData) {
+      // Sofortige Aktualisierung mit Event-Daten
+      const cartProductIds = event.detail.cartData.items ? event.detail.cartData.items.map(item => item.product_id) : [];
+      updateProductCardsWithCartData(cartProductIds);
+    } else {
+      updateAllProductCardStates();
+    }
+  });
+
+  // Event-Listener für CartStateManager Initialisierung
+  document.addEventListener('cart:state:initialized', function(event) {
+    console.log('CardProduct: CartStateManager initialisiert', event.detail);
+
+    if (event.detail && event.detail.cartData) {
+      const cartProductIds = event.detail.cartData.items ? event.detail.cartData.items.map(item => item.product_id) : [];
+      updateProductCardsWithCartData(cartProductIds);
+    }
+  });
+
+  // Legacy Event-Listener für Kompatibilität
   document.addEventListener('cart:updated', function() {
-    console.log('cart:updated Event - aktualisiere alle Produktkarten');
-    setTimeout(updateAllProductCardStates, 100);
+    console.log('Legacy cart:updated Event - aktualisiere alle Produktkarten');
+
+    // Nur ausführen wenn CartStateManager nicht verfügbar ist
+    if (!window.cartStateManager || !window.cartStateManager.isInitialized) {
+      setTimeout(updateAllProductCardStates, 100);
+    }
   });
 
   // Event-Listener für Drawer-Schließung
   document.addEventListener('drawer:closed', function(event) {
     console.log('drawer:closed Event - prüfe auf Änderungen im Warenkorb');
+
+    // Nutze CartStateManager wenn verfügbar
+    if (window.cartStateManager && window.cartStateManager.isInitialized) {
+      // CartStateManager wird automatisch über das Event informiert
+      return;
+    }
+
+    // Fallback für Legacy-System
     if (event.detail && event.detail.cartData) {
-      // Wenn Daten vorhanden, direkt damit aktualisieren
       const cartProductIds = event.detail.cartData.items.map(item => item.product_id);
       updateProductCardsWithCartData(cartProductIds);
     } else {
-      // Ansonsten normaler Update-Prozess
       updateAllProductCardStates();
     }
   });
@@ -490,8 +733,15 @@ document.addEventListener('DOMContentLoaded', function() {
   // Event-Listener für Entfernen von Artikeln
   document.addEventListener('cart:item:removed', function(event) {
     console.log('cart:item:removed Event - aktualisiere Produktkartenstatus');
+
+    // Nutze CartStateManager wenn verfügbar
+    if (window.cartStateManager && window.cartStateManager.isInitialized) {
+      // CartStateManager wird automatisch über das Event informiert
+      return;
+    }
+
+    // Fallback für Legacy-System
     if (event.detail && event.detail.variantId) {
-      // Artikel wurde entfernt, aktualisiere alle Karten
       setTimeout(updateAllProductCardStates, 100);
     }
   });
@@ -500,10 +750,14 @@ document.addEventListener('DOMContentLoaded', function() {
   const addToCartForms = document.querySelectorAll('.card-product__add-form');
 
   addToCartForms.forEach(form => {
-    // Bestehende Event-Listener entfernen, falls vorhanden
-    form.removeEventListener('submit', handleFormSubmit);
-    // Event-Listener hinzufügen
-    form.addEventListener('submit', handleFormSubmit);
+    // Prüfe, ob bereits ein Event-Listener registriert ist
+    if (!form.hasAttribute('data-card-product-listener')) {
+      // Event-Listener hinzufügen
+      form.addEventListener('submit', handleFormSubmit);
+      // Markiere als registriert
+      form.setAttribute('data-card-product-listener', 'true');
+      console.log('CardProduct: Event-Listener für Formular registriert');
+    }
   });
 
   // Gemeinsamer Event-Handler für alle Formular-Submits
@@ -511,11 +765,20 @@ document.addEventListener('DOMContentLoaded', function() {
     event.preventDefault();
     event.stopPropagation();
 
-    console.log('Abgefangenes Produktkarten-Formular-Submit');
+    console.log('CardProduct: Abgefangenes Produktkarten-Formular-Submit');
 
     // Submitbutton deaktivieren, um Doppelklicks zu vermeiden
     const submitButton = this.querySelector('button[type="submit"]');
-    if (!submitButton) return;
+    if (!submitButton) {
+      console.error('CardProduct: Kein Submit-Button gefunden');
+      return;
+    }
+
+    // Prüfe, ob Button bereits deaktiviert ist (verhindert Doppelklicks)
+    if (submitButton.hasAttribute('disabled')) {
+      console.log('CardProduct: Button bereits deaktiviert, ignoriere Submit');
+      return;
+    }
 
     submitButton.setAttribute('disabled', 'disabled');
     submitButton.classList.add('loading');
@@ -528,10 +791,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Produkt-ID und Varianten-ID aus dem Formular extrahieren
     const productId = parseInt(this.dataset.productId);
-    const variantId = parseInt(this.querySelector('[name="id"]').value);
+    const variantIdInput = this.querySelector('[name="id"]');
+    const variantId = variantIdInput ? parseInt(variantIdInput.value) : null;
+
+    console.log('CardProduct: Verarbeite Submit für Produkt', { productId, variantId });
 
     if (!productId || !variantId) {
-      console.error('Keine Produkt-ID oder Varianten-ID gefunden');
+      console.error('CardProduct: Keine Produkt-ID oder Varianten-ID gefunden', { productId, variantId });
       if (submitButton) {
         submitButton.removeAttribute('disabled');
         submitButton.classList.remove('loading');
@@ -543,16 +809,21 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Zuerst prüfen, ob das Produkt bereits im Warenkorb ist
+    console.log('CardProduct: Prüfe Warenkorb-Status');
     fetch(`${routes.cart_url}.js`)
       .then(response => response.json())
       .then(cart => {
+        console.log('CardProduct: Warenkorb-Daten erhalten:', cart);
+
         // Prüfen, ob das Produkt bereits im Warenkorb ist
         const isInCart = cart.items.some(item => {
           return (item.product_id === productId) || (item.variant_id === variantId);
         });
 
+        console.log('CardProduct: Produkt im Warenkorb:', isInCart);
+
         if (isInCart) {
-          console.log('Produkt bereits im Warenkorb - Öffne Drawer');
+          console.log('CardProduct: Produkt bereits im Warenkorb - Öffne Drawer');
           // Wenn bereits im Warenkorb, Drawer öffnen
           const cartDrawer = document.querySelector('cart-drawer');
           if (cartDrawer) {
@@ -596,6 +867,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // AJAX-Warenkorb-Hinzufügen mit XMLHttpRequest-Header für JSON-Antwort
+        console.log('CardProduct: Füge Produkt zum Warenkorb hinzu');
         fetch(routes.cart_add_url, {
           method: 'POST',
           headers: {
@@ -605,7 +877,12 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => response.json())
         .then(response => {
-          console.log('Produkt zum Warenkorb hinzugefügt', response);
+          console.log('CardProduct: Produkt zum Warenkorb hinzugefügt', response);
+
+          if (response.status) {
+            console.error('CardProduct: Fehler beim Hinzufügen:', response);
+            return;
+          }
 
           // Warenkorb-Drawer öffnen und mit neuen Daten aktualisieren
           const cartDrawer = document.querySelector('cart-drawer');
@@ -630,6 +907,8 @@ document.addEventListener('DOMContentLoaded', function() {
               productId: productId
             }
           }));
+
+          console.log('CardProduct: Events ausgelöst, Button reaktiviert');
 
           // Submit-Button reaktivieren
           if (submitButton) {
@@ -733,13 +1012,24 @@ function updateProductCardsWithCartData(cartProductIds) {
 function updateAllProductCardStates() {
   console.log('Aktualisiere alle Produktkarten...');
 
-  // Hole aktuelle Warenkorb-Informationen
+  // Nutze CartStateManager wenn verfügbar
+  if (window.cartStateManager && window.cartStateManager.isInitialized) {
+    const cartData = window.cartStateManager.getCartData();
+    if (cartData && cartData.items) {
+      const cartProductIds = cartData.items.map(item => item.product_id);
+      console.log('Produkte im Warenkorb (CartStateManager):', cartProductIds);
+      updateProductCardsWithCartData(cartProductIds);
+      return;
+    }
+  }
+
+  // Fallback: Hole aktuelle Warenkorb-Informationen via API
   fetch(`${routes.cart_url}.js`)
     .then(response => response.json())
     .then(cart => {
       // Liste der Produkt-IDs im Warenkorb
       const cartProductIds = cart.items.map(item => item.product_id);
-      console.log('Produkte im Warenkorb:', cartProductIds);
+      console.log('Produkte im Warenkorb (API):', cartProductIds);
 
       // Verwende die gemeinsame Funktion zur Aktualisierung der Karten
       updateProductCardsWithCartData(cartProductIds);
@@ -753,28 +1043,43 @@ function updateAllProductCardStates() {
 function initializeProductCardStates() {
   console.log('Initialisiere Produktkarten-Status');
 
-  // Prüfe ob Warenkorbdaten im DOM verfügbar sind
-  const cartDataElement = document.getElementById('cart-data');
-  if (cartDataElement && cartDataElement.textContent) {
-    try {
-      // Versuche direkt die DOM-basierten Daten zu verwenden
-      const cartData = JSON.parse(cartDataElement.textContent);
-      console.log('Warenkorb-Daten aus DOM: ', cartData);
+  // Warte kurz auf CartStateManager Initialisierung
+  setTimeout(() => {
+    // Nutze CartStateManager wenn verfügbar
+    if (window.cartStateManager && window.cartStateManager.isInitialized) {
+      console.log('CartStateManager verfügbar - nutze aktuelle Daten');
+      const cartData = window.cartStateManager.getCartData();
+      if (cartData && cartData.items) {
+        const cartProductIds = cartData.items.map(item => item.product_id);
+        console.log('Produkte im Warenkorb (CartStateManager):', cartProductIds);
+        updateProductCardsWithCartData(cartProductIds);
+        return;
+      }
+    }
 
-      // Produkt-IDs im Warenkorb
-      const cartProductIds = cartData.items.map(item => item.product_id);
-      console.log('Produkte im Warenkorb (DOM):', cartProductIds);
+    // Fallback: Prüfe ob Warenkorbdaten im DOM verfügbar sind
+    const cartDataElement = document.getElementById('cart-data');
+    if (cartDataElement && cartDataElement.textContent) {
+      try {
+        // Versuche direkt die DOM-basierten Daten zu verwenden
+        const cartData = JSON.parse(cartDataElement.textContent);
+        console.log('Warenkorb-Daten aus DOM: ', cartData);
 
-      // Aktualisiere die Karten basierend auf DOM-Daten
-      updateProductCardsWithCartData(cartProductIds);
+        // Produkt-IDs im Warenkorb
+        const cartProductIds = cartData.items.map(item => item.product_id);
+        console.log('Produkte im Warenkorb (DOM):', cartProductIds);
 
-    } catch (e) {
-      console.error('Fehler beim Parsen der DOM-Warenkorb-Daten:', e);
-      // Fallback: API aufrufen, wenn DOM-Daten nicht korrekt sind
+        // Aktualisiere die Karten basierend auf DOM-Daten
+        updateProductCardsWithCartData(cartProductIds);
+
+      } catch (e) {
+        console.error('Fehler beim Parsen der DOM-Warenkorb-Daten:', e);
+        // Fallback: API aufrufen, wenn DOM-Daten nicht korrekt sind
+        updateAllProductCardStates();
+      }
+    } else {
+      // Kein DOM-Element gefunden, API aufrufen
       updateAllProductCardStates();
     }
-  } else {
-    // Kein DOM-Element gefunden, API aufrufen
-    updateAllProductCardStates();
-  }
+  }, 300); // Warte auf CartStateManager
 }
