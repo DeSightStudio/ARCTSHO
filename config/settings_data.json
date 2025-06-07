@@ -9,8 +9,18 @@
  */
 {
   "current": {
-    "logo": "shopify://shop_images/arctic-antiques_logo_white.png",
+    "logo": "shopify://shop_images/arctic-antiques_logo_english_white.png",
     "logo_width": 330,
+    "logo_de": "shopify://shop_images/arctic-antiques_logo_german_positive.png",
+    "logo_en": "shopify://shop_images/arctic-antiques_logo_english_positive.png",
+    "logo_it": "shopify://shop_images/arctic-antiques_logo_italian_positive.png",
+    "logo_fr": "shopify://shop_images/arctic-antiques_logo_francais_positive.png",
+    "logo_es": "shopify://shop_images/arctic-antiques_logo_espanol_positive.png",
+    "logo_white_de": "shopify://shop_images/arctic-antiques_logo_german_white.png",
+    "logo_white_en": "shopify://shop_images/arctic-antiques_logo_english_white_8c0e78b2-7bdc-4822-9347-2a7908b05aa7.png",
+    "logo_white_it": "shopify://shop_images/arctic-antiques_logo_italian_white.png",
+    "logo_white_fr": "shopify://shop_images/arctic-antiques_logo_francais_white.png",
+    "logo_white_es": "shopify://shop_images/arctic-antiques_logo_espanol_white.png",
     "favicon": "shopify://shop_images/arctic-logo_square.png",
     "type_header_font": "assistant_n4",
     "heading_scale": 100,
