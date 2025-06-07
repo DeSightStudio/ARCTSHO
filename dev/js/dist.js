@@ -457,6 +457,12 @@
                 console.log('External Links Manager wird initialisiert...');
             }
 
+            // Initialize predictive search results limiter
+            function initPredictiveSearchLimiter() {
+                // Predictive Search Limiter wird automatisch über das separate Modul geladen
+                console.log('Predictive Search Limiter wird initialisiert...');
+            }
+
             // Textarea Resize ist komplett deaktiviert
             function disableTextareaResize() {
                 console.log('Textarea Resize wird deaktiviert...');
@@ -610,6 +616,9 @@
 
                 // Back Button Manager Initialization
                 initBackButtonManager();
+
+                // Predictive Search Limiter Initialization
+                initPredictiveSearchLimiter();
             }
 
             // Starte die Initialisierung
@@ -803,3 +812,6 @@ function cleanupCopyPasteFormatting() {
 
 // Import New Product Badge Manager
 // New Product Badge Manager wird automatisch initialisiert wenn die Datei geladen wird
+
+// Import Predictive Search Limiter
+// Predictive Search Limiter wird automatisch initialisiert wenn die Datei geladen wird
