@@ -135,10 +135,19 @@
         <h1 class="header__heading">
       {%- endif -%}
           <a href="{{ routes.root_url }}" class="header__heading-link link link--text focus-inset">
+            {%- liquid
+              assign force_white_logo = false
+              if section.settings.logo_mode == 'white'
+                assign force_white_logo = true
+              elsif section.settings.logo_mode == 'normal'
+                assign force_white_logo = false
+              endif
+            -%}
             {%- render 'language-specific-logo',
               logo_class: 'header__heading-logo motion-reduce',
               logo_width: settings.logo_width,
               color_scheme: section.settings.color_scheme,
+              force_white: force_white_logo,
               preload: true
             -%}
           </a>
@@ -163,10 +172,19 @@
       {%- endif -%}
           <a href="{{ routes.root_url }}" class="header__heading-link link link--text focus-inset">
             {%- capture middle_center_sizes -%}(min-width: 750px) {{ settings.logo_width }}px, 50vw{%- endcapture -%}
+            {%- liquid
+              assign force_white_logo = false
+              if section.settings.logo_mode == 'white'
+                assign force_white_logo = true
+              elsif section.settings.logo_mode == 'normal'
+                assign force_white_logo = false
+              endif
+            -%}
             {%- render 'language-specific-logo',
               logo_class: 'header__heading-logo',
               logo_width: settings.logo_width,
               color_scheme: section.settings.color_scheme,
+              force_white: force_white_logo,
               sizes: middle_center_sizes,
               preload: true
             -%}
@@ -450,6 +468,27 @@
       "default": "middle-left",
       "label": "t:sections.header.settings.logo_position.label",
       "info": "t:sections.header.settings.logo_help.content"
+    },
+    {
+      "type": "select",
+      "id": "logo_mode",
+      "options": [
+        {
+          "value": "auto",
+          "label": "Automatic (based on color scheme)"
+        },
+        {
+          "value": "normal",
+          "label": "Always use normal (dark) logo"
+        },
+        {
+          "value": "white",
+          "label": "Always use white logo"
+        }
+      ],
+      "default": "auto",
+      "label": "Logo Mode",
+      "info": "Choose how to display logos. Automatic mode selects based on color scheme, or force a specific type."
     },
     {
       "type": "link_list",

@@ -20,23 +20,25 @@
   # Determine if we should use white logo
   assign use_white_logo = false
 
-  # Check if force_white is set
+  # Check if force_white is explicitly set (overrides automatic detection)
   if force_white == true or force_white == 'true'
     assign use_white_logo = true
-  endif
-
-  # Check color scheme for dark backgrounds (scheme-3 and higher typically have dark backgrounds)
-  if color_scheme and use_white_logo == false
-    case color_scheme
-      when 'scheme-3'
-        assign use_white_logo = true
-      when 'scheme-4'
-        assign use_white_logo = true
-      when 'scheme-5'
-        assign use_white_logo = true
-      when 'scheme-548c10fa-37f3-441f-92f9-890ada330aca'
-        assign use_white_logo = true
-    endcase
+  elsif force_white == false or force_white == 'false'
+    assign use_white_logo = false
+  else
+    # Auto mode: Check color scheme for dark backgrounds
+    if color_scheme
+      case color_scheme
+        when 'scheme-3'
+          assign use_white_logo = true
+        when 'scheme-4'
+          assign use_white_logo = true
+        when 'scheme-5'
+          assign use_white_logo = true
+        when 'scheme-548c10fa-37f3-441f-92f9-890ada330aca'
+          assign use_white_logo = true
+      endcase
+    endif
   endif
 
   # Determine which logo to use based on current language and white/normal preference

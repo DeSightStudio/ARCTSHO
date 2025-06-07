@@ -23,7 +23,12 @@ Das System ermöglicht es, für jede verfügbare Sprache (DE, EN, IT, FR, ES) so
 ### 4. Color Scheme Integration
 - Automatische Erkennung von dunklen Color Schemes (scheme-3, scheme-4, scheme-5, etc.)
 - Intelligente Auswahl des passenden Logo-Typs basierend auf Hintergrundfarbe
-- Möglichkeit zur manuellen Überschreibung mit `force_white` Parameter
+- **Manuelle Überschreibung** über Header-Einstellungen im Theme Editor
+
+### 5. Header Logo Mode Setting
+- **Automatic**: Basiert auf Color Scheme (Standard)
+- **Always use normal (dark) logo**: Erzwingt normale Logos unabhängig vom Color Scheme
+- **Always use white logo**: Erzwingt weiße Logos unabhängig vom Color Scheme
 
 ## Theme Editor Einstellungen
 
