@@ -36,6 +36,7 @@
       ],
       "settings": {
         "color_scheme": "scheme-548c10fa-37f3-441f-92f9-890ada330aca",
+        "logo_mode": "white",
         "menu1": "footer",
         "menu2": "main-menu",
         "show_copyright": true,
