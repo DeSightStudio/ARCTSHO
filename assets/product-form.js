@@ -159,15 +159,8 @@ window.autoFixCartButtons = function() {
   return fixedCount;
 };
 
-// Automatische Reparatur alle 5 Sekunden (nur in Development)
-if (window.location.hostname === 'localhost' || window.location.hostname.includes('dev')) {
-  setInterval(() => {
-    const fixedCount = window.autoFixCartButtons();
-    if (fixedCount > 0) {
-      console.log(`Auto-Fix: ${fixedCount} Probleme automatisch behoben`);
-    }
-  }, 5000);
-}
+// Automatische Reparatur nur bei Bedarf (nicht periodisch)
+// Entfernt für bessere Performance
 
 // Spezielle Debug-Funktion für PDP Button-Probleme
 window.debugPDPButton = function() {
@@ -272,8 +265,8 @@ if (!customElements.get('product-form')) {
         // MutationObserver für Warenkorb-Änderungen einrichten
         this.setupCartObserver();
 
-        // Periodische Überprüfung des Button-Status (als letzter Fallback)
-        this.setupPeriodicCheck();
+        // Direkter Event-Listener für Remove-Button-Klicks
+        this.setupRemoveButtonListener();
       }
 
       connectedCallback() {
@@ -287,32 +280,16 @@ if (!customElements.get('product-form')) {
         evt.preventDefault();
         if (this.submitButton.getAttribute('aria-disabled') === 'true') return;
 
-        // Debug-Logging für bessere Fehlerdiagnose
-        console.log('ProductForm: onSubmitHandler aufgerufen', {
-          buttonType: this.submitButton.type,
-          buttonDisabled: this.submitButton.getAttribute('aria-disabled'),
-          formAction: this.form.action
-        });
-
-        // Prüfen, ob das Produkt bereits im Warenkorb ist
         const variantId = parseInt(this.variantIdInput.value);
         const productId = parseInt(this.form.dataset.productId || this.closest('[data-product-id]')?.dataset.productId);
 
-        if (!variantId) {
-          console.error('ProductForm: Keine Varianten-ID gefunden');
-          return;
-        }
-
-        console.log('ProductForm: Verarbeite Submit für Produkt', { productId, variantId });
+        if (!variantId) return;
 
         // Wenn bereits im Warenkorb (Button-Typ ist 'button' anstatt 'submit'), nur den Drawer öffnen
         if (this.submitButton.type === 'button') {
-          console.log('ProductForm: Produkt bereits im Warenkorb - öffne Drawer');
           if (this.cart) {
             this.cart.open();
           } else {
-            // Anstatt zur Cart-Seite zu navigieren, zeige eine Benachrichtigung an
-            console.log('ProductForm: Cart-Drawer nicht gefunden, zeige stattdessen eine Benachrichtigung');
             this.showToastNotification(window.variantStrings.viewCartMessage || 'Produkt ist bereits im Warenkorb');
           }
           return;
@@ -603,25 +580,15 @@ if (!customElements.get('product-form')) {
 
 
       handleCartItemRemoved(event) {
-        console.log('ProductForm: Item aus Warenkorb entfernt Event empfangen:', event.detail);
-
-        if (!event.detail) return;
+        if (!event.detail || !this.variantIdInput) return;
 
         // Wenn ein Artikel aus dem Warenkorb entfernt wurde, überprüfen, ob es dieser Artikel ist
         const currentVariantId = parseInt(this.variantIdInput.value);
         const currentProductId = parseInt(this.form.dataset.productId || this.closest('[data-product-id]')?.dataset.productId);
 
-        console.log('ProductForm: Vergleiche entfernten Artikel:', {
-          currentVariantId,
-          currentProductId,
-          removedVariantId: event.detail.variantId,
-          removedProductId: event.detail.productId
-        });
-
         // Prüfe sowohl Varianten-ID als auch Produkt-ID für größere Zuverlässigkeit
         if (currentVariantId === event.detail.variantId ||
             (currentProductId && event.detail.productId && currentProductId === event.detail.productId)) {
-          console.log('ProductForm: Dieser Artikel wurde aus dem Warenkorb entfernt - setze Button zurück');
 
           // Sofort auf "Add to Cart" zurücksetzen
           this.updateButtonToAddToCart();
@@ -632,8 +599,6 @@ if (!customElements.get('product-form')) {
           }, 100);
         } else {
           // Auch wenn es nicht exakt dieser Artikel ist, trotzdem den Warenkorb prüfen
-          // um den Button-Status zu aktualisieren (für Fälle mit mehreren gleichen Produkten)
-          console.log('ProductForm: Prüfe Warenkorbstatus nach Entfernen eines anderen Artikels');
           setTimeout(() => {
             this.checkProductInCart();
           }, 50);
@@ -805,51 +770,36 @@ if (!customElements.get('product-form')) {
 
       // Verbesserte Methode zum Aktualisieren des Buttons auf "View Cart"
       updateButtonToViewCart() {
-        console.log('ProductForm: Aktualisiere Button auf "View Cart"');
-
-        const productFormElement = this;
-
-        // Suche nach dem serverseitig gerenderten "View Cart" Button (außerhalb des Formulars)
-        let viewCartButton = productFormElement.querySelector('button.product-form__cart-submit[onclick*="cart-drawer"]');
-
-        // Suche nach dem Add-to-Cart Formular
-        let addToCartForm = productFormElement.querySelector('form[data-type="add-to-cart-form"]');
-
-        // Suche nach dem Submit-Button innerhalb des Formulars
-        let submitButton = addToCartForm ? addToCartForm.querySelector('button.product-form__submit') : null;
-
-        // Fallback: Suche nach jedem Submit-Button in der Product-Form
-        if (!submitButton) {
-          submitButton = productFormElement.querySelector('button[type="submit"], button[type="button"]');
+        // Cache DOM-Abfragen
+        if (!this.cachedElements) {
+          this.cachedElements = {
+            viewCartButton: this.querySelector('button.product-form__cart-submit[onclick*="cart-drawer"]'),
+            addToCartForm: this.querySelector('form[data-type="add-to-cart-form"]'),
+            submitButton: null
+          };
         }
 
+        let { viewCartButton, addToCartForm } = this.cachedElements;
+        let submitButton = addToCartForm?.querySelector('button.product-form__submit') ||
+                          this.querySelector('button[type="submit"], button[type="button"]');
+
         if (viewCartButton) {
-          // Serverseitig gerendeter "View Cart" Button existiert bereits
           viewCartButton.style.display = 'block';
-          console.log('ProductForm: Serverseitiger "View Cart" Button angezeigt');
         } else if (submitButton) {
-          // Entferne alle bestehenden Event-Listener vom Button und erhalte die neue Referenz
+          // Entferne alle bestehenden Event-Listener vom Button
           submitButton = this.removeAllButtonEventListeners(submitButton);
 
-          // Konvertiere den Submit-Button zu einem "View Cart" Button
           submitButton.type = 'button';
-
-          // Entferne onclick-Attribut falls vorhanden
           submitButton.removeAttribute('onclick');
-
-          // Entferne alle data-Attribute die auf Event-Listener hinweisen
           submitButton.removeAttribute('data-submit-listener');
           submitButton.removeAttribute('data-view-cart-listener');
 
-          // Setze den neuen Event-Handler
+          // Optimierter Event-Handler
           const viewCartHandler = (e) => {
             e.preventDefault();
             e.stopPropagation();
-            console.log('ProductForm: View Cart Button geklickt');
             const cartDrawer = document.querySelector('cart-drawer');
-            if (cartDrawer) {
-              cartDrawer.open();
-            }
+            if (cartDrawer) cartDrawer.open();
           };
 
           submitButton.addEventListener('click', viewCartHandler);
@@ -860,109 +810,65 @@ if (!customElements.get('product-form')) {
             buttonText.textContent = window.variantStrings.view_cart_button || 'View cart';
           }
 
-          // Aktualisiere die Referenz
           this.submitButton = submitButton;
-
-          console.log('ProductForm: Submit-Button zu "View Cart" konvertiert:', {
-            buttonType: submitButton.type,
-            buttonText: buttonText?.textContent,
-            hasViewCartListener: submitButton.hasAttribute('data-view-cart-listener')
-          });
-        } else {
-          console.error('ProductForm: Kein Submit-Button gefunden für View Cart Update');
         }
 
         // Verstecke das Add-to-Cart Formular wenn ein separater View Cart Button existiert
         if (viewCartButton && addToCartForm) {
           addToCartForm.style.display = 'none';
-          console.log('ProductForm: Add-to-Cart Formular versteckt (separater View Cart Button vorhanden)');
         }
       }
 
       // Verbesserte Methode zum Aktualisieren des Buttons auf "Add to Cart"
       updateButtonToAddToCart() {
-        console.log('ProductForm: Aktualisiere Button auf "Add to Cart"');
-
-        const productFormElement = this;
-
-        // Suche nach dem serverseitig gerenderten "View Cart" Button (außerhalb des Formulars)
-        let viewCartButton = productFormElement.querySelector('button.product-form__cart-submit[onclick*="cart-drawer"]');
-
-        // Suche nach dem Add-to-Cart Formular
-        let addToCartForm = productFormElement.querySelector('form[data-type="add-to-cart-form"]');
-
-        // Suche nach dem Submit-Button innerhalb des Formulars
-        let submitButton = addToCartForm ? addToCartForm.querySelector('button.product-form__submit') : null;
-
-        // Fallback: Suche nach jedem Submit-Button in der Product-Form
-        if (!submitButton) {
-          submitButton = productFormElement.querySelector('button[type="submit"], button[type="button"]');
+        // Cache DOM-Abfragen
+        if (!this.cachedElements) {
+          this.cachedElements = {
+            viewCartButton: this.querySelector('button.product-form__cart-submit[onclick*="cart-drawer"]'),
+            addToCartForm: this.querySelector('form[data-type="add-to-cart-form"]'),
+            submitButton: null
+          };
         }
 
+        let { viewCartButton, addToCartForm } = this.cachedElements;
+        let submitButton = addToCartForm?.querySelector('button.product-form__submit') ||
+                          this.querySelector('button[type="submit"], button[type="button"]');
+
         if (viewCartButton) {
-          // Verstecke den serverseitig gerenderten "View Cart" Button
           viewCartButton.style.display = 'none';
-          console.log('ProductForm: Serverseitiger "View Cart" Button versteckt');
         }
 
         if (addToCartForm) {
-          // Zeige das Add-to-Cart Formular
           addToCartForm.style.display = 'block';
-          console.log('ProductForm: Add-to-Cart Formular angezeigt');
         }
 
         if (submitButton) {
-          // Entferne alle bestehenden Event-Listener vom Button und erhalte die neue Referenz
+          // Entferne alle bestehenden Event-Listener vom Button
           submitButton = this.removeAllButtonEventListeners(submitButton);
 
-          // Stelle sicher, dass der Submit-Button korrekt konfiguriert ist
           submitButton.type = 'submit';
-
-          // Entferne onclick-Attribut falls vorhanden
           submitButton.removeAttribute('onclick');
-
-          // Entferne alle data-Attribute die auf Event-Listener hinweisen
           submitButton.removeAttribute('data-submit-listener');
           submitButton.removeAttribute('data-view-cart-listener');
 
-          // Setze den Button-Text
           const buttonText = submitButton.querySelector('span');
           if (buttonText) {
             buttonText.textContent = window.variantStrings.addToCart || 'Add to cart';
           }
 
-          // Stelle sicher, dass das Formular korrekt konfiguriert ist
+          // Optimierte Form-Listener-Behandlung
           const form = submitButton.closest('form');
-          if (form) {
-            // Entferne bestehende Form-Listener
-            form.removeEventListener('submit', this.onSubmitHandler);
-            form.removeAttribute('data-product-form-listener');
-
-            // Füge neuen Form-Listener hinzu
+          if (form && !form.hasAttribute('data-product-form-listener')) {
             form.addEventListener('submit', this.onSubmitHandler.bind(this));
             form.setAttribute('data-product-form-listener', 'true');
           }
 
-          // Aktualisiere die Referenzen
           this.submitButton = submitButton;
-          if (form) {
-            this.form = form;
-          }
-
-          console.log('ProductForm: Submit-Button zu "Add to Cart" konfiguriert:', {
-            buttonType: submitButton.type,
-            buttonText: buttonText?.textContent,
-            hasForm: !!form,
-            formHasListener: form?.hasAttribute('data-product-form-listener')
-          });
-        } else {
-          console.error('ProductForm: Kein Submit-Button gefunden für Add to Cart Update');
+          if (form) this.form = form;
         }
       }
 
       handleCartUpdate(event) {
-        console.log('Warenkorb aktualisiert - aktualisiere Produktstatus...');
-
         // Wenn Daten im Event vorhanden, direkt damit aktualisieren
         if (event.detail && event.detail.cartData) {
           this.updateButtonStateWithCartData(event.detail.cartData);
@@ -973,35 +879,24 @@ if (!customElements.get('product-form')) {
       }
 
       handleDrawerOpened(event) {
-        console.log('Drawer geöffnet - aktualisiere Produktstatus...');
-
         try {
           // Sofort den Button-Status aktualisieren, ohne auf den Server-Aufruf zu warten
           if (event.detail && event.detail.cartData && event.detail.cartData.items) {
             this.updateButtonStateWithCartData(event.detail.cartData);
           } else {
-            // Wenn keine Cart-Daten im Event vorhanden sind, normale Überprüfung durchführen
-            console.log('Keine Cart-Daten im Event - führe normale Überprüfung durch');
             this.checkProductInCart();
           }
         } catch (error) {
           console.error('Fehler beim Verarbeiten des Drawer-Opened Events:', error);
-          // Fallback zur normalen Überprüfung
           this.checkProductInCart();
         }
       }
 
       handleDrawerClosed(event) {
-        console.log('ProductForm: Drawer geschlossen - aktualisiere Produktstatus...');
-
         // Direkt Daten aus dem Event nutzen, falls vorhanden
         if (event.detail && event.detail.cartData) {
-          console.log('ProductForm: Verwende Cart-Daten aus Drawer-Close Event');
           this.updateButtonStateWithCartData(event.detail.cartData);
         } else {
-          // Wenn keine Daten im Event vorhanden, normale Überprüfung durchführen
-          console.log('ProductForm: Keine Cart-Daten im Event, führe checkProductInCart durch');
-
           // Mehrfache Überprüfung mit verschiedenen Verzögerungen für maximale Zuverlässigkeit
           setTimeout(() => {
             this.checkProductInCart();
@@ -1192,28 +1087,28 @@ if (!customElements.get('product-form')) {
         }
       }
 
-      // MutationObserver für Warenkorb-Änderungen
+      // MutationObserver für Warenkorb-Änderungen (optimiert)
       setupCartObserver() {
-        console.log('ProductForm: Richte MutationObserver für Warenkorb ein');
-
-        // Überwache Änderungen im Cart-Drawer
+        // Überwache Änderungen im Cart-Drawer (nur wenn vorhanden)
         const cartDrawer = document.querySelector('cart-drawer');
         if (cartDrawer) {
           const observer = new MutationObserver((mutations) => {
             let cartChanged = false;
 
-            mutations.forEach((mutation) => {
-              // Prüfe auf Änderungen in cart-drawer-items
-              if (mutation.target.matches('cart-drawer-items') ||
-                  mutation.target.closest('cart-drawer-items') ||
+            // Prüfe auf Änderungen in cart-drawer-items oder cart-items
+            for (const mutation of mutations) {
+              if (mutation.target.matches?.('cart-drawer-items, cart-items') ||
+                  mutation.target.closest?.('cart-drawer-items, cart-items') ||
                   mutation.target.classList?.contains('cart-item')) {
                 cartChanged = true;
+                break;
               }
-            });
+            }
 
             if (cartChanged) {
-              console.log('ProductForm: Warenkorb-Änderung durch MutationObserver erkannt');
-              setTimeout(() => {
+              // Debounce: Nur einmal alle 200ms ausführen (reduziert für schnellere Reaktion)
+              clearTimeout(this.cartObserverTimeout);
+              this.cartObserverTimeout = setTimeout(() => {
                 this.checkProductInCart();
               }, 200);
             }
@@ -1221,131 +1116,68 @@ if (!customElements.get('product-form')) {
 
           observer.observe(cartDrawer, {
             childList: true,
-            subtree: true,
+            subtree: true, // Wieder aktiviert für bessere Erkennung
             attributes: false
           });
 
-          // Observer-Referenz speichern für spätere Bereinigung
           this.cartObserver = observer;
         }
+      }
 
-        // Zusätzlich: Überwache Änderungen am Cart-Icon (falls vorhanden)
-        const cartIcon = document.querySelector('.cart-count-bubble, [data-cart-count]');
-        if (cartIcon) {
-          const iconObserver = new MutationObserver(() => {
-            console.log('ProductForm: Cart-Icon-Änderung erkannt');
+      // Direkter Event-Listener für Remove-Button-Klicks
+      setupRemoveButtonListener() {
+        // Event-Delegation für Remove-Button-Klicks im gesamten Dokument
+        document.addEventListener('click', (event) => {
+          // Prüfe ob es ein Remove-Button im Cart-Drawer ist
+          if (event.target.closest('cart-remove-button button') ||
+              event.target.closest('.cart-remove-button')) {
+
+            // Kurze Verzögerung, damit der Remove-Vorgang abgeschlossen werden kann
             setTimeout(() => {
               this.checkProductInCart();
-            }, 100);
-          });
-
-          iconObserver.observe(cartIcon, {
-            childList: true,
-            subtree: true,
-            characterData: true
-          });
-
-          this.cartIconObserver = iconObserver;
-        }
-      }
-
-      // Periodische Überprüfung des Button-Status (als robuster Fallback)
-      setupPeriodicCheck() {
-        console.log('ProductForm: Richte periodische Button-Status-Prüfung ein');
-
-        // Speichere den letzten bekannten Warenkorb-Status
-        this.lastCartState = null;
-
-        // Prüfe alle 2 Sekunden den Button-Status
-        this.periodicCheckInterval = setInterval(() => {
-          if (!this.variantIdInput) return;
-
-          const variantId = parseInt(this.variantIdInput.value);
-          const productId = parseInt(this.form.dataset.productId || this.closest('[data-product-id]')?.dataset.productId);
-
-          if (!variantId || !productId) return;
-
-          // Nutze CartStateManager wenn verfügbar
-          if (window.cartStateManager && window.cartStateManager.isInitialized) {
-            const cartData = window.cartStateManager.getCartData();
-            if (cartData) {
-              const isInCart = cartData.items ? cartData.items.some(item =>
-                item.product_id === productId || item.variant_id === variantId
-              ) : false;
-
-              const currentButtonType = this.submitButton?.type;
-              const shouldBeViewCart = isInCart;
-              const isViewCart = currentButtonType === 'button';
-
-              // Nur korrigieren wenn Status nicht übereinstimmt
-              if (shouldBeViewCart !== isViewCart) {
-                console.log('ProductForm: Periodische Prüfung - Button-Status korrigiert:', {
-                  productId,
-                  variantId,
-                  isInCart,
-                  currentButtonType,
-                  shouldBeViewCart,
-                  isViewCart
-                });
-
-                if (shouldBeViewCart) {
-                  this.updateButtonToViewCart();
-                } else {
-                  this.updateButtonToAddToCart();
-                }
-              }
-            }
+            }, 150);
           }
-        }, 2000);
+        });
       }
 
-      // Cleanup-Methode für Observer und Intervals
+
+
+      // Cleanup-Methode für Observer
       disconnectedCallback() {
         if (this.cartObserver) {
           this.cartObserver.disconnect();
         }
-        if (this.cartIconObserver) {
-          this.cartIconObserver.disconnect();
-        }
-        if (this.periodicCheckInterval) {
-          clearInterval(this.periodicCheckInterval);
+        if (this.cartObserverTimeout) {
+          clearTimeout(this.cartObserverTimeout);
         }
       }
 
       // Neue Methode: Prüfe den aktuellen Warenkorb-Status beim Laden der Seite
       checkInitialCartStatus() {
-        console.log('ProductForm: Prüfe initialen Warenkorb-Status');
-
-        // Hole die aktuelle Varianten-ID
         const variantId = this.getVariantId();
         if (!variantId) {
-          console.log('ProductForm: Keine Varianten-ID gefunden, setze auf Add to Cart');
           this.updateButtonToAddToCart();
           return;
         }
 
-        // Prüfe den Warenkorb-Inhalt
+        // Optimiert: Nutze CartStateManager wenn verfügbar, sonst Fetch
+        if (window.cartStateManager?.isInitialized) {
+          const cartData = window.cartStateManager.getCartData();
+          if (cartData) {
+            const isInCart = cartData.items?.some(item => item.variant_id === parseInt(variantId));
+            isInCart ? this.updateButtonToViewCart() : this.updateButtonToAddToCart();
+            return;
+          }
+        }
+
+        // Fallback: Fetch nur wenn CartStateManager nicht verfügbar
         fetch('/cart.js')
           .then(response => response.json())
           .then(cart => {
-            console.log('ProductForm: Warenkorb-Daten erhalten:', cart);
-
-            // Prüfe ob die aktuelle Variante im Warenkorb ist
             const isInCart = cart.items.some(item => item.variant_id === parseInt(variantId));
-
-            if (isInCart) {
-              console.log('ProductForm: Produkt ist im Warenkorb, zeige View Cart');
-              this.updateButtonToViewCart();
-            } else {
-              console.log('ProductForm: Produkt ist nicht im Warenkorb, zeige Add to Cart');
-              this.updateButtonToAddToCart();
-            }
+            isInCart ? this.updateButtonToViewCart() : this.updateButtonToAddToCart();
           })
-          .catch(error => {
-            console.error('ProductForm: Fehler beim Laden des Warenkorbs:', error);
-            // Bei Fehler standardmäßig Add to Cart anzeigen
-            this.updateButtonToAddToCart();
-          });
+          .catch(() => this.updateButtonToAddToCart());
       }
 
       // Hilfsmethode: Hole die aktuelle Varianten-ID
@@ -1388,19 +1220,12 @@ if (!customElements.get('product-form')) {
 
       // Hilfsmethode: Entferne alle Event-Listener von einem Button
       removeAllButtonEventListeners(button) {
-        if (!button) return;
-
-        console.log('ProductForm: Entferne alle Event-Listener vom Button');
+        if (!button) return button;
 
         // Erstelle einen neuen Button-Node ohne Event-Listener
         const newButton = button.cloneNode(true);
-
-        // Ersetze den alten Button mit dem neuen
         button.parentNode.replaceChild(newButton, button);
-
-        // Aktualisiere die Referenz
         this.submitButton = newButton;
-
         return newButton;
       }
     }

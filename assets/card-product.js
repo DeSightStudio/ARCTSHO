@@ -478,8 +478,40 @@ function handleFormSubmit(event) {
     loadingSpinner.classList.remove('hidden');
   }
 
-  // Produkt-ID und Varianten-ID aus dem Formular extrahieren
-  const productId = parseInt(this.dataset.productId);
+  // Produkt-ID und Varianten-ID aus dem Formular extrahieren - verschiedene Quellen versuchen
+  let productId = parseInt(this.dataset.productId);
+  if (!productId || isNaN(productId)) {
+    // Aus der Karte extrahieren
+    const card = this.closest('.card-wrapper[data-product-id]');
+    if (card) {
+      productId = parseInt(card.dataset.productId);
+    }
+  }
+  if (!productId || isNaN(productId)) {
+    // Aus dem Formular-ID extrahieren (z.B. quick-add-template--123-456)
+    const formId = this.id;
+    if (formId && typeof formId === 'string') {
+      const matches = formId.match(/-(\d+)$/);
+      if (matches) {
+        productId = parseInt(matches[1]);
+      }
+    }
+  }
+  if (!productId || isNaN(productId)) {
+    // Aus dem product-form Element extrahieren
+    const productForm = this.closest('product-form');
+    if (productForm && productForm.dataset.productId) {
+      productId = parseInt(productForm.dataset.productId);
+    }
+  }
+  if (!productId || isNaN(productId)) {
+    // Aus dem übergeordneten Container extrahieren
+    const container = this.closest('[data-product-id]');
+    if (container) {
+      productId = parseInt(container.dataset.productId);
+    }
+  }
+
   const variantIdInput = this.querySelector('[name="id"]');
   const variantId = variantIdInput ? parseInt(variantIdInput.value) : null;
 
@@ -520,7 +552,7 @@ function handleFormSubmit(event) {
         }
 
         // Button Status ändern
-        updateButtonToViewCart(this);
+        updateButtonToViewCartGlobal(this);
 
         // Submit-Button reaktivieren
         if (submitButton) {
@@ -582,7 +614,7 @@ function handleFormSubmit(event) {
         }
 
         // Button-Status aktualisieren (von "In den Warenkorb" zu "Warenkorb anzeigen")
-        updateButtonToViewCart(this);
+        updateButtonToViewCartGlobal(this);
 
         // Event auslösen, um andere Komponenten zu informieren
         document.dispatchEvent(new CustomEvent('cart:updated', {
@@ -639,8 +671,8 @@ function handleFormSubmit(event) {
 window.reinitializeCardProductListeners = function() {
   console.log('CardProduct: Wiederherstellung der Event-Listener');
 
-  // Alle Produktkarten-Formulare neu registrieren
-  const addToCartForms = document.querySelectorAll('.card-product__add-form');
+  // Alle Produktkarten-Formulare neu registrieren - verschiedene Selektoren
+  const addToCartForms = document.querySelectorAll('.card-product__add-form, product-form form[data-type="add-to-cart-form"], form[data-type="add-to-cart-form"]');
   addToCartForms.forEach(form => {
     if (!form.hasAttribute('data-card-product-listener')) {
       form.addEventListener('submit', handleFormSubmit);
@@ -649,6 +681,44 @@ window.reinitializeCardProductListeners = function() {
     }
   });
 };
+
+// Globale Funktion zum Aktualisieren des Buttons zu "View Cart"
+function updateButtonToViewCartGlobal(form) {
+  if (!form) return;
+
+  // Verschiedene Container-Strukturen handhaben
+  let actionsContainer = form.closest('.card-product__actions');
+  if (!actionsContainer) {
+    actionsContainer = form.closest('.card__actions');
+  }
+  if (!actionsContainer) {
+    actionsContainer = form.closest('.quick-add');
+  }
+
+  if (!actionsContainer) {
+    console.warn('CardProduct: Kein Actions-Container gefunden');
+    return;
+  }
+
+  // Form oder product-form ausblenden
+  const productForm = form.closest('product-form');
+  if (productForm) {
+    productForm.style.display = 'none';
+  } else {
+    form.style.display = 'none';
+  }
+
+  // View Cart Button erstellen oder anzeigen
+  let viewCartButton = actionsContainer.querySelector('.card-product__view-cart');
+  if (!viewCartButton) {
+    viewCartButton = document.createElement('button');
+    viewCartButton.type = 'button';
+    viewCartButton.className = 'card-product__view-cart button button--full-width button--primary';
+    viewCartButton.setAttribute('onclick', 'event.stopPropagation(); event.preventDefault(); document.querySelector("cart-drawer").open();');
+    viewCartButton.innerHTML = `<span>${window.variantStrings?.view_cart_button || 'View cart'}</span>`;
+    actionsContainer.appendChild(viewCartButton);
+  }
+}
 
 // Event-Listener für Seitennavigation
 if ('navigation' in window) {
@@ -746,8 +816,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // Fange alle Produktkarten-Formulare ab
-  const addToCartForms = document.querySelectorAll('.card-product__add-form');
+  // Fange alle Produktkarten-Formulare ab - verschiedene Selektoren
+  const addToCartForms = document.querySelectorAll('.card-product__add-form, product-form form[data-type="add-to-cart-form"], form[data-type="add-to-cart-form"]');
 
   addToCartForms.forEach(form => {
     // Prüfe, ob bereits ein Event-Listener registriert ist

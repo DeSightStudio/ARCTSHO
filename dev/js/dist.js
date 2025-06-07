@@ -716,10 +716,8 @@
                     }
                 };
 
-                // Prüfen der Event-Listener
-                console.log('Überprüfe, ob der Button event listeners hat:');
-                const buttonEvents = getEventListeners && vatIdButton ? getEventListeners(vatIdButton) : 'getEventListeners nicht verfügbar';
-                console.log('Button Events:', buttonEvents);
+                // Prüfen der Event-Listener (getEventListeners ist nur in DevTools verfügbar)
+                console.log('VAT-ID Button Event-Listener werden über popup-manager.js verwaltet');
             }, 2000);
         }, 500);
     });

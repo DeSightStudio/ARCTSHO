@@ -439,6 +439,12 @@
       Inline-Script für VAT-ID-Button im Cart
     {% endcomment %}
     <script defer>
+      // Definition der fixVatIdButton Funktion
+      window.fixVatIdButton = function () {
+        console.log('fixVatIdButton: VAT-ID Button wird über popup-manager.js verwaltet');
+        // Diese Funktion ist jetzt ein Platzhalter, da die Funktionalität in popup-manager.js verwaltet wird
+      };
+
       document.addEventListener('DOMContentLoaded', function () {
         // VAT-ID Button wird jetzt zentral über popup-manager.js verwaltet
         console.log('VAT-ID Button wird über popup-manager.js verwaltet');

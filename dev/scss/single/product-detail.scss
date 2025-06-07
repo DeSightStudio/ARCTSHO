@@ -74,12 +74,42 @@ product-recommendations {
     .related-products__heading {
         font-family: 'Cormorant Garamond';
         color: $mainColor;
-        font-size: $fontSizeLarge !important;
+        font-size: $fontSizeMedium !important; // Reduziert von $fontSizeLarge (36px) auf $fontSizeMedium (26px)
         margin: 30px 0px 15px 0px;
         line-height: 1;
         @include screen(med-small) {
-            font-size: $fontSizeMedium;
+            font-size: $fontSizeRegular; // Reduziert von $fontSizeMedium auf $fontSizeRegular für mobile
         }
+    }
+
+    // Reduzierte Schriftgrößen für alle Produktkarten-Elemente in Related Products
+    .card__article-number {
+        span {
+            font-size: $fontSizeSmall !important; // 16px statt 22px
+        }
+    }
+
+    .card-product__price-container {
+        .price-item {
+            font-size: 18px !important; // 18px statt 22px
+        }
+    }
+
+    .card-product__weight {
+        span {
+            font-size: $fontSizeSmall !important; // 16px statt 22px
+        }
+    }
+
+    .card-product__add-button,
+    .card-product__add-button.button,
+    .button.card-product__add-button,
+    .grid__item .button {
+        font-size: 18px !important; // 18px statt 22px für alle Bildschirmgrößen
+    }
+
+    .vat-info-badge {
+        font-size: $fontSizeSmall !important; // 16px statt 22px
     }
 
     // Ensure 2 columns on mobile for related products
@@ -106,13 +136,35 @@ product-recommendations {
         }
     }
 
-    // Reduce font size for cart button in related products on mobile
+    // Mobile spezifische Anpassungen für Related Products
     @media screen and (max-width: 749px) {
+        .card__article-number {
+            span {
+                font-size: 14px !important; // Noch kleiner auf Mobile
+            }
+        }
+
+        .card-product__price-container {
+            .price-item {
+                font-size: 16px !important; // Kleiner auf Mobile
+            }
+        }
+
+        .card-product__weight {
+            span {
+                font-size: 14px !important; // Kleiner auf Mobile
+            }
+        }
+
         .card-product__add-button,
         .card-product__add-button.button,
         .button.card-product__add-button,
         .grid__item .button {
-            font-size: 18px !important;
+            font-size: 16px !important; // Kleiner auf Mobile
+        }
+
+        .vat-info-badge {
+            font-size: 14px !important; // Kleiner auf Mobile
         }
     }
     .card__content {
