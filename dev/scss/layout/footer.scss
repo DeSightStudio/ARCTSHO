@@ -28,11 +28,14 @@ footer {
                     margin: 0;
                     font-weight: bold;
                 }
-                
+                img {
+                    max-width: 220px;
+                    margin-bottom: 10px;
+                }
                 p, .rte {
                     font-family: Cormorant Garamond;
                     color: $whiteColor;
-                    font-size: $fontSizeRegular !important;
+                    font-size: $fontSizeSmall !important;
                     margin: 0;
                 }
             }
@@ -111,7 +114,7 @@ footer {
 
                 .footer__menu-link {
                     font-family: 'Cormorant Garamond';
-                    font-size: $fontSizeRegular;
+                    font-size: $fontSizeSmall;
                     color: $whiteColor;
                     text-decoration: none;
                     transition: opacity 0.2s ease-in-out;
