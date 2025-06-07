@@ -110,12 +110,20 @@
                     {%- endif -%}
                   {%- when 'brand_information' -%}
                     <div class="footer-block__brand-info">
-                      {%- render 'language-specific-brand-image',
-                        image_width: settings.brand_image_width,
+                      {%- liquid
+                        assign force_white_logo = false
+                        if section.settings.logo_mode == 'white'
+                          assign force_white_logo = true
+                        elsif section.settings.logo_mode == 'normal'
+                          assign force_white_logo = false
+                        endif
+                      -%}
+                      {%- render 'language-specific-logo',
+                        logo_class: 'header__heading-logo motion-reduce',
+                        logo_width: settings.logo_width,
                         color_scheme: section.settings.color_scheme,
-                        wrapper_class: 'footer-block__image-wrapper',
-                        loading: 'lazy',
-                        link_class: 'smooth-scroll'
+                        force_white: force_white_logo,
+                        preload: true
                       -%}
                       {%- if settings.brand_headline != blank -%}
                         <h2 class="footer-block__heading rte">{{ settings.brand_headline }}</h2>
@@ -445,6 +453,27 @@
       "id": "color_scheme",
       "label": "t:sections.all.colors.label",
       "default": "scheme-1"
+    },
+    {
+      "type": "select",
+      "id": "logo_mode",
+      "options": [
+        {
+          "value": "auto",
+          "label": "Automatic (based on color scheme)"
+        },
+        {
+          "value": "normal",
+          "label": "Always use normal (dark) logo"
+        },
+        {
+          "value": "white",
+          "label": "Always use white logo"
+        }
+      ],
+      "default": "auto",
+      "label": "Footer Logo Mode",
+      "info": "Choose how to display footer brand logos. Automatic mode selects based on color scheme, or force a specific type."
     },
     {
       "type": "header",

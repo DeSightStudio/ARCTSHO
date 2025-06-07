@@ -438,6 +438,30 @@
                             }, 100);
                         });
                     });
+
+                    // Monitor for language form submissions and force reload
+                    const localizationForms = document.querySelectorAll('form[action*="localization"]');
+                    localizationForms.forEach(form => {
+                        form.addEventListener('submit', function(e) {
+                            // Let the form submit naturally, then reload to ensure footer updates
+                            setTimeout(() => {
+                                if (!window.location.href.includes('?')) {
+                                    window.location.reload(true); // Force reload from server
+                                }
+                            }, 500);
+                        });
+                    });
+
+                    // Also monitor for URL changes (in case of AJAX language switching)
+                    let currentUrl = window.location.href;
+                    setInterval(() => {
+                        if (window.location.href !== currentUrl) {
+                            currentUrl = window.location.href;
+                            // URL changed, update language attribute
+                            const newLanguage = document.documentElement.lang || 'en';
+                            document.body.setAttribute('data-locale', newLanguage);
+                        }
+                    }, 1000);
                 });
 
                 // Also try to detect current language from the button text and set flag directly

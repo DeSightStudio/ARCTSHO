@@ -11,11 +11,18 @@
     - wrapper_class: CSS classes for the logo wrapper div
     - color_scheme: Color scheme ID to determine if white logo should be used
     - force_white: Force white logo regardless of color scheme (true/false)
+    - use_brand_images: Use brand_image_* settings instead of logo_* settings (true/false)
 {%- endcomment -%}
 
 {%- liquid
-  # Get current language code
+  # Get current language code - try multiple methods for reliability
   assign current_language = localization.language.iso_code
+  if current_language == blank
+    assign current_language = request.locale.iso_code
+  endif
+  if current_language == blank
+    assign current_language = 'en'
+  endif
 
   # Determine if we should use white logo
   assign use_white_logo = false
@@ -42,41 +49,79 @@
   endif
 
   # Determine which logo to use based on current language and white/normal preference
-  assign selected_logo = settings.logo
+  if use_brand_images == true or use_brand_images == 'true'
+    assign selected_logo = settings.brand_image
 
-  # Check if language-specific logo exists
-  case current_language
-    when 'de'
-      if use_white_logo and settings.logo_white_de != blank
-        assign selected_logo = settings.logo_white_de
-      elsif settings.logo_de != blank
-        assign selected_logo = settings.logo_de
-      endif
-    when 'en'
-      if use_white_logo and settings.logo_white_en != blank
-        assign selected_logo = settings.logo_white_en
-      elsif settings.logo_en != blank
-        assign selected_logo = settings.logo_en
-      endif
-    when 'it'
-      if use_white_logo and settings.logo_white_it != blank
-        assign selected_logo = settings.logo_white_it
-      elsif settings.logo_it != blank
-        assign selected_logo = settings.logo_it
-      endif
-    when 'fr'
-      if use_white_logo and settings.logo_white_fr != blank
-        assign selected_logo = settings.logo_white_fr
-      elsif settings.logo_fr != blank
-        assign selected_logo = settings.logo_fr
-      endif
-    when 'es'
-      if use_white_logo and settings.logo_white_es != blank
-        assign selected_logo = settings.logo_white_es
-      elsif settings.logo_es != blank
-        assign selected_logo = settings.logo_es
-      endif
-  endcase
+    # Check if language-specific brand image exists
+    case current_language
+      when 'de'
+        if use_white_logo and settings.brand_image_white_de != blank
+          assign selected_logo = settings.brand_image_white_de
+        elsif settings.brand_image_de != blank
+          assign selected_logo = settings.brand_image_de
+        endif
+      when 'en'
+        if use_white_logo and settings.brand_image_white_en != blank
+          assign selected_logo = settings.brand_image_white_en
+        elsif settings.brand_image_en != blank
+          assign selected_logo = settings.brand_image_en
+        endif
+      when 'it'
+        if use_white_logo and settings.brand_image_white_it != blank
+          assign selected_logo = settings.brand_image_white_it
+        elsif settings.brand_image_it != blank
+          assign selected_logo = settings.brand_image_it
+        endif
+      when 'fr'
+        if use_white_logo and settings.brand_image_white_fr != blank
+          assign selected_logo = settings.brand_image_white_fr
+        elsif settings.brand_image_fr != blank
+          assign selected_logo = settings.brand_image_fr
+        endif
+      when 'es'
+        if use_white_logo and settings.brand_image_white_es != blank
+          assign selected_logo = settings.brand_image_white_es
+        elsif settings.brand_image_es != blank
+          assign selected_logo = settings.brand_image_es
+        endif
+    endcase
+  else
+    assign selected_logo = settings.logo
+
+    # Check if language-specific logo exists
+    case current_language
+      when 'de'
+        if use_white_logo and settings.logo_white_de != blank
+          assign selected_logo = settings.logo_white_de
+        elsif settings.logo_de != blank
+          assign selected_logo = settings.logo_de
+        endif
+      when 'en'
+        if use_white_logo and settings.logo_white_en != blank
+          assign selected_logo = settings.logo_white_en
+        elsif settings.logo_en != blank
+          assign selected_logo = settings.logo_en
+        endif
+      when 'it'
+        if use_white_logo and settings.logo_white_it != blank
+          assign selected_logo = settings.logo_white_it
+        elsif settings.logo_it != blank
+          assign selected_logo = settings.logo_it
+        endif
+      when 'fr'
+        if use_white_logo and settings.logo_white_fr != blank
+          assign selected_logo = settings.logo_white_fr
+        elsif settings.logo_fr != blank
+          assign selected_logo = settings.logo_fr
+        endif
+      when 'es'
+        if use_white_logo and settings.logo_white_es != blank
+          assign selected_logo = settings.logo_white_es
+        elsif settings.logo_es != blank
+          assign selected_logo = settings.logo_es
+        endif
+    endcase
+  endif
 
   # Set default values if not provided
   unless logo_class
@@ -93,31 +138,58 @@
 -%}
 
 {%- if selected_logo != blank -%}
-  <div class="{{ wrapper_class }}">
-    {%- assign logo_alt = selected_logo.alt | default: shop.name | escape -%}
-    {%- assign calculated_logo_height = logo_width | divided_by: selected_logo.aspect_ratio -%}
+  {%- assign logo_alt = selected_logo.alt | default: shop.name | escape -%}
+  {%- assign calculated_logo_height = logo_width | divided_by: selected_logo.aspect_ratio -%}
 
-    {%- unless sizes -%}
-      {%- capture sizes -%}(max-width: {{ logo_width | times: 2 }}px) 50vw, {{ logo_width }}px{%- endcapture -%}
-    {%- endunless -%}
+  {%- unless sizes -%}
+    {%- capture sizes -%}(max-width: {{ logo_width | times: 2 }}px) 50vw, {{ logo_width }}px{%- endcapture -%}
+  {%- endunless -%}
 
-    {%- unless widths -%}
-      {%- capture widths -%}{{ logo_width }}, {{ logo_width | times: 1.5 | round }}, {{ logo_width | times: 2 }}{%- endcapture -%}
-    {%- endunless -%}
+  {%- unless widths -%}
+    {%- capture widths -%}{{ logo_width }}, {{ logo_width | times: 1.5 | round }}, {{ logo_width | times: 2 }}{%- endcapture -%}
+  {%- endunless -%}
 
-    {{
-      selected_logo
-      | image_url: width: 600
-      | image_tag:
-        class: logo_class,
-        widths: widths,
-        height: calculated_logo_height,
-        width: logo_width,
-        alt: logo_alt,
-        sizes: sizes,
-        preload: preload
-    }}
-  </div>
+  {%- if use_brand_images == true or use_brand_images == 'true' -%}
+    {%- comment -%} Brand image with scroll-to-top link {%- endcomment -%}
+    <div
+      class="{{ wrapper_class }}"
+      style="max-width: min(100%, {{ logo_width }}px);"
+    >
+      <a
+        href="javascript:void(0)"
+        onclick="window.scrollTo({top: 0, behavior: 'smooth'})"
+        class="smooth-scroll"
+      >
+        {{
+          selected_logo
+          | image_url: width: 1100
+          | image_tag:
+            loading: loading,
+            widths: '50, 100, 150, 200, 300, 400, 550, 800, 1100',
+            height: calculated_logo_height,
+            width: logo_width,
+            alt: logo_alt,
+            class: logo_class
+        }}
+      </a>
+    </div>
+  {%- else -%}
+    {%- comment -%} Regular logo with home link {%- endcomment -%}
+    <div class="{{ wrapper_class }}">
+      {{
+        selected_logo
+        | image_url: width: 600
+        | image_tag:
+          class: logo_class,
+          widths: widths,
+          height: calculated_logo_height,
+          width: logo_width,
+          alt: logo_alt,
+          sizes: sizes,
+          preload: preload
+      }}
+    </div>
+  {%- endif -%}
 {%- else -%}
   <span class="h2">{{ shop.name }}</span>
 {%- endif -%}

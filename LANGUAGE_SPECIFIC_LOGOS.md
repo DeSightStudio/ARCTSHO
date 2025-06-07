@@ -68,14 +68,12 @@ Das System ermöglicht es, für jede verfügbare Sprache (DE, EN, IT, FR, ES) so
 
 ## Technische Details
 
-### Neue Snippets
+### Snippets
 1. **`snippets/language-specific-logo.liquid`**
-   - Verwaltet die Logo-Auswahl basierend auf der aktuellen Sprache
+   - Verwaltet sowohl Header-Logos als auch Footer-Brand-Images
    - Unterstützt alle Logo-Parameter (Größe, Klassen, etc.)
-
-2. **`snippets/language-specific-brand-image.liquid`**
-   - Verwaltet die Brand Image-Auswahl für Footer
-   - Gleiche Logik wie Logo-Snippet
+   - Parameter `use_brand_images: true` für Footer-Brand-Images
+   - Gleiche Spracherkennungslogik für Header und Footer
 
 ### Geänderte Dateien
 1. **`config/settings_schema.json`**
