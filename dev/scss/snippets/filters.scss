@@ -142,7 +142,7 @@
             border: 1px solid #e9e9e9;
             font-family: 'Cormorant Garamond';
             color: $mainColorDark;
-            font-size: $fontSizeRegular;
+            font-size: $fontSizeSmall;
             line-height: 1;
         }
     }
@@ -235,5 +235,78 @@
         background-color: darken($mainColor, 10%) !important;
         border-color: darken($mainColor, 10%) !important;
         text-decoration: none !important;
+    }
+}
+
+/* Sticky Filter Sidebar */
+.facets-vertical {
+    @media screen and (min-width: 750px) {
+        .facets-wrapper {
+            position: sticky;
+            top: var(--header-height, 80px);
+            align-self: flex-start;
+            width: 26rem; /* Restore original width */
+            flex-shrink: 0; /* Prevent shrinking */
+            z-index: 2; /* Below header but above content */
+
+            /* Remove scrolling from container */
+            overflow: visible;
+            max-height: none;
+            height: auto;
+        }
+
+        /* Make the inner form scrollable if needed */
+        .facets__form-vertical {
+            max-height: calc(100vh - var(--header-height, 80px) - 4rem);
+            overflow-y: auto;
+            padding-right: 1rem; /* Space for scrollbar */
+
+            /* Custom scrollbar styling */
+            &::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            &::-webkit-scrollbar-track {
+                background: transparent;
+            }
+
+            &::-webkit-scrollbar-thumb {
+                background: rgba(0, 0, 0, 0.2);
+                border-radius: 3px;
+
+                &:hover {
+                    background: rgba(0, 0, 0, 0.3);
+                }
+            }
+
+            /* Firefox scrollbar */
+            scrollbar-width: thin;
+            scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+        }
+    }
+
+    @media screen and (min-width: 990px) {
+        .facets-wrapper {
+            top: var(--header-height, 100px);
+        }
+
+        .facets__form-vertical {
+            max-height: calc(100vh - var(--header-height, 100px) - 4rem);
+        }
+    }
+}
+
+/* Ensure proper spacing and layout for sticky filters */
+.facets-vertical .facets__form-vertical {
+    @media screen and (min-width: 750px) {
+        padding-bottom: 2rem;
+    }
+}
+
+/* Adjust product grid container to work with sticky filters */
+.facets-vertical .product-grid-container {
+    @media screen and (min-width: 750px) {
+        min-height: 100vh; /* Ensure enough content for scrolling */
+        flex: 1; /* Take remaining space */
     }
 }
