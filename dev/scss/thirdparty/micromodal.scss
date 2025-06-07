@@ -41,11 +41,11 @@ body {
         background-color: #fff;
         padding: 30px;
         border-radius: 12px;
-        max-width: 600px;
+        max-width: 768px;
         max-height: 90vh;
         overflow-y: auto;
         box-sizing: border-box;
-        width: 100%;
+        width: calc(100% - 50px);
         height: auto;
         @include screen(med-small) {
           width: calc(100% - 20px);
