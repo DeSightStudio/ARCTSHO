@@ -346,16 +346,16 @@
         "title": "Vous possédez un compte ?",
         "paragraph_html": "<a href=\"{{ link }}\" class=\"link underlined-link\">Connectez-vous</a> pour payer plus vite."
       },
-      "estimated_total": "Total estimé",
+      "estimated_total": "Total net estimé",
       "new_estimated_total": "Nouveau total estimé",
-      "duties_and_taxes_included_shipping_at_checkout_with_policy_html": "Frais de douane et taxes inclus. Réductions et <a href=\"{{ link }}\">frais d'expédition</a> calculés à l'étape du paiement.",
-      "duties_and_taxes_included_shipping_at_checkout_without_policy": "Frais de douane et taxes inclus. Réductions et frais d'expédition calculés à l'étape du paiement.",
-      "taxes_included_shipping_at_checkout_with_policy_html": "Taxes incluses. Réductions et <a href=\"{{ link }}\">frais d'expédition</a> calculés à l'étape du paiement.",
-      "taxes_included_shipping_at_checkout_without_policy": "Taxes incluses. Réductions et frais d'expédition calculés à l'étape du paiement.",
-      "duties_included_taxes_at_checkout_shipping_at_checkout_with_policy_html": "Frais de douane inclus. Taxes, réductions et <a href=\"{{ link }}\">frais d'expédition</a> calculés à l'étape du paiement.",
-      "duties_included_taxes_at_checkout_shipping_at_checkout_without_policy": "Frais de douane inclus. Taxes, réductions et frais d'expédition calculés à l'étape du paiement.",
-      "taxes_at_checkout_shipping_at_checkout_with_policy_html": "Taxes, réductions et <a href=\"{{ link }}\">frais d'expédition</a> calculés à l'étape du paiement.",
-      "taxes_at_checkout_shipping_at_checkout_without_policy": "Taxes, réductions et frais d'expédition calculés à l'étape du paiement."
+      "duties_and_taxes_included_shipping_at_checkout_with_policy_html": "Frais de douane et taxes inclus. Taxes et <a href=\"{{ link }}\">frais de port</a> calculés au moment du paiement.",
+      "duties_and_taxes_included_shipping_at_checkout_without_policy": "Frais de douane et taxes inclus. Taxes et frais de port calculés au moment du paiement.",
+      "taxes_included_shipping_at_checkout_with_policy_html": "Taxes incluses. Taxes et <a href=\"{{ link }}\">frais de port</a> calculés au moment du paiement.",
+      "taxes_included_shipping_at_checkout_without_policy": "Taxes incluses. Taxes et frais de port calculés au moment du paiement.",
+      "duties_included_taxes_at_checkout_shipping_at_checkout_with_policy_html": "Frais de douane inclus. Taxes et <a href=\"{{ link }}\">frais de port</a> calculés au moment du paiement.",
+      "duties_included_taxes_at_checkout_shipping_at_checkout_without_policy": "Frais de douane inclus. Taxes et frais de port calculés au moment du paiement.",
+      "taxes_at_checkout_shipping_at_checkout_with_policy_html": "Taxes et <a href=\"{{ link }}\">frais de port</a> calculés au moment du paiement.",
+      "taxes_at_checkout_shipping_at_checkout_without_policy": "Taxes et frais de port calculés au moment du paiement."
     },
     "footer": {
       "payment": "Moyens de paiement"

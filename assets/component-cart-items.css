@@ -109,33 +109,29 @@ cart-items .title-wrapper-with-link {
   font-weight: 400;
 }
 
-/* Produktspezifikationen Styling für Haupt-Warenkorb */
-.cart-item__specs {
+/* SKU Styling für Haupt-Warenkorb */
+.cart-item__sku {
   margin-top: 8px;
-}
-
-.cart-item__spec {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
-  margin-bottom: 2px;
 }
 
-.cart-item__spec-label,
-.cart-item__spec-value {
+.cart-item__sku-label,
+.cart-item__sku-value {
   font-size: 10px !important;
   color: #8e8e8e !important;
   font-family: 'Cormorant Garamond' !important;
   line-height: 1.2;
 }
 
-.cart-item__spec-label {
+.cart-item__sku-label {
   font-weight: normal;
+  margin-right: 5px;
 }
 
-.cart-item__spec-value {
+.cart-item__sku-value {
   font-weight: 500;
-  text-align: right;
 }
 
 /* Mobile Kachel-Layout für Haupt-Warenkorb */

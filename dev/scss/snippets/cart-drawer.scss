@@ -156,31 +156,28 @@
                         grid-column: auto !important;
                     }
 
-                    // Produktspezifikationen Styling
-                    .cart-item__specs {
+                    // SKU Styling
+                    .cart-item__sku {
                         margin-top: 8px;
+                        display: flex;
+                        justify-content: flex-start;
+                        align-items: center;
 
-                        .cart-item__spec {
-                            display: flex;
-                            justify-content: flex-start;
-                            align-items: center;
-                            margin-bottom: 5px;
-                            .cart-item__spec-label,
-                            .cart-item__spec-value {
-                                font-size: 12px !important;
-                                color: $grayColor !important;
-                                font-family: 'Cormorant Garamond' !important;
-                                line-height: 1.2;
-                            }
+                        .cart-item__sku-label,
+                        .cart-item__sku-value {
+                            font-size: 12px !important;
+                            color: $grayColor !important;
+                            font-family: 'Cormorant Garamond' !important;
+                            line-height: 1.2;
+                        }
 
-                            .cart-item__spec-label {
-                                font-weight: normal;
-                            }
+                        .cart-item__sku-label {
+                            font-weight: normal;
+                            margin-right: 5px;
+                        }
 
-                            .cart-item__spec-value {
-                                font-weight: 500;
-                                text-align: right;
-                            }
+                        .cart-item__sku-value {
+                            font-weight: 500;
                         }
                     }
                 }
