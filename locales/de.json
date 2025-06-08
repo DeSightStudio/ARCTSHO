@@ -209,8 +209,12 @@
         "length": "Länge",
         "width": "Breite",
         "height": "Höhe",
+        "thickness": "Dicke",
         "diameter": "Durchmesser",
         "weight": "Gewicht",
+        "color": "Farbe",
+        "certificate": "Zertifikat",
+        "certificate_available": "Verfügbar",
         "dimensions_title": "Produktmaße"
       }
     },

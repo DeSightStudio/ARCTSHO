@@ -464,29 +464,29 @@
                   </li>
                 {% endif %}
 
-                {% if card_product.metafields.next_cart.ts_dimensions_height_m != blank %}
+                {% if card_product.metafields.next_cart.ts_dimensions_thickness_m != blank %}
                   <li class="card-product__specs-item">
-                    <span class="card-product__specs-label">{{ 'products.product.product_specs.height' | t }}</span>
-                    {% assign height_value = card_product.metafields.next_cart.ts_dimensions_height_m | plus: 0 %}
+                    <span class="card-product__specs-label">{{ 'products.product.product_specs.thickness' | t }}</span>
+                    {% assign thickness_value = card_product.metafields.next_cart.ts_dimensions_thickness_m | plus: 0 %}
                     <span
                       class="card-product__specs-value"
-                      data-spec-type="height"
-                      data-original-value="{{ height_value }}"
+                      data-spec-type="thickness"
+                      data-original-value="{{ thickness_value }}"
                       data-unit="mm"
                     >
-                      {% if height_value < 10 %}
-                        {{- height_value }} mm
+                      {% if thickness_value < 10 %}
+                        {{- thickness_value }} mm
                       {% else %}
-                        {{- height_value | divided_by: 10.0 | round: 1 }} cm
+                        {{- thickness_value | divided_by: 10.0 | round: 1 }} cm
                       {% endif %}
                     </span>
                   </li>
                 {% endif %}
 
-                {% if card_product.metafields.next_cart.ts_dimensions_diameter != blank %}
+                {% if card_product.metafields.next_cart.ts_dimensions_diameter_m != blank %}
                   <li class="card-product__specs-item">
                     <span class="card-product__specs-label">{{ 'products.product.product_specs.diameter' | t }}</span>
-                    {% assign diameter_value = card_product.metafields.next_cart.ts_dimensions_diameter | plus: 0 %}
+                    {% assign diameter_value = card_product.metafields.next_cart.ts_dimensions_diameter_m | plus: 0 %}
                     <span
                       class="card-product__specs-value"
                       data-spec-type="diameter"

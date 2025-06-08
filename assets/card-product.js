@@ -415,9 +415,9 @@ class ProductCard extends HTMLElement {
           convertedValue = (metricValue * 0.0393701).toFixed(2);
           unitText = 'in';
         } else if (element.classList.contains('metric-weight')) {
-          // g zu oz (1 g = 0.035274 oz)
-          convertedValue = (metricValue * 0.035274).toFixed(2);
-          unitText = 'oz';
+          // g zu lb (1 g = 0.00220462 lb)
+          convertedValue = (metricValue * 0.00220462).toFixed(2);
+          unitText = 'lb';
         }
 
         // Imperialwert anzeigen und speichern

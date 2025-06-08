@@ -245,28 +245,55 @@
                           </div>
                         {%- endif -%}
 
-                        {%- comment -%} Höhe anzeigen {%- endcomment -%}
-                        {%- if item.product.metafields.next_cart.ts_dimensions_height_m != blank -%}
+                        {%- comment -%} Dicke anzeigen {%- endcomment -%}
+                        {%- if item.product.metafields.next_cart.ts_dimensions_thickness_m != blank -%}
                           {%- assign has_specs = true -%}
                           <div class="cart-item__spec">
                             <span class="cart-item__spec-label">
-                              {{- 'products.product.product_specs.height' | t }}:</span
+                              {{- 'products.product.product_specs.thickness' | t }}:</span
                             >
-                            {% assign height_value = item.product.metafields.next_cart.ts_dimensions_height_m
+                            {% assign thickness_value = item.product.metafields.next_cart.ts_dimensions_thickness_m
                               | plus: 0
                             %}
                             <span
                               class="cart-item__spec-value metric-value metric-length"
-                              data-spec-type="height"
-                              data-original-value="{{ height_value }}"
+                              data-spec-type="thickness"
+                              data-original-value="{{ thickness_value }}"
                               data-unit="mm"
-                              data-metric-value="{{ height_value }}"
+                              data-metric-value="{{ thickness_value }}"
                               data-metric-unit="mm"
                             >
-                              {% if height_value < 10 %}
-                                {{- height_value }} mm
+                              {% if thickness_value < 10 %}
+                                {{- thickness_value }} mm
                               {% else %}
-                                {{- height_value | divided_by: 10.0 | round: 1 }} cm
+                                {{- thickness_value | divided_by: 10.0 | round: 1 }} cm
+                              {% endif %}
+                            </span>
+                          </div>
+                        {%- endif -%}
+
+                        {%- comment -%} Durchmesser anzeigen {%- endcomment -%}
+                        {%- if item.product.metafields.next_cart.ts_dimensions_diameter_m != blank -%}
+                          {%- assign has_specs = true -%}
+                          <div class="cart-item__spec">
+                            <span class="cart-item__spec-label">
+                              {{- 'products.product.product_specs.diameter' | t }}:</span
+                            >
+                            {% assign diameter_value = item.product.metafields.next_cart.ts_dimensions_diameter_m
+                              | plus: 0
+                            %}
+                            <span
+                              class="cart-item__spec-value metric-value metric-length"
+                              data-spec-type="diameter"
+                              data-original-value="{{ diameter_value }}"
+                              data-unit="mm"
+                              data-metric-value="{{ diameter_value }}"
+                              data-metric-unit="mm"
+                            >
+                              {% if diameter_value < 10 %}
+                                {{- diameter_value }} mm
+                              {% else %}
+                                {{- diameter_value | divided_by: 10.0 | round: 1 }} cm
                               {% endif %}
                             </span>
                           </div>

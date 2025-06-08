@@ -148,6 +148,7 @@
         "length": "Length",
         "width": "Width",
         "height": "Height",
+        "thickness": "Thickness",
         "diameter": "Diameter",
         "weight": "Weight",
         "dimensions_title": "Product dimensions"
