@@ -309,13 +309,13 @@
                   type="hidden"
                   id="vatIdForm-cart_items"
                   name="contact[cart_items]"
-                  value="{% for item in cart.items %}{{ item.product.title }} ({{ item.variant.title }}) - SKU: {{ item.variant.sku }} - {{ item.quantity }}x - {{ item.final_price | money }}{% unless forloop.last %} | {% endunless %}{% endfor %}"
+                  value=""
                 >
                 <input
                   type="hidden"
                   id="vatIdForm-cart_total"
                   name="contact[cart_total]"
-                  value="{{ cart.total_price | money }}"
+                  value=""
                 >
 
                 <div class="cart-items-summary" id="vatIdForm-cart-summary">
