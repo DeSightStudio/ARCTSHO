@@ -584,7 +584,21 @@
 
                 let isValidating = false;
                 let lastValidatedValue = '';
-                const API_KEY = 'vat_live_iF5iSdIE2w0aPPYbbJbKClZuiJgxfNGHujzU2ERP';
+
+                // VAT Validation APIs - Primary: EU VIES (kostenlos), Fallback: vatcheckapi.com
+                const VAT_APIS = {
+                  primary: {
+                    name: 'EU VIES',
+                    url: 'https://ec.europa.eu/taxation_customs/vies/rest-api/check-vat-number',
+                    requiresKey: false,
+                  },
+                  fallback: {
+                    name: 'VatCheckAPI',
+                    url: 'https://api.vatcheckapi.com/v2/check',
+                    requiresKey: true,
+                    key: 'vat_live_iF5iSdIE2w0aPPYbbJbKClZuiJgxfNGHujzU2ERP',
+                  },
+                };
 
                 // Debounce-Funktion zur Begrenzung der Validierungsaufrufe
                 function debounce(func, wait) {
@@ -701,7 +715,7 @@
                   };
                 }
 
-                // Funktion zur Validierung der VAT-ID über die API
+                // Funktion zur Validierung der VAT-ID über die API mit Fallback-System
                 async function validateVatId(vatId) {
                   if (isValidating || vatId === lastValidatedValue) return;
 
@@ -719,45 +733,100 @@
                     "{{ 'customer.vat_form.validating' | t | default: 'Überprüfung läuft...' }}"
                   );
 
-                  try {
-                    // API-Anfrage an vatcheckapi.com mit dem bereitgestellten API-Key
-                    const apiUrl = `https://api.vatcheckapi.com/v2/check?apikey=${API_KEY}&vat_number=${preValidation.fullVatId}`;
-                    console.log('VAT-Validierung API-Anfrage an:', apiUrl);
+                  // Versuche zuerst die primäre API (EU VIES)
+                  let validationResult = await tryVatValidation('primary', preValidation);
 
-                    const response = await fetch(apiUrl);
-                    const data = await response.json();
+                  // Falls primäre API fehlschlägt, versuche Fallback
+                  if (!validationResult.success) {
+                    console.log('Primäre VAT API fehlgeschlagen, versuche Fallback...');
+                    validationResult = await tryVatValidation('fallback', preValidation);
+                  }
 
-                    console.log('VAT-Validierung Antwort:', data);
-
-                    // Verarbeitung der API-Antwort
-                    if (data.format_valid && data.registration_info && data.registration_info.is_registered) {
-                      // Erfolgreich validiert
+                  // Verarbeitung des Ergebnisses
+                  if (validationResult.success) {
+                    if (validationResult.data.valid) {
                       updateValidationStatus(
                         'success',
                         "{{ 'customer.vat_form.valid' | t | default: 'Gültige Umsatzsteuer-ID' }}",
-                        data.registration_info
+                        validationResult.data.companyInfo
                       );
-                    } else if (data.format_valid && !data.registration_info.is_registered) {
-                      // Format gültig, aber nicht registriert
+                    } else {
                       updateValidationStatus(
                         'error',
                         "{{ 'customer.vat_form.invalid' | t | default: 'Ungültige Umsatzsteuer-ID oder nicht registriert' }}"
                       );
-                    } else {
-                      // Ungültiges Format
-                      updateValidationStatus(
-                        'error',
-                        "{{ 'customer.vat_form.invalid_format' | t | default: 'Ungültiges Format der Umsatzsteuer-ID' }}"
-                      );
                     }
-                  } catch (error) {
-                    console.error('Fehler bei der VAT-ID-Validierung:', error);
+                  } else {
+                    console.error('Alle VAT-Validierungs-APIs fehlgeschlagen');
                     updateValidationStatus(
                       'error',
                       "{{ 'customer.vat_form.validation_error' | t | default: 'Fehler bei der Validierung. Bitte versuchen Sie es später erneut.' }}"
                     );
-                  } finally {
-                    isValidating = false;
+                  }
+
+                  isValidating = false;
+                }
+
+                // Hilfsfunktion für VAT-Validierung mit spezifischer API
+                async function tryVatValidation(apiType, preValidation) {
+                  const api = VAT_APIS[apiType];
+
+                  try {
+                    let apiUrl, response, data;
+
+                    if (apiType === 'primary') {
+                      // EU VIES API
+                      apiUrl = `${api.url}?countryCode=${preValidation.countryCode}&vatNumber=${preValidation.vatNumber}`;
+                      console.log(`VAT-Validierung ${api.name} API-Anfrage an:`, apiUrl);
+
+                      response = await fetch(apiUrl);
+                      data = await response.json();
+
+                      console.log(`VAT-Validierung ${api.name} Antwort:`, data);
+
+                      // EU VIES Antwortformat verarbeiten
+                      if (response.ok && data.valid !== undefined) {
+                        return {
+                          success: true,
+                          data: {
+                            valid: data.valid,
+                            companyInfo: data.valid
+                              ? {
+                                  name: data.name || '',
+                                  address: data.address || '',
+                                }
+                              : null,
+                          },
+                        };
+                      }
+                    } else if (apiType === 'fallback') {
+                      // VatCheckAPI (ursprüngliche API)
+                      apiUrl = `${api.url}?apikey=${api.key}&vat_number=${preValidation.fullVatId}`;
+                      console.log(`VAT-Validierung ${api.name} API-Anfrage an:`, apiUrl);
+
+                      response = await fetch(apiUrl);
+                      data = await response.json();
+
+                      console.log(`VAT-Validierung ${api.name} Antwort:`, data);
+
+                      // VatCheckAPI Antwortformat verarbeiten
+                      if (data.format_valid !== undefined) {
+                        const isValid =
+                          data.format_valid && data.registration_info && data.registration_info.is_registered;
+                        return {
+                          success: true,
+                          data: {
+                            valid: isValid,
+                            companyInfo: isValid ? data.registration_info : null,
+                          },
+                        };
+                      }
+                    }
+
+                    return { success: false, error: 'Unbekanntes Antwortformat' };
+                  } catch (error) {
+                    console.error(`Fehler bei ${api.name} VAT-Validierung:`, error);
+                    return { success: false, error: error.message };
                   }
                 }
 
