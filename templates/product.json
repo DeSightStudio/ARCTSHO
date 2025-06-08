@@ -92,7 +92,7 @@
     "custom-related-products": {
       "type": "custom-related-products",
       "settings": {
-        "heading": "Related Products",
+        "heading": "<p>Related Products</p>",
         "heading_size": "h2",
         "columns_desktop": 5,
         "color_scheme": "scheme-1",

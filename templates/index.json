@@ -104,7 +104,7 @@
         "heading_BVX4zN": {
           "type": "heading",
           "settings": {
-            "heading": "Our Mammoth Ivory Selection",
+            "heading": "<p>Our Mammoth Ivory Selection</p>",
             "heading_size": "h0"
           }
         }
@@ -237,7 +237,7 @@
           "type": "column",
           "settings": {
             "image": "shopify://shop_images/logo_square_light-green_800x800_e46ae41c-c0be-42c5-b6ee-5b584846a95f.png",
-            "title": "Arctic Antiques",
+            "title": "<p>Arctic Antiques</p>",
             "text": "<p>Established 1999</p>",
             "link_label": "",
             "link": ""
@@ -325,7 +325,7 @@
         "heading_87YFjQ": {
           "type": "heading",
           "settings": {
-            "heading": "We offer fast, tracked, and insured worldwide shipping",
+            "heading": "<p>We offer fast, tracked, and insured worldwide shipping</p>",
             "heading_size": "h1"
           }
         }
@@ -355,7 +355,7 @@
           "type": "column",
           "settings": {
             "image": "shopify://shop_images/Exclusivity_a1feb77c-df64-4eda-8fd2-8d67db65bd0d.png",
-            "title": "Exclusivity",
+            "title": "<p>Exclusivity</p>",
             "text": "<p>Exquisite colours<br>Unique character<br>Ancient aura<br>Magnificent structure<br>Luxurious material</p>",
             "link_label": "",
             "link": ""
@@ -365,7 +365,7 @@
           "type": "column",
           "settings": {
             "image": "shopify://shop_images/Reliability_1931e281-3b2a-499b-9f1a-eb7a0aa673a7.png",
-            "title": "Reliability",
+            "title": "<p>Reliability</p>",
             "text": "<p>Official certification<br>Immediate availability<br>Personal consultation<br>Competent assistance<br>Privileged access</p>",
             "link_label": "",
             "link": ""
@@ -375,7 +375,7 @@
           "type": "column",
           "settings": {
             "image": "shopify://shop_images/Quality_0820f447-f7f7-4b9b-9d40-76bf226572f1.png",
-            "title": "Quality",
+            "title": "<p>Quality</p>",
             "text": "<p>Custom-projects<br>Tailored service<br>Quick responses<br>Efficient processes<br>On-site inspection</p>",
             "link_label": "",
             "link": ""
@@ -411,7 +411,7 @@
         "heading_hb7bgk": {
           "type": "heading",
           "settings": {
-            "heading": "Mammoth ivory is a prehistoric echo of our natural history. It is to be treasured and looked after for the next generation.",
+            "heading": "<p>Mammoth ivory is a prehistoric echo of our natural history. It is to be treasured and looked after for the next generation.</p>",
             "heading_size": "h1"
           }
         }
@@ -455,7 +455,7 @@
         "heading_pNjTPD": {
           "type": "heading",
           "settings": {
-            "heading": "Articles",
+            "heading": "<p>Articles</p>",
             "heading_size": "h1"
           }
         }
