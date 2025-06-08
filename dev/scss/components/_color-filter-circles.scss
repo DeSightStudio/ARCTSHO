@@ -1,0 +1,201 @@
+/* ==========================================================================
+   Multilingual Color Filter Circles
+   ========================================================================== */
+
+// Basis-Styling für Farbkreise in Filtern
+.color-circle {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease;
+    vertical-align: middle;
+    
+    // Hover-Effekt
+    &:hover {
+        transform: scale(1.1);
+        border-color: rgba(0, 0, 0, 0.4);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    // Für helle Farben dunkleren Rand
+    &[style*="background-color: #FFFFFF"],
+    &[style*="background-color: #F5F5DC"],
+    &[style*="background-color: #FFFDD0"],
+    &[style*="background-color: #FFFF00"],
+    &[style*="background-color: #FFD700"] {
+        border-color: rgba(0, 0, 0, 0.3);
+    }
+    
+    // Für dunkle Farben helleren Rand
+    &[style*="background-color: #000000"],
+    &[style*="background-color: #964B00"],
+    &[style*="background-color: #800080"],
+    &[style*="background-color: #800020"],
+    &[style*="background-color: #7C0A02"] {
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+}
+
+// Styling für aktive Filter
+.active-facets__button-inner {
+    .color-circle {
+        margin-right: 5px;
+        margin-left: 2px;
+    }
+}
+
+// Styling für Filter-Labels
+.facets__label {
+    .color-circle {
+        margin-right: 8px;
+        
+        // Wenn der Kreis das einzige visuelle Element ist
+        &:only-child {
+            margin-right: 0;
+        }
+    }
+    
+    // Verbessertes Alignment
+    &.facet-checkbox {
+        display: flex;
+        align-items: center;
+        
+        .color-circle {
+            flex-shrink: 0;
+        }
+    }
+}
+
+// Mobile Anpassungen
+@media (max-width: 768px) {
+    .color-circle {
+        width: 18px;
+        height: 18px;
+    }
+    
+    .mobile-facets .color-circle,
+    .facets-mobile .color-circle {
+        width: 20px;
+        height: 20px;
+        margin-right: 10px;
+    }
+}
+
+// Swatch-spezifische Anpassungen
+.swatch-input-wrapper {
+    .custom-color-swatch {
+        border: 2px solid rgba(0, 0, 0, 0.1);
+        
+        &:hover {
+            border-color: rgba(0, 0, 0, 0.3);
+        }
+        
+        // Für ausgewählte Swatches
+        &.selected {
+            border-color: $mainColor;
+            box-shadow: 0 0 0 2px rgba($mainColor, 0.2);
+        }
+    }
+}
+
+// Accessibility Verbesserungen
+.facets__label {
+    &:focus-within .color-circle {
+        outline: 2px solid $mainColor;
+        outline-offset: 2px;
+    }
+}
+
+// High Contrast Mode Support
+@media (prefers-contrast: high) {
+    .color-circle {
+        border-width: 2px;
+        border-color: currentColor;
+    }
+}
+
+// Reduced Motion Support
+@media (prefers-reduced-motion: reduce) {
+    .color-circle {
+        transition: none;
+        
+        &:hover {
+            transform: none;
+        }
+    }
+}
+
+// Dark Mode Anpassungen (falls implementiert)
+@media (prefers-color-scheme: dark) {
+    .color-circle {
+        border-color: rgba(255, 255, 255, 0.3);
+        
+        &:hover {
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+    }
+}
+
+// Loading State für dynamische Filter
+.facets-loading .color-circle {
+    opacity: 0.5;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 0.8;
+    }
+}
+
+// Spezielle Behandlung für Farbkombinationen
+.color-circle {
+    // Gradient-Farben (falls benötigt)
+    &.gradient-color {
+        background: linear-gradient(45deg, var(--color-1), var(--color-2));
+    }
+    
+    // Pattern-Farben (falls benötigt)
+    &.pattern-color {
+        background-image: repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 2px,
+            rgba(0, 0, 0, 0.1) 2px,
+            rgba(0, 0, 0, 0.1) 4px
+        );
+    }
+}
+
+// Filter-spezifische Container-Anpassungen
+.facets-wrapper {
+    .color-circle {
+        // Konsistente Größe in allen Filter-Containern
+        width: 16px;
+        height: 16px;
+    }
+}
+
+// Tooltip-Support (falls gewünscht)
+.color-circle[title] {
+    cursor: help;
+    
+    &:hover::after {
+        content: attr(title);
+        position: absolute;
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        white-space: nowrap;
+        z-index: 1000;
+        margin-top: 25px;
+        margin-left: -20px;
+    }
+}
