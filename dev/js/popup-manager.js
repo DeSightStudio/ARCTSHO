@@ -279,19 +279,102 @@
       });
     });
 
-    // Event-Listener für data-popup Attribute
-    document.querySelectorAll('[data-popup]').forEach(trigger => {
-      trigger.addEventListener('click', (e) => {
+    // Event-Listener für data-popup Attribute (Event Delegation für dynamische Inhalte)
+    document.addEventListener('click', (e) => {
+      const popupTrigger = e.target.closest('[data-popup]');
+      if (popupTrigger) {
         e.preventDefault();
         e.stopPropagation();
-        const popupType = trigger.getAttribute('data-popup');
+        const popupType = popupTrigger.getAttribute('data-popup');
         console.log('Data-popup Trigger geklickt:', popupType);
         try {
           MicroModal.show(`modal-${popupType}`);
         } catch (error) {
           console.error('Fehler beim Öffnen des Popup-Modals:', popupType, error);
         }
+      }
+    });
+
+    // Funktion zum Erkennen und Reparieren von durch Translate App veränderten Links
+    function repairTranslatedPopupLinks() {
+      // Suche nach Paragraphen, die mammoth ivory/mammutelfenbein Text enthalten
+      const mammothParagraphs = document.querySelectorAll('p');
+
+      mammothParagraphs.forEach(paragraph => {
+        const paragraphText = paragraph.textContent.toLowerCase();
+
+        // Prüfe ob es sich um den Mammutelfenbein-Absatz handelt
+        const isMammothParagraph = paragraphText.includes('mammoth ivory') ||
+                                   paragraphText.includes('mammutelfenbein') ||
+                                   paragraphText.includes('avorio di mammut') ||
+                                   paragraphText.includes('marfil de mamut') ||
+                                   paragraphText.includes('ivoire de mammouth');
+
+        if (isMammothParagraph) {
+          // Suche nach unterstrichenen spans in diesem Absatz
+          const underlinedSpans = paragraph.querySelectorAll('span[style*="text-decoration"]');
+
+          underlinedSpans.forEach((span, index) => {
+            const hasUnderline = span.style.textDecoration && span.style.textDecoration.includes('underline');
+
+            if (hasUnderline && !span.hasAttribute('data-popup-repaired')) {
+              let popupType = null;
+
+              // Der erste unterstrichene Span ist normalerweise Certificate of Origin
+              // Der zweite unterstrichene Span ist normalerweise Clearance Certificate
+              if (index === 0) {
+                popupType = 'certificate-origin';
+              } else if (index === 1) {
+                popupType = 'clearance-certificate';
+              }
+
+              if (popupType) {
+                // Markiere als repariert um Doppelverarbeitung zu vermeiden
+                span.setAttribute('data-popup-repaired', 'true');
+                span.style.cursor = 'pointer';
+
+                // Füge Click-Handler hinzu
+                span.addEventListener('click', (e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  console.log('Reparierter Popup-Link geklickt:', popupType);
+                  try {
+                    MicroModal.show(`modal-${popupType}`);
+                  } catch (error) {
+                    console.error('Fehler beim Öffnen des reparierten Popup-Modals:', popupType, error);
+                  }
+                });
+
+                console.log(`Popup-Link repariert: "${span.textContent.trim()}" -> ${popupType} (Position: ${index})`);
+              }
+            }
+          });
+        }
       });
+    }
+
+    // Führe die Reparatur initial aus
+    setTimeout(repairTranslatedPopupLinks, 1000);
+
+    // Führe die Reparatur nach Sprachänderungen aus
+    document.addEventListener('DOMContentLoaded', repairTranslatedPopupLinks);
+
+    // Beobachte Änderungen für dynamisch geladene Inhalte
+    const popupRepairObserver = new MutationObserver((mutations) => {
+      let shouldRepair = false;
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+          shouldRepair = true;
+        }
+      });
+      if (shouldRepair) {
+        setTimeout(repairTranslatedPopupLinks, 100);
+      }
+    });
+
+    popupRepairObserver.observe(document.body, {
+      childList: true,
+      subtree: true
     });
 
     // Funktion zum Aktualisieren des Request-Only Formulars

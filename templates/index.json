@@ -272,7 +272,7 @@
           "type": "column",
           "settings": {
             "title": "",
-            "text": "<p>Our mammoth ivory comes with relevant paperwork, including a German <a href=\"#popup-certificate-origin\" title=\"#popup-certificate-origin\">Certificate of Origin</a>. We also have the non-CITES confirmation: <a href=\"#popup-clearance-certificate\" title=\"#popup-clearance-certificate\">Clearance Certificate</a>.</p>",
+            "text": "<p>Our mammoth ivory comes with relevant paperwork, including a German <a href=\"#popup-certificate-origin\" title=\"Certificate of Origin\">Certificate of Origin</a>. We also have the non-CITES confirmation: <a href=\"#popup-clearance-certificate\" title=\"Clearance Certificate\">Clearance Certificate</a>.</p>",
             "link_label": "",
             "link": ""
           }
