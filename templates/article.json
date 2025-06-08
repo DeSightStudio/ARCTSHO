@@ -50,13 +50,30 @@
       ],
       "settings": {}
     },
+    "featured_blog_YmPF76": {
+      "type": "featured-blog",
+      "settings": {
+        "heading": "",
+        "heading_size": "h1",
+        "blog": "news",
+        "post_limit": 4,
+        "columns_desktop": 4,
+        "color_scheme": "",
+        "show_image": true,
+        "show_date": false,
+        "show_author": false,
+        "show_view_all": true,
+        "padding_top": 0,
+        "padding_bottom": 60
+      }
+    },
     "rich_text_9THtfW": {
       "type": "rich-text",
       "blocks": {
         "heading_NAQTd6": {
           "type": "heading",
           "settings": {
-            "heading": "Our Mammoth Ivory Selection",
+            "heading": "<p>Our Mammoth Ivory Selection</p>",
             "heading_size": "h0"
           }
         }
@@ -188,7 +205,7 @@
         "heading_A34Kc3": {
           "type": "heading",
           "settings": {
-            "heading": "Other Articles",
+            "heading": "<p>Other Articles</p>",
             "heading_size": "h0"
           }
         }
@@ -210,31 +227,14 @@
         "arrow_color": "#05470a",
         "headline_styling": "Headline Icon Light"
       }
-    },
-    "featured_blog_YmPF76": {
-      "type": "featured-blog",
-      "settings": {
-        "heading": "",
-        "heading_size": "h1",
-        "blog": "news",
-        "post_limit": 4,
-        "columns_desktop": 4,
-        "color_scheme": "",
-        "show_image": true,
-        "show_date": false,
-        "show_author": false,
-        "show_view_all": true,
-        "padding_top": 0,
-        "padding_bottom": 60
-      }
     }
   },
   "order": [
     "image_banner_VTaJVW",
     "main",
-    "rich_text_9THtfW",
-    "collection_list_6VbVqK",
     "rich_text_xFCwfH",
-    "featured_blog_YmPF76"
+    "featured_blog_YmPF76",
+    "rich_text_9THtfW",
+    "collection_list_6VbVqK"
   ]
 }
