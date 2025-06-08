@@ -39,6 +39,69 @@ product-info {
                     }
                 }
             }
+            .product__specs {
+                margin: 0px 0px 20px 0px;
+
+                &.product__specs--compact {
+                    margin: 0px 0px 15px 0px;
+                }
+
+                .product__specs-grid {
+                    display: grid;
+                    grid-template-columns: repeat(3, 1fr);
+                    gap: 10px;
+
+                    @include screen(med-small) {
+                        grid-template-columns: repeat(2, 1fr);
+                        gap: 8px;
+                    }
+
+                    @include screen(small) {
+                        grid-template-columns: 1fr;
+                        gap: 6px;
+                    }
+                }
+
+                .product__specs-item {
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                    padding: 6px 8px;
+                    background: rgba($grayColorLight, 0.2);
+                    border-radius: 4px;
+                    border: 1px solid rgba($grayColorLight, 0.4);
+                    font-size: 14px;
+
+                    .product__specs-icon {
+                        color: $mainColor;
+                        font-size: 12px;
+                        min-width: 14px;
+                        display: flex;
+                        justify-content: center;
+                        flex-shrink: 0;
+                    }
+
+                    .product__specs-label {
+                        font-family: 'Cormorant Garamond';
+                        color: $mainColorDark;
+                        font-size: 14px;
+                        font-weight: 500;
+                        white-space: nowrap;
+                        flex-shrink: 0;
+                    }
+
+                    .product__specs-value {
+                        font-family: 'Copperplate';
+                        color: $mainColor;
+                        font-size: 14px;
+                        font-weight: 600;
+                        margin-left: auto;
+                        text-align: right;
+                        flex-shrink: 0;
+                    }
+                }
+            }
+
             .product__description {
                 font-family: 'Cormorant Garamond';
                 color: $mainColorDark;

@@ -198,8 +198,10 @@
         "length": "Lunghezza",
         "width": "Larghezza",
         "height": "Altezza",
+        "thickness": "Spessore",
         "diameter": "Diametro",
         "weight": "Peso",
+        "color": "Colore",
         "dimensions_title": "Dimensioni del prodotto"
       }
     },

@@ -54,6 +54,10 @@
           "type": "price",
           "settings": {}
         },
+        "product_specs_ABC123": {
+          "type": "product_specs",
+          "settings": {}
+        },
         "description_XYhazL": {
           "type": "description",
           "settings": {}
@@ -67,6 +71,7 @@
         }
       },
       "block_order": [
+        "product_specs_ABC123",
         "sku_KJfErU",
         "title",
         "price",

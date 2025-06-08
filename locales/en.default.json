@@ -151,6 +151,7 @@
         "thickness": "Thickness",
         "diameter": "Diameter",
         "weight": "Weight",
+        "color": "Color",
         "dimensions_title": "Product dimensions"
       },
       "media": {
