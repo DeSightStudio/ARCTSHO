@@ -33,13 +33,17 @@
         "show_icon": true,
         "button_style_secondary": false,
         "color_scheme": "scheme-1",
-        "padding_top": 36,
+        "padding_top": 0,
         "padding_bottom": 0
       }
     },
     "main": {
       "type": "main-product",
       "blocks": {
+        "product_specs_ABC123": {
+          "type": "product_specs",
+          "settings": {}
+        },
         "sku_KJfErU": {
           "type": "sku",
           "settings": {
@@ -52,10 +56,6 @@
         },
         "price": {
           "type": "price",
-          "settings": {}
-        },
-        "product_specs_ABC123": {
-          "type": "product_specs",
           "settings": {}
         },
         "description_XYhazL": {
@@ -94,6 +94,35 @@
         "padding_bottom": 12
       }
     },
+    "rich_text_PFeBbt": {
+      "type": "rich-text",
+      "blocks": {
+        "heading_zwqUcV": {
+          "type": "heading",
+          "settings": {
+            "heading": "<p>You may also like</p>",
+            "heading_size": "h1"
+          }
+        }
+      },
+      "block_order": [
+        "heading_zwqUcV"
+      ],
+      "settings": {
+        "desktop_content_position": "center",
+        "content_alignment": "center",
+        "color_scheme": "",
+        "full_width": true,
+        "padding_top": 36,
+        "padding_bottom": 0,
+        "use_arrow_divider": true,
+        "arrow_width": 20,
+        "arrow_thickness": 1,
+        "arrow_position": "bottom",
+        "arrow_color": "#05470a",
+        "headline_styling": "Headline Icon Light"
+      }
+    },
     "custom-related-products": {
       "type": "custom-related-products",
       "settings": {
@@ -107,7 +136,7 @@
         "show_vendor": false,
         "show_rating": false,
         "columns_mobile": "1",
-        "padding_top": 12,
+        "padding_top": 0,
         "padding_bottom": 36
       }
     }
@@ -116,6 +145,7 @@
     "breadcrumb_ngzLfm",
     "back_button_example",
     "main",
+    "rich_text_PFeBbt",
     "custom-related-products"
   ]
 }
