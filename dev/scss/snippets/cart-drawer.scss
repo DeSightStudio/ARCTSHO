@@ -165,7 +165,8 @@
 
                         .cart-item__sku-label,
                         .cart-item__sku-value {
-                            font-size: 12px !important;
+                            font-size: 14px !important;
+                            font-weight: 700 !important;
                             color: $grayColor !important;
                             font-family: 'Cormorant Garamond' !important;
                             line-height: 1.2;
@@ -235,7 +236,7 @@
         }
         #Details-CartDrawer {
             .summary__title {
-
+                font-weight: 700 !important;
             }
             label {
                 display: none !important;

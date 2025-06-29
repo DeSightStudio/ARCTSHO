@@ -157,6 +157,7 @@ body {
               font-size: $fontSizeRegular;
               display: block;
               min-height: 20px;
+              line-break: anywhere;
             }
             a {
               color: $mainColor;

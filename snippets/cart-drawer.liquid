@@ -770,6 +770,95 @@
           }
         </style>
 
+        {%- if settings.popup_clearance_certificate_enable -%}
+          <div class="cart-drawer__clearance-certificate">
+            <div class="clearance-certificate-container">
+              <span class="clearance-certificate-text">
+                {% if request.locale.iso_code == 'de' %}
+                  Clearance Certificate Information
+                {% elsif request.locale.iso_code == 'it' %}
+                  Informazioni sul Certificato di Sdoganamento
+                {% elsif request.locale.iso_code == 'es' %}
+                  Información sobre el Certificado de Despacho
+                {% elsif request.locale.iso_code == 'fr' %}
+                  Informations sur le Certificat de Dédouanement
+                {% else %}
+                  Clearance Certificate Information
+                {% endif %}
+              </span>
+              <button
+                type="button"
+                class="clearance-certificate-read-button"
+                data-popup="clearance-certificate"
+                aria-label="{{ 'cart.clearance_certificate_info' | t | default: 'Clearance Certificate Information' }}"
+              >
+                {% if request.locale.iso_code == 'de' %}
+                  Lesen
+                {% elsif request.locale.iso_code == 'it' %}
+                  Leggi
+                {% elsif request.locale.iso_code == 'es' %}
+                  Leer
+                {% elsif request.locale.iso_code == 'fr' %}
+                  Lire
+                {% else %}
+                  Read
+                {% endif %}
+              </button>
+            </div>
+          </div>
+
+          <style>
+            .cart-drawer__clearance-certificate {
+              margin-top: 15px;
+              margin-bottom: 15px;
+              padding: 12px 15px;
+              background-color: #ffffff;
+              border: 1px solid #e0e0e0;
+              border-radius: 4px;
+            }
+
+            .clearance-certificate-container {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              gap: 15px;
+            }
+
+            .clearance-certificate-text {
+              font-family: 'Cormorant Garamond', serif;
+              font-size: 16px;
+              color: #333;
+              margin: 0;
+              flex: 1;
+            }
+
+            .clearance-certificate-read-button {
+              background-color: #f5f5f5;
+              color: #666666;
+              border: 1px solid #d0d0d0;
+              padding: 8px 16px;
+              border-radius: 4px;
+              font-family: 'Cormorant Garamond', serif;
+              font-size: 14px;
+              font-weight: 600;
+              cursor: pointer;
+              transition: all 0.3s ease;
+              white-space: nowrap;
+            }
+
+            .clearance-certificate-read-button:hover {
+              background-color: #e8e8e8;
+              color: #333333;
+              border-color: #b0b0b0;
+            }
+
+            .clearance-certificate-read-button:focus {
+              outline: 2px solid #999999;
+              outline-offset: 2px;
+            }
+          </style>
+        {%- endif -%}
+
         {%- if settings.show_cart_note -%}
           <details id="Details-CartDrawer">
             <summary>

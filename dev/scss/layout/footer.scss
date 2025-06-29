@@ -128,9 +128,9 @@ footer {
 
         // Untere Footer-Zeile
         .footer__bottom-row {
-            background-color: $accentLight;
+            background-color: $mainColor;
             padding: 15px 0;
-
+            border-top: 1px solid rgba(255,255,255,.5);
             .footer__bottom-content {
                 display: flex;
                 justify-content: space-between;
@@ -146,14 +146,14 @@ footer {
                     margin: 5px 10px;
                     font-family: 'Cormorant Garamond';
                     font-size: $fontSizeSmall;
-                    color: $mainColor;
+                    color: $whiteColor;
                     
                     @media screen and (max-width: 749px) {
                         margin: 5px 0;
                     }
                     
                     a {
-                        color: $mainColor;
+                        color: $whiteColor;
                         text-decoration: none;
                         transition: opacity 0.2s ease-in-out;
                         &:hover {

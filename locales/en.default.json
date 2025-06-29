@@ -367,6 +367,7 @@
         "title": "Have an account?",
         "paragraph_html": "<a href=\"{{ link }}\" class=\"link underlined-link\">Log in</a> to check out faster."
       },
+      "clearance_certificate_info": "Clearance Certificate Information",
       "discount": "Discount",
       "shipping_calculator": {
         "heading": "Estimate shipping",

@@ -55,8 +55,8 @@
         }
         &:before {
           display: block;
-          width: 92px;
-          height: 88px;
+          width: 64px; /* 92px * 0.7 = 64.4px ≈ 64px */
+          height: 62px; /* 88px * 0.7 = 61.6px ≈ 62px */
           content: ' ';
           position: absolute;
           z-index: 1;
@@ -66,6 +66,7 @@
           -ms-transform: translateY(-50%);
           transform: translateY(-50%);
           background: url('headline-icon_dark.png') transparent no-repeat center top;
+          background-size: contain; /* Stellt sicher, dass das Bild proportional skaliert wird */
           @include screen(med-small) {
             top: 0px;
             left: 50%;
