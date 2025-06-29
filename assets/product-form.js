@@ -679,6 +679,14 @@ if (!customElements.get('product-form')) {
       validateButtonStateWithCartData(cartData) {
         if (!this.variantIdInput) return;
 
+        // Prüfen, ob es sich um einen Request-Only Button handelt
+        const requestOnlyButton = this.querySelector('.request-only-button');
+        if (requestOnlyButton) {
+          console.log('ProductForm: Request-Only Button erkannt - überspringe Button-Validierung');
+          this.classList.remove('product-form--validating');
+          return;
+        }
+
         const variantId = parseInt(this.variantIdInput.value);
         if (!variantId) return;
 
@@ -740,6 +748,13 @@ if (!customElements.get('product-form')) {
         }
 
         const productId = parseInt(this.form.dataset.productId || this.closest('[data-product-id]')?.dataset.productId);
+
+        // Prüfen, ob es sich um einen Request-Only Button handelt
+        const requestOnlyButton = this.querySelector('.request-only-button');
+        if (requestOnlyButton) {
+          console.log('ProductForm: Request-Only Button erkannt - überspringe Button-Update');
+          return;
+        }
 
         // Prüfen ob Produkt im Warenkorb ist
         const isInCart = cartData.items ? cartData.items.some(item => {
@@ -1154,6 +1169,13 @@ if (!customElements.get('product-form')) {
 
       // Neue Methode: Prüfe den aktuellen Warenkorb-Status beim Laden der Seite
       checkInitialCartStatus() {
+        // Prüfen, ob es sich um einen Request-Only Button handelt
+        const requestOnlyButton = this.querySelector('.request-only-button');
+        if (requestOnlyButton) {
+          console.log('ProductForm: Request-Only Button erkannt - überspringe Initial Cart Status Check');
+          return;
+        }
+
         const variantId = this.getVariantId();
         if (!variantId) {
           this.updateButtonToAddToCart();

@@ -89,6 +89,7 @@
 
       <div {{ block.shopify_attributes }}>
         {%- if is_request_only -%}
+          {%- comment -%} Request-Only Produkt: Zeige immer "Nur auf Anfrage" Button, unabhängig vom Verfügbarkeitsstatus {%- endcomment -%}
           <button
             class="product-form__submit button button--full-width button--primary request-only-button"
             type="button"
@@ -104,16 +105,26 @@
               {{ 'products.product.request_only_button' | t }}
             </span>
           </button>
+        {%- elsif product.selected_or_first_available_variant.available == false -%}
+          {%- comment -%} Ausverkauft: Zeige Sold-Out Button {%- endcomment -%}
+          <button
+            class="product-form__submit button button--full-width button--primary"
+            type="submit"
+            name="add"
+            disabled
+          >
+            <span>
+              {{ 'products.product.sold_out' | t }}
+            </span>
+          </button>
         {%- else -%}
+          {%- comment -%} Normales Produkt: Zeige Add-to-Cart oder View-Cart Button {%- endcomment -%}
           <button
             class="product-form__submit button button--full-width {% if show_dynamic_checkout and block.settings.show_dynamic_checkout %}button--secondary{% else %}button--primary{% endif %}"
             type="{% if product_in_cart %}button{% else %}submit{% endif %}"
             name="add"
             {% if product_in_cart %}
               onclick="event.preventDefault(); document.querySelector('cart-drawer').open();"
-            {% endif %}
-            {% if product.selected_or_first_available_variant.available == false %}
-              disabled
             {% endif %}
           >
             <span>

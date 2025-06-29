@@ -78,6 +78,7 @@
         -%}
 
         {%- if is_request_only -%}
+          {%- comment -%} Request-Only Produkt: Zeige immer "Nur auf Anfrage" Button, unabhängig vom Verfügbarkeitsstatus {%- endcomment -%}
           <div class="product-form__buttons">
             <button
               id="ProductSubmitButton-{{ section_id }}"
@@ -96,35 +97,49 @@
               </span>
             </button>
           </div>
+        {%- elsif product.selected_or_first_available_variant.available == false
+          or quantity_rule_soldout
+          or product.selected_or_first_available_variant == null
+        -%}
+          {%- comment -%} Ausverkauft: Zeige Sold-Out Button {%- endcomment -%}
+          <div class="product-form__buttons">
+            <button
+              id="ProductSubmitButton-{{ section_id }}"
+              type="submit"
+              name="add"
+              class="product-form__submit button button--full-width button--primary"
+              disabled
+            >
+              <span>
+                {{ 'products.product.sold_out' | t }}
+              </span>
+            </button>
+          </div>
         {%- else -%}
-          {%- unless product.selected_or_first_available_variant.available == false
-            or quantity_rule_soldout
-            or product.selected_or_first_available_variant == null
-          -%}
-            <div class="product-form__buttons">
-              <button
-                id="ProductSubmitButton-{{ section_id }}"
-                type="{% assign product_in_cart = false %}{% for item in cart.items %}{% if item.product_id == product.id %}{% assign product_in_cart = true %}{% break %}{% endif %}{% endfor %}{% if product_in_cart %}button{% else %}submit{% endif %}"
+          {%- comment -%} Normales Produkt: Zeige Add-to-Cart oder View-Cart Button {%- endcomment -%}
+          <div class="product-form__buttons">
+            <button
+              id="ProductSubmitButton-{{ section_id }}"
+              type="{% assign product_in_cart = false %}{% for item in cart.items %}{% if item.product_id == product.id %}{% assign product_in_cart = true %}{% break %}{% endif %}{% endfor %}{% if product_in_cart %}button{% else %}submit{% endif %}"
+              {% if product_in_cart %}
+                onclick="event.preventDefault(); document.querySelector('cart-drawer').open();"
+              {% endif %}
+              name="add"
+              class="product-form__submit button button--full-width {% if show_dynamic_checkout %}button--secondary{% else %}button--primary{% endif %}"
+            >
+              <span>
                 {% if product_in_cart %}
-                  onclick="event.preventDefault(); document.querySelector('cart-drawer').open();"
+                  {{ 'products.product.view_cart_button' | t }}
+                {% else %}
+                  {{ 'products.product.add_to_cart' | t }}
                 {% endif %}
-                name="add"
-                class="product-form__submit button button--full-width {% if show_dynamic_checkout %}button--secondary{% else %}button--primary{% endif %}"
-              >
-                <span>
-                  {% if product_in_cart %}
-                    {{ 'products.product.view_cart_button' | t }}
-                  {% else %}
-                    {{ 'products.product.add_to_cart' | t }}
-                  {% endif %}
-                </span>
-                {%- render 'loading-spinner' -%}
-              </button>
-              {%- if show_dynamic_checkout -%}
-                {{ form | payment_button }}
-              {%- endif -%}
-            </div>
-          {%- endunless -%}
+              </span>
+              {%- render 'loading-spinner' -%}
+            </button>
+            {%- if show_dynamic_checkout -%}
+              {{ form | payment_button }}
+            {%- endif -%}
+          </div>
         {%- endif -%}
       {%- endform -%}
     </product-form>
