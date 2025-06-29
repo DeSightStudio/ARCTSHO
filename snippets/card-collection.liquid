@@ -80,7 +80,7 @@
             alt="{{ card_collection.metafields.custom.cutout_image.alt | escape }}"
             height="{{ card_collection.metafields.custom.cutout_image.height }}"
             width="{{ card_collection.metafields.custom.cutout_image.width }}"
-            loading="lazy"
+            loading="{% if forloop.index <= 3 %}eager{% else %}lazy{% endif %}"
             class="motion-reduce"
           >
         </div>

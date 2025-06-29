@@ -737,14 +737,17 @@ function initializeSlickSlider() {
         $('#collection-slider .slider-container').slick({
             dots: false,
             infinite: true,
-            speed: 300,
+            speed: 500,
             slidesToShow: 1,
-            adaptiveHeight: true,
+            adaptiveHeight: false,
             slidesToScroll: 1,
             autoplay: autoplay,
             autoplaySpeed: speed * 1000, // Convert seconds to milliseconds
             pauseOnHover: true,
             pauseOnFocus: true,
+            lazyLoad: 'ondemand',
+            useCSS: true,
+            useTransform: true,
             prevArrow:"<span class='slickNavPrev'><i class='fa-thin fa-chevron-left'></i></span>",
 			nextArrow:"<span class='slickNavNext'><i class='fa-thin fa-chevron-right'></i></span>"
         });

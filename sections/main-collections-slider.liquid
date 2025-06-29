@@ -13,13 +13,17 @@
           aria-label="Zur Kollektion {{ collection.title }} navigieren"
           data-collection-url="{{ collection.url }}"
         >
-          <div class="slider-background" style="background-image: url('{{ collection.image | img_url: 'master' }}');">
+          <div
+            class="slider-background"
+            style="background-image: url('{{ collection.image | img_url: '1920x1080' }}');"
+          >
             <div class="slider-content page-width">
               <div class="category-image">
                 <a href="{{ collection.url }}" class="category-link" tabindex="-1">
                   <img
-                    src="{{ collection.metafields.custom.cutout_image | img_url: 'master' }}"
+                    src="{{ collection.metafields.custom.cutout_image | img_url: '800x800' }}"
                     alt="{{ collection.title }}"
+                    loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
                   >
                 </a>
               </div>

@@ -303,6 +303,7 @@
       src="https://code.jquery.com/jquery-3.7.1.min.js"
       integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
       crossorigin="anonymous"
+      defer
     ></script>
     <script src="{{ 'dist.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'external-links.js' | asset_url }}" defer="defer"></script>
@@ -311,8 +312,20 @@
 
     {%- if content_for_layout contains 'collection-slider' -%}
       <!-- Slick Slider CSS -->
-      <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css">
-      <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css">
+      <link
+        rel="stylesheet"
+        type="text/css"
+        href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"
+        media="print"
+        onload="this.media='all'"
+      >
+      <link
+        rel="stylesheet"
+        type="text/css"
+        href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"
+        media="print"
+        onload="this.media='all'"
+      >
 
       <!-- Slick Slider JS -->
       <script
@@ -428,9 +441,14 @@
     {%- endif -%}
 
     <!-- intl-tel-input Bibliothek für internationale Telefonnummern -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/css/intlTelInput.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/intlTelInput.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/css/intlTelInput.css"
+      media="print"
+      onload="this.media='all'"
+    >
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/intlTelInput.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js" defer></script>
 
     <!-- Pop-Up Komponenten -->
     {% render 'popups' %}
