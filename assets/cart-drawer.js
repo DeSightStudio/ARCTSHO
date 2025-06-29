@@ -37,7 +37,7 @@ if (!customElements.get('cart-drawer')) {
     // here the animation doesn't seem to always get triggered. A timeout seem to help
     setTimeout(() => {
       this.classList.add('animate', 'active');
-    });
+    }, 10);
 
     this.addEventListener(
       'transitionend',
@@ -126,7 +126,7 @@ if (!customElements.get('cart-drawer')) {
         // Fallback: Drawer trotzdem öffnen
         this.open();
       }
-    });
+    }, 10);
   }
 
   getSectionInnerHTML(html, selector = '.shopify-section') {
@@ -192,7 +192,7 @@ if (!customElements.get('cart-drawer')) {
             window.cartStateManager.scheduleUpdate();
           }
         });
-    }, 300);
+    }, 100);
   }
 }
 

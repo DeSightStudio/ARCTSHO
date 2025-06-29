@@ -19,8 +19,6 @@ class CartStateManager {
 
     // Initialer Warenkorb-Load
     this.initialize();
-
-    console.log('CartStateManager initialisiert');
   }
 
   /**
@@ -89,15 +87,11 @@ class CartStateManager {
    * Behandlung von Warenkorb-Update-Events
    */
   handleCartUpdate(event) {
-    console.log('CartStateManager: Warenkorb-Update Event erhalten:', event.type, event.detail);
-
     if (event.detail && event.detail.cartData) {
       // Direkte Daten aus Event verwenden
-      console.log('CartStateManager: Verwende Cart-Daten aus Event');
       this.updateCartData(event.detail.cartData);
     } else {
       // Warenkorb-Daten neu laden
-      console.log('CartStateManager: Keine Cart-Daten im Event, lade neu');
       this.scheduleUpdate();
     }
   }
@@ -106,8 +100,6 @@ class CartStateManager {
    * Behandlung von Drawer-Events
    */
   handleDrawerEvent(event) {
-    console.log('CartStateManager: Drawer Event erhalten:', event.type);
-
     if (event.detail && event.detail.cartData) {
       this.updateCartData(event.detail.cartData);
     } else {
@@ -163,12 +155,6 @@ class CartStateManager {
 
     // Vergleiche alte und neue Daten für detaillierte Events
     const changes = this.detectChanges(previousCartData, newCartData);
-
-    console.log('CartStateManager: Warenkorb-Daten aktualisiert:', {
-      itemCount: newCartData?.items?.length || 0,
-      changes: changes,
-      productIds: newCartData?.items?.map(item => item.product_id) || []
-    });
 
     // Benachrichtige alle Components mit einer kleinen Verzögerung
     // um sicherzustellen, dass alle DOM-Updates abgeschlossen sind
@@ -248,7 +234,6 @@ class CartStateManager {
     });
 
     document.dispatchEvent(event);
-    console.log(`CartStateManager: Event '${eventType}' ausgelöst`);
   }
 
   /**

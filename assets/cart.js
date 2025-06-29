@@ -18,12 +18,10 @@ async function updateProductCards(cartData = null) {
     // Verwende CartStateManager Daten wenn verfügbar, sonst API-Call
     if (!finalCartData && window.cartStateManager && window.cartStateManager.getCartData()) {
       finalCartData = window.cartStateManager.getCartData();
-      console.log('Cart.js: Verwende CartStateManager Daten');
     }
 
     if (!finalCartData) {
       // Fallback: Direkte API-Abfrage
-      console.log('Cart.js: Fallback zu API-Call');
       const response = await fetch(`${routes.cart_url}.js`);
       finalCartData = await response.json();
     }
@@ -112,11 +110,8 @@ function updateProductCardsWithData(cart) {
       return;
     }
 
-    console.log(`Karte ${index}: Produkt-ID ${productId}`);
-
     // Prüfen, ob dieses Produkt im Warenkorb ist
     const isInCart = cartProductIds.includes(productId);
-    console.log(`Produkt ${productId} ist im Warenkorb: ${isInCart}`);
 
     updateProductCardButton(card, addForm, productId, isInCart);
   });
@@ -130,7 +125,6 @@ function updateProductCardsWithData(cart) {
  */
 function updateProductCardButton(card, addForm, productId, isInCart) {
   if (isInCart) {
-    console.log(`Produkt ${productId} ist im Warenkorb - zeige "Zum Warenkorb"-Button`);
 
     // Verschiedene Strukturen handhaben
     const isQuickAddStandard = addForm.closest('product-form');
@@ -253,7 +247,6 @@ async function debouncedCartUpdate(cartData = null, delay = 100, source = 'unkno
 
   pendingCartUpdate = setTimeout(async () => {
     if (cartUpdateInProgress) {
-      console.log('Cart.js: Update bereits in Bearbeitung, überspringe');
       return;
     }
 
@@ -261,7 +254,6 @@ async function debouncedCartUpdate(cartData = null, delay = 100, source = 'unkno
     lastCartUpdateTime = Date.now();
 
     try {
-      console.log(`Cart.js: Führe Cart Update durch (Quelle: ${source})`);
       await updateProductCards(cartData);
     } catch (error) {
       console.error('Cart.js: Fehler beim Cart Update:', error);
@@ -274,7 +266,6 @@ async function debouncedCartUpdate(cartData = null, delay = 100, source = 'unkno
 
 // Event-Listener für das neue CartStateManager System
 document.addEventListener('cart:state:updated', function(event) {
-  console.log('Cart.js: CartStateManager Warenkorb-State aktualisiert', event.detail);
   debouncedCartUpdate(event.detail?.cartData, 50, 'CartStateManager');
 });
 
@@ -298,17 +289,13 @@ document.addEventListener('cart:item:added', function(event) {
 
 // Hinzufügen eines Event-Listeners für die Initialisierung der Produktkarten
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('Cart.js: DOM geladen - warte auf CartStateManager...');
-
   setTimeout(function() {
     if (window.cartStateManager && window.cartStateManager.isInitialized) {
-      console.log('Cart.js: CartStateManager verfügbar - nutze aktuelle Daten');
-      debouncedCartUpdate(window.cartStateManager.getCartData(), 200, 'DOMContentLoaded-CSM');
+      debouncedCartUpdate(window.cartStateManager.getCartData(), 100, 'DOMContentLoaded-CSM');
     } else {
-      console.log('Cart.js: CartStateManager nicht verfügbar - fallback zu API-Call');
-      debouncedCartUpdate(null, 200, 'DOMContentLoaded-Fallback');
+      debouncedCartUpdate(null, 100, 'DOMContentLoaded-Fallback');
     }
-  }, 300);
+  }, 200);
 });
 
 // Fallback Event-Listener für alte Events (Kompatibilität)
