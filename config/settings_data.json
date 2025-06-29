@@ -117,7 +117,7 @@
     "badge_corner_radius": 40,
     "sale_badge_color_scheme": "scheme-4",
     "sold_out_badge_color_scheme": "scheme-3",
-    "brand_headline": "Arctic Antiques GmbH",
+    "brand_headline": "<p>Arctic Antiques GmbH</p>",
     "brand_description": "<p>Jungferweg 14a<br/>65375 Oestrich-Winkel<br/>Germany</p><p>VAT | UID | TVA: DE326113568</p><p>info@arcticantiques.com</p>",
     "brand_image": "shopify://shop_images/arctic-antiques_logo_white.png",
     "brand_image_width": 250,
