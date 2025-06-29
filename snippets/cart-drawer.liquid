@@ -531,12 +531,33 @@
                   {% endif %}
                 </h3>
                 <div class="origin-certificate-price">
-                  {% if shop.currency == 'EUR' %}
-                    {{ 2500 | money }}
-                  {% elsif shop.currency == 'USD' %}
-                    {{ 2600 | money }}
+                  {% comment %}Dynamischer Preis von Variant ID 8798869684438{% endcomment %}
+                  {% assign certificate_product = all_products['certificate-of-origin'] %}
+                  {% assign certificate_variant = null %}
+
+                  {% comment %}Debug: Prüfe ob Produkt gefunden wurde{% endcomment %}
+                  {% if certificate_product %}
+                    {% for variant in certificate_product.variants %}
+                      {% if variant.id == 8798869684438 %}
+                        {% assign certificate_variant = variant %}
+                        {% break %}
+                      {% endif %}
+                    {% endfor %}
+                  {% endif %}
+
+                  {% if certificate_variant %}
+                    {{ certificate_variant.price | money }}
+                    {% comment %}Debug: Variant gefunden - ID: {{ certificate_variant.id }}, Preis: {{ certificate_variant.price }}{% endcomment %}
                   {% else %}
-                    {{ 2500 | money }}
+                    {% comment %}Fallback falls Variant nicht gefunden wird (29€ = 2900 Cent){% endcomment %}
+                    {% comment %}Debug: Variant 8798869684438 nicht gefunden in Produkt {{ certificate_product.title }}{% endcomment %}
+                    {% if shop.currency == 'EUR' %}
+                      {{ 2900 | money }}
+                    {% elsif shop.currency == 'USD' %}
+                      {{ 3000 | money }}
+                    {% else %}
+                      {{ 2900 | money }}
+                    {% endif %}
                   {% endif %}
                   {% render 'vat-info-badge' %}
                 </div>
@@ -557,16 +578,36 @@
         {% endunless %}
 
         <script>
-          function addOriginCertificateToCart(button) {
+          // Funktion zum Ermitteln des aktuellen Certificate of Origin Preises
+          function getCertificatePrice() {
+            // Lade den Preis direkt über die Shopify API
+            return fetch('/products/certificate-of-origin.js')
+              .then(response => response.json())
+              .then(productData => {
+                const variant = productData.variants.find(v => v.id === 8798869684438);
+                if (variant) {
+                  console.log('Certificate of Origin Preis geladen:', variant.price);
+                  return variant.price;
+                }
+                throw new Error('Variant nicht gefunden');
+              })
+              .catch(error => {
+                console.warn('Fehler beim Laden des Certificate Preises, verwende Fallback:', error);
+                // Fallback-Preis (29€ = 2900 Cent)
+                return {% if shop.currency == 'EUR' %}2900{% elsif shop.currency == 'USD' %}3000{% else %}2900{% endif %};
+              });
+          }
+
+          async function addOriginCertificateToCart(button) {
             button.classList.add('loading');
             button.disabled = true;
 
             // Produkt-ID direkt aus dem data-product-id Attribut
             const productId = button.dataset.productId;
 
-            // Die Preis-Logik basierend auf der Währung des Shops
-            let productPrice = {% if shop.currency == 'EUR' %}2500{% elsif shop.currency == 'USD' %}2600{% else %}2500{% endif %};
-            console.log('Produktpreis:', productPrice);
+            // Dynamischen Preis laden
+            const certificatePrice = await getCertificatePrice();
+            console.log('Verwende Produktpreis:', certificatePrice);
 
             let formData = {
               items: [
@@ -574,7 +615,7 @@
                   id: parseInt(productId, 10),
                   quantity: 1,
                   properties: {
-                    '_price': productPrice
+                    '_price': certificatePrice
                   }
                 },
               ],
@@ -690,7 +731,7 @@
             font-family: 'Cormorant Garamond', serif;
             font-size: 20px;
             margin: 0 0 0px 0;
-            font-weight: 500;
+            font-weight: 700;
             color: #1a1a1a;
           }
 
