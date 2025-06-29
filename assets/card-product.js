@@ -201,13 +201,13 @@ class ProductCard extends HTMLElement {
               return;
             }
 
-            // Button aktualisieren
-            this.updateButtonToViewCart(form);
-
-            // CartStateManager sofort aktualisieren
+            // CartStateManager sofort aktualisieren (vor Button-Update)
             if (window.cartStateManager) {
               window.cartStateManager.updateCartData(response);
             }
+
+            // Button aktualisieren nach Cart-Update
+            this.updateButtonToViewCart(form);
 
             // Cart-Drawer Inhalt aktualisieren und öffnen
             const cartDrawer = document.querySelector('cart-drawer');
@@ -961,12 +961,17 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
           }
 
+          // CartStateManager zuerst aktualisieren
+          if (window.cartStateManager) {
+            window.cartStateManager.updateCartData(response);
+          }
+
           // Warenkorb-Drawer öffnen und mit neuen Daten aktualisieren
           const cartDrawer = document.querySelector('cart-drawer');
           if (cartDrawer) {
             cartDrawer.renderContents(response);
             // Mit kleiner Verzögerung öffnen, damit die Aktualisierung abgeschlossen ist
-            setTimeout(() => cartDrawer.open(), 100);
+            setTimeout(() => cartDrawer.open(), 50);
           }
 
           // Button-Status aktualisieren (von "In den Warenkorb" zu "Warenkorb anzeigen")

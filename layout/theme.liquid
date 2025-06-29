@@ -434,6 +434,12 @@
     <!-- CartStateManager muss vor allen anderen Cart-Scripts geladen werden -->
     <script src="{{ 'cart-state-manager.js' | asset_url }}" defer="defer"></script>
 
+    <!-- Browser Navigation Cart Fix - speziell für Browser-Zurück-Button -->
+    <script src="{{ 'browser-navigation-cart-fix.js' | asset_url }}" defer="defer"></script>
+
+    <!-- Cart Debug System (nur bei Bedarf) -->
+    <script src="{{ 'cart-debug.js' | asset_url }}" defer="defer"></script>
+
     <script src="{{ 'cart.js' | asset_url }}" defer="defer"></script>
 
     {%- if settings.cart_type == 'drawer' -%}

@@ -59,20 +59,28 @@ if (!customElements.get('cart-drawer')) {
     removeTrapFocus(this.activeElement);
     document.body.classList.remove('overflow-hidden');
 
-    // Hole aktuelle Warenkorb-Daten für das Event
-    fetch(`${routes.cart_url}.js`)
-      .then(response => response.json())
-      .then(cartData => {
-        // Event auslösen, um andere Komponenten zu informieren
-        document.dispatchEvent(new CustomEvent('drawer:closed', {
-          detail: { cartData }
-        }));
-      })
-      .catch(error => {
-        console.error('Fehler beim Holen der Warenkorb-Daten:', error);
-        // Trotzdem Event auslösen, aber ohne Daten
-        document.dispatchEvent(new CustomEvent('drawer:closed'));
-      });
+    // Verwende CartStateManager Daten wenn verfügbar
+    const cartData = window.cartStateManager ? window.cartStateManager.getCartData() : null;
+
+    // Event sofort auslösen mit verfügbaren Daten
+    document.dispatchEvent(new CustomEvent('drawer:closed', {
+      detail: { cartData }
+    }));
+
+    // Nur wenn keine CartStateManager Daten verfügbar sind, API-Call machen
+    if (!cartData) {
+      fetch(`${routes.cart_url}.js`)
+        .then(response => response.json())
+        .then(fetchedCartData => {
+          // Zusätzliches Event mit API-Daten
+          document.dispatchEvent(new CustomEvent('drawer:closed:updated', {
+            detail: { cartData: fetchedCartData }
+          }));
+        })
+        .catch(error => {
+          console.error('Fehler beim Holen der Warenkorb-Daten:', error);
+        });
+    }
   }
 
   setSummaryAccessibility(cartDrawerNote) {
@@ -170,29 +178,25 @@ if (!customElements.get('cart-drawer')) {
 
     // Benutzerdefiniertes Event direkt nach jeder Entfernung auslösen
     setTimeout(() => {
-      // Cart-Daten abrufen, nachdem der Artikel entfernt wurde
-      fetch(`${routes.cart_url}.js`)
-        .then(response => response.json())
-        .then(cartData => {
-          // Event auslösen um alle Komponenten zu informieren, dass der Warenkorb aktualisiert wurde
-          document.dispatchEvent(new CustomEvent('cart:updated', {
-            detail: { cartData }
-          }));
-
-          // Zusätzlich CartStateManager informieren (falls verfügbar)
-          if (window.cartStateManager) {
-            window.cartStateManager.updateCartData(cartData);
-          }
-        })
-        .catch(error => {
-          console.error('Fehler beim Abrufen der aktualisierten Warenkorb-Daten:', error);
-
-          // Auch bei Fehlern CartStateManager über Update informieren
-          if (window.cartStateManager) {
-            window.cartStateManager.scheduleUpdate();
-          }
-        });
-    }, 100);
+      // Verwende CartStateManager für konsistente Daten
+      if (window.cartStateManager) {
+        // CartStateManager wird automatisch aktualisiert und Events auslösen
+        window.cartStateManager.scheduleUpdate();
+      } else {
+        // Fallback: Direkte API-Abfrage
+        fetch(`${routes.cart_url}.js`)
+          .then(response => response.json())
+          .then(cartData => {
+            // Event auslösen um alle Komponenten zu informieren, dass der Warenkorb aktualisiert wurde
+            document.dispatchEvent(new CustomEvent('cart:updated', {
+              detail: { cartData }
+            }));
+          })
+          .catch(error => {
+            console.error('Fehler beim Abrufen der Warenkorb-Daten nach Entfernung:', error);
+          });
+      }
+    }, 50); // Reduzierte Verzögerung für bessere Responsivität
   }
 }
 

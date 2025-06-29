@@ -909,12 +909,18 @@ if (!customElements.get('product-form')) {
           }
         }
 
-        // Fallback: API-Call
+        // Fallback: API-Call mit CartStateManager Update
         console.log('ProductForm: Fallback zu API-Call');
         fetch(`${routes.cart_url}.js`)
           .then(response => response.json())
           .then(cart => {
             console.log('ProductForm: Warenkorb-Daten via API erhalten:', cart);
+
+            // CartStateManager mit aktuellen Daten versorgen
+            if (window.cartStateManager) {
+              window.cartStateManager.updateCartData(cart);
+            }
+
             this.updateButtonStateWithCartData(cart);
           })
           .catch(error => {

@@ -236,7 +236,7 @@ async function debouncedCartUpdate(cartData = null, delay = 100, source = 'unkno
   const now = Date.now();
 
   // Verhindere zu häufige Updates
-  if (now - lastCartUpdateTime < 50) {
+  if (now - lastCartUpdateTime < 30) {
     console.log('Cart.js: Update zu früh, überspringe');
     return;
   }
@@ -247,6 +247,7 @@ async function debouncedCartUpdate(cartData = null, delay = 100, source = 'unkno
 
   pendingCartUpdate = setTimeout(async () => {
     if (cartUpdateInProgress) {
+      console.log('Cart.js: Update bereits in Bearbeitung, überspringe');
       return;
     }
 
@@ -254,7 +255,9 @@ async function debouncedCartUpdate(cartData = null, delay = 100, source = 'unkno
     lastCartUpdateTime = Date.now();
 
     try {
+      console.log(`Cart.js: Starte Cart Update von ${source}`);
       await updateProductCards(cartData);
+      console.log(`Cart.js: Cart Update von ${source} abgeschlossen`);
     } catch (error) {
       console.error('Cart.js: Fehler beim Cart Update:', error);
     } finally {
@@ -266,36 +269,94 @@ async function debouncedCartUpdate(cartData = null, delay = 100, source = 'unkno
 
 // Event-Listener für das neue CartStateManager System
 document.addEventListener('cart:state:updated', function(event) {
-  debouncedCartUpdate(event.detail?.cartData, 50, 'CartStateManager');
+  console.log('Cart.js: CartStateManager Update Event empfangen');
+  debouncedCartUpdate(event.detail?.cartData, 30, 'CartStateManager');
 });
 
 // Event-Listener für CartStateManager Initialisierung
 document.addEventListener('cart:state:initialized', function(event) {
-  console.log('CartStateManager: Initialisiert', event.detail);
-  debouncedCartUpdate(event.detail?.cartData, 100, 'CartStateManager-Init');
+  console.log('Cart.js: CartStateManager initialisiert', event.detail);
+  debouncedCartUpdate(event.detail?.cartData, 50, 'CartStateManager-Init');
 });
 
 // Event-Listener für entfernte Items
 document.addEventListener('cart:item:removed', function(event) {
   console.log('Cart.js: Item entfernt Event empfangen', event.detail);
-  debouncedCartUpdate(null, 50, 'ItemRemoved');
+  // Verwende CartStateManager für konsistente Daten
+  if (window.cartStateManager) {
+    window.cartStateManager.scheduleUpdate();
+  } else {
+    debouncedCartUpdate(null, 30, 'ItemRemoved');
+  }
 });
 
 // Event-Listener für hinzugefügte Items
 document.addEventListener('cart:item:added', function(event) {
   console.log('Cart.js: Item hinzugefügt Event empfangen', event.detail);
-  debouncedCartUpdate(event.detail?.cartData, 50, 'ItemAdded');
+  debouncedCartUpdate(event.detail?.cartData, 30, 'ItemAdded');
 });
 
 // Hinzufügen eines Event-Listeners für die Initialisierung der Produktkarten
 document.addEventListener('DOMContentLoaded', function() {
-  setTimeout(function() {
-    if (window.cartStateManager && window.cartStateManager.isInitialized) {
-      debouncedCartUpdate(window.cartStateManager.getCartData(), 100, 'DOMContentLoaded-CSM');
+  console.log('Cart.js: DOMContentLoaded Event');
+
+  // Warte auf CartStateManager Initialisierung
+  const initializeProductCards = () => {
+    if (window.cartStateManager && window.cartStateManager.isReady && window.cartStateManager.isReady()) {
+      console.log('Cart.js: CartStateManager bereit, initialisiere Produktkarten');
+      debouncedCartUpdate(window.cartStateManager.getCartData(), 50, 'DOMContentLoaded-CSM');
+    } else if (window.cartStateManager) {
+      console.log('Cart.js: Warte auf CartStateManager Initialisierung');
+      setTimeout(initializeProductCards, 100);
     } else {
+      console.log('Cart.js: Fallback ohne CartStateManager');
       debouncedCartUpdate(null, 100, 'DOMContentLoaded-Fallback');
     }
-  }, 200);
+  };
+
+  setTimeout(initializeProductCards, 100);
+});
+
+// Browser-Navigation: Spezielle Behandlung für Browser-Zurück-Button
+window.addEventListener('pageshow', function(event) {
+  console.log('Cart.js: Page Show Event', event.persisted);
+
+  if (event.persisted) {
+    // Browser-Zurück-Navigation: Sofortige Aktualisierung
+    console.log('Cart.js: Browser-Zurück erkannt - erzwinge sofortige Cart-Aktualisierung');
+
+    // Mehrschichtiger Ansatz für maximale Zuverlässigkeit
+    setTimeout(() => {
+      // 1. CartStateManager forcieren
+      if (window.cartStateManager) {
+        window.cartStateManager.forceUpdate().then(() => {
+          console.log('Cart.js: CartStateManager Update nach Browser-Zurück abgeschlossen');
+        });
+      }
+
+      // 2. Fallback: Direkte Produktkarten-Aktualisierung
+      debouncedCartUpdate(null, 10, 'PageShow-BrowserBack-Fallback');
+    }, 50);
+
+    // 3. Zusätzliche Sicherheit nach 500ms
+    setTimeout(() => {
+      if (window.cartStateManager && window.cartStateManager.getCartData()) {
+        debouncedCartUpdate(window.cartStateManager.getCartData(), 10, 'PageShow-BrowserBack-Final');
+      }
+    }, 500);
+  }
+});
+
+// Zusätzlicher Event-Listener für erzwungene Aktualisierungen
+document.addEventListener('cart:force:refresh', function(event) {
+  console.log('Cart.js: Erzwungene Cart-Aktualisierung empfangen', event.detail);
+  debouncedCartUpdate(event.detail?.cartData, 10, 'ForceRefresh');
+});
+
+// Event-Listener für Browser-Navigation Cart-Sync
+document.addEventListener('cart:browser:back:sync', function(event) {
+  console.log('Cart.js: Browser-Zurück Cart-Sync empfangen', event.detail);
+  debouncedCartUpdate(event.detail?.cartData, 5, `BrowserBackSync-${event.detail?.attempt}`);
 });
 
 // Fallback Event-Listener für alte Events (Kompatibilität)

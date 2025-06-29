@@ -26,13 +26,60 @@ class CartStateManager {
    */
   async initialize() {
     try {
+      // Versuche zuerst Cache zu laden
+      const cachedData = this.loadFromCache();
+      if (cachedData) {
+        this.cartData = cachedData;
+        console.log('CartStateManager: Cache-Daten geladen');
+      }
+
+      // Dann aktuelle Daten vom Server abrufen
       await this.fetchCartData();
       this.isInitialized = true;
       this.notifyComponents('cart:state:initialized', { cartData: this.cartData });
       console.log('CartStateManager erfolgreich initialisiert mit', this.cartData?.items?.length || 0, 'Artikeln');
     } catch (error) {
       console.error('Fehler bei CartStateManager Initialisierung:', error);
+      // Fallback: Versuche Cache zu verwenden
+      const cachedData = this.loadFromCache();
+      if (cachedData) {
+        this.cartData = cachedData;
+        this.isInitialized = true;
+        console.log('CartStateManager: Fallback auf Cache-Daten');
+      }
     }
+  }
+
+  /**
+   * Lade Cart-Daten aus localStorage Cache
+   */
+  loadFromCache() {
+    try {
+      // Versuche zuerst den aktuellen Cache
+      const cached = localStorage.getItem('cart_state_cache');
+      if (cached) {
+        const { data, timestamp } = JSON.parse(cached);
+        // Cache ist 5 Minuten gültig
+        if (Date.now() - timestamp < 5 * 60 * 1000) {
+          console.log('CartStateManager: Gültiger Cache gefunden');
+          return data;
+        }
+      }
+
+      // Fallback: Backup-Cache versuchen
+      const backup = localStorage.getItem('cart_state_backup');
+      if (backup) {
+        const { data, timestamp } = JSON.parse(backup);
+        // Backup ist 10 Minuten gültig
+        if (Date.now() - timestamp < 10 * 60 * 1000) {
+          console.log('CartStateManager: Backup-Cache verwendet');
+          return data;
+        }
+      }
+    } catch (error) {
+      console.warn('CartStateManager: Fehler beim Laden des Caches:', error);
+    }
+    return null;
   }
 
   /**
@@ -47,6 +94,12 @@ class CartStateManager {
     // Drawer Events
     document.addEventListener('drawer:opened', this.handleDrawerEvent.bind(this));
     document.addEventListener('drawer:closed', this.handleDrawerEvent.bind(this));
+    document.addEventListener('drawer:closed:updated', this.handleDrawerEvent.bind(this));
+
+    // Browser-Navigation Events
+    window.addEventListener('pageshow', this.handlePageShow.bind(this));
+    window.addEventListener('pagehide', this.handlePageHide.bind(this));
+    window.addEventListener('beforeunload', this.handleBeforeUnload.bind(this));
 
     // MutationObserver für DOM-Änderungen im Warenkorb
     this.setupMutationObserver();
@@ -121,26 +174,56 @@ class CartStateManager {
   }
 
   /**
+   * Sofortige Aktualisierung (für kritische Updates)
+   */
+  async forceUpdate() {
+    console.log('CartStateManager: Erzwinge sofortige Aktualisierung');
+    if (this.debounceTimer) {
+      clearTimeout(this.debounceTimer);
+      this.debounceTimer = null;
+    }
+    return await this.fetchCartData();
+  }
+
+  /**
    * Warenkorb-Daten vom Server abrufen
    */
   async fetchCartData() {
     if (this.isUpdating) {
-      return;
+      console.log('CartStateManager: Update bereits in Bearbeitung, überspringe');
+      return this.cartData; // Gib aktuelle Daten zurück
     }
 
     this.isUpdating = true;
 
     try {
-      const response = await fetch(`${routes.cart_url}.js`);
+      const response = await fetch(`${routes.cart_url}.js`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache'
+        }
+      });
+
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
 
       const cartData = await response.json();
-      this.updateCartData(cartData);
+
+      // Nur aktualisieren wenn sich die Daten tatsächlich geändert haben
+      if (!this.cartData || JSON.stringify(this.cartData) !== JSON.stringify(cartData)) {
+        this.updateCartData(cartData);
+        console.log('CartStateManager: Cart-Daten aktualisiert');
+      } else {
+        console.log('CartStateManager: Keine Änderungen in Cart-Daten');
+      }
+
+      return cartData;
 
     } catch (error) {
       console.error('Fehler beim Abrufen der Warenkorb-Daten:', error);
+      return this.cartData; // Gib aktuelle Daten zurück bei Fehler
     } finally {
       this.isUpdating = false;
     }
@@ -151,20 +234,34 @@ class CartStateManager {
    */
   updateCartData(newCartData) {
     const previousCartData = this.cartData;
+
+    // Validiere die neuen Daten
+    if (!newCartData || typeof newCartData !== 'object') {
+      console.warn('CartStateManager: Ungültige Cart-Daten erhalten:', newCartData);
+      return;
+    }
+
     this.cartData = newCartData;
 
     // Vergleiche alte und neue Daten für detaillierte Events
     const changes = this.detectChanges(previousCartData, newCartData);
 
-    // Benachrichtige alle Components mit einer kleinen Verzögerung
-    // um sicherzustellen, dass alle DOM-Updates abgeschlossen sind
-    setTimeout(() => {
-      this.notifyComponents('cart:state:updated', {
-        cartData: newCartData,
-        previousCartData: previousCartData,
-        changes: changes
-      });
-    }, 10);
+    // Sofortige Benachrichtigung ohne Verzögerung für bessere Synchronisation
+    this.notifyComponents('cart:state:updated', {
+      cartData: newCartData,
+      previousCartData: previousCartData,
+      changes: changes
+    });
+
+    // Zusätzlich localStorage für Persistierung aktualisieren
+    try {
+      localStorage.setItem('cart_state_cache', JSON.stringify({
+        data: newCartData,
+        timestamp: Date.now()
+      }));
+    } catch (error) {
+      console.warn('CartStateManager: Konnte Cart-State nicht in localStorage speichern:', error);
+    }
   }
 
   /**
@@ -260,6 +357,13 @@ class CartStateManager {
   }
 
   /**
+   * Prüfen ob initialisiert
+   */
+  isReady() {
+    return this.isInitialized && this.cartData !== null;
+  }
+
+  /**
    * Produkt-IDs aller Artikel im Warenkorb abrufen
    */
   getCartProductIds() {
@@ -279,6 +383,72 @@ class CartStateManager {
     }
 
     return this.cartData.items.map(item => item.variant_id);
+  }
+
+  /**
+   * Browser-Navigation: Page Show Event
+   */
+  handlePageShow(event) {
+    console.log('CartStateManager: Page Show Event', event.persisted);
+
+    // Bei Browser-Zurück-Navigation (persisted = true) ODER wenn Cache-Daten veraltet sind
+    if (event.persisted || this.isCartDataStale()) {
+      console.log('CartStateManager: Browser-Zurück-Navigation oder veraltete Daten erkannt, lade Cart-Daten neu');
+
+      // Sofortige Aktualisierung für bessere UX
+      this.forceUpdate().then(() => {
+        // Zusätzlich alle Produktkarten aktualisieren
+        document.dispatchEvent(new CustomEvent('cart:force:refresh', {
+          detail: {
+            source: 'browser-back-navigation',
+            cartData: this.cartData
+          }
+        }));
+      });
+    }
+  }
+
+  /**
+   * Prüfe ob Cart-Daten veraltet sind (älter als 30 Sekunden)
+   */
+  isCartDataStale() {
+    try {
+      const cached = localStorage.getItem('cart_state_cache');
+      if (cached) {
+        const { timestamp } = JSON.parse(cached);
+        return Date.now() - timestamp > 30 * 1000; // 30 Sekunden
+      }
+    } catch (error) {
+      console.warn('CartStateManager: Fehler beim Prüfen der Cache-Aktualität:', error);
+    }
+    return true; // Wenn unsicher, als veraltet betrachten
+  }
+
+  /**
+   * Browser-Navigation: Page Hide Event
+   */
+  handlePageHide(event) {
+    console.log('CartStateManager: Page Hide Event');
+    // Cart-State in localStorage speichern für bessere Persistierung
+    if (this.cartData) {
+      try {
+        localStorage.setItem('cart_state_backup', JSON.stringify({
+          data: this.cartData,
+          timestamp: Date.now(),
+          url: window.location.href
+        }));
+      } catch (error) {
+        console.warn('CartStateManager: Konnte Cart-State-Backup nicht speichern:', error);
+      }
+    }
+  }
+
+  /**
+   * Browser-Navigation: Before Unload Event
+   */
+  handleBeforeUnload(event) {
+    // Finale Cart-State-Speicherung
+    this.handlePageHide(event);
   }
 }
 
