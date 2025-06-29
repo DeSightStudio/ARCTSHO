@@ -103,7 +103,7 @@
             {%- liquid
               assign media_position = media_position | default: 0 | plus: 1
               assign lazy_load = false
-              if media_position > 1
+              if media_position > 2
                 assign lazy_load = true
               endif
             -%}
@@ -242,8 +242,8 @@
                 | image_url: width: 416
                 | image_tag:
                   loading: 'lazy',
-                  sizes: sizes,
-                  widths: '54, 74, 104, 162, 208, 324, 416',
+                  sizes: '(min-width: 750px) 162px, 74px',
+                  widths: '74, 104, 162, 208',
                   id: thumbnail_id,
                   alt: featured_media.alt
                 | escape
