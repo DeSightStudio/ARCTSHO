@@ -199,8 +199,13 @@
                 {%- assign has_specs = false -%}
                 {%- if product.metafields.next_cart.ts_dimensions_length_m != blank
                   or product.metafields.next_cart.ts_dimensions_width_m != blank
+                  or product.metafields.next_cart.ts_dimensions_height_m != blank
                   or product.metafields.next_cart.ts_dimensions_thickness_m != blank
                   or product.metafields.next_cart.ts_dimensions_diameter_m != blank
+                  or product.metafields.custom.length_m != blank
+                  or product.metafields.custom.width_m != blank
+                  or product.metafields.custom.thickness_m != blank
+                  or product.metafields.custom.diameter_m != blank
                   or product.metafields.next_cart.weight_m != blank
                   or product.metafields.custom.weight_m != blank
                   or product.metafields.custom.color != blank
@@ -218,6 +223,26 @@
                           </span>
                           <span class="product__specs-label">{{ 'products.product.product_specs.length' | t }}</span>
                           {%- assign length_value = product.metafields.next_cart.ts_dimensions_length_m | plus: 0 -%}
+                          <span
+                            class="product__specs-value unit-convertible unit-length"
+                            data-spec-type="length"
+                            data-metric-value="{{ length_value }}"
+                            data-metric-unit="mm"
+                          >
+                            {%- if length_value < 10 -%}
+                              {{- length_value }} mm
+                            {%- else -%}
+                              {{- length_value | divided_by: 10.0 | round: 1 }} cm
+                            {%- endif -%}
+                          </span>
+                        </div>
+                      {%- elsif product.metafields.custom.length_m != blank -%}
+                        <div class="product__specs-item">
+                          <span class="product__specs-icon">
+                            <i class="fas fa-ruler-horizontal"></i>
+                          </span>
+                          <span class="product__specs-label">{{ 'products.product.product_specs.length' | t }}</span>
+                          {%- assign length_value = product.metafields.custom.length_m | plus: 0 -%}
                           <span
                             class="product__specs-value unit-convertible unit-length"
                             data-spec-type="length"
@@ -253,9 +278,49 @@
                             {%- endif -%}
                           </span>
                         </div>
+                      {%- elsif product.metafields.custom.width_m != blank -%}
+                        <div class="product__specs-item">
+                          <span class="product__specs-icon">
+                            <i class="fas fa-ruler-vertical"></i>
+                          </span>
+                          <span class="product__specs-label">{{ 'products.product.product_specs.width' | t }}</span>
+                          {%- assign width_value = product.metafields.custom.width_m | plus: 0 -%}
+                          <span
+                            class="product__specs-value unit-convertible unit-length"
+                            data-spec-type="width"
+                            data-metric-value="{{ width_value }}"
+                            data-metric-unit="mm"
+                          >
+                            {%- if width_value < 10 -%}
+                              {{- width_value }} mm
+                            {%- else -%}
+                              {{- width_value | divided_by: 10.0 | round: 1 }} cm
+                            {%- endif -%}
+                          </span>
+                        </div>
                       {%- endif -%}
 
-                      {%- if product.metafields.next_cart.ts_dimensions_thickness_m != blank -%}
+                      {%- if product.metafields.next_cart.ts_dimensions_height_m != blank -%}
+                        <div class="product__specs-item">
+                          <span class="product__specs-icon">
+                            <i class="fas fa-compress-arrows-alt"></i>
+                          </span>
+                          <span class="product__specs-label">{{ 'products.product.product_specs.thickness' | t }}</span>
+                          {%- assign thickness_value = product.metafields.next_cart.ts_dimensions_height_m | plus: 0 -%}
+                          <span
+                            class="product__specs-value unit-convertible unit-length"
+                            data-spec-type="thickness"
+                            data-metric-value="{{ thickness_value }}"
+                            data-metric-unit="mm"
+                          >
+                            {%- if thickness_value < 10 -%}
+                              {{- thickness_value }} mm
+                            {%- else -%}
+                              {{- thickness_value | divided_by: 10.0 | round: 1 }} cm
+                            {%- endif -%}
+                          </span>
+                        </div>
+                      {%- elsif product.metafields.next_cart.ts_dimensions_thickness_m != blank -%}
                         <div class="product__specs-item">
                           <span class="product__specs-icon">
                             <i class="fas fa-compress-arrows-alt"></i>
@@ -264,6 +329,26 @@
                           {%- assign thickness_value = product.metafields.next_cart.ts_dimensions_thickness_m
                             | plus: 0
                           -%}
+                          <span
+                            class="product__specs-value unit-convertible unit-length"
+                            data-spec-type="thickness"
+                            data-metric-value="{{ thickness_value }}"
+                            data-metric-unit="mm"
+                          >
+                            {%- if thickness_value < 10 -%}
+                              {{- thickness_value }} mm
+                            {%- else -%}
+                              {{- thickness_value | divided_by: 10.0 | round: 1 }} cm
+                            {%- endif -%}
+                          </span>
+                        </div>
+                      {%- elsif product.metafields.custom.thickness_m != blank -%}
+                        <div class="product__specs-item">
+                          <span class="product__specs-icon">
+                            <i class="fas fa-compress-arrows-alt"></i>
+                          </span>
+                          <span class="product__specs-label">{{ 'products.product.product_specs.thickness' | t }}</span>
+                          {%- assign thickness_value = product.metafields.custom.thickness_m | plus: 0 -%}
                           <span
                             class="product__specs-value unit-convertible unit-length"
                             data-spec-type="thickness"
@@ -288,6 +373,26 @@
                           {%- assign diameter_value = product.metafields.next_cart.ts_dimensions_diameter_m
                             | plus: 0
                           -%}
+                          <span
+                            class="product__specs-value unit-convertible unit-length"
+                            data-spec-type="diameter"
+                            data-metric-value="{{ diameter_value }}"
+                            data-metric-unit="mm"
+                          >
+                            {%- if diameter_value < 10 -%}
+                              {{- diameter_value }} mm
+                            {%- else -%}
+                              {{- diameter_value | divided_by: 10.0 | round: 1 }} cm
+                            {%- endif -%}
+                          </span>
+                        </div>
+                      {%- elsif product.metafields.custom.diameter_m != blank -%}
+                        <div class="product__specs-item">
+                          <span class="product__specs-icon">
+                            <i class="fas fa-circle"></i>
+                          </span>
+                          <span class="product__specs-label">{{ 'products.product.product_specs.diameter' | t }}</span>
+                          {%- assign diameter_value = product.metafields.custom.diameter_m | plus: 0 -%}
                           <span
                             class="product__specs-value unit-convertible unit-length"
                             data-spec-type="diameter"

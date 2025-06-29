@@ -148,7 +148,7 @@
         "length": "Length",
         "width": "Width",
         "height": "Height",
-        "thickness": "Thickness",
+        "thickness": "Height",
         "diameter": "Diameter",
         "weight": "Weight",
         "color": "Color",
