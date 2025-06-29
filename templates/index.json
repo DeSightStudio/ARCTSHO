@@ -411,7 +411,7 @@
         "heading_hb7bgk": {
           "type": "heading",
           "settings": {
-            "heading": "<p>Mammoth ivory is a prehistoric echo of our natural history. It is to be treasured and looked after for the next generation.</p>",
+            "heading": "Mammoth ivory is a prehistoric echo of our natural history. <br>It is to be treasured and looked after for the next generation.",
             "heading_size": "h1"
           }
         }
