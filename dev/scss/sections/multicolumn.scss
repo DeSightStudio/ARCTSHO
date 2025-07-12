@@ -145,14 +145,14 @@
                         padding: 0px;
                         li {
                             position: relative;
-                            padding-left: 25px;
+                            /*padding-left: 25px;*/
                             list-style: none;
                             list-style-type: none;
                             margin-left: 5px;
                             font-family: 'Cormorant Garamond';
                             color: $mainColorDark;
                             font-size: $fontSizeRegular;
-                            &:before {
+                            /*&:before {
                                 font-family: "Font Awesome 6 Pro";
                                 content: "\f00c"; // Check-Icon statt Chevron
                                 font-weight: 100; // für thin-Version
@@ -162,7 +162,7 @@
                                 transform: translateY(-50%);
                                 font-weight: 700;
                                 color: $mainColor;
-                            }
+                            }*/
                         }
                     }
                 }
