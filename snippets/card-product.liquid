@@ -165,6 +165,163 @@
                 </div>
               </div>
 
+              {% comment %} Spezifikationen für Mobile direkt nach Titel {% endcomment %}
+              <div class="card-product__specs-mobile">
+                <ul class="card-product__specs-list">
+                  {% if card_product.metafields.next_cart.ts_dimensions_length_m != blank %}
+                    <li class="card-product__specs-item">
+                      <span class="card-product__specs-label">{{ 'products.product.product_specs.length' | t }}</span>
+                      {% assign length_value = card_product.metafields.next_cart.ts_dimensions_length_m | plus: 0 %}
+                      <span
+                        class="card-product__specs-value"
+                        data-spec-type="length"
+                        data-original-value="{{ length_value }}"
+                        data-unit="mm"
+                      >
+                        {% if length_value < 10 %}
+                          {{- length_value }} mm
+                        {% else %}
+                          {{- length_value | divided_by: 10.0 | round: 1 }} cm
+                        {% endif %}
+                      </span>
+                    </li>
+                  {% elsif card_product.metafields.custom.length_m != blank %}
+                    <li class="card-product__specs-item">
+                      <span class="card-product__specs-label">{{ 'products.product.product_specs.length' | t }}</span>
+                      {% assign length_value = card_product.metafields.custom.length_m | plus: 0 %}
+                      <span
+                        class="card-product__specs-value"
+                        data-spec-type="length"
+                        data-original-value="{{ length_value }}"
+                        data-unit="mm"
+                      >
+                        {% if length_value < 10 %}
+                          {{- length_value }} mm
+                        {% else %}
+                          {{- length_value | divided_by: 10.0 | round: 1 }} cm
+                        {% endif %}
+                      </span>
+                    </li>
+                  {% endif %}
+
+                  {% if card_product.metafields.next_cart.ts_dimensions_width_m != blank %}
+                    <li class="card-product__specs-item">
+                      <span class="card-product__specs-label">{{ 'products.product.product_specs.width' | t }}</span>
+                      {% assign width_value = card_product.metafields.next_cart.ts_dimensions_width_m | plus: 0 %}
+                      <span
+                        class="card-product__specs-value"
+                        data-spec-type="width"
+                        data-original-value="{{ width_value }}"
+                        data-unit="mm"
+                      >
+                        {% if width_value < 10 %}
+                          {{- width_value }} mm
+                        {% else %}
+                          {{- width_value | divided_by: 10.0 | round: 1 }} cm
+                        {% endif %}
+                      </span>
+                    </li>
+                  {% elsif card_product.metafields.custom.width_m != blank %}
+                    <li class="card-product__specs-item">
+                      <span class="card-product__specs-label">{{ 'products.product.product_specs.width' | t }}</span>
+                      {% assign width_value = card_product.metafields.custom.width_m | plus: 0 %}
+                      <span
+                        class="card-product__specs-value"
+                        data-spec-type="width"
+                        data-original-value="{{ width_value }}"
+                        data-unit="mm"
+                      >
+                        {% if width_value < 10 %}
+                          {{- width_value }} mm
+                        {% else %}
+                          {{- width_value | divided_by: 10.0 | round: 1 }} cm
+                        {% endif %}
+                      </span>
+                    </li>
+                  {% endif %}
+
+                  {% if card_product.metafields.next_cart.ts_dimensions_height_m != blank %}
+                    <li class="card-product__specs-item">
+                      <span class="card-product__specs-label">
+                        {{- 'products.product.product_specs.thickness' | t -}}
+                      </span>
+                      {% assign thickness_value = card_product.metafields.next_cart.ts_dimensions_height_m | plus: 0 %}
+                      <span
+                        class="card-product__specs-value"
+                        data-spec-type="thickness"
+                        data-original-value="{{ thickness_value }}"
+                        data-unit="mm"
+                      >
+                        {% if thickness_value < 10 %}
+                          {{- thickness_value }} mm
+                        {% else %}
+                          {{- thickness_value | divided_by: 10.0 | round: 1 }} cm
+                        {% endif %}
+                      </span>
+                    </li>
+                  {% elsif card_product.metafields.next_cart.ts_dimensions_thickness_m != blank %}
+                    <li class="card-product__specs-item">
+                      <span class="card-product__specs-label">
+                        {{- 'products.product.product_specs.thickness' | t -}}
+                      </span>
+                      {% assign thickness_value = card_product.metafields.next_cart.ts_dimensions_thickness_m
+                        | plus: 0
+                      %}
+                      <span
+                        class="card-product__specs-value"
+                        data-spec-type="thickness"
+                        data-original-value="{{ thickness_value }}"
+                        data-unit="mm"
+                      >
+                        {% if thickness_value < 10 %}
+                          {{- thickness_value }} mm
+                        {% else %}
+                          {{- thickness_value | divided_by: 10.0 | round: 1 }} cm
+                        {% endif %}
+                      </span>
+                    </li>
+                  {% elsif card_product.metafields.custom.thickness_m != blank %}
+                    <li class="card-product__specs-item">
+                      <span class="card-product__specs-label">
+                        {{- 'products.product.product_specs.thickness' | t -}}
+                      </span>
+                      {% assign thickness_value = card_product.metafields.custom.thickness_m | plus: 0 %}
+                      <span
+                        class="card-product__specs-value"
+                        data-spec-type="thickness"
+                        data-original-value="{{ thickness_value }}"
+                        data-unit="mm"
+                      >
+                        {% if thickness_value < 10 %}
+                          {{- thickness_value }} mm
+                        {% else %}
+                          {{- thickness_value | divided_by: 10.0 | round: 1 }} cm
+                        {% endif %}
+                      </span>
+                    </li>
+                  {% endif %}
+
+                  {% if card_product.metafields.next_cart.weight_m != blank %}
+                    <li class="card-product__specs-item">
+                      <span class="card-product__specs-label">{{ 'products.product.product_specs.weight' | t }}</span>
+                      {% assign weight_value = card_product.metafields.next_cart.weight_m | plus: 0 %}
+                      <span
+                        class="card-product__specs-value"
+                        data-spec-type="weight"
+                        data-original-value="{{ weight_value }}"
+                        data-unit="g"
+                      >
+                        {% if weight_value < 1000 %}
+                          {{- weight_value }} g
+                        {% else %}
+                          {{- weight_value | divided_by: 1000.0 | round: 2 }} kg
+                        {% endif %}
+                      </span>
+                    </li>
+                  {% endif %}
+                </ul>
+              </div>
+
               {% comment %} Wrapper für Button und Preis - damit sie zusammenbleiben {% endcomment %}
               <div class="card-product__bottom-section">
                 {% comment %} Add to Cart Button - direkt vor Preis {% endcomment %}
