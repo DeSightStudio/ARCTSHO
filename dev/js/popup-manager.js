@@ -111,6 +111,11 @@
           if (modal.id === 'modal-request-only') {
             console.log('Request-Only Modal wird geöffnet - verwende gespeicherten Button');
 
+            // Modal zurücksetzen (Success-Nachricht verstecken, Formular anzeigen)
+            if (typeof window.resetRequestOnlyModal === 'function') {
+              window.resetRequestOnlyModal();
+            }
+
             if (lastClickedRequestOnlyButton) {
               console.log('Gespeicherter Trigger-Button gefunden:', lastClickedRequestOnlyButton);
               console.log('Button data attributes:', lastClickedRequestOnlyButton.dataset);
@@ -138,6 +143,14 @@
         },
         onClose: modal => {
           console.log(`${modal.id} wird durch MicroModal geschlossen`);
+
+          // Request-Only Modal spezielle Behandlung beim Schließen
+          if (modal.id === 'modal-request-only') {
+            if (typeof window.resetRequestOnlyModal === 'function') {
+              window.resetRequestOnlyModal();
+            }
+          }
+
           // Stelle immer sicher, dass Body-Scrolling wiederhergestellt wird
           ensureBodyScrollEnabled();
           return true;
