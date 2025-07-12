@@ -295,69 +295,252 @@
       }
     });
 
-    // Funktion zum Erkennen und Reparieren von durch Translate App veränderten Links
+    // Erweiterte Funktion zum Erkennen und Reparieren von durch Translate App veränderten Links
     function repairTranslatedPopupLinks() {
-      // Suche nach Paragraphen, die mammoth ivory/mammutelfenbein Text enthalten
-      const mammothParagraphs = document.querySelectorAll('p');
+      console.log('Starte Reparatur von übersetzten Popup-Links...');
 
-      mammothParagraphs.forEach(paragraph => {
-        const paragraphText = paragraph.textContent.toLowerCase();
+      // Definiere Popup-Typen und ihre möglichen Textvarianten in verschiedenen Sprachen
+      const popupPatterns = {
+        'certificate-origin': [
+          // Deutsch
+          'ursprungszeugnis', 'certificate of origin', 'ursprungszertifikat',
+          // Englisch
+          'certificate of origin', 'origin certificate',
+          // Italienisch
+          'certificato di origine', 'certificato d\'origine',
+          // Spanisch
+          'certificado de origen',
+          // Französisch - verschiedene Apostroph-Varianten
+          'certificat d\'origine', 'certificat d\'origine', 'certificat d\'origine', 'certificat d\'origine'
+        ],
+        'clearance-certificate': [
+          // Deutsch
+          'clearance certificate', 'freigabezertifikat', 'negativbescheinigung',
+          // Englisch
+          'clearance certificate', 'clearance cert',
+          // Italienisch
+          'certificato di sdoganamento', 'certificato clearance', 'certificato di autorizzazione',
+          // Spanisch
+          'certificado de despacho', 'certificado clearance', 'certificado de autorización',
+          // Französisch
+          'certificat de dédouanement', 'certificat clearance', 'certificat de décharge'
+        ],
+        'vat-uid-tva': [
+          // Deutsch
+          'uid', 'ust-id', 'umsatzsteuer-id', 'mehrwertsteuer-id',
+          // Englisch
+          'vat id', 'vat number', 'tax id',
+          // Italienisch
+          'partita iva', 'codice iva',
+          // Spanisch
+          'número de iva', 'cif',
+          // Französisch
+          'numéro de tva', 'tva'
+        ]
+      };
 
-        // Prüfe ob es sich um den Mammutelfenbein-Absatz handelt
-        const isMammothParagraph = paragraphText.includes('mammoth ivory') ||
-                                   paragraphText.includes('mammutelfenbein') ||
-                                   paragraphText.includes('avorio di mammut') ||
-                                   paragraphText.includes('marfil de mamut') ||
-                                   paragraphText.includes('ivoire de mammouth');
+      // Suche nach allen unterstrichenen Spans im gesamten Dokument
+      const allUnderlinedSpans = document.querySelectorAll('span[style*="text-decoration"]');
 
-        if (isMammothParagraph) {
-          // Suche nach unterstrichenen spans in diesem Absatz
-          const underlinedSpans = paragraph.querySelectorAll('span[style*="text-decoration"]');
+      allUnderlinedSpans.forEach(span => {
+        const hasUnderline = span.style.textDecoration && span.style.textDecoration.includes('underline');
 
-          underlinedSpans.forEach((span, index) => {
-            const hasUnderline = span.style.textDecoration && span.style.textDecoration.includes('underline');
+        if (hasUnderline && !span.hasAttribute('data-popup-repaired')) {
+          const spanText = span.textContent.toLowerCase().trim();
+          let matchedPopupType = null;
 
-            if (hasUnderline && !span.hasAttribute('data-popup-repaired')) {
-              let popupType = null;
+          console.log(`Prüfe unterstrichenen Span: "${spanText}"`);
 
-              // Der erste unterstrichene Span ist normalerweise Certificate of Origin
-              // Der zweite unterstrichene Span ist normalerweise Clearance Certificate
-              if (index === 0) {
-                popupType = 'certificate-origin';
-              } else if (index === 1) {
-                popupType = 'clearance-certificate';
-              }
-
-              if (popupType) {
-                // Markiere als repariert um Doppelverarbeitung zu vermeiden
-                span.setAttribute('data-popup-repaired', 'true');
-                span.style.cursor = 'pointer';
-
-                // Füge Click-Handler hinzu
-                span.addEventListener('click', (e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  console.log('Reparierter Popup-Link geklickt:', popupType);
-                  try {
-                    MicroModal.show(`modal-${popupType}`);
-                  } catch (error) {
-                    console.error('Fehler beim Öffnen des reparierten Popup-Modals:', popupType, error);
-                  }
-                });
-
-                console.log(`Popup-Link repariert: "${span.textContent.trim()}" -> ${popupType} (Position: ${index})`);
+          // Prüfe gegen alle Popup-Pattern
+          for (const [popupType, patterns] of Object.entries(popupPatterns)) {
+            for (const pattern of patterns) {
+              if (spanText.includes(pattern.toLowerCase())) {
+                console.log(`Pattern-Match gefunden: "${spanText}" enthält "${pattern}" -> ${popupType}`);
+                matchedPopupType = popupType;
+                break;
               }
             }
-          });
+            if (matchedPopupType) break;
+          }
+
+          // Spezielle Behandlung für französische Begriffe mit Apostrophen
+          if (!matchedPopupType) {
+            if (spanText.includes('certificat') && spanText.includes('origine')) {
+              console.log(`Spezielle Erkennung: Französisches Certificate of Origin -> ${spanText}`);
+              matchedPopupType = 'certificate-origin';
+            } else if (spanText.includes('certificat') && spanText.includes('décharge')) {
+              console.log(`Spezielle Erkennung: Französisches Clearance Certificate -> ${spanText}`);
+              matchedPopupType = 'clearance-certificate';
+            }
+          }
+
+          if (matchedPopupType) {
+            // Markiere als repariert um Doppelverarbeitung zu vermeiden
+            span.setAttribute('data-popup-repaired', 'true');
+            span.setAttribute('data-popup-type', matchedPopupType);
+            span.style.cursor = 'pointer';
+            span.setAttribute('title', 'Klicken zum Öffnen');
+
+            // Entferne alle vorhandenen Event-Listener durch Klonen
+            const newSpan = span.cloneNode(true);
+            span.parentNode.replaceChild(newSpan, span);
+
+            // Füge Click-Handler zum neuen Element hinzu
+            newSpan.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              console.log('Reparierter Popup-Link geklickt:', matchedPopupType);
+              try {
+                MicroModal.show(`modal-${matchedPopupType}`);
+              } catch (error) {
+                console.error('Fehler beim Öffnen des reparierten Popup-Modals:', matchedPopupType, error);
+              }
+            });
+
+            console.log(`Popup-Link repariert: "${span.textContent.trim()}" -> ${matchedPopupType}`);
+          }
+        }
+      });
+
+      // Zusätzlich: Suche nach Spans, die ursprünglich Hash-URLs waren
+      // Diese haben oft noch Reste der ursprünglichen href-Attribute oder spezielle Klassen
+      const potentialHashSpans = document.querySelectorAll('span');
+
+      potentialHashSpans.forEach(span => {
+        if (span.hasAttribute('data-popup-repaired')) return;
+
+        // Prüfe auf Hinweise, dass dies ursprünglich ein Hash-Link war
+        const spanText = span.textContent.toLowerCase().trim();
+        const hasUnderlineStyle = span.style.textDecoration && span.style.textDecoration.includes('underline');
+        const hasLinkStyling = window.getComputedStyle(span).textDecoration.includes('underline') ||
+                              window.getComputedStyle(span).color !== window.getComputedStyle(span.parentElement).color;
+
+        if ((hasUnderlineStyle || hasLinkStyling) && !span.hasAttribute('data-popup-repaired')) {
+          let detectedPopupType = null;
+
+          // Erweiterte Erkennung basierend auf Textinhalt
+          for (const [popupType, patterns] of Object.entries(popupPatterns)) {
+            for (const pattern of patterns) {
+              if (spanText.includes(pattern.toLowerCase())) {
+                detectedPopupType = popupType;
+                break;
+              }
+            }
+            if (detectedPopupType) break;
+          }
+
+          if (detectedPopupType) {
+            // Markiere als repariert
+            span.setAttribute('data-popup-repaired', 'true');
+            span.setAttribute('data-popup-type', detectedPopupType);
+            span.style.cursor = 'pointer';
+            span.setAttribute('title', 'Klicken zum Öffnen');
+
+            // Entferne alle vorhandenen Event-Listener durch Klonen
+            const newSpan = span.cloneNode(true);
+            span.parentNode.replaceChild(newSpan, span);
+
+            // Füge Click-Handler zum neuen Element hinzu
+            newSpan.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              console.log('Hash-Span Popup-Link geklickt:', detectedPopupType);
+              try {
+                MicroModal.show(`modal-${detectedPopupType}`);
+              } catch (error) {
+                console.error('Fehler beim Öffnen des Hash-Span Popup-Modals:', detectedPopupType, error);
+              }
+            });
+
+            console.log(`Hash-Span Popup-Link repariert: "${span.textContent.trim()}" -> ${detectedPopupType}`);
+          }
+        }
+      });
+
+      console.log('Popup-Link Reparatur abgeschlossen');
+    }
+
+    // Zusätzliche Funktion zur Erkennung von Hash-URL Spans
+    function repairHashUrlSpans() {
+      console.log('Suche nach Hash-URL Spans...');
+
+      // Suche nach Spans, die wie Hash-URLs aussehen oder sich verhalten
+      const allSpans = document.querySelectorAll('span');
+
+      allSpans.forEach(span => {
+        if (span.hasAttribute('data-popup-repaired')) return;
+
+        const spanText = span.textContent.trim();
+        const hasClickableStyle = span.style.cursor === 'pointer' ||
+                                 span.style.textDecoration?.includes('underline') ||
+                                 window.getComputedStyle(span).cursor === 'pointer' ||
+                                 window.getComputedStyle(span).textDecoration.includes('underline');
+
+        // Prüfe, ob der Span in einem Kontext steht, der auf Popup-Links hindeutet
+        const parentText = span.parentElement?.textContent?.toLowerCase() || '';
+        const isInRelevantContext = parentText.includes('mammoth') ||
+                                   parentText.includes('mammut') ||
+                                   parentText.includes('ivory') ||
+                                   parentText.includes('elfenbein') ||
+                                   parentText.includes('certificate') ||
+                                   parentText.includes('zertifikat') ||
+                                   parentText.includes('clearance') ||
+                                   parentText.includes('ursprung');
+
+        if (hasClickableStyle && isInRelevantContext) {
+          // Versuche Popup-Typ basierend auf Text zu ermitteln
+          const lowerText = spanText.toLowerCase();
+          let popupType = null;
+
+          if (lowerText.includes('ursprung') || lowerText.includes('origin') || lowerText.includes('origine')) {
+            popupType = 'certificate-origin';
+          } else if (lowerText.includes('clearance') || lowerText.includes('negativ') ||
+                     lowerText.includes('autorizzazione') || lowerText.includes('autorización') ||
+                     lowerText.includes('décharge')) {
+            popupType = 'clearance-certificate';
+          } else if (lowerText.includes('uid') || lowerText.includes('vat') || lowerText.includes('tva')) {
+            popupType = 'vat-uid-tva';
+          }
+
+          if (popupType) {
+            span.setAttribute('data-popup-repaired', 'true');
+            span.setAttribute('data-popup-type', popupType);
+            span.style.cursor = 'pointer';
+            span.setAttribute('title', 'Klicken zum Öffnen');
+
+            // Entferne alle vorhandenen Event-Listener durch Klonen
+            const newSpan = span.cloneNode(true);
+            span.parentNode.replaceChild(newSpan, span);
+
+            // Füge Click-Handler zum neuen Element hinzu
+            newSpan.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              console.log('Hash-URL Span geklickt:', popupType);
+              try {
+                MicroModal.show(`modal-${popupType}`);
+              } catch (error) {
+                console.error('Fehler beim Öffnen des Hash-URL Span Modals:', popupType, error);
+              }
+            });
+
+            console.log(`Hash-URL Span repariert: "${spanText}" -> ${popupType}`);
+          }
         }
       });
     }
 
     // Führe die Reparatur initial aus
-    setTimeout(repairTranslatedPopupLinks, 1000);
+    setTimeout(() => {
+      repairTranslatedPopupLinks();
+      repairHashUrlSpans();
+    }, 1000);
 
     // Führe die Reparatur nach Sprachänderungen aus
-    document.addEventListener('DOMContentLoaded', repairTranslatedPopupLinks);
+    document.addEventListener('DOMContentLoaded', () => {
+      repairTranslatedPopupLinks();
+      repairHashUrlSpans();
+    });
 
     // Beobachte Änderungen für dynamisch geladene Inhalte
     const popupRepairObserver = new MutationObserver((mutations) => {
@@ -368,7 +551,10 @@
         }
       });
       if (shouldRepair) {
-        setTimeout(repairTranslatedPopupLinks, 100);
+        setTimeout(() => {
+          repairTranslatedPopupLinks();
+          repairHashUrlSpans();
+        }, 100);
       }
     });
 
@@ -499,6 +685,26 @@
       }
     }, true); // useCapture = true, um das Event vor anderen Listenern zu fangen
 
+    // Zentrale Event-Delegation für reparierte Popup-Spans
+    document.addEventListener('click', function(e) {
+      // Prüfe zuerst auf reparierte Popup-Spans
+      const repairedSpan = e.target.closest('span[data-popup-repaired="true"]');
+      if (repairedSpan) {
+        const popupType = repairedSpan.getAttribute('data-popup-type');
+        if (popupType) {
+          e.preventDefault();
+          e.stopPropagation();
+          console.log('Reparierter Span über Event-Delegation geklickt:', popupType);
+          try {
+            MicroModal.show(`modal-${popupType}`);
+          } catch (error) {
+            console.error('Fehler beim Öffnen des Popup-Modals über Event-Delegation:', popupType, error);
+          }
+          return;
+        }
+      }
+    });
+
     // Zentrale Event-Delegation für alle VAT-Buttons und MicroModal-Trigger
     document.addEventListener('click', function(e) {
 
@@ -552,7 +758,7 @@
       }
     });
 
-    // Event-Listener für Hash-URLs (#popup-xxxx)
+    // Event-Listener für Hash-URLs (#popup-xxxx) und reparierte Spans
     document.addEventListener('click', (e) => {
       // Prüfen, ob es sich um einen Link handelt
       if (e.target.tagName === 'A' || e.target.closest('a')) {
@@ -566,6 +772,42 @@
 
           // Prüfen, ob dieser Popup-Typ existiert
           if (popupTypes.includes(popupType)) {
+            console.log('Hash-URL Link geklickt:', popupType);
+            MicroModal.show(`modal-${popupType}`);
+          }
+        }
+      }
+
+      // Zusätzlich: Prüfen auf Spans, die wie Hash-Links aussehen
+      if (e.target.tagName === 'SPAN' && !e.target.hasAttribute('data-popup-repaired')) {
+        const spanText = e.target.textContent.toLowerCase().trim();
+        const hasLinkStyling = e.target.style.textDecoration?.includes('underline') ||
+                              window.getComputedStyle(e.target).textDecoration.includes('underline') ||
+                              e.target.style.cursor === 'pointer';
+
+        if (hasLinkStyling) {
+          // Versuche Popup-Typ zu ermitteln
+          let popupType = null;
+
+          if (spanText.includes('ursprung') || spanText.includes('origin') || spanText.includes('origine')) {
+            popupType = 'certificate-origin';
+          } else if (spanText.includes('clearance') || spanText.includes('negativ') ||
+                     spanText.includes('autorizzazione') || spanText.includes('autorización') ||
+                     spanText.includes('décharge')) {
+            popupType = 'clearance-certificate';
+          } else if (spanText.includes('uid') || spanText.includes('vat') || spanText.includes('tva')) {
+            popupType = 'vat-uid-tva';
+          }
+
+          if (popupType && popupTypes.includes(popupType)) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Unreparierter Span-Link geklickt, öffne Popup:', popupType);
+
+            // Markiere als repariert für zukünftige Klicks
+            e.target.setAttribute('data-popup-repaired', 'true');
+            e.target.style.cursor = 'pointer';
+
             MicroModal.show(`modal-${popupType}`);
           }
         }
