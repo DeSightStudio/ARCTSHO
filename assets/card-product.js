@@ -620,8 +620,22 @@ function handleFormSubmit(event) {
           setTimeout(() => cartDrawer.open(), 100);
         }
 
-        // Button-Status aktualisieren (von "In den Warenkorb" zu "Warenkorb anzeigen")
+        // SOFORTIGE Button-Aktualisierung für dieses spezifische Formular
+        console.log('CardProduct: Sofortige Button-Aktualisierung für Formular');
         updateButtonToViewCartGlobal(this);
+
+        // CartStateManager sofort aktualisieren
+        if (window.cartStateManager) {
+          console.log('CardProduct: Aktualisiere CartStateManager mit neuen Daten');
+          window.cartStateManager.updateCartData(response);
+        }
+
+        // Sofortige Aktualisierung ALLER Produktkarten mit den neuen Cart-Daten
+        if (response && response.items) {
+          const cartProductIds = response.items.map(item => item.product_id);
+          console.log('CardProduct: Sofortige Aktualisierung aller Produktkarten nach Add-to-Cart:', cartProductIds);
+          updateProductCardsWithCartData(cartProductIds);
+        }
 
         // Event auslösen, um andere Komponenten zu informieren
         document.dispatchEvent(new CustomEvent('cart:updated', {
@@ -691,7 +705,12 @@ window.reinitializeCardProductListeners = function() {
 
 // Globale Funktion zum Aktualisieren des Buttons zu "View Cart"
 function updateButtonToViewCartGlobal(form) {
-  if (!form) return;
+  if (!form) {
+    console.warn('updateButtonToViewCartGlobal: Kein Formular übergeben');
+    return;
+  }
+
+  console.log('updateButtonToViewCartGlobal: Aktualisiere Button für Formular', form);
 
   // Verschiedene Container-Strukturen handhaben
   let actionsContainer = form.closest('.card-product__actions');
@@ -703,28 +722,38 @@ function updateButtonToViewCartGlobal(form) {
   }
 
   if (!actionsContainer) {
-    console.warn('CardProduct: Kein Actions-Container gefunden');
+    console.warn('CardProduct: Kein Actions-Container gefunden für Formular', form);
     return;
   }
+
+  console.log('updateButtonToViewCartGlobal: Actions-Container gefunden', actionsContainer);
 
   // Form oder product-form ausblenden
   const productForm = form.closest('product-form');
   if (productForm) {
+    console.log('updateButtonToViewCartGlobal: Verstecke product-form');
     productForm.style.display = 'none';
   } else {
+    console.log('updateButtonToViewCartGlobal: Verstecke form');
     form.style.display = 'none';
   }
 
   // View Cart Button erstellen oder anzeigen
   let viewCartButton = actionsContainer.querySelector('.card-product__view-cart');
   if (!viewCartButton) {
+    console.log('updateButtonToViewCartGlobal: Erstelle neuen View Cart Button');
     viewCartButton = document.createElement('button');
     viewCartButton.type = 'button';
     viewCartButton.className = 'card-product__view-cart button button--full-width button--primary';
     viewCartButton.setAttribute('onclick', 'event.stopPropagation(); event.preventDefault(); document.querySelector("cart-drawer").open();');
     viewCartButton.innerHTML = `<span>${window.variantStrings?.view_cart_button || 'View cart'}</span>`;
     actionsContainer.appendChild(viewCartButton);
+    console.log('updateButtonToViewCartGlobal: View Cart Button erstellt und hinzugefügt');
+  } else {
+    console.log('updateButtonToViewCartGlobal: View Cart Button bereits vorhanden');
   }
+
+  console.log('updateButtonToViewCartGlobal: Button-Update abgeschlossen');
 }
 
 // Event-Listener für Seitennavigation
@@ -762,8 +791,20 @@ document.addEventListener('DOMContentLoaded', function() {
     if (event.detail && event.detail.cartData) {
       // Sofortige Aktualisierung mit Event-Daten
       const cartProductIds = event.detail.cartData.items ? event.detail.cartData.items.map(item => item.product_id) : [];
+      console.log('CardProduct: Aktualisiere Produktkarten mit Cart-Daten:', cartProductIds);
       updateProductCardsWithCartData(cartProductIds);
+
+      // Zusätzlich: Prüfe auf Änderungen und handle entfernte Produkte
+      if (event.detail.changes && event.detail.changes.removedItems) {
+        console.log('CardProduct: Erkannte entfernte Produkte:', event.detail.changes.removedItems);
+        event.detail.changes.removedItems.forEach(item => {
+          if (item.product_id) {
+            handleProductRemovedFromCart(item.product_id, item.variant_id);
+          }
+        });
+      }
     } else {
+      console.log('CardProduct: Keine Cart-Daten im Event, lade alle Produktkarten-Status neu');
       updateAllProductCardStates();
     }
   });
@@ -779,61 +820,156 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // Legacy Event-Listener für Kompatibilität
-  document.addEventListener('cart:updated', function() {
-    console.log('Legacy cart:updated Event - aktualisiere alle Produktkarten');
+  document.addEventListener('cart:updated', function(event) {
+    console.log('Legacy cart:updated Event - aktualisiere alle Produktkarten', event.detail);
 
-    // Nur ausführen wenn CartStateManager nicht verfügbar ist
-    if (!window.cartStateManager || !window.cartStateManager.isInitialized) {
-      setTimeout(updateAllProductCardStates, 100);
+    // IMMER ausführen für sofortige Updates, auch wenn CartStateManager verfügbar ist
+    if (event.detail && event.detail.cartData) {
+      // Nutze Cart-Daten aus dem Event für sofortige Aktualisierung
+      const cartProductIds = event.detail.cartData.items ? event.detail.cartData.items.map(item => item.product_id) : [];
+      console.log('CardProduct: Sofortige Aktualisierung mit Event-Daten (cart:updated):', cartProductIds);
+      updateProductCardsWithCartData(cartProductIds);
+    } else {
+      // Fallback: Alle Produktkarten-Status neu laden
+      console.log('CardProduct: Keine Event-Daten, lade alle Produktkarten-Status neu');
+      setTimeout(updateAllProductCardStates, 50);
     }
   });
 
   // Event-Listener für Drawer-Schließung
   document.addEventListener('drawer:closed', function(event) {
-    console.log('drawer:closed Event - prüfe auf Änderungen im Warenkorb');
+    console.log('drawer:closed Event - prüfe auf Änderungen im Warenkorb', event.detail);
 
-    // Nutze CartStateManager wenn verfügbar
-    if (window.cartStateManager && window.cartStateManager.isInitialized) {
-      // CartStateManager wird automatisch über das Event informiert
-      return;
-    }
-
-    // Fallback für Legacy-System
+    // IMMER eine Aktualisierung durchführen, da sich der Warenkorb geändert haben könnte
     if (event.detail && event.detail.cartData) {
-      const cartProductIds = event.detail.cartData.items.map(item => item.product_id);
+      const cartProductIds = event.detail.cartData.items ? event.detail.cartData.items.map(item => item.product_id) : [];
+      console.log('CardProduct: Aktualisiere Produktkarten nach Drawer-Schließung mit Event-Daten:', cartProductIds);
       updateProductCardsWithCartData(cartProductIds);
     } else {
-      updateAllProductCardStates();
+      // Fallback: Hole aktuelle Cart-Daten
+      console.log('CardProduct: Keine Event-Daten, hole aktuelle Cart-Daten nach Drawer-Schließung');
+      setTimeout(updateAllProductCardStates, 100);
+    }
+
+    // Zusätzlich: CartStateManager Update (falls verfügbar)
+    if (window.cartStateManager && window.cartStateManager.isInitialized) {
+      console.log('CardProduct: Zusätzliches CartStateManager Update nach Drawer-Schließung');
+      window.cartStateManager.scheduleUpdate();
     }
   });
 
   // Event-Listener für Entfernen von Artikeln
   document.addEventListener('cart:item:removed', function(event) {
-    console.log('cart:item:removed Event - aktualisiere Produktkartenstatus');
+    console.log('cart:item:removed Event - aktualisiere Produktkartenstatus', event.detail);
 
-    // Nutze CartStateManager wenn verfügbar
+    // SOFORTIGE Aktualisierung - unabhängig vom CartStateManager
+    if (event.detail) {
+      const { variantId, productId, cartData } = event.detail;
+
+      console.log('CardProduct: Sofortige Aktualisierung nach Item-Entfernung:', { variantId, productId });
+
+      // Sofortige spezifische Button-Aktualisierung für das entfernte Produkt
+      if (productId) {
+        handleProductRemovedFromCart(productId, variantId);
+      }
+
+      // Wenn Cart-Daten im Event enthalten sind, nutze diese für alle Karten
+      if (cartData && cartData.items) {
+        const cartProductIds = cartData.items.map(item => item.product_id);
+        console.log('CardProduct: Nutze Cart-Daten aus Event für sofortige Aktualisierung:', cartProductIds);
+        updateProductCardsWithCartData(cartProductIds);
+      } else {
+        // Fallback: Hole aktuelle Cart-Daten und aktualisiere sofort
+        console.log('CardProduct: Keine Cart-Daten im Event, hole aktuelle Daten');
+        fetch(`${routes.cart_url}.js`)
+          .then(response => response.json())
+          .then(cart => {
+            const cartProductIds = cart.items.map(item => item.product_id);
+            console.log('CardProduct: Aktualisiere Produktkarten nach Item-Entfernung (API):', cartProductIds);
+            updateProductCardsWithCartData(cartProductIds);
+          })
+          .catch(error => {
+            console.error('Fehler beim Abrufen der Cart-Daten nach Item-Entfernung:', error);
+          });
+      }
+    }
+
+    // Zusätzlich: CartStateManager Update (falls verfügbar)
     if (window.cartStateManager && window.cartStateManager.isInitialized) {
-      // CartStateManager wird automatisch über das Event informiert
-      return;
+      console.log('CardProduct: Zusätzliches CartStateManager Update nach Item-Entfernung');
+      window.cartStateManager.scheduleUpdate();
     }
+  });
 
-    // Fallback für Legacy-System
-    if (event.detail && event.detail.variantId) {
-      setTimeout(updateAllProductCardStates, 100);
+  // Event-Listener für neue Produktkarten (z.B. nach Infinite Scroll)
+  document.addEventListener('DOMContentLoaded', function() {
+    // Beobachte Änderungen im Produktgrid
+    const productGrid = document.getElementById('product-grid');
+    if (productGrid) {
+      const observer = new MutationObserver(function(mutations) {
+        let newProductsAdded = false;
+
+        mutations.forEach(function(mutation) {
+          if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+            mutation.addedNodes.forEach(function(node) {
+              if (node.nodeType === Node.ELEMENT_NODE &&
+                  (node.classList.contains('grid__item') || node.querySelector('.card-wrapper'))) {
+                newProductsAdded = true;
+              }
+            });
+          }
+        });
+
+        if (newProductsAdded) {
+          console.log('Neue Produktkarten erkannt - initialisiere Button-Status');
+          setTimeout(initializeProductCardStates, 100);
+        }
+      });
+
+      observer.observe(productGrid, {
+        childList: true,
+        subtree: true
+      });
     }
+  });
+
+  // Zusätzlicher Event-Listener für AJAX-Requests (Infinite Scroll, etc.)
+  document.addEventListener('DOMContentLoaded', function() {
+    // Überwache AJAX-Requests
+    const originalFetch = window.fetch;
+    window.fetch = function(...args) {
+      return originalFetch.apply(this, args).then(response => {
+        // Wenn es ein erfolgreicher Request war, prüfe auf neue Produktkarten
+        if (response.ok && args[0] && typeof args[0] === 'string') {
+          const url = args[0];
+          // Prüfe auf Collection-Seiten oder Produktgrid-Updates
+          if (url.includes('/collections/') || url.includes('product-grid') || url.includes('infinite-scroll')) {
+            console.log('CardProduct: AJAX-Request erkannt, prüfe auf neue Produktkarten');
+            setTimeout(() => {
+              reinitializeCardProductListeners();
+            }, 500);
+          }
+        }
+        return response;
+      });
+    };
   });
 
   // Fange alle Produktkarten-Formulare ab - verschiedene Selektoren
   const addToCartForms = document.querySelectorAll('.card-product__add-form, product-form form[data-type="add-to-cart-form"], form[data-type="add-to-cart-form"]');
 
-  addToCartForms.forEach(form => {
+  console.log('CardProduct: Registriere Event-Listener für', addToCartForms.length, 'Formulare');
+
+  addToCartForms.forEach((form, index) => {
     // Prüfe, ob bereits ein Event-Listener registriert ist
     if (!form.hasAttribute('data-card-product-listener')) {
       // Event-Listener hinzufügen
       form.addEventListener('submit', handleFormSubmit);
       // Markiere als registriert
       form.setAttribute('data-card-product-listener', 'true');
-      console.log('CardProduct: Event-Listener für Formular registriert');
+      console.log(`CardProduct: Event-Listener für Formular ${index + 1} registriert`);
+    } else {
+      console.log(`CardProduct: Event-Listener für Formular ${index + 1} bereits registriert`);
     }
   });
 
@@ -974,8 +1110,22 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => cartDrawer.open(), 50);
           }
 
-          // Button-Status aktualisieren (von "In den Warenkorb" zu "Warenkorb anzeigen")
+          // SOFORTIGE Button-Aktualisierung für dieses spezifische Formular
+          console.log('CardProduct: Sofortige Button-Aktualisierung für Formular (Handler 2)');
           updateButtonToViewCart(this);
+
+          // CartStateManager sofort aktualisieren
+          if (window.cartStateManager) {
+            console.log('CardProduct: Aktualisiere CartStateManager mit neuen Daten (Handler 2)');
+            window.cartStateManager.updateCartData(response);
+          }
+
+          // Sofortige Aktualisierung ALLER Produktkarten mit den neuen Cart-Daten
+          if (response && response.items) {
+            const cartProductIds = response.items.map(item => item.product_id);
+            console.log('CardProduct: Sofortige Aktualisierung aller Produktkarten nach Add-to-Cart (Handler 2):', cartProductIds);
+            updateProductCardsWithCartData(cartProductIds);
+          }
 
           // Event auslösen, um andere Komponenten zu informieren
           document.dispatchEvent(new CustomEvent('cart:updated', {
@@ -990,7 +1140,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
           }));
 
-          console.log('CardProduct: Events ausgelöst, Button reaktiviert');
+          console.log('CardProduct: Events ausgelöst, Button reaktiviert (Handler 2)');
 
           // Submit-Button reaktivieren
           if (submitButton) {
@@ -1054,20 +1204,52 @@ function updateButtonToViewCart(form) {
 
 // Aktualisieren der Produktkarten basierend auf den bereits bekannten Warenkorbdaten
 function updateProductCardsWithCartData(cartProductIds) {
-  document.querySelectorAll('.card-product__actions').forEach(actionsContainer => {
-    const addForm = actionsContainer.querySelector('.card-product__add-form');
-    if (!addForm) return;
+  console.log('updateProductCardsWithCartData: Starte Update für', cartProductIds.length, 'Produkte im Warenkorb');
 
-    // Produkt-ID aus dem Formular extrahieren
-    const productId = parseInt(addForm.dataset.productId);
-    if (!productId) return;
+  // Alle Produktkarten finden - verschiedene Selektoren für verschiedene Strukturen
+  const productCards = document.querySelectorAll('.card-wrapper[data-product-id], .card-product__actions, .quick-add');
+
+  productCards.forEach(container => {
+    let productId = null;
+    let addForm = null;
+    let actionsContainer = null;
+
+    // Produkt-ID und Form finden - verschiedene Strukturen handhaben
+    if (container.hasAttribute('data-product-id')) {
+      // Wrapper-Element
+      productId = parseInt(container.getAttribute('data-product-id'));
+      actionsContainer = container.querySelector('.card-product__actions, .card__actions, .quick-add');
+      addForm = actionsContainer?.querySelector('.card-product__add-form, form[data-type="add-to-cart-form"]');
+    } else if (container.classList.contains('card-product__actions') || container.classList.contains('quick-add')) {
+      // Actions-Container direkt
+      actionsContainer = container;
+      addForm = container.querySelector('.card-product__add-form, form[data-type="add-to-cart-form"]');
+
+      if (addForm) {
+        productId = parseInt(addForm.dataset.productId) ||
+                   parseInt(addForm.querySelector('input[name="id"]')?.value);
+      }
+    }
+
+    if (!productId || !addForm || !actionsContainer) {
+      return;
+    }
 
     // Prüfen, ob im Warenkorb
     const isInCart = cartProductIds.includes(productId);
+    console.log(`Produkt ${productId}: isInCart=${isInCart}, formVisible=${addForm.style.display !== 'none'}`);
 
     if (isInCart && addForm.style.display !== 'none') {
-      // Wenn im Warenkorb, aber Form noch sichtbar - ändern zu "View Cart"
-      addForm.style.display = 'none';
+      // Wenn im Warenkorb, aber Form sichtbar - ändern zu "View Cart"
+      console.log(`Ändere Produkt ${productId} zu "View Cart"`);
+
+      // Form oder product-form ausblenden
+      const productForm = addForm.closest('product-form');
+      if (productForm) {
+        productForm.style.display = 'none';
+      } else {
+        addForm.style.display = 'none';
+      }
 
       // View Cart Button anzeigen oder erstellen
       let viewCartButton = actionsContainer.querySelector('.card-product__view-cart');
@@ -1075,19 +1257,31 @@ function updateProductCardsWithCartData(cartProductIds) {
         viewCartButton = document.createElement('button');
         viewCartButton.type = 'button';
         viewCartButton.className = 'card-product__view-cart button button--full-width button--primary';
-        viewCartButton.setAttribute('onclick', 'event.stopPropagation(); document.querySelector("cart-drawer").open();');
-        viewCartButton.innerHTML = `<span>${window.variantStrings.view_cart_button || 'View cart'}</span>`;
+        viewCartButton.setAttribute('onclick', 'event.stopPropagation(); event.preventDefault(); document.querySelector("cart-drawer").open();');
+        viewCartButton.innerHTML = `<span>${window.variantStrings?.view_cart_button || 'View cart'}</span>`;
         actionsContainer.appendChild(viewCartButton);
+        console.log(`View Cart Button für Produkt ${productId} erstellt`);
       }
-    } else if (!isInCart && addForm.style.display === 'none') {
-      // Wenn nicht im Warenkorb, aber Form ausgeblendet - zurückändern zu "Add to Cart"
+    } else if (!isInCart && (addForm.style.display === 'none' || addForm.closest('product-form')?.style.display === 'none')) {
+      // Zurücksetzen auf "In den Warenkorb"
+      console.log(`Setze Produkt ${productId} zurück auf "Add to Cart"`);
+
       const viewCartButton = actionsContainer.querySelector('.card-product__view-cart');
       if (viewCartButton) {
         viewCartButton.remove();
       }
-      addForm.style.display = 'block';
+
+      // Form oder product-form wieder anzeigen
+      const productForm = addForm.closest('product-form');
+      if (productForm) {
+        productForm.style.display = 'block';
+      } else {
+        addForm.style.display = 'block';
+      }
     }
   });
+
+  console.log('updateProductCardsWithCartData: Update abgeschlossen');
 }
 
 // Aktualisiere den Status aller Produktkarten
@@ -1165,3 +1359,213 @@ function initializeProductCardStates() {
     }
   }, 300); // Warte auf CartStateManager
 }
+
+// Zusätzliche Funktion für verzögerte Initialisierung
+function delayedInitializeProductCardStates() {
+  // Warte kurz, damit alle anderen Skripte geladen sind
+  setTimeout(() => {
+    console.log('Verzögerte Initialisierung der Produktkarten-Status');
+    initializeProductCardStates();
+  }, 500);
+}
+
+// Funktion für manuelle Aktualisierung aller Produktkarten
+function forceUpdateAllProductCards() {
+  console.log('Erzwinge Aktualisierung aller Produktkarten');
+  updateAllProductCardStates();
+}
+
+// Debug-Funktion für Collection-Seiten Button-Problem
+function debugCollectionButtons() {
+  console.log('=== DEBUG: Collection Buttons ===');
+
+  // Prüfe CartStateManager
+  if (window.cartStateManager) {
+    console.log('CartStateManager verfügbar:', window.cartStateManager.isInitialized);
+    const cartData = window.cartStateManager.getCartData();
+    if (cartData) {
+      console.log('Cart-Daten:', cartData);
+      console.log('Produkte im Warenkorb:', cartData.items?.map(item => item.product_id) || []);
+    }
+  } else {
+    console.log('CartStateManager nicht verfügbar');
+  }
+
+  // Prüfe Produktkarten
+  const productCards = document.querySelectorAll('.card-wrapper[data-product-id], .card-product__actions, .quick-add');
+  console.log('Gefundene Produktkarten:', productCards.length);
+
+  productCards.forEach((card, index) => {
+    const productId = card.getAttribute('data-product-id') ||
+                     card.querySelector('form[data-type="add-to-cart-form"]')?.dataset.productId ||
+                     card.querySelector('input[name="id"]')?.value;
+    const addForm = card.querySelector('.card-product__add-form, form[data-type="add-to-cart-form"]');
+    const viewCartButton = card.querySelector('.card-product__view-cart');
+
+    console.log(`Karte ${index + 1}:`, {
+      productId: productId,
+      hasAddForm: !!addForm,
+      addFormVisible: addForm ? addForm.style.display !== 'none' : false,
+      hasViewCartButton: !!viewCartButton
+    });
+  });
+
+  console.log('=== END DEBUG ===');
+}
+
+// Globale Funktion für einfachen Zugriff
+window.debugCollectionButtons = debugCollectionButtons;
+
+// Funktion zur Neuregistrierung von Event-Listenern für neue Formulare
+function reinitializeCardProductListeners() {
+  console.log('CardProduct: Neuinitialisierung der Event-Listener');
+
+  // Finde alle Formulare ohne Event-Listener
+  const newForms = document.querySelectorAll('.card-product__add-form:not([data-card-product-listener]), product-form form[data-type="add-to-cart-form"]:not([data-card-product-listener]), form[data-type="add-to-cart-form"]:not([data-card-product-listener])');
+
+  console.log('CardProduct: Gefunden', newForms.length, 'neue Formulare ohne Event-Listener');
+
+  newForms.forEach((form, index) => {
+    form.addEventListener('submit', handleFormSubmit);
+    form.setAttribute('data-card-product-listener', 'true');
+    console.log(`CardProduct: Event-Listener für neues Formular ${index + 1} registriert`);
+  });
+
+  // Initialisiere auch den Button-Status für neue Karten
+  if (newForms.length > 0) {
+    setTimeout(initializeProductCardStates, 100);
+  }
+}
+
+// Globale Funktion verfügbar machen
+window.reinitializeCardProductListeners = reinitializeCardProductListeners;
+
+// Test-Funktion für Echtzeit-Button-Updates
+function testRealtimeButtonUpdates() {
+  console.log('=== TEST: Echtzeit Button Updates ===');
+
+  // Finde das erste verfügbare Produktformular
+  const testForm = document.querySelector('.card-product__add-form, form[data-type="add-to-cart-form"]');
+  if (!testForm) {
+    console.log('Kein Testformular gefunden');
+    return;
+  }
+
+  const productId = testForm.dataset.productId || testForm.querySelector('input[name="id"]')?.value;
+  console.log('Test mit Produkt-ID:', productId);
+
+  // Simuliere Add-to-Cart
+  console.log('Simuliere Add-to-Cart...');
+  const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
+  testForm.dispatchEvent(submitEvent);
+
+  console.log('=== END TEST ===');
+}
+
+// Globale Test-Funktion
+window.testRealtimeButtonUpdates = testRealtimeButtonUpdates;
+
+// Spezielle Funktion für sofortige Button-Updates nach Item-Entfernung
+function handleProductRemovedFromCart(productId, variantId) {
+  console.log('handleProductRemovedFromCart: Produkt entfernt:', { productId, variantId });
+
+  // Finde alle Produktkarten für dieses Produkt
+  const productCards = document.querySelectorAll(`[data-product-id="${productId}"], .card-wrapper[data-product-id="${productId}"]`);
+
+  productCards.forEach(card => {
+    const actionsContainer = card.querySelector('.card-product__actions, .card__actions, .quick-add');
+    if (!actionsContainer) return;
+
+    const addForm = actionsContainer.querySelector('.card-product__add-form, form[data-type="add-to-cart-form"]');
+    const viewCartButton = actionsContainer.querySelector('.card-product__view-cart');
+
+    if (addForm && viewCartButton) {
+      console.log(`handleProductRemovedFromCart: Setze Produkt ${productId} zurück auf "Add to Cart"`);
+
+      // View Cart Button entfernen
+      viewCartButton.remove();
+
+      // Form oder product-form wieder anzeigen
+      const productForm = addForm.closest('product-form');
+      if (productForm) {
+        productForm.style.display = 'block';
+      } else {
+        addForm.style.display = 'block';
+      }
+    }
+  });
+}
+
+// Globale Funktion verfügbar machen
+window.handleProductRemovedFromCart = handleProductRemovedFromCart;
+
+// Test-Funktion für das Entfernen von Produkten
+function testProductRemoval() {
+  console.log('=== TEST: Product Removal ===');
+
+  // Finde das erste Produkt im Warenkorb
+  if (window.cartStateManager && window.cartStateManager.getCartData()) {
+    const cartData = window.cartStateManager.getCartData();
+    if (cartData.items && cartData.items.length > 0) {
+      const firstItem = cartData.items[0];
+      console.log('Simuliere Entfernung von Produkt:', firstItem.product_id);
+
+      // Simuliere cart:item:removed Event
+      document.dispatchEvent(new CustomEvent('cart:item:removed', {
+        detail: {
+          productId: firstItem.product_id,
+          variantId: firstItem.variant_id,
+          cartData: {
+            items: cartData.items.filter(item => item.product_id !== firstItem.product_id)
+          }
+        }
+      }));
+    } else {
+      console.log('Kein Produkt im Warenkorb zum Testen');
+    }
+  } else {
+    console.log('CartStateManager nicht verfügbar oder keine Daten');
+  }
+
+  console.log('=== END TEST ===');
+}
+
+// Globale Test-Funktion
+window.testProductRemoval = testProductRemoval;
+
+// Komplette Test-Funktion für Add/Remove Cycle
+function testCompleteButtonCycle() {
+  console.log('=== TEST: Complete Button Cycle ===');
+
+  // Finde das erste verfügbare Produktformular
+  const testForm = document.querySelector('.card-product__add-form, form[data-type="add-to-cart-form"]');
+  if (!testForm) {
+    console.log('Kein Testformular gefunden');
+    return;
+  }
+
+  const productId = testForm.dataset.productId || testForm.querySelector('input[name="id"]')?.value;
+  console.log('Test mit Produkt-ID:', productId);
+
+  // Schritt 1: Add to Cart
+  console.log('Schritt 1: Simuliere Add-to-Cart...');
+  const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
+  testForm.dispatchEvent(submitEvent);
+
+  // Schritt 2: Nach 2 Sekunden Remove from Cart simulieren
+  setTimeout(() => {
+    console.log('Schritt 2: Simuliere Remove from Cart...');
+    document.dispatchEvent(new CustomEvent('cart:item:removed', {
+      detail: {
+        productId: parseInt(productId),
+        variantId: parseInt(testForm.querySelector('input[name="id"]')?.value),
+        cartData: { items: [] } // Leerer Warenkorb
+      }
+    }));
+  }, 2000);
+
+  console.log('=== END TEST ===');
+}
+
+// Globale Test-Funktion
+window.testCompleteButtonCycle = testCompleteButtonCycle;

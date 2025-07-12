@@ -456,15 +456,36 @@ if (!customElements.get('cart-remove-button')) {
           setTimeout(() => {
             console.log('Cart.js: Artikel aus dem Warenkorb entfernt:', { variantId, productId });
 
-            // Event mit sowohl Varianten-ID als auch Produkt-ID auslösen
-            document.dispatchEvent(new CustomEvent('cart:item:removed', {
-              detail: {
-                variantId: parseInt(variantId),
-                productId: productId ? parseInt(productId) : null
-              }
-            }));
+            // Hole aktuelle Cart-Daten für das Event
+            fetch(`${routes.cart_url}.js`)
+              .then(response => response.json())
+              .then(cartData => {
+                // Event mit sowohl Varianten-ID als auch Produkt-ID und aktuellen Cart-Daten auslösen
+                document.dispatchEvent(new CustomEvent('cart:item:removed', {
+                  detail: {
+                    variantId: parseInt(variantId),
+                    productId: productId ? parseInt(productId) : null,
+                    cartData: cartData
+                  }
+                }));
 
-            document.dispatchEvent(new CustomEvent('cart:updated'));
+                document.dispatchEvent(new CustomEvent('cart:updated', {
+                  detail: { cartData: cartData }
+                }));
+              })
+              .catch(error => {
+                console.error('Fehler beim Abrufen der Cart-Daten nach Entfernung:', error);
+
+                // Fallback: Event ohne Cart-Daten senden
+                document.dispatchEvent(new CustomEvent('cart:item:removed', {
+                  detail: {
+                    variantId: parseInt(variantId),
+                    productId: productId ? parseInt(productId) : null
+                  }
+                }));
+
+                document.dispatchEvent(new CustomEvent('cart:updated'));
+              });
           }, 100);
         }
       });
