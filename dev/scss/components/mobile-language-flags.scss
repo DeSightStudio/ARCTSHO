@@ -1,0 +1,274 @@
+/* ===================================================== */
+/* :::::::::::::: Mobile Language Flags Component :::::::::::::: */
+/* ===================================================== */
+
+// Mobile Language Flags for Native Shopify Language Switcher in Mobile Drawer
+// 1:1 Design wie Desktop Header aber für Mobile Menu
+
+// Override für alle möglichen Rahmen-Styles
+.menu-drawer .mobile-localization-wrapper {
+    * {
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+}
+
+.mobile-localization-wrapper {
+
+    // Target the dropdown wrapper - 1:1 Desktop Design
+    .disclosure__list-wrapper {
+        // Kompakteres Dropdown
+        padding: 0 !important;
+        margin: 0 !important;
+        border-radius: 12px !important;
+        box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.25) !important;
+        background: $mainColor !important; // Hauptfarbe als Hintergrund
+        border: none !important; // Kein Rahmen
+        border-width: 0 !important; // Explizit keine Border-Width
+        border-style: none !important; // Explizit kein Border-Style
+        min-width: 160px !important; // Reduzierte Mindestbreite
+        z-index: 9998 !important; // Niedriger als BUCKS Dropdown
+
+        // Zusätzliche Override für alle Child-Elemente
+        * {
+            border: none !important;
+            border-width: 0 !important;
+            border-style: none !important;
+        }
+    }
+
+    // Target the disclosure list
+    .disclosure__list {
+        padding: 0.5rem 0 !important; // Kompakter Innenabstand
+        margin: 0 !important;
+
+        .disclosure__item {
+            margin: 0 !important;
+            padding: 0 !important;
+
+            .disclosure__link {
+                display: flex !important;
+                align-items: center !important;
+                padding: 0.8rem 1rem !important;
+                padding-left: 32px !important; // Platz für Flagge
+                margin: 0 !important;
+                color: $whiteColor !important;
+                font-family: 'Cormorant Garamond', serif !important;
+                font-size: $fontSizeRegular !important;
+                text-decoration: none !important;
+                position: relative !important;
+                @include transition(all 0.2s ease);
+
+                &:hover,
+                &:focus {
+                    background-color: rgba(255, 255, 255, 0.1) !important;
+                    color: $whiteColor !important;
+
+                    &::before {
+                        transform: translateY(-50%) scale(1.1) !important;
+                    }
+                }
+
+                &[aria-current="true"] {
+                    background-color: rgba(255, 255, 255, 0.15) !important;
+                    font-weight: 500 !important;
+
+                    span:first-child {
+                        display: inline-block !important;
+                    }
+                }
+
+                // Flag styling using ::before pseudo-element
+                &::before {
+                    content: '';
+                    position: absolute;
+                    left: 8px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    width: 20px;
+                    height: 15px;
+                    background-size: cover;
+                    background-position: center;
+                    background-repeat: no-repeat;
+                    border-radius: 2px;
+                    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+                    z-index: 9;
+                    @include transition(transform 0.2s ease);
+                }
+
+                // English flag
+                &[hreflang="en"]::before {
+                    background-image: url('{{ "flag-en.png" | asset_url }}');
+                }
+
+                // German flag
+                &[hreflang="de"]::before {
+                    background-image: url('{{ "flag-de.png" | asset_url }}');
+                }
+
+                // Italian flag
+                &[hreflang="it"]::before {
+                    background-image: url('{{ "flag-it.png" | asset_url }}');
+                }
+
+                // French flag
+                &[hreflang="fr"]::before {
+                    background-image: url('{{ "flag-fr.png" | asset_url }}');
+                }
+
+                // Spanish flag
+                &[hreflang="es"]::before {
+                    background-image: url('{{ "flag-es.png" | asset_url }}');
+                }
+
+                // Checkmark icon styling
+                span:first-child {
+                    margin-right: 0.5rem !important;
+
+                    svg {
+                        fill: $whiteColor !important;
+                        width: 16px !important;
+                        height: 16px !important;
+                    }
+                }
+
+                // Language name styling
+                span:last-child {
+                    flex: 1 !important;
+                }
+            }
+        }
+    }
+
+    // Button styling - 1:1 Desktop Design - Spezifische Overrides für Shopify Classes
+    .disclosure__button.localization-form__select.localization-selector {
+        background: transparent !important;
+        color: $whiteColor !important;
+        font-family: 'Cormorant Garamond', serif !important;
+        font-size: $fontSizeRegular !important;
+        padding: 1rem 2.5rem 1rem 32px !important; // Links Flagge, rechts Pfeil
+        border: none !important;
+        border-width: 0 !important;
+        border-style: none !important;
+        border-color: transparent !important;
+        outline: none !important; // Kein Outline
+        box-shadow: none !important; // Kein Box-Shadow
+        text-align: left !important;
+        width: 100% !important;
+        justify-content: flex-start !important;
+        position: relative !important;
+        min-height: auto !important; // Override Shopify min-height
+        border-radius: 0 !important; // Kein Border-Radius für Button
+        @include transition(all 0.3s ease);
+
+        &:hover,
+        &:focus,
+        &:focus-visible,
+        &:active {
+            color: rgba(255, 255, 255, 0.8) !important;
+            transform: translateX(5px) !important;
+            text-decoration: none !important;
+            outline: none !important; // Kein Focus-Outline
+            box-shadow: none !important; // Kein Focus-Box-Shadow
+            border: none !important; // Kein Focus-Border
+            border-width: 0 !important;
+            border-style: none !important;
+            border-color: transparent !important;
+            background: transparent !important; // Kein Hintergrund-Wechsel
+        }
+
+        // Flagge für aktuell ausgewählte Sprache
+        &::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 15px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-radius: 2px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .icon-caret {
+            fill: $whiteColor !important;
+            margin-left: auto !important;
+        }
+    }
+}
+
+// Dynamic flag for currently selected language in button
+// This will be handled by JavaScript to detect current language
+body[data-locale="en"] .menu-drawer .mobile-localization-wrapper .disclosure__button::before {
+    background-image: url('{{ "flag-en.png" | asset_url }}');
+}
+
+body[data-locale="de"] .menu-drawer .mobile-localization-wrapper .disclosure__button::before {
+    background-image: url('{{ "flag-de.png" | asset_url }}');
+}
+
+body[data-locale="it"] .menu-drawer .mobile-localization-wrapper .disclosure__button::before {
+    background-image: url('{{ "flag-it.png" | asset_url }}');
+}
+
+body[data-locale="fr"] .menu-drawer .mobile-localization-wrapper .disclosure__button::before {
+    background-image: url('{{ "flag-fr.png" | asset_url }}');
+}
+
+body[data-locale="es"] .menu-drawer .mobile-localization-wrapper .disclosure__button::before {
+    background-image: url('{{ "flag-es.png" | asset_url }}');
+}
+
+// Hover effects for better UX
+.mobile-localization-wrapper {
+    .disclosure__link {
+        &:hover::before {
+            transform: translateY(-50%) scale(1.1) !important;
+            transition: transform 0.2s ease !important;
+        }
+    }
+}
+
+// Sehr spezifische Override-Regeln für Shopify Localization Form Styles
+.menu-drawer .mobile-localization-wrapper {
+    .localization-form__select,
+    .disclosure__button.localization-form__select,
+    .localization-selector,
+    .disclosure__button.localization-form__select.localization-selector,
+    .disclosure__button.localization-form__select.localization-selector.link,
+    .disclosure__button.localization-form__select.localization-selector.link.link--text {
+        border: none !important;
+        border-width: 0 !important;
+        border-style: none !important;
+        border-color: transparent !important;
+        outline: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        border-radius: 0 !important;
+        min-height: auto !important;
+
+        &:hover,
+        &:focus,
+        &:focus-visible,
+        &:active {
+            border: none !important;
+            border-width: 0 !important;
+            border-style: none !important;
+            border-color: transparent !important;
+            outline: none !important;
+            box-shadow: none !important;
+            background: transparent !important;
+        }
+
+        &:before,
+        &:after {
+            box-shadow: none !important;
+            border: none !important;
+        }
+    }
+}

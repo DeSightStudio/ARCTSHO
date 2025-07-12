@@ -15,21 +15,27 @@
 
             // Override the styled select button
             .buckscc-select-styled {
-                background-color: $mainColor !important;
                 border-radius: 4px;
                 padding: 8px 12px;
                 transition: all 0.3s ease;
-
+                @include screen(med) {
+                    background-color: transparent !important;
+                }
                 // Hover effect
                 &:hover {
                     background-color: darken($mainColor, 10%) !important;
+                    @include screen(med) {
+                        background-color: transparent !important;
+                    }
                 }
 
                 // Selected currency text styling
                 .bucks-selected {
                     color: white !important;
                     font-weight: 500;
-
+                    @include screen(med) {
+                        margin: 0px !important;
+                    }
                     // Add currency symbols after the currency codes
                     &::after {
                         margin-left: 4px;
@@ -89,7 +95,6 @@
 
     // Target by ID for more specific styling
     #bucksSelector + .buckscc-select-styled {
-        background-color: $mainColor !important;
 
         // Ensure text is visible
         .bucks-selected {
@@ -116,6 +121,105 @@
 
 // Note: Currency symbols are added via JavaScript
 // since CSS :contains() is not widely supported
+
+// Mobile Drawer specific styling - Einfaches Design ohne Hintergrund/Icons
+.menu-drawer {
+    .mobile-bucks-currency-wrapper {
+        .buckscc-currency-box {
+            .buckscc-currency-wrapper {
+                @include screen(med) {
+                    margin: 0 0 5px 0 !important;
+                }
+                .buckscc-select {
+                    .buckscc-select-styled {
+                        // Override alle BUCKS Standard-Styles
+                        background-color: transparent !important;
+                        border: none !important;
+                        padding: 1rem 0 !important; // Nur oben/unten Padding
+
+                        .bucks-selected {
+                            color: white !important;
+                            font-family: 'Cormorant Garamond', serif !important;
+                        }
+
+                        // Dropdown-Pfeil verstecken
+                        .bucks__folder-collapse_btn {
+                            display: none !important;
+                        }
+
+                        // KEINE Icons
+                        &::before {
+                            display: none !important;
+                        }
+
+                        // KEINE Hover-Effekte
+                        &:hover,
+                        &:focus {
+                            background-color: transparent !important;
+                            transform: none !important;
+                        }
+                    }
+
+                    .buckscc-select-options {
+                        padding: 0 !important;
+                        margin: 0 !important;
+                        border-radius: 12px !important;
+                        box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.25) !important;
+                        background: var(--main-color) !important; // Grüner Hintergrund
+                        border: none !important;
+                        border-width: 0 !important;
+                        border-style: none !important;
+                        min-width: 160px !important;
+
+                        // Korrekte Positionierung wie Sprachenwechsler
+                        position: absolute !important;
+                        top: auto !important;
+                        bottom: 100% !important; // Oberhalb des Buttons öffnen
+                        left: 0 !important;
+                        right: auto !important;
+                        margin-bottom: 8px !important; // Abstand zum Button
+                        z-index: 99999 !important; // Höher als Sprachenwechsler
+
+                        // Zusätzliche Override für alle Child-Elemente
+                        * {
+                            border: none !important;
+                            border-width: 0 !important;
+                            border-style: none !important;
+                        }
+
+                        li {
+                            padding: 0 !important;
+                            margin: 0 !important;
+
+                            // Hover-Effekt für Dropdown-Items
+                            &:hover {
+                                background-color: rgba(255, 255, 255, 0.1) !important;
+                            }
+
+                            .bucksItem {
+                                color: white !important;
+                                font-family: 'Cormorant Garamond', serif !important;
+                                padding: 12px 16px !important;
+                                display: block !important;
+                                text-decoration: none !important;
+
+                                // KEINE Icons
+                                &::before {
+                                    display: none !important;
+                                }
+
+                                // KEINE Checkmarks
+                                &.active::after {
+                                    display: none !important;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
 // Responsive adjustments
 @media screen and (max-width: 749px) {

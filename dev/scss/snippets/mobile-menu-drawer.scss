@@ -1,0 +1,339 @@
+/**
+ * Green Off-Canvas Mobile Menu Styling
+ * Arctic Antique - Mobile Navigation Drawer
+ * Arbeitet mit dem bestehenden Shopify Drawer System - NUR Styling-Änderungen
+ */
+
+// Mobile Menu Drawer - Grünes Design
+@include screen(med-small) {
+
+    // Overlay Hintergrund anpassen
+    menu-drawer > details[open] > summary::before {
+        background: rgba(5, 71, 10, 0.4) !important;
+    }
+
+    // Hauptcontainer des Mobile Menüs
+    .menu-drawer {
+        background-color: $mainColor !important;
+
+        // Inner Container
+        .menu-drawer__inner-container {
+            background-color: $mainColor !important;
+        }
+
+        // Navigation Container
+        .menu-drawer__navigation-container {
+            background-color: $mainColor !important;
+        }
+
+        // Hauptmenü Liste mit Trennlinien
+        .menu-drawer__menu {
+            li {
+                border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+                position: relative !important;
+
+                &:last-child {
+                    border-bottom: none !important;
+                }
+
+                // Dezente Trennlinie mit Gradient-Effekt
+                &:not(:last-child)::after {
+                    content: '' !important;
+                    position: absolute !important;
+                    bottom: 0 !important;
+                    left: 2rem !important;
+                    right: 2rem !important;
+                    height: 1px !important;
+                    background: linear-gradient(
+                        to right,
+                        transparent,
+                        rgba(255, 255, 255, 0.15),
+                        transparent
+                    ) !important;
+                }
+            }
+        }
+
+        // Menü-Links
+        .menu-drawer__menu-item {
+            color: $whiteColor !important;
+            font-family: 'Cormorant Garamond', serif !important;
+            font-size: $fontSizeMedium !important;
+            padding: 1.5rem 2rem !important;
+
+            &:hover,
+            &:focus {
+                background-color: rgba(255, 255, 255, 0.1) !important;
+                color: $whiteColor !important;
+            }
+
+            &--active {
+                background-color: rgba(255, 255, 255, 0.15) !important;
+                color: $whiteColor !important;
+            }
+        }
+
+        // Summary für Dropdown Menüs
+        summary.menu-drawer__menu-item {
+            color: $whiteColor !important;
+            font-family: 'Cormorant Garamond', serif !important;
+            font-size: $fontSizeMedium !important;
+            padding: 1.5rem 2rem !important;
+            padding-right: 4rem !important;
+
+            &:hover,
+            &:focus {
+                background-color: rgba(255, 255, 255, 0.1) !important;
+                color: $whiteColor !important;
+            }
+
+            // Pfeil Icon
+            .svg-wrapper {
+                position: absolute !important;
+                right: 2rem !important;
+                top: 50% !important;
+                transform: translateY(-50%) !important;
+
+                svg {
+                    fill: $whiteColor !important;
+                    width: 16px !important;
+                    height: 16px !important;
+                }
+            }
+        }
+
+        // Submenu Styling
+        .menu-drawer__submenu {
+            background-color: $mainColor !important;
+
+            .menu-drawer__inner-submenu {
+                background-color: $mainColor !important;
+            }
+
+            // Zurück Button
+            .menu-drawer__close-button {
+                color: $whiteColor !important;
+                font-family: 'Cormorant Garamond', serif !important;
+                background-color: transparent !important;
+
+                &:hover,
+                &:focus {
+                    background-color: rgba(255, 255, 255, 0.1) !important;
+                }
+
+                .svg-wrapper svg {
+                    fill: $whiteColor !important;
+                }
+            }
+        }
+
+        // Utility Links - Professioneller unterer Bereich
+        .menu-drawer__utility-links {
+            background: linear-gradient(180deg,
+                rgba(255, 255, 255, 0.08) 0%,
+                rgba(255, 255, 255, 0.03) 100%) !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.15) !important;
+            padding: 2rem !important;
+            margin-top: auto !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 1rem !important;
+
+            // Native Shopify Sprachenwechsler - Styling in mobile-language-flags.scss
+            .mobile-localization-wrapper {
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+                .localization-form {
+                    height: auto !important;
+                }
+            }
+
+            // BUCKS Währungsumrechner - Einfaches Design wie andere Utility Links
+            .mobile-bucks-currency-wrapper {
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+                position: relative !important; // Wichtig für absolute Positionierung des Dropdowns
+
+                .buckscc-currency-box {
+                    position: relative !important; // Wichtig für absolute Positionierung des Dropdowns
+
+                    .buckscc-currency-wrapper {
+                        position: relative !important; // Wichtig für absolute Positionierung des Dropdowns
+
+                        .buckscc-select {
+                            position: relative !important; // Wichtig für absolute Positionierung des Dropdowns
+                            // Button Styling - einfach und linksbündig
+                            .buckscc-select-styled {
+                                background: transparent !important;
+                                color: $whiteColor !important;
+                                font-family: 'Cormorant Garamond', serif !important;
+                                font-size: $fontSizeRegular !important;
+                                padding: 1rem 0 !important; // Nur oben/unten Padding
+                                border: none !important;
+                                border-width: 0 !important;
+                                border-style: none !important;
+                                border-color: transparent !important;
+                                outline: none !important;
+                                box-shadow: none !important;
+                                text-align: left !important;
+                                width: 100% !important;
+                                justify-content: flex-start !important;
+                                position: relative !important;
+                                display: flex !important;
+                                align-items: center !important;
+
+                                // KEINE Hover-Effekte
+                                &:hover,
+                                &:focus {
+                                    color: $whiteColor !important;
+                                    transform: none !important;
+                                }
+
+                                // KEINE Icons
+                                &::before {
+                                    display: none !important;
+                                }
+
+                                .bucks-selected {
+                                    color: $whiteColor !important;
+                                    font-family: 'Cormorant Garamond', serif !important;
+                                    font-size: $fontSizeRegular !important;
+                                    flex: 1 !important;
+                                }
+
+                                // Dropdown-Pfeil verstecken
+                                .bucks__folder-collapse_btn {
+                                    display: none !important;
+                                }
+                            }
+
+                            // Dropdown Styling - MIT grünem Hintergrund wie Sprachenwechsler
+                            .buckscc-select-options {
+                                padding: 0 !important;
+                                margin: 0 !important;
+                                border-radius: 12px !important;
+                                box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.25) !important;
+                                background: $mainColor !important; // Grüner Hintergrund
+                                border: none !important;
+                                border-width: 0 !important;
+                                border-style: none !important;
+                                min-width: 160px !important;
+                                z-index: 9999 !important;
+
+                                // Korrekte Positionierung - oberhalb öffnen wie Sprachenwechsler
+                                position: absolute !important;
+                                top: auto !important;
+                                bottom: 100% !important; // Oberhalb des Buttons öffnen
+                                left: 0 !important;
+                                right: auto !important;
+                                margin-bottom: 8px !important; // Abstand zum Button
+                                transform: translateY(0) !important; // Reset transforms
+                                z-index: 99999 !important; // Höher als Sprachenwechsler
+
+                                // Zusätzliche Override für alle Child-Elemente
+                                * {
+                                    border: none !important;
+                                    border-width: 0 !important;
+                                    border-style: none !important;
+                                }
+
+                                li {
+                                    padding: 0 !important;
+                                    margin: 0 !important;
+
+                                    // Hover-Effekt für Dropdown-Items
+                                    &:hover {
+                                        background-color: rgba(255, 255, 255, 0.1) !important;
+                                    }
+
+                                    .bucksItem {
+                                        display: block !important;
+                                        padding: 12px 16px !important;
+                                        color: $whiteColor !important;
+                                        font-family: 'Cormorant Garamond', serif !important;
+                                        font-size: $fontSizeRegular !important;
+                                        text-decoration: none !important;
+
+                                        // KEINE Icons
+                                        &::before {
+                                            display: none !important;
+                                        }
+
+                                        // KEINE Checkmarks
+                                        &.active::after {
+                                            display: none !important;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Account Link
+            .menu-drawer__account {
+                color: $whiteColor !important;
+                font-family: 'Cormorant Garamond', serif !important;
+                font-size: $fontSizeRegular !important;
+                text-decoration: none !important;
+                display: flex !important;
+                align-items: center !important;
+                padding: 1rem 0 !important;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+                @include transition(all 0.3s ease);
+
+                &:hover,
+                &:focus {
+                    color: rgba(255, 255, 255, 0.8) !important;
+                    transform: translateX(5px) !important;
+                }
+
+                .svg-wrapper,
+                account-icon .svg-wrapper {
+                    margin-right: 1rem !important;
+                    width: 24px !important;
+                    height: 24px !important;
+                    flex-shrink: 0 !important;
+
+                    svg {
+                        fill: $whiteColor !important;
+                        width: 24px !important;
+                        height: 24px !important;
+                    }
+                }
+            }
+
+            // Instagram Link
+            .mobile-instagram-link {
+                display: flex !important;
+                align-items: center !important;
+                color: $whiteColor !important;
+                font-family: 'Cormorant Garamond', serif !important;
+                font-size: $fontSizeRegular !important;
+                text-decoration: none !important;
+                padding: 1rem 0 !important;
+                @include transition(all 0.3s ease);
+
+                &:hover,
+                &:focus {
+                    color: rgba(255, 255, 255, 0.8) !important;
+                    transform: translateX(5px) !important;
+                }
+
+                // Instagram Icon
+                &::before {
+                    content: '\f16d'; // FontAwesome Instagram
+                    font-family: 'Font Awesome 6 Brands';
+                    font-weight: 400;
+                    margin-right: 1rem;
+                    font-size: 20px;
+                    width: 24px;
+                    text-align: center;
+                    flex-shrink: 0;
+                }
+            }
+
+        }
+    }
+
+
+}

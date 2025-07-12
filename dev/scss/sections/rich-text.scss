@@ -33,6 +33,9 @@
         }
     }
     &.headline-icon-light, &.headline-icon-dark {
+        @include screen(med) {
+            padding: 15px 0 5px 0 !important;
+        }
         .rich-text__blocks {
             .rich-text__heading {
                 position: relative;
@@ -42,7 +45,7 @@
                 font-weight: 100;
                 font-size: $fontSizeMedium*2;
                 @include screen(med-small) {
-                    padding: 40px 0 0 0;
+                    padding: 20px 0 0 0;
                     font-size: $fontSizeLarge;
                 }
                 &:before {

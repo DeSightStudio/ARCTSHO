@@ -337,7 +337,10 @@
     {%- endif -%}
   </head>
 
-  <body class="gradient{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">
+  <body
+    class="gradient{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}"
+    data-locale="{{ request.locale.iso_code }}"
+  >
     {% if template == 'cart' %}
       <script>
         // Sofortige Umleitung von der Cart-Seite
@@ -459,6 +462,9 @@
 
     <!-- Pop-Up Komponenten -->
     {% render 'popups' %}
+
+    <!-- Mobile Menu Utilities -->
+    <script src="{{ 'mobile-menu-utilities.js' | asset_url }}" defer></script>
 
     {% comment %}
       Inline-Script für VAT-ID-Button im Cart

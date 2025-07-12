@@ -525,32 +525,44 @@
                 }, 500);
             }
 
-            // Initialize BUCKS currency converter customizations
+            // Initialize BUCKS currency converter customizations - Simple Mobile Drawer Design
             function initBucksCurrencyConverter() {
                 // Wait for BUCKS app to load
                 setTimeout(function() {
-                    // Add currency symbols to the selected currency display
+                    // Simple currency display for mobile drawer design
                     function updateCurrencyDisplay() {
                         const selectedCurrency = document.querySelector('.bucks-selected');
+
                         if (selectedCurrency) {
                             const currencyText = selectedCurrency.textContent.trim();
 
+                            // Update currency display with symbols (einfach)
                             if (currencyText === 'EUR' && !currencyText.includes('€')) {
                                 selectedCurrency.textContent = 'EUR/€';
                             } else if (currencyText === 'USD' && !currencyText.includes('$')) {
                                 selectedCurrency.textContent = 'USD/$';
+                            } else if (currencyText === 'GBP' && !currencyText.includes('£')) {
+                                selectedCurrency.textContent = 'GBP/£';
+                            } else if (currencyText === 'CHF' && !currencyText.includes('CHF')) {
+                                selectedCurrency.textContent = 'CHF';
                             }
                         }
 
-                        // Update dropdown options
+                        // Update dropdown options (einfach, ohne Icons/Checkmarks)
                         const currencyItems = document.querySelectorAll('.bucksItem');
+
                         currencyItems.forEach(function(item) {
                             const itemText = item.textContent.trim();
 
+                            // Update item display with symbols (einfach)
                             if (itemText === 'EUR' && !itemText.includes('€')) {
                                 item.textContent = 'EUR/€';
                             } else if (itemText === 'USD' && !itemText.includes('$')) {
                                 item.textContent = 'USD/$';
+                            } else if (itemText === 'GBP' && !itemText.includes('£')) {
+                                item.textContent = 'GBP/£';
+                            } else if (itemText === 'CHF' && !itemText.includes('CHF')) {
+                                item.textContent = 'CHF';
                             }
                         });
                     }
@@ -576,7 +588,7 @@
                             characterData: true
                         });
 
-                        console.log('BUCKS currency converter customizations initialized');
+                        console.log('BUCKS currency converter simple mobile styling initialized');
                     }
                 }, 1000); // Wait 1 second for BUCKS to load
             }
@@ -854,3 +866,6 @@ function cleanupCopyPasteFormatting() {
 
 // Import Predictive Search Limiter
 // Predictive Search Limiter wird automatisch initialisiert wenn die Datei geladen wird
+
+// Import Mobile Menu Enhancements
+// Mobile Menu Enhancements wird automatisch initialisiert wenn die Datei geladen wird

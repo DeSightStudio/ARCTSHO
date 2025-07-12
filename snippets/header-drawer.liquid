@@ -136,6 +136,28 @@
             </ul>
           </nav>
           <div class="menu-drawer__utility-links">
+            {%- comment -%} Native Shopify Sprachenwechsler - 1:1 wie Desktop Header {%- endcomment -%}
+            {%- if localization.available_languages and localization.available_languages.size > 1 -%}
+              <div class="mobile-localization-wrapper">
+                <localization-form data-prevent-hide>
+                  {%- form 'localization', id: 'MobileDrawerLanguageForm', class: 'localization-form' -%}
+                    <div>
+                      <h2 class="visually-hidden" id="MobileDrawerLanguageLabel">
+                        {{ 'localization.language_label' | t }}
+                      </h2>
+                      {%- render 'language-localization', localPosition: 'MobileDrawerLanguage' -%}
+                    </div>
+                  {%- endform -%}
+                </localization-form>
+              </div>
+            {%- endif -%}
+
+            {%- comment -%} BUCKS Währungsumrechner {%- endcomment -%}
+            <div class="mobile-bucks-currency-wrapper">
+              <div id="buckscc-currency-box" class="buckscc-currency-box"></div>
+            </div>
+
+            {%- comment -%} Mein Konto {%- endcomment -%}
             {%- if shop.customer_accounts_enabled -%}
               <a
                 href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}"
@@ -166,35 +188,19 @@
                 -%}
               </a>
             {%- endif -%}
-            {%- if localization.available_countries or localization.available_languages -%}
-              <div class="menu-drawer__localization header-localization">
-                {%- if localization.available_countries and localization.available_countries.size > 1 -%}
-                  <localization-form>
-                    {%- form 'localization', id: 'HeaderCountryMobileForm', class: 'localization-form' -%}
-                      <div>
-                        <h2 class="visually-hidden" id="HeaderCountryMobileLabel">
-                          {{ 'localization.country_label' | t }}
-                        </h2>
-                        {%- render 'country-localization', localPosition: 'HeaderCountryMobile' -%}
-                      </div>
-                    {%- endform -%}
-                  </localization-form>
-                {% endif %}
 
-                {%- if localization.available_languages and localization.available_languages.size > 1 -%}
-                  <localization-form>
-                    {%- form 'localization', id: 'HeaderLanguageMobileForm', class: 'localization-form' -%}
-                      <div>
-                        <h2 class="visually-hidden" id="HeaderLanguageMobileLabel">
-                          {{ 'localization.language_label' | t }}
-                        </h2>
-                        {%- render 'language-localization', localPosition: 'HeaderLanguageMobile' -%}
-                      </div>
-                    {%- endform -%}
-                  </localization-form>
-                {%- endif -%}
-              </div>
+            {%- comment -%} Instagram Link {%- endcomment -%}
+            {%- if settings.social_instagram_link != blank -%}
+              <a
+                href="{{ settings.social_instagram_link }}"
+                class="mobile-instagram-link"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Instagram
+              </a>
             {%- endif -%}
+
             <ul class="list list-social list-unstyled" role="list">
               {%- if settings.social_twitter_link != blank -%}
                 <li class="list-social__item">
@@ -241,21 +247,7 @@
                   </a>
                 </li>
               {%- endif -%}
-              {%- if settings.social_instagram_link != blank -%}
-                <li class="list-social__item">
-                  <a
-                    href="{{ settings.social_instagram_link }}"
-                    class="list-social__link link"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <span class="svg-wrapper">
-                      {{- 'icon-instagram.svg' | inline_asset_content -}}
-                    </span>
-                    <span class="visually-hidden">{{ 'general.social.links.instagram' | t }}</span>
-                  </a>
-                </li>
-              {%- endif -%}
+
               {%- if settings.social_tiktok_link != blank -%}
                 <li class="list-social__item">
                   <a

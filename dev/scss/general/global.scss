@@ -2,6 +2,12 @@ html, body {
 	line-height: 1.5;
 }
 
+.buckscc-floating-box {
+	@include screen(xx-large) {
+		display: none !important;
+	}
+}
+
 .buckscc-currency-box {
 	z-index: 1 !important;
 }
