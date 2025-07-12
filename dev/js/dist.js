@@ -869,3 +869,384 @@ function cleanupCopyPasteFormatting() {
 
 // Import Mobile Menu Enhancements
 // Mobile Menu Enhancements wird automatisch initialisiert wenn die Datei geladen wird
+
+// Import Infinite Scroll
+// Infinite Scroll wird automatisch initialisiert wenn die Datei geladen wird
+
+/**
+ * Infinite Scroll für Collection Pages
+ * Optimiert für Performance mit 36 Produkten pro Batch
+ * Kompatibel mit Filtern, Sortierung und Mobile
+ */
+class InfiniteScrollManager {
+    constructor() {
+        // Verhindere mehrfache Initialisierung
+        if (window.infiniteScrollInitialized) {
+            return;
+        }
+        window.infiniteScrollInitialized = true;
+
+        this.isLoading = false;
+        this.hasMoreProducts = true;
+        this.currentPage = 1;
+        this.productsPerPage = 36;
+        this.loadingThreshold = 300; // Pixel vom Ende der Seite
+
+        this.elements = {
+            productGrid: document.getElementById('product-grid'),
+            productGridContainer: document.getElementById('ProductGridContainer'),
+            pagination: document.querySelector('.pagination-wrapper'),
+            loadingIndicator: null
+        };
+
+        this.init();
+    }
+
+    init() {
+        if (!this.elements.productGrid) return;
+
+        // Entferne alle existierenden Infinite Scroll Elemente
+        this.cleanup();
+
+        this.createLoadingIndicator();
+        this.setupScrollListener();
+        this.hidePagination();
+        this.detectInitialState();
+
+        // Aggressive Button-Entfernung
+        this.removeAllButtons();
+
+        console.log('Infinite Scroll initialisiert - Automatisches Laden beim Scrollen');
+    }
+
+    cleanup() {
+        // Entferne alle existierenden Infinite Scroll Elemente
+        const existingElements = document.querySelectorAll('.infinite-scroll-loading, .infinite-scroll-load-more, .infinite-scroll-error');
+        existingElements.forEach(el => el.remove());
+
+        // Zusätzlich mit jQuery alle Buttons entfernen
+        this.removeAllButtons();
+    }
+
+    removeAllButtons() {
+        // Entferne alle möglichen Button-Varianten
+        $('.infinite-scroll-load-more').remove();
+        $('button:contains("Weitere Produkte laden")').closest('div').remove();
+        $('button:contains("Loading more products")').closest('div').remove();
+        $('button:contains("Caricamento di altri prodotti")').closest('div').remove();
+        $('button:contains("Chargement de plus de produits")').closest('div').remove();
+        $('button:contains("Cargando más productos")').closest('div').remove();
+
+        // Entferne auch Buttons mit ähnlichem Text
+        $('button').filter(function() {
+            const text = $(this).text().toLowerCase();
+            return text.includes('load') || text.includes('laden') || text.includes('mehr') ||
+                   text.includes('more') || text.includes('carica') || text.includes('charge') ||
+                   text.includes('carga');
+        }).closest('div').remove();
+
+        // Entferne alle Buttons in der Nähe des Product Grids
+        $('#product-grid').siblings().find('button.button--secondary').closest('div').remove();
+
+        // Entferne auch falsche Loading-Texte (deutsche Texte wenn nicht auf Deutsch)
+        this.removeWrongLanguageTexts();
+
+        console.log('Alle Load More Buttons entfernt');
+    }
+
+    removeWrongLanguageTexts() {
+        // Aktuelle Sprache ermitteln
+        let currentLang = document.documentElement.lang;
+        if (!currentLang) {
+            const pathParts = window.location.pathname.split('/');
+            const possibleLang = pathParts[1];
+            if (['en', 'de', 'it', 'fr', 'es'].includes(possibleLang)) {
+                currentLang = possibleLang;
+            } else {
+                currentLang = 'en';
+            }
+        }
+
+        // Entferne Loading-Texte in falschen Sprachen
+        if (currentLang !== 'de') {
+            $('p:contains("Weitere Produkte werden geladen")').remove();
+            $('.loading-text:contains("Weitere Produkte werden geladen")').remove();
+        }
+        if (currentLang !== 'en') {
+            $('p:contains("Loading more products")').remove();
+            $('.loading-text:contains("Loading more products")').remove();
+        }
+        if (currentLang !== 'it') {
+            $('p:contains("Caricamento di altri prodotti")').remove();
+            $('.loading-text:contains("Caricamento di altri prodotti")').remove();
+        }
+        if (currentLang !== 'fr') {
+            $('p:contains("Chargement de plus de produits")').remove();
+            $('.loading-text:contains("Chargement de plus de produits")').remove();
+        }
+        if (currentLang !== 'es') {
+            $('p:contains("Cargando más productos")').remove();
+            $('.loading-text:contains("Cargando más productos")').remove();
+        }
+
+        console.log('Falsche Sprach-Texte entfernt für Sprache:', currentLang);
+    }
+
+    createLoadingIndicator() {
+        // Mehrsprachige Loading-Texte
+        const loadingTexts = {
+            'de': 'Weitere Produkte werden geladen...',
+            'en': 'Loading more products...',
+            'it': 'Caricamento di altri prodotti...',
+            'fr': 'Chargement de plus de produits...',
+            'es': 'Cargando más productos...'
+        };
+
+        // Aktuelle Sprache ermitteln (aus HTML lang Attribut oder URL)
+        let currentLang = document.documentElement.lang;
+
+        // Fallback: Sprache aus URL ermitteln
+        if (!currentLang) {
+            const pathParts = window.location.pathname.split('/');
+            const possibleLang = pathParts[1];
+            if (['en', 'de', 'it', 'fr', 'es'].includes(possibleLang)) {
+                currentLang = possibleLang;
+            } else {
+                currentLang = 'en'; // Default auf Englisch statt Deutsch
+            }
+        }
+
+        console.log('Erkannte Sprache:', currentLang, 'URL:', window.location.pathname);
+
+        const loadingText = loadingTexts[currentLang] || loadingTexts['de'];
+
+        const loadingHTML = `
+            <div class="infinite-scroll-loading" style="display: none;">
+                <div class="loading-overlay gradient">
+                    <div class="loading__spinner">
+                        <svg aria-hidden="true" focusable="false" class="spinner" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+                            <circle class="path" fill="none" stroke-width="6" cx="33" cy="33" r="30"></circle>
+                        </svg>
+                    </div>
+                </div>
+                <p class="loading-text">${loadingText}</p>
+            </div>
+        `;
+
+        // Loading Indicator nach dem Product Grid einfügen
+        $(this.elements.productGrid).after(loadingHTML);
+        this.elements.loadingIndicator = document.querySelector('.infinite-scroll-loading');
+    }
+
+    setupScrollListener() {
+        let ticking = false;
+
+        const handleScroll = () => {
+            if (!ticking) {
+                requestAnimationFrame(() => {
+                    this.checkScrollPosition();
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        };
+
+        // Entferne alte Event Listener
+        $(window).off('scroll.infiniteScroll');
+        // Füge neuen Event Listener hinzu
+        $(window).on('scroll.infiniteScroll', handleScroll);
+
+        // Regelmäßige Button- und Text-Entfernung alle 2 Sekunden
+        setInterval(() => {
+            this.removeAllButtons();
+            this.removeWrongLanguageTexts();
+        }, 2000);
+    }
+
+    checkScrollPosition() {
+        if (this.isLoading || !this.hasMoreProducts) return;
+
+        const scrollTop = $(window).scrollTop();
+        const windowHeight = $(window).height();
+        const documentHeight = $(document).height();
+
+        // Wenn wir uns dem Ende der Seite nähern
+        if (scrollTop + windowHeight >= documentHeight - this.loadingThreshold) {
+            this.loadMoreProducts();
+        }
+    }
+
+    async loadMoreProducts() {
+        if (this.isLoading || !this.hasMoreProducts) return;
+
+        this.isLoading = true;
+        this.showLoading();
+
+        try {
+            const nextPage = this.currentPage + 1;
+            const url = this.buildNextPageUrl(nextPage);
+
+            const response = await fetch(url);
+            const html = await response.text();
+
+            this.processResponse(html, nextPage);
+        } catch (error) {
+            console.error('Fehler beim Laden weiterer Produkte:', error);
+            this.showError();
+        } finally {
+            this.isLoading = false;
+            this.hideLoading();
+        }
+    }
+
+    buildNextPageUrl(page) {
+        const url = new URL(window.location);
+        url.searchParams.set('page', page);
+        return url.toString();
+    }
+
+    processResponse(html, page) {
+        const $html = $(html);
+        const $newProductGrid = $html.find('#product-grid');
+        const $newProducts = $newProductGrid.find('.grid__item');
+
+        if ($newProducts.length === 0) {
+            this.hasMoreProducts = false;
+            console.log('Keine neuen Produkte gefunden - Ende erreicht');
+            return;
+        }
+
+        // Neue Produkte zum bestehenden Grid hinzufügen
+        $newProducts.each((index, product) => {
+            $(this.elements.productGrid).append($(product).clone());
+        });
+
+        this.currentPage = page;
+
+        // Prüfen ob weitere Seiten verfügbar sind
+        const $pagination = $html.find('.pagination-wrapper');
+        if (!$pagination.length || !$pagination.find('.pagination__item--prev').length) {
+            this.hasMoreProducts = false;
+            console.log('Keine weiteren Produkte verfügbar');
+        }
+
+        // Scroll-Animationen für neue Elemente initialisieren
+        if (typeof initializeScrollAnimationTrigger === 'function') {
+            initializeScrollAnimationTrigger();
+        }
+
+        // Request-Only Buttons für neue Produkte initialisieren
+        if (typeof FacetFiltersForm !== 'undefined' && FacetFiltersForm.initializeRequestOnlyButtons) {
+            FacetFiltersForm.initializeRequestOnlyButtons();
+        }
+
+        // Custom Event für andere Scripts
+        $(document).trigger('infiniteScroll:productsLoaded', {
+            page: page,
+            productsCount: $newProducts.length,
+            hasMore: this.hasMoreProducts
+        });
+    }
+
+    detectInitialState() {
+        // Prüfen ob bereits Pagination vorhanden ist
+        if (this.elements.pagination) {
+            const nextPageLink = $(this.elements.pagination).find('.pagination__item--prev');
+            this.hasMoreProducts = nextPageLink.length > 0;
+        }
+
+        console.log('Initial State:', {
+            hasMoreProducts: this.hasMoreProducts,
+            currentPage: this.currentPage,
+            paginationExists: !!this.elements.pagination
+        });
+    }
+
+    showLoading() {
+        if (this.elements.loadingIndicator) {
+            $(this.elements.loadingIndicator).show();
+        }
+        // Pagination während des Ladens verstecken
+        this.hidePagination();
+    }
+
+    hideLoading() {
+        if (this.elements.loadingIndicator) {
+            $(this.elements.loadingIndicator).hide();
+        }
+    }
+
+    hidePagination() {
+        if (this.elements.pagination) {
+            $(this.elements.pagination).hide();
+        }
+        // Auch alle anderen Pagination-Elemente verstecken
+        $('.pagination-wrapper, .pagination').hide();
+    }
+
+    showError() {
+        const errorHTML = `
+            <div class="infinite-scroll-error" style="text-align: center; margin: 2rem 0; color: #d72c0d;">
+                <p>Fehler beim Laden weiterer Produkte. Die Seite wird automatisch erneut versucht.</p>
+            </div>
+        `;
+
+        if (this.elements.loadingIndicator) {
+            $(this.elements.loadingIndicator).after(errorHTML);
+        }
+
+        // Automatischer Retry nach 3 Sekunden
+        setTimeout(() => {
+            $('.infinite-scroll-error').remove();
+            this.isLoading = false;
+        }, 3000);
+    }
+
+    // Reset-Funktion für Filter-Updates
+    reset() {
+        console.log('Infinite Scroll wird zurückgesetzt');
+        this.currentPage = 1;
+        this.hasMoreProducts = true;
+        this.isLoading = false;
+
+        // Cleanup und neu initialisieren
+        this.cleanup();
+        this.createLoadingIndicator();
+        this.hidePagination();
+        this.detectInitialState();
+
+        // Alle Buttons entfernen die eventuell noch da sind
+        $('.infinite-scroll-load-more').remove();
+
+        // Error-Nachrichten entfernen
+        $('.infinite-scroll-error').remove();
+    }
+}
+
+// Infinite Scroll Initialisierung - nur einmal ausführen
+if (!window.infiniteScrollSetup) {
+    window.infiniteScrollSetup = true;
+
+    // Integration mit Facet Filters
+    if (typeof FacetFiltersForm !== 'undefined') {
+        const originalRenderProductGridContainer = FacetFiltersForm.renderProductGridContainer;
+
+        FacetFiltersForm.renderProductGridContainer = function(html) {
+            originalRenderProductGridContainer.call(this, html);
+
+            // Infinite Scroll nach Filter-Update zurücksetzen
+            if (window.infiniteScroll) {
+                window.infiniteScroll.reset();
+            }
+        };
+    }
+
+    // Initialisierung
+    $(document).ready(function() {
+        // Nur auf Collection-Seiten initialisieren
+        if ($('#product-grid').length && !window.infiniteScroll) {
+            window.infiniteScroll = new InfiniteScrollManager();
+            console.log('Infinite Scroll erfolgreich initialisiert');
+        }
+    });
+}

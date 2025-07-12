@@ -1,0 +1,279 @@
+/**
+ * Infinite Scroll Styles
+ * Optimiert für Performance und User Experience
+ */
+
+.infinite-scroll-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 0;
+  min-height: 120px;
+
+  .loading-overlay {
+    position: relative;
+    width: 100%;
+    max-width: 200px;
+    height: 60px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+
+  .loading__spinner {
+    width: 40px;
+    height: 40px;
+
+    .spinner {
+      animation: rotator 1.4s linear infinite;
+      width: 100%;
+      height: 100%;
+    }
+
+    .path {
+      stroke-dasharray: 90, 150;
+      stroke-dashoffset: 0;
+      stroke-linecap: round;
+      stroke: $mainColor;
+      animation: dash 1.5s ease-in-out infinite;
+    }
+  }
+
+  .loading-text {
+    font-size: 0.875rem;
+    color: $grayColor;
+    margin: 0;
+    text-align: center;
+    font-weight: 400;
+  }
+}
+
+// Load More Button komplett verstecken - nur automatisches Laden beim Scrollen
+.infinite-scroll-load-more,
+div:has(button:contains("Weitere Produkte laden")),
+div:has(button:contains("Loading more products")),
+div:has(button:contains("Caricamento di altri prodotti")),
+div:has(button:contains("Chargement de plus de produits")),
+div:has(button:contains("Cargando más productos")) {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+}
+
+// Alle Buttons nach dem Product Grid verstecken
+#product-grid ~ div button.button--secondary,
+#product-grid ~ div button.button {
+  display: none !important;
+}
+
+// Spezifische Button-Texte verstecken
+button:contains("Weitere Produkte laden"),
+button:contains("Loading more products"),
+button:contains("Caricamento di altri prodotti"),
+button:contains("Chargement de plus de produits"),
+button:contains("Cargando más productos") {
+  display: none !important;
+}
+
+.infinite-scroll-error {
+  padding: 2rem;
+  text-align: center;
+  background-color: rgba(215, 44, 13, 0.05);
+  border: 1px solid rgba(215, 44, 13, 0.2);
+  border-radius: 8px;
+  margin: 2rem 0;
+
+  p {
+    margin: 0 0 1rem 0;
+    color: #d72c0d;
+    font-weight: 500;
+  }
+
+  .button {
+    background-color: #d72c0d;
+    color: white;
+    border: none;
+
+    &:hover {
+      background-color: darken(#d72c0d, 10%);
+    }
+  }
+}
+
+// Spinner-Animationen
+@keyframes rotator {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(270deg);
+  }
+}
+
+@keyframes dash {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dashoffset: -35;
+    stroke-dasharray: 90, 150;
+  }
+  100% {
+    stroke-dashoffset: -124;
+    stroke-dasharray: 90, 150;
+  }
+}
+
+// Mobile Optimierungen
+@media screen and (max-width: 749px) {
+  .infinite-scroll-loading {
+    padding: 1.5rem 0;
+    min-height: 100px;
+
+    .loading-overlay {
+      max-width: 150px;
+      height: 50px;
+    }
+
+    .loading__spinner {
+      width: 32px;
+      height: 32px;
+    }
+
+    .loading-text {
+      font-size: 0.8rem;
+    }
+  }
+
+  .infinite-scroll-error {
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+
+    p {
+      font-size: 0.875rem;
+    }
+  }
+}
+
+// Accessibility Verbesserungen
+@media (prefers-reduced-motion: reduce) {
+  .infinite-scroll-loading .loading__spinner .spinner {
+    animation: none;
+  }
+
+  .infinite-scroll-loading .loading__spinner .path {
+    animation: none;
+    stroke-dasharray: none;
+  }
+}
+
+// High Contrast Mode
+@media (prefers-contrast: high) {
+  .infinite-scroll-loading .loading__spinner .path {
+    stroke: currentColor;
+  }
+
+  .infinite-scroll-error {
+    background-color: transparent;
+    border: 2px solid currentColor;
+  }
+}
+
+// Dark Mode Support (falls implementiert)
+@media (prefers-color-scheme: dark) {
+  .infinite-scroll-loading .loading-text {
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .infinite-scroll-error {
+    background-color: rgba(215, 44, 13, 0.1);
+    border-color: rgba(215, 44, 13, 0.3);
+  }
+}
+
+// Smooth Scroll für neue Elemente
+.grid__item {
+  &.infinite-scroll-new {
+    animation: fadeInUp 0.6s ease-out;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Loading State für Product Grid
+.product-grid-container.infinite-scroll-loading-state {
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    z-index: 10;
+    pointer-events: none;
+  }
+}
+
+// Pagination verstecken wenn Infinite Scroll aktiv
+.pagination-wrapper,
+.pagination {
+  display: none !important;
+}
+
+// Nur auf Collection-Seiten mit Product Grid
+#product-grid ~ .pagination-wrapper,
+#product-grid ~ .pagination,
+.product-grid-container .pagination-wrapper,
+.product-grid-container .pagination {
+  display: none !important;
+}
+
+// Performance Optimierung: GPU-Beschleunigung für Animationen
+.infinite-scroll-loading,
+.grid__item.infinite-scroll-new {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+}
+
+// Zusätzliche Mobile Optimierungen
+@media screen and (max-width: 749px) {
+  .infinite-scroll-loading {
+    .loading-text {
+      padding: 0 1rem;
+      line-height: 1.4;
+    }
+  }
+
+  // Reduzierte Animationen auf mobilen Geräten
+  .grid__item.infinite-scroll-new {
+    animation-duration: 0.4s;
+  }
+}
+
+// Loading State Verbesserungen
+.infinite-scroll-loading.active {
+  .loading__spinner {
+    opacity: 1;
+  }
+
+  .loading-text {
+    opacity: 0.8;
+  }
+}

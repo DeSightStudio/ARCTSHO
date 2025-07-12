@@ -108,6 +108,11 @@ class FacetFiltersForm extends HTMLElement {
 
     // Request-Only Buttons nach AJAX-Loading initialisieren
     FacetFiltersForm.initializeRequestOnlyButtons();
+
+    // Infinite Scroll nach Filter-Update zurücksetzen
+    if (window.infiniteScroll) {
+      window.infiniteScroll.reset();
+    }
   }
 
   static renderProductCount(html) {
