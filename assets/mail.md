@@ -69,6 +69,11 @@
   <style>
     .button__cell { background: {{ shop.email_accent_color }}; }
     a, a:hover, a:active, a:visited { color: {{ shop.email_accent_color }}; }
+    .order-list__item-sku {
+      font-size: 12px;
+      color: #666666;
+      font-style: italic;
+    }
   </style>
 </head>
 
@@ -317,6 +322,10 @@
 
                       <span class="order-list__item-title">{{ component_display }}&nbsp;&times;&nbsp;{{ component_title }}</span><br>
 
+                      {% if component.sku %}
+                        <span class="order-list__item-sku">SKU: {{ component.sku }}</span><br>
+                      {% endif %}
+
                       {% if component.variant.title != 'Default Title'%}
                         <span class="order-list__item-variant">{{ component.variant.title }}</span>
                       {% endif %}
@@ -457,6 +466,9 @@
             <tr>
               <td class="order-list__product-description-cell" colspan="2">
                 <span class="order-list__item-title">{{ line_item_group.title }}&nbsp;&times;&nbsp;{{ line_item_group.quantity }}</span><br/>
+                {% if line_item_group.sku %}
+                  <span class="order-list__item-sku">SKU: {{ line_item_group.sku }}</span><br/>
+                {% endif %}
                 {% if line_item_group.variant and line_item_group.variant.title != 'Default Title' %}
                   <span class="order-list__item-variant">{{ line_item_group.variant.title }}</span>
                 {% endif %}
@@ -541,6 +553,10 @@
                     <span class="order-list__item-title">{{ component_title }}&nbsp;&times;&nbsp;{{ component.quantity }}</span><br/>
                   {% else %}
                     <span class="order-list__item-title">{{ component.quantity }}&nbsp;&times;&nbsp;{{ component_title }}</span><br/>
+                  {% endif %}
+
+                  {% if component.sku %}
+                    <span class="order-list__item-sku">SKU: {{ component.sku }}</span><br/>
                   {% endif %}
 
                   {% if component.variant.title != 'Default Title' %}
@@ -651,6 +667,10 @@
 
         <span class="order-list__item-title">{{ line_title }}&nbsp;&times;&nbsp;{{ line_display }}</span><br/>
 
+        {% if line.sku %}
+          <span class="order-list__item-sku">SKU: {{ line.sku }}</span><br/>
+        {% endif %}
+
         {% if line.variant.title != 'Default Title' and line.bundle_parent? == false %}
           <span class="order-list__item-variant">{{ line.variant.title }}</span><br/>
         {% elsif line.variant.title != 'Default Title' and line.bundle_parent? and expand_bundles == false %}
@@ -683,6 +703,10 @@
                       {% assign component_display = component.quantity %}
 
                       <span class="order-list__item-title">{{ component_display }}&nbsp;&times;&nbsp;{{ component_title }}</span><br>
+
+                      {% if component.sku %}
+                        <span class="order-list__item-sku">SKU: {{ component.sku }}</span><br>
+                      {% endif %}
 
                       {% if component.variant.title != 'Default Title'%}
                         <span class="order-list__item-variant">{{ component.variant.title }}</span>
@@ -821,6 +845,9 @@
             <tr>
               <td class="order-list__product-description-cell" colspan="2">
                 <span class="order-list__item-title">{{ line_item_group.title }}&nbsp;&times;&nbsp;{{ line_item_group.quantity }}</span><br/>
+                {% if line_item_group.sku %}
+                  <span class="order-list__item-sku">SKU: {{ line_item_group.sku }}</span><br/>
+                {% endif %}
                 {% if line_item_group.variant and line_item_group.variant.title != 'Default Title' %}
                   <span class="order-list__item-variant">{{ line_item_group.variant.title }}</span>
                 {% endif %}
@@ -905,6 +932,10 @@
                     <span class="order-list__item-title">{{ component_title }}&nbsp;&times;&nbsp;{{ component.quantity }}</span><br/>
                   {% else %}
                     <span class="order-list__item-title">{{ component.quantity }}&nbsp;&times;&nbsp;{{ component_title }}</span><br/>
+                  {% endif %}
+
+                  {% if component.sku %}
+                    <span class="order-list__item-sku">SKU: {{ component.sku }}</span><br/>
                   {% endif %}
 
                   {% if component.variant.title != 'Default Title' %}
@@ -1011,6 +1042,10 @@
 
         <span class="order-list__item-title">{{ line_title }}&nbsp;&times;&nbsp;{{ line_display }}</span><br/>
 
+        {% if line.sku %}
+          <span class="order-list__item-sku">SKU: {{ line.sku }}</span><br/>
+        {% endif %}
+
         {% if line.variant.title != 'Default Title' and line.bundle_parent? == false %}
           <span class="order-list__item-variant">{{ line.variant.title }}</span><br/>
         {% elsif line.variant.title != 'Default Title' and line.bundle_parent? and expand_bundles == false %}
@@ -1043,6 +1078,10 @@
                       {% assign component_display = component.quantity %}
 
                       <span class="order-list__item-title">{{ component_display }}&nbsp;&times;&nbsp;{{ component_title }}</span><br>
+
+                      {% if component.sku %}
+                        <span class="order-list__item-sku">SKU: {{ component.sku }}</span><br>
+                      {% endif %}
 
                       {% if component.variant.title != 'Default Title'%}
                         <span class="order-list__item-variant">{{ component.variant.title }}</span>
@@ -1180,6 +1219,9 @@
             <tr>
               <td class="order-list__product-description-cell" colspan="2">
                 <span class="order-list__item-title">{{ line_item_group.title }}&nbsp;&times;&nbsp;{{ line_item_group.quantity }}</span><br/>
+                {% if line_item_group.sku %}
+                  <span class="order-list__item-sku">SKU: {{ line_item_group.sku }}</span><br/>
+                {% endif %}
                 {% if line_item_group.variant and line_item_group.variant.title != 'Default Title' %}
                   <span class="order-list__item-variant">{{ line_item_group.variant.title }}</span>
                 {% endif %}
@@ -1264,6 +1306,10 @@
                     <span class="order-list__item-title">{{ component_title }}&nbsp;&times;&nbsp;{{ component.quantity }}</span><br/>
                   {% else %}
                     <span class="order-list__item-title">{{ component.quantity }}&nbsp;&times;&nbsp;{{ component_title }}</span><br/>
+                  {% endif %}
+
+                  {% if component.sku %}
+                    <span class="order-list__item-sku">SKU: {{ component.sku }}</span><br/>
                   {% endif %}
 
                   {% if component.variant.title != 'Default Title' %}
