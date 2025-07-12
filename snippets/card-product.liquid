@@ -301,6 +301,43 @@
                     </li>
                   {% endif %}
 
+                  {% comment %} Diameter Field - FIXED {% endcomment %}
+                  {% if card_product.metafields.next_cart.ts_dimensions_diameter != blank %}
+                    <li class="card-product__specs-item">
+                      <span class="card-product__specs-label">{{ 'products.product.product_specs.diameter' | t }}</span>
+                      {% assign diameter_value = card_product.metafields.next_cart.ts_dimensions_diameter | plus: 0 %}
+                      <span
+                        class="card-product__specs-value"
+                        data-spec-type="diameter"
+                        data-original-value="{{ diameter_value }}"
+                        data-unit="mm"
+                      >
+                        {% if diameter_value < 10 %}
+                          {{- diameter_value }} mm
+                        {% else %}
+                          {{- diameter_value | divided_by: 10.0 | round: 1 }} cm
+                        {% endif %}
+                      </span>
+                    </li>
+                  {% elsif card_product.metafields.custom.diameter_m != blank %}
+                    <li class="card-product__specs-item">
+                      <span class="card-product__specs-label">{{ 'products.product.product_specs.diameter' | t }}</span>
+                      {% assign diameter_value = card_product.metafields.custom.diameter_m | plus: 0 %}
+                      <span
+                        class="card-product__specs-value"
+                        data-spec-type="diameter"
+                        data-original-value="{{ diameter_value }}"
+                        data-unit="mm"
+                      >
+                        {% if diameter_value < 10 %}
+                          {{- diameter_value }} mm
+                        {% else %}
+                          {{- diameter_value | divided_by: 10.0 | round: 1 }} cm
+                        {% endif %}
+                      </span>
+                    </li>
+                  {% endif %}
+
                   {% if card_product.metafields.next_cart.weight_m != blank %}
                     <li class="card-product__specs-item">
                       <span class="card-product__specs-label">{{ 'products.product.product_specs.weight' | t }}</span>
@@ -708,10 +745,10 @@
                   </li>
                 {% endif %}
 
-                {% if card_product.metafields.next_cart.ts_dimensions_diameter_m != blank %}
+                {% if card_product.metafields.next_cart.ts_dimensions_diameter != blank %}
                   <li class="card-product__specs-item">
                     <span class="card-product__specs-label">{{ 'products.product.product_specs.diameter' | t }}</span>
-                    {% assign diameter_value = card_product.metafields.next_cart.ts_dimensions_diameter_m | plus: 0 %}
+                    {% assign diameter_value = card_product.metafields.next_cart.ts_dimensions_diameter | plus: 0 %}
                     <span
                       class="card-product__specs-value"
                       data-spec-type="diameter"

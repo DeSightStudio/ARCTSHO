@@ -369,15 +369,13 @@
                         </div>
                       {%- endif -%}
 
-                      {%- if product.metafields.next_cart.ts_dimensions_diameter_m != blank -%}
+                      {%- if product.metafields.next_cart.ts_dimensions_diameter != blank -%}
                         <div class="product__specs-item">
                           <span class="product__specs-icon">
                             <i class="fas fa-circle"></i>
                           </span>
                           <span class="product__specs-label">{{ 'products.product.product_specs.diameter' | t }}</span>
-                          {%- assign diameter_value = product.metafields.next_cart.ts_dimensions_diameter_m
-                            | plus: 0
-                          -%}
+                          {%- assign diameter_value = product.metafields.next_cart.ts_dimensions_diameter | plus: 0 -%}
                           <span
                             class="product__specs-value unit-convertible unit-length"
                             data-spec-type="diameter"
