@@ -460,77 +460,15 @@
                           data-product-id="{{ card_product.id }}"
                           data-type="add-to-cart-form"
                           data-variant-id="{{ card_product.selected_or_first_available_variant.id }}"
-                          onsubmit="
-                            event.preventDefault(); event.stopPropagation();
-                            const form = this;
-                            const submitBtn = form.querySelector('button[type=submit]');
-                            const spinner = submitBtn.querySelector('.loading__spinner');
-
-                            // Button deaktivieren und Spinner anzeigen
-                            submitBtn.setAttribute('disabled', 'disabled');
-                            submitBtn.classList.add('loading');
-                            if (spinner) spinner.classList.remove('hidden');
-
-                            // FormData erstellen
-                            const formData = new FormData(form);
-
-                            // AJAX-Request
-                            fetch('{{ routes.cart_add_url }}', {
-                              method: 'POST',
-                              headers: {
-                                'X-Requested-With': 'XMLHttpRequest'
-                              },
-                              body: formData
-                            })
-                            .then(response => {
-                              if (!response.ok) {
-                                throw new Error('Network response was not ok');
-                              }
-                              return response.json();
-                            })
-                            .then(response => {
-                              // Cart Drawer aktualisieren und öffnen
-                              const cartDrawer = document.querySelector('cart-drawer');
-                              if (cartDrawer) {
-                                cartDrawer.renderContents(response);
-                                setTimeout(() => cartDrawer.open(), 100);
-                              }
-
-                              // Button-Status ändern
-                              const actionsContainer = form.closest('.card-product__actions');
-                              if (actionsContainer) {
-                                form.style.display = 'none';
-
-                                // View Cart Button erstellen
-                                const viewBtn = document.createElement('button');
-                                viewBtn.type = 'button';
-                                viewBtn.className = 'card-product__view-cart button button--full-width button--primary';
-                                viewBtn.setAttribute('onclick', 'event.stopPropagation(); event.preventDefault(); document.querySelector(\'cart-drawer\').open();');
-                                viewBtn.innerHTML = '<span>{{ 'products.product.view_cart_button' | t }}</span>';
-                                actionsContainer.appendChild(viewBtn);
-                              }
-
-                              // Event auslösen
-                              document.dispatchEvent(new CustomEvent('cart:updated', { detail: { cartData: response } }));
-                            })
-                            .catch(error => {
-                              console.error('Fehler:', error);
-                              submitBtn.removeAttribute('disabled');
-                              submitBtn.classList.remove('loading');
-                              if (spinner) spinner.classList.add('hidden');
-                            });
-
-                            return false;
-                          "
                         >
+                          <input type="hidden" name="form_type" value="product">
+                          <input type="hidden" name="utf8" value="✓">
                           <input
                             type="hidden"
                             name="id"
                             value="{{ card_product.selected_or_first_available_variant.id }}"
                           >
                           <input type="hidden" name="quantity" value="1">
-                          <input type="hidden" name="sections" value="cart-drawer,cart-icon-bubble">
-                          <input type="hidden" name="sections_url" value="{{ request.path }}">
                           <button
                             type="submit"
                             name="add"

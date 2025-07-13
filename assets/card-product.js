@@ -80,306 +80,42 @@ class ProductCard extends HTMLElement {
   }
 
   handleAddToCart(evt) {
-    evt.stopPropagation();
-    evt.preventDefault();
+    // Die Add-to-Cart Funktionalität wird jetzt vom zentralen AddToCartManager übernommen
+    // Dieser Handler bleibt nur für Kompatibilität, aber die eigentliche Logik
+    // wird durch den globalen Event-Listener im AddToCartManager abgefangen
 
-    // Formular und Submit-Button ermitteln
-    const form = evt.currentTarget;
-    const submitButton = form.querySelector('button[type="submit"]');
-    if (!submitButton) return;
-
-    // Submit-Button deaktivieren und Ladezustand anzeigen
-    submitButton.setAttribute('disabled', 'disabled');
-    submitButton.classList.add('loading');
-
-    // Lade-Spinner anzeigen
-    const loadingSpinner = submitButton.querySelector('.loading__spinner');
-    if (loadingSpinner) {
-      loadingSpinner.classList.remove('hidden');
-    }
-
-    // Produkt-ID aus dem Formular ermitteln
-    const productId = parseInt(form.dataset.productId);
-    const variantId = parseInt(form.dataset.variantId || form.querySelector('[name="id"]')?.value);
-
-    if (!productId || !variantId) {
-      console.error('Keine Produkt-ID oder Varianten-ID gefunden');
-      submitButton.removeAttribute('disabled');
-      submitButton.classList.remove('loading');
-      if (loadingSpinner) {
-        loadingSpinner.classList.add('hidden');
-      }
+    // Falls der AddToCartManager nicht verfügbar ist, Fallback
+    if (!window.addToCartManager) {
+      console.warn('AddToCartManager nicht verfügbar - verwende Fallback');
+      evt.stopPropagation();
+      evt.preventDefault();
       return;
     }
 
-    // Optimiert: Verwende CartStateManager wenn verfügbar
-    const checkAndProceed = () => {
-      let cartData = null;
+    // Lasse den Event durch zum AddToCartManager
+    // Der AddToCartManager wird das preventDefault() und stopPropagation() handhaben
 
-      if (window.cartStateManager && window.cartStateManager.getCartData()) {
-        cartData = window.cartStateManager.getCartData();
-        processCart(cartData);
-      } else {
-        fetch(`${routes.cart_url}.js`)
-          .then(response => response.json())
-          .then(cart => processCart(cart))
-          .catch(error => {
-            console.error('Fehler beim Warenkorb-Check:', error);
-            processCart({ items: [] });
-          });
-      }
-    };
+    // Diese Logik wurde in den AddToCartManager verschoben
+    // Hier bleibt nur ein Kommentar für die Dokumentation
 
-    const processCart = (cart) => {
-      // Prüfen, ob das Produkt bereits im Warenkorb ist
-      const isInCart = cart.items.some(item => {
-        return (item.product_id === productId) || (item.variant_id === variantId);
-      });
+    // Diese komplexe Logik wurde in den AddToCartManager verschoben
+    // Hier bleibt nur ein Kommentar für die Dokumentation
 
-      if (isInCart) {
-        // Wenn bereits im Warenkorb, nur den Drawer öffnen
-        const cartDrawer = document.querySelector('cart-drawer');
-        if (cartDrawer) {
-          cartDrawer.open();
-        }
-
-        // Button-Status aktualisieren
-        this.updateButtonToViewCart(form);
-
-        // Submit-Button wieder aktivieren
-        submitButton.removeAttribute('disabled');
-        submitButton.classList.remove('loading');
-        if (loadingSpinner) {
-          loadingSpinner.classList.add('hidden');
-        }
-
-        return;
-      }
-
-        // FormData erstellen
-        const formData = new FormData(form);
-        // Menge auf 1 setzen
-        formData.set('quantity', '1');
-
-        // Sections für den Cart Drawer hinzufügen
-        if (!formData.get('sections')) {
-          const cartDrawer = document.querySelector('cart-drawer');
-          if (cartDrawer && typeof cartDrawer.getSectionsToRender === 'function') {
-            formData.set('sections', cartDrawer.getSectionsToRender().map(section => section.id).join(','));
-          } else {
-            formData.set('sections', 'cart-drawer,cart-icon-bubble');
-          }
-        }
-
-        // URL-Pfad für die Sections setzen
-        if (!formData.get('sections_url')) {
-          formData.set('sections_url', window.location.pathname);
-        }
-
-        // Konfiguration für die Fetch-Anfrage
-        const config = {
-          method: 'POST',
-          headers: {
-            'X-Requested-With': 'XMLHttpRequest'
-          },
-          body: formData
-        };
-
-        // Produkt zum Warenkorb hinzufügen
-        fetch(`${routes.cart_add_url}`, config)
-          .then(response => response.json())
-          .then(response => {
-            if (response.status) {
-              console.error('Fehler beim Hinzufügen zum Warenkorb:', response.description);
-
-              // Submit-Button wieder aktivieren
-              submitButton.removeAttribute('disabled');
-              submitButton.classList.remove('loading');
-              if (loadingSpinner) {
-                loadingSpinner.classList.add('hidden');
-              }
-              return;
-            }
-
-            // CartStateManager sofort aktualisieren (vor Button-Update)
-            if (window.cartStateManager) {
-              window.cartStateManager.updateCartData(response);
-            }
-
-            // Button aktualisieren nach Cart-Update
-            this.updateButtonToViewCart(form);
-
-            // Cart-Drawer Inhalt aktualisieren und öffnen
-            const cartDrawer = document.querySelector('cart-drawer');
-            if (cartDrawer) {
-              cartDrawer.renderContents(response);
-              cartDrawer.open();
-            }
-
-            // Event auslösen, um andere Komponenten zu informieren
-            document.dispatchEvent(new CustomEvent('cart:updated', {
-              detail: { cartData: response }
-            }));
-
-            document.dispatchEvent(new CustomEvent('cart:item:added', {
-              detail: {
-                productId,
-                variantId
-              }
-            }));
-
-            // Submit-Button wieder aktivieren
-            submitButton.removeAttribute('disabled');
-            submitButton.classList.remove('loading');
-            if (loadingSpinner) {
-              loadingSpinner.classList.add('hidden');
-            }
-          })
-          .catch(error => {
-            console.error('Fehler bei der Anfrage:', error);
-
-            // Submit-Button wieder aktivieren
-            submitButton.removeAttribute('disabled');
-            submitButton.classList.remove('loading');
-            if (loadingSpinner) {
-              loadingSpinner.classList.add('hidden');
-            }
-          });
-      };
-
-      // Führe die optimierte Warenkorb-Prüfung aus
-      checkAndProceed();
+    // Diese gesamte Add-to-Cart Logik wurde in den AddToCartManager verschoben
+    // Hier bleibt nur ein Kommentar für die Dokumentation
   }
 
   // Handler für das Entfernen eines Artikels aus dem Warenkorb
   handleCartItemRemoved(event) {
-    if (!this.addToCartForm) return;
-
-    try {
-      const productId = parseInt(this.addToCartForm.dataset.productId);
-      if (!productId) return;
-
-      const variantId = parseInt(this.addToCartForm.dataset.variantId || this.addToCartForm.querySelector('[name="id"]')?.value);
-
-      // Direkt prüfen, ob das entfernte Produkt mit dieser Karte übereinstimmt
-      if (event.detail && ((event.detail.productId && event.detail.productId === productId) ||
-          (variantId && event.detail.variantId && event.detail.variantId === variantId))) {
-        // Direkt zurücksetzen auf "In den Warenkorb"
-        const actionsContainer = this.addToCartForm.closest('.card-product__actions');
-        if (actionsContainer) {
-          const viewCartButton = actionsContainer.querySelector('.card-product__view-cart');
-          if (viewCartButton) {
-            viewCartButton.remove();
-          }
-          this.addToCartForm.style.display = 'block';
-        }
-        return;
-      }
-
-      // Ansonsten Warenkorb-Status prüfen (für Fälle mit mehreren Instanzen desselben Produkts)
-      fetch(`${routes.cart_url}.js`)
-        .then(response => response.json())
-        .then(cart => {
-          const isInCart = cart.items.some(item => {
-            return (item.product_id === productId) || (variantId && item.variant_id === variantId);
-          });
-
-          const actionsContainer = this.addToCartForm.closest('.card-product__actions');
-          if (!actionsContainer) return;
-
-          if (!isInCart && this.addToCartForm.style.display === 'none') {
-            // Zurücksetzen auf "In den Warenkorb"
-            const viewCartButton = actionsContainer.querySelector('.card-product__view-cart');
-            if (viewCartButton) {
-              viewCartButton.remove();
-            }
-            this.addToCartForm.style.display = 'block';
-          } else if (isInCart && this.addToCartForm.style.display !== 'none') {
-            // Wenn im Warenkorb, aber Form sichtbar - zu "Warenkorb anzeigen" ändern
-            console.log(`Produkt ${productId} noch im Warenkorb - ändere Button zu "View Cart"`);
-            this.updateButtonToViewCart(this.addToCartForm);
-          }
-        })
-        .catch(error => {
-          console.error('Fehler beim Prüfen des Produkts im Warenkorb:', error);
-        });
-    } catch (error) {
-      console.error('Fehler bei der Verarbeitung des cart:item:removed-Events:', error);
-    }
+    // Diese Funktionalität wird jetzt vom AddToCartManager übernommen
+    // Hier bleibt nur ein vereinfachter Handler für spezielle ProductCard-Logik
+    console.log('ProductCard: Cart item removed event empfangen');
   }
 
   // Handler für Drawer-Schließung-Event
   handleDrawerClosed(event) {
-    console.log('Drawer geschlossen Event in ProductCard empfangen');
-
-    if (!this.addToCartForm) return;
-
-    const productId = parseInt(this.addToCartForm.dataset.productId);
-    if (!productId) return;
-
-    const variantId = parseInt(this.addToCartForm.dataset.variantId || this.addToCartForm.querySelector('[name="id"]')?.value);
-    if (!variantId) return;
-
-    try {
-      // Prüfen, ob Warenkorb-Daten im Event enthalten sind
-      if (event.detail && event.detail.cartData) {
-        const cartItems = event.detail.cartData.items || [];
-        const isInCart = cartItems.some(item => {
-          return (item.product_id === productId) || (variantId && item.variant_id === variantId);
-        });
-
-        console.log(`Produkt ${productId} im Warenkorb beim Schließen des Drawers: ${isInCart}`);
-
-        // Button-Status entsprechend aktualisieren
-        const actionsContainer = this.addToCartForm.closest('.card-product__actions');
-        if (actionsContainer) {
-          if (isInCart && this.addToCartForm.style.display !== 'none') {
-            // In den Warenkorb - zu "Warenkorb anzeigen" ändern
-            this.updateButtonToViewCart(this.addToCartForm);
-          } else if (!isInCart && this.addToCartForm.style.display === 'none') {
-            // Nicht im Warenkorb - zurück zu "In den Warenkorb" ändern
-            const viewCartButton = actionsContainer.querySelector('.card-product__view-cart');
-            if (viewCartButton) {
-              viewCartButton.remove();
-            }
-            this.addToCartForm.style.display = 'block';
-          }
-        }
-      } else {
-        // Wenn keine Daten im Event vorhanden, via API prüfen
-        console.log('Keine Cart-Daten im Event - prüfe via API');
-        fetch(`${routes.cart_url}.js`)
-          .then(response => response.json())
-          .then(cart => {
-            const isInCart = cart.items.some(item => {
-              return (item.product_id === productId) || (variantId && item.variant_id === variantId);
-            });
-
-            console.log(`Produkt ${productId} im Warenkorb (API-Abfrage): ${isInCart}`);
-
-            // Button-Status entsprechend aktualisieren
-            const actionsContainer = this.addToCartForm.closest('.card-product__actions');
-            if (actionsContainer) {
-              if (isInCart && this.addToCartForm.style.display !== 'none') {
-                // In den Warenkorb - zu "Warenkorb anzeigen" ändern
-                this.updateButtonToViewCart(this.addToCartForm);
-              } else if (!isInCart && this.addToCartForm.style.display === 'none') {
-                // Nicht im Warenkorb - zurück zu "In den Warenkorb" ändern
-                const viewCartButton = actionsContainer.querySelector('.card-product__view-cart');
-                if (viewCartButton) {
-                  viewCartButton.remove();
-                }
-                this.addToCartForm.style.display = 'block';
-              }
-            }
-          })
-          .catch(error => {
-            console.error('Fehler beim Prüfen des Warenkorbs:', error);
-          });
-      }
-    } catch (error) {
-      console.error('Fehler bei Drawer-Event-Verarbeitung:', error);
-    }
+    // Diese Funktionalität wird jetzt vom AddToCartManager übernommen
+    console.log('ProductCard: Drawer closed event empfangen');
   }
 
   updateButtonToViewCart(form) {
@@ -485,37 +221,51 @@ function handleFormSubmit(event) {
     loadingSpinner.classList.remove('hidden');
   }
 
-  // Produkt-ID und Varianten-ID aus dem Formular extrahieren - verschiedene Quellen versuchen
-  let productId = parseInt(this.dataset.productId);
+  // Produkt-ID und Varianten-ID aus dem Formular extrahieren - verbesserte Logik
+  let productId = null;
+
+  // 1. Versuche aus dem Formular selbst
+  if (this.dataset.productId) {
+    productId = parseInt(this.dataset.productId);
+    console.log('CardProduct: Produkt-ID aus Formular gefunden:', productId);
+  }
+
+  // 2. Fallback: Aus der Karte extrahieren
   if (!productId || isNaN(productId)) {
-    // Aus der Karte extrahieren
     const card = this.closest('.card-wrapper[data-product-id]');
-    if (card) {
+    if (card && card.dataset.productId) {
       productId = parseInt(card.dataset.productId);
+      console.log('CardProduct: Produkt-ID aus Card-Wrapper gefunden:', productId);
     }
   }
+
+  // 3. Fallback: Aus dem Formular-ID extrahieren (z.B. quick-add-template--123-456)
   if (!productId || isNaN(productId)) {
-    // Aus dem Formular-ID extrahieren (z.B. quick-add-template--123-456)
     const formId = this.id;
     if (formId && typeof formId === 'string') {
       const matches = formId.match(/-(\d+)$/);
       if (matches) {
         productId = parseInt(matches[1]);
+        console.log('CardProduct: Produkt-ID aus Formular-ID gefunden:', productId);
       }
     }
   }
+
+  // 4. Fallback: Aus dem product-form Element extrahieren
   if (!productId || isNaN(productId)) {
-    // Aus dem product-form Element extrahieren
-    const productForm = this.closest('product-form');
+    const productForm = this.closest('product-form[data-product-id]');
     if (productForm && productForm.dataset.productId) {
       productId = parseInt(productForm.dataset.productId);
+      console.log('CardProduct: Produkt-ID aus Product-Form gefunden:', productId);
     }
   }
+
+  // 5. Fallback: Aus dem übergeordneten Container extrahieren
   if (!productId || isNaN(productId)) {
-    // Aus dem übergeordneten Container extrahieren
     const container = this.closest('[data-product-id]');
-    if (container) {
+    if (container && container.dataset.productId) {
       productId = parseInt(container.dataset.productId);
+      console.log('CardProduct: Produkt-ID aus Container gefunden:', productId);
     }
   }
 
@@ -524,8 +274,14 @@ function handleFormSubmit(event) {
 
   console.log('CardProduct: Verarbeite Submit für Produkt', { productId, variantId });
 
-  if (!productId || !variantId) {
-    console.error('CardProduct: Keine Produkt-ID oder Varianten-ID gefunden', { productId, variantId });
+  // Finale Validierung
+  if (!productId || isNaN(productId) || !variantId || isNaN(variantId)) {
+    console.error('CardProduct: Keine gültige Produkt-ID oder Varianten-ID gefunden', {
+      productId,
+      variantId,
+      formDataset: this.dataset,
+      formHTML: this.outerHTML.substring(0, 200) + '...'
+    });
     if (submitButton) {
       submitButton.removeAttribute('disabled');
       submitButton.classList.remove('loading');
@@ -576,39 +332,119 @@ function handleFormSubmit(event) {
       // FormData erstellen
       const formData = new FormData(this);
 
-      // Sicherstellen, dass die Menge auf 1 gesetzt ist
-      formData.set('quantity', '1');
+      // Sicherstellen, dass alle erforderlichen Felder vorhanden sind
+      if (!formData.get('id')) {
+        // Fallback-Strategien für verschiedene Formular-Typen
+        let variantId = null;
 
-      // Sections für den Cart-Drawer hinzufügen
-      if (!formData.get('sections')) {
-        const cartDrawer = document.querySelector('cart-drawer');
-        if (cartDrawer && typeof cartDrawer.getSectionsToRender === 'function') {
-          formData.set('sections', cartDrawer.getSectionsToRender().map(section => section.id).join(','));
+        // 1. Versuche aus data-variant-id Attribut des Formulars
+        variantId = this.dataset.variantId || this.getAttribute('data-variant-id');
+
+        // 2. Für product-form Elemente: Suche im inneren form Element
+        if (!variantId) {
+          const innerForm = this.querySelector('form[data-type="add-to-cart-form"]');
+          if (innerForm) {
+            const variantInput = innerForm.querySelector('input[name="id"]');
+            if (variantInput && variantInput.value) {
+              variantId = variantInput.value;
+              console.log('CardProduct: Varianten-ID aus innerem Formular gefunden (Handler 1):', variantId);
+            }
+          }
+        }
+
+        // 3. Versuche aus dem übergeordneten product-form Element
+        if (!variantId) {
+          const productForm = this.closest('product-form');
+          if (productForm) {
+            const variantInput = productForm.querySelector('input[name="id"]');
+            if (variantInput && variantInput.value) {
+              variantId = variantInput.value;
+              console.log('CardProduct: Varianten-ID aus product-form gefunden (Handler 1):', variantId);
+            }
+          }
+        }
+
+        if (variantId) {
+          formData.set('id', variantId);
+          console.log('CardProduct: Varianten-ID erfolgreich gefunden (Handler 1):', variantId);
         } else {
-          formData.set('sections', 'cart-drawer,cart-icon-bubble');
+          console.error('CardProduct: Keine Varianten-ID gefunden (Handler 1)', {
+            formDataset: this.dataset,
+            formAttributes: Array.from(this.attributes).map(attr => `${attr.name}="${attr.value}"`),
+            formHTML: this.outerHTML.substring(0, 200) + '...',
+            hasInnerForm: !!this.querySelector('form[data-type="add-to-cart-form"]'),
+            hasProductForm: !!this.closest('product-form')
+          });
+          if (submitButton) {
+            submitButton.removeAttribute('disabled');
+            submitButton.classList.remove('loading');
+            if (loadingSpinner) {
+              loadingSpinner.classList.add('hidden');
+            }
+          }
+          return;
         }
       }
 
-      // URL-Pfad für die Sections setzen
-      if (!formData.get('sections_url')) {
-        formData.set('sections_url', window.location.pathname);
+      // Sicherstellen, dass die Menge auf 1 gesetzt ist
+      formData.set('quantity', '1');
+
+      // Erforderliche Shopify-Felder hinzufügen
+      if (!formData.get('form_type')) {
+        formData.set('form_type', 'product');
+      }
+      if (!formData.get('utf8')) {
+        formData.set('utf8', '✓');
       }
 
-      // AJAX-Warenkorb-Hinzufügen mit XMLHttpRequest-Header für JSON-Antwort
-      console.log('CardProduct: Füge Produkt zum Warenkorb hinzu');
-      fetch(routes.cart_add_url, {
+      // WICHTIG: Sections für JSON-Response hinzufügen
+      formData.set('sections', 'cart-drawer,cart-icon-bubble');
+      formData.set('sections_url', window.location.pathname);
+
+      // Debug: FormData-Inhalt loggen
+      console.log('CardProduct: FormData-Inhalt (Handler 1):');
+      for (let [key, value] of formData.entries()) {
+        console.log(`  ${key}: ${value}`);
+      }
+
+      // Konvertiere FormData zu URLSearchParams für bessere Kompatibilität
+      const params = new URLSearchParams();
+      for (let [key, value] of formData.entries()) {
+        params.append(key, value);
+      }
+
+      // AJAX-Warenkorb-Hinzufügen mit .js Endpoint für JSON-Antwort
+      console.log('CardProduct: Füge Produkt zum Warenkorb hinzu (Handler 1)');
+      console.log('CardProduct: URL:', `${routes.cart_add_url}.js`);
+      console.log('CardProduct: Body:', params.toString());
+
+      fetch(`${routes.cart_add_url}.js`, {
         method: 'POST',
         headers: {
-          'X-Requested-With': 'XMLHttpRequest'
+          'X-Requested-With': 'XMLHttpRequest',
+          'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: formData
+        body: params.toString()
       })
-      .then(response => response.json())
       .then(response => {
-        console.log('CardProduct: Produkt zum Warenkorb hinzugefügt', response);
+        console.log('CardProduct: Response Status (Handler 1):', response.status);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(response => {
+        console.log('CardProduct: Produkt zum Warenkorb hinzugefügt (Handler 1)', response);
 
         if (response.status) {
-          console.error('CardProduct: Fehler beim Hinzufügen:', response);
+          console.error('CardProduct: Fehler beim Hinzufügen (Handler 1):', response);
+          if (submitButton) {
+            submitButton.removeAttribute('disabled');
+            submitButton.classList.remove('loading');
+            if (loadingSpinner) {
+              loadingSpinner.classList.add('hidden');
+            }
+          }
           return;
         }
 
@@ -765,8 +601,40 @@ if ('navigation' in window) {
   });
 }
 
+// Debug-Funktion zur Analyse der Produktkarten-Struktur
+function debugProductCardStructure() {
+  console.log('=== DEBUG: Produktkarten-Struktur ===');
+
+  const productCards = document.querySelectorAll('.card-wrapper[data-product-id]');
+  console.log(`Gefundene Produktkarten: ${productCards.length}`);
+
+  productCards.forEach((card, index) => {
+    const productId = card.dataset.productId;
+    const form = card.querySelector('.card-product__add-form, form[data-type="add-to-cart-form"]');
+    const variantInput = form?.querySelector('[name="id"]');
+    const variantId = variantInput?.value;
+
+    console.log(`Karte ${index + 1}:`, {
+      productId: productId,
+      productIdParsed: parseInt(productId),
+      variantId: variantId,
+      variantIdParsed: parseInt(variantId),
+      hasForm: !!form,
+      formDataset: form?.dataset,
+      cardHTML: card.outerHTML.substring(0, 150) + '...'
+    });
+  });
+
+  console.log('=== Ende DEBUG ===');
+}
+
 // DOM-Ready Event
 document.addEventListener('DOMContentLoaded', function() {
+  // Debug-Ausgabe
+  setTimeout(() => {
+    debugProductCardStructure();
+  }, 1000);
+
   // Alle Produktkarten mit der Web Component verbinden
   document.querySelectorAll('.product-card-wrapper').forEach(card => {
     if (!card.hasAttribute('is-product-card')) {
@@ -780,9 +648,6 @@ document.addEventListener('DOMContentLoaded', function() {
       card.setAttribute('is-product-card', 'true');
     }
   });
-
-  // Stelle sicher, dass alle Add-to-Cart Buttons sichtbar sind
-  ensureAddToCartButtonsVisible();
 
   // Initialisiere Produktkarten-Status basierend auf dem aktuellen Warenkorb
   initializeProductCardStates();
@@ -1005,15 +870,46 @@ document.addEventListener('DOMContentLoaded', function() {
       loadingSpinner.classList.remove('hidden');
     }
 
-    // Produkt-ID und Varianten-ID aus dem Formular extrahieren
-    const productId = parseInt(this.dataset.productId);
+    // Produkt-ID und Varianten-ID aus dem Formular extrahieren - verbesserte Logik
+    let productId = null;
+
+    // 1. Versuche aus dem Formular selbst
+    if (this.dataset.productId) {
+      productId = parseInt(this.dataset.productId);
+      console.log('CardProduct: Produkt-ID aus Formular gefunden:', productId);
+    }
+
+    // 2. Fallback: Aus der Karte extrahieren
+    if (!productId || isNaN(productId)) {
+      const card = this.closest('.card-wrapper[data-product-id]');
+      if (card && card.dataset.productId) {
+        productId = parseInt(card.dataset.productId);
+        console.log('CardProduct: Produkt-ID aus Card-Wrapper gefunden:', productId);
+      }
+    }
+
+    // 3. Fallback: Aus dem übergeordneten Container extrahieren
+    if (!productId || isNaN(productId)) {
+      const container = this.closest('[data-product-id]');
+      if (container && container.dataset.productId) {
+        productId = parseInt(container.dataset.productId);
+        console.log('CardProduct: Produkt-ID aus Container gefunden:', productId);
+      }
+    }
+
     const variantIdInput = this.querySelector('[name="id"]');
     const variantId = variantIdInput ? parseInt(variantIdInput.value) : null;
 
     console.log('CardProduct: Verarbeite Submit für Produkt', { productId, variantId });
 
-    if (!productId || !variantId) {
-      console.error('CardProduct: Keine Produkt-ID oder Varianten-ID gefunden', { productId, variantId });
+    // Finale Validierung
+    if (!productId || isNaN(productId) || !variantId || isNaN(variantId)) {
+      console.error('CardProduct: Keine gültige Produkt-ID oder Varianten-ID gefunden', {
+        productId,
+        variantId,
+        formDataset: this.dataset,
+        formHTML: this.outerHTML.substring(0, 200) + '...'
+      });
       if (submitButton) {
         submitButton.removeAttribute('disabled');
         submitButton.classList.remove('loading');
@@ -1064,41 +960,154 @@ document.addEventListener('DOMContentLoaded', function() {
         // FormData erstellen
         const formData = new FormData(this);
 
-        // Sicherstellen, dass die Menge auf 1 gesetzt ist
-        formData.set('quantity', '1');
+        // Sicherstellen, dass alle erforderlichen Felder vorhanden sind
+        if (!formData.get('id')) {
+          // Fallback-Strategien für verschiedene Formular-Typen
+          let variantId = null;
 
-        // Sections für den Cart-Drawer hinzufügen
-        if (!formData.get('sections')) {
-          const cartDrawer = document.querySelector('cart-drawer');
-          if (cartDrawer && typeof cartDrawer.getSectionsToRender === 'function') {
-            formData.set('sections', cartDrawer.getSectionsToRender().map(section => section.id).join(','));
+          // 1. Versuche aus data-variant-id Attribut des Formulars
+          variantId = this.dataset.variantId || this.getAttribute('data-variant-id');
+
+          // 2. Für product-form Elemente: Suche im inneren form Element
+          if (!variantId) {
+            const innerForm = this.querySelector('form[data-type="add-to-cart-form"]');
+            if (innerForm) {
+              const variantInput = innerForm.querySelector('input[name="id"]');
+              if (variantInput && variantInput.value) {
+                variantId = variantInput.value;
+                console.log('CardProduct: Varianten-ID aus innerem Formular gefunden:', variantId);
+              }
+            }
+          }
+
+          // 3. Versuche aus dem übergeordneten product-form Element
+          if (!variantId) {
+            const productForm = this.closest('product-form');
+            if (productForm) {
+              const variantInput = productForm.querySelector('input[name="id"]');
+              if (variantInput && variantInput.value) {
+                variantId = variantInput.value;
+                console.log('CardProduct: Varianten-ID aus product-form gefunden:', variantId);
+              }
+            }
+          }
+
+          if (variantId) {
+            formData.set('id', variantId);
+            console.log('CardProduct: Varianten-ID erfolgreich gefunden:', variantId);
           } else {
-            formData.set('sections', 'cart-drawer,cart-icon-bubble');
+            console.error('CardProduct: Keine Varianten-ID gefunden', {
+              formDataset: this.dataset,
+              formAttributes: Array.from(this.attributes).map(attr => `${attr.name}="${attr.value}"`),
+              formHTML: this.outerHTML.substring(0, 200) + '...',
+              hasInnerForm: !!this.querySelector('form[data-type="add-to-cart-form"]'),
+              hasProductForm: !!this.closest('product-form')
+            });
+            if (submitButton) {
+              submitButton.removeAttribute('disabled');
+              submitButton.classList.remove('loading');
+              if (loadingSpinner) {
+                loadingSpinner.classList.add('hidden');
+              }
+            }
+            return;
           }
         }
 
-        // URL-Pfad für die Sections setzen
-        if (!formData.get('sections_url')) {
-          formData.set('sections_url', window.location.pathname);
+        // Sicherstellen, dass die Menge auf 1 gesetzt ist
+        formData.set('quantity', '1');
+
+        // Erforderliche Shopify-Felder hinzufügen
+        if (!formData.get('form_type')) {
+          formData.set('form_type', 'product');
+        }
+        if (!formData.get('utf8')) {
+          formData.set('utf8', '✓');
         }
 
-        // AJAX-Warenkorb-Hinzufügen mit XMLHttpRequest-Header für JSON-Antwort
+        // WICHTIG: Sections für JSON-Response hinzufügen
+        formData.set('sections', 'cart-drawer,cart-icon-bubble');
+        formData.set('sections_url', window.location.pathname);
+
+        // Debug: FormData-Inhalt loggen
+        console.log('CardProduct: FormData-Inhalt:');
+        for (let [key, value] of formData.entries()) {
+          console.log(`  ${key}: ${value}`);
+        }
+
+        // Konvertiere FormData zu URLSearchParams für bessere Kompatibilität
+        const params = new URLSearchParams();
+        for (let [key, value] of formData.entries()) {
+          params.append(key, value);
+        }
+
+        // AJAX-Warenkorb-Hinzufügen mit .js Endpoint für JSON-Antwort
         console.log('CardProduct: Füge Produkt zum Warenkorb hinzu');
-        fetch(routes.cart_add_url, {
+        console.log('CardProduct: URL:', `${routes.cart_add_url}.js`);
+        console.log('CardProduct: Body:', params.toString());
+
+        fetch(`${routes.cart_add_url}.js`, {
           method: 'POST',
           headers: {
-            'X-Requested-With': 'XMLHttpRequest'
+            'X-Requested-With': 'XMLHttpRequest',
+            'Content-Type': 'application/x-www-form-urlencoded'
           },
-          body: formData
+          body: params.toString()
         })
-        .then(response => response.json())
+        .then(response => {
+          console.log('CardProduct: Response Status:', response.status);
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
         .then(response => {
           console.log('CardProduct: Produkt zum Warenkorb hinzugefügt', response);
 
           if (response.status) {
             console.error('CardProduct: Fehler beim Hinzufügen:', response);
+            if (submitButton) {
+              submitButton.removeAttribute('disabled');
+              submitButton.classList.remove('loading');
+              if (loadingSpinner) {
+                loadingSpinner.classList.add('hidden');
+              }
+            }
             return;
           }
+
+          // SOFORTIGE Updates für Echtzeit-Feedback
+          console.log('CardProduct: Starte sofortige Updates...');
+
+          // 1. CartStateManager sofort aktualisieren
+          if (window.cartStateManager) {
+            window.cartStateManager.updateCartData(response);
+          }
+
+          // 2. Cart-Drawer sofort aktualisieren und öffnen
+          const cartDrawer = document.querySelector('cart-drawer');
+          if (cartDrawer && response.sections) {
+            cartDrawer.renderContents(response);
+            cartDrawer.open();
+          }
+
+          // 3. Cart-Icon sofort aktualisieren
+          if (window.cartIconUpdater) {
+            window.cartIconUpdater.updateCartIcon(response);
+          }
+
+          // 4. Events für andere Komponenten auslösen
+          document.dispatchEvent(new CustomEvent('cart:updated', {
+            detail: { cartData: response }
+          }));
+
+          document.dispatchEvent(new CustomEvent('cart:item:added', {
+            detail: {
+              cartData: response,
+              productId: productId,
+              variantId: variantId
+            }
+          }));
 
           // CartStateManager zuerst aktualisieren
           if (window.cartStateManager) {
@@ -1229,35 +1238,33 @@ function updateProductCardsWithCartData(cartProductIds) {
       addForm = container.querySelector('.card-product__add-form, form[data-type="add-to-cart-form"]');
 
       if (addForm) {
-        productId = parseInt(addForm.dataset.productId) ||
-                   parseInt(addForm.querySelector('input[name="id"]')?.value);
+        // Verbesserte Produkt-ID-Ermittlung
+        if (addForm.dataset.productId) {
+          productId = parseInt(addForm.dataset.productId);
+        } else {
+          // Fallback: Aus übergeordnetem Element
+          const parentWithId = addForm.closest('[data-product-id]');
+          if (parentWithId && parentWithId.dataset.productId) {
+            productId = parseInt(parentWithId.dataset.productId);
+          }
+        }
       }
     }
 
-    if (!productId || !addForm || !actionsContainer) {
-      console.log(`Fehlende Daten für Produktkarte: productId=${productId}, addForm=${!!addForm}, actionsContainer=${!!actionsContainer}`);
+    // Zusätzliche Validierung der Produkt-ID
+    if (!productId || isNaN(productId)) {
       return;
     }
 
-    // Prüfen, ob Produkt verfügbar ist (nicht sold-out)
-    const productWrapper = container.closest('.product-card-wrapper, .card-wrapper');
-    const isSoldOut = productWrapper?.querySelector('.badge--sold-out') ||
-                     addForm.querySelector('button[disabled]') ||
-                     addForm.classList.contains('disabled');
-
-    if (isSoldOut) {
-      console.log(`Produkt ${productId} ist ausverkauft - überspringe Button-Update`);
+    if (!productId || !addForm || !actionsContainer) {
       return;
     }
 
     // Prüfen, ob im Warenkorb
     const isInCart = cartProductIds.includes(productId);
-    const formVisible = addForm.style.display !== 'none' &&
-                       (!addForm.closest('product-form') || addForm.closest('product-form').style.display !== 'none');
+    console.log(`Produkt ${productId}: isInCart=${isInCart}, formVisible=${addForm.style.display !== 'none'}`);
 
-    console.log(`Produkt ${productId}: isInCart=${isInCart}, formVisible=${formVisible}`);
-
-    if (isInCart && formVisible) {
+    if (isInCart && addForm.style.display !== 'none') {
       // Wenn im Warenkorb, aber Form sichtbar - ändern zu "View Cart"
       console.log(`Ändere Produkt ${productId} zu "View Cart"`);
 
@@ -1280,7 +1287,7 @@ function updateProductCardsWithCartData(cartProductIds) {
         actionsContainer.appendChild(viewCartButton);
         console.log(`View Cart Button für Produkt ${productId} erstellt`);
       }
-    } else if (!isInCart && !formVisible) {
+    } else if (!isInCart && (addForm.style.display === 'none' || addForm.closest('product-form')?.style.display === 'none')) {
       // Zurücksetzen auf "In den Warenkorb"
       console.log(`Setze Produkt ${productId} zurück auf "Add to Cart"`);
 
@@ -1300,36 +1307,6 @@ function updateProductCardsWithCartData(cartProductIds) {
   });
 
   console.log('updateProductCardsWithCartData: Update abgeschlossen');
-}
-
-// Stelle sicher, dass alle Add-to-Cart Buttons sichtbar sind (außer bei sold-out Produkten)
-function ensureAddToCartButtonsVisible() {
-  console.log('Stelle sicher, dass Add-to-Cart Buttons sichtbar sind...');
-
-  const productCards = document.querySelectorAll('.product-card-wrapper, .card-wrapper');
-  productCards.forEach(card => {
-    const addForm = card.querySelector('.card-product__add-form, form[data-type="add-to-cart-form"]');
-    const actionsContainer = card.querySelector('.card-product__actions, .card__actions, .quick-add');
-    const isSoldOut = card.querySelector('.badge--sold-out') ||
-                     addForm?.querySelector('button[disabled]') ||
-                     addForm?.classList.contains('disabled');
-
-    if (addForm && actionsContainer && !isSoldOut) {
-      // Stelle sicher, dass das Formular sichtbar ist
-      const productForm = addForm.closest('product-form');
-      if (productForm && productForm.style.display === 'none') {
-        productForm.style.display = 'block';
-      } else if (addForm.style.display === 'none') {
-        addForm.style.display = 'block';
-      }
-
-      // Entferne eventuell vorhandene View Cart Buttons (außer wenn wirklich im Warenkorb)
-      const viewCartButton = actionsContainer.querySelector('.card-product__view-cart');
-      if (viewCartButton) {
-        viewCartButton.remove();
-      }
-    }
-  });
 }
 
 // Aktualisiere den Status aller Produktkarten

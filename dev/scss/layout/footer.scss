@@ -4,7 +4,7 @@ footer {
         .footer__content-top {
             padding: 40px 0;
             max-width: var(--page-width);
-            
+
             .footer__blocks-wrapper {
                 display: flex;
                 flex-wrap: wrap;
@@ -13,7 +13,7 @@ footer {
                 gap: 30px !important;
                 @media screen and (max-width: 749px) {
                     flex-direction: column;
-                    
+
                     .footer-block {
                         width: 100% !important; // Überschreibe die spezifische Breite auf Mobilgeräten
                     }
@@ -39,7 +39,7 @@ footer {
                     margin: 5px 0 10px 0;
                 }
             }
-            
+
             // Entferne die festen Grid-Spalten und verwende die individuellen Breiten
             .footer-block.grid__item {
                 width: auto; // Die Breite wird durch das inline-style überschrieben
@@ -124,6 +124,16 @@ footer {
                     }
                 }
             }
+
+            // Trennlinie zwischen Menü 1 und Menü 2 - nur mobile
+            &:nth-child(2) {
+                @media screen and (max-width: 749px) {
+                    border-top: 1px solid rgba(255,255,255,.5);
+                    margin-top: 15px;
+                    padding-top: 15px;
+                    margin-bottom: 15px;
+                }
+            }
         }
 
         // Untere Footer-Zeile
@@ -136,22 +146,22 @@ footer {
                 justify-content: space-between;
                 align-items: center;
                 flex-wrap: wrap;
-                
+
                 @media screen and (max-width: 749px) {
                     flex-direction: column;
                     text-align: center;
                 }
-                
+
                 .footer__bottom-item {
                     margin: 5px 10px;
                     font-family: 'Cormorant Garamond';
                     font-size: $fontSizeSmall;
                     color: $whiteColor;
-                    
+
                     @media screen and (max-width: 749px) {
                         margin: 5px 0;
                     }
-                    
+
                     a {
                         color: $whiteColor;
                         text-decoration: none;
@@ -159,30 +169,30 @@ footer {
                         &:hover {
                             opacity: 0.8;
                         }
-                        
+
                         .fa-heart {
                             color: #ff4d4d;
                         }
                     }
                 }
-                
+
                 .footer__payment-icons {
                     .list-payment {
                         display: flex;
                         flex-wrap: wrap;
                         justify-content: flex-end;
-                        
+
                         @media screen and (max-width: 749px) {
                             justify-content: center;
                         }
-                        
+
                         .list-payment__item {
                             margin-left: 8px;
-                            
+
                             @media screen and (max-width: 749px) {
                                 margin: 0 4px;
                             }
-                            
+
                             .icon {
                                 width: 40px;
                                 height: auto;

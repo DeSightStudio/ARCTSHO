@@ -306,9 +306,9 @@
       crossorigin="anonymous"
       defer
     ></script>
-    <script src="{{ 'dist.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'external-links.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'back-button.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'dist.js' | asset_url }}" defer="defer"></script>
     {{ 'dist.css' | asset_url | stylesheet_tag }}
 
     {%- if content_for_layout contains 'collection-slider' -%}
@@ -463,8 +463,7 @@
     <!-- Pop-Up Komponenten -->
     {% render 'popups' %}
 
-    <!-- Mobile Menu Utilities -->
-    <script src="{{ 'mobile-menu-utilities.js' | asset_url }}" defer></script>
+    <!-- Mobile Menu Utilities sind in dist.js enthalten -->
 
     {% comment %}
       Inline-Script für VAT-ID-Button im Cart

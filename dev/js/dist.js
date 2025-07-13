@@ -738,6 +738,310 @@
 // Import Custom Lightbox
 // Custom Lightbox wird automatisch initialisiert wenn die Datei geladen wird
 
+/**
+ * Zentrale Add-to-Cart Manager Klasse
+ * Konsolidiert alle Add-to-Cart Funktionalitäten in einer einzigen, wiederverwendbaren Klasse
+ */
+class AddToCartManager {
+    constructor() {
+        this.isInitialized = false;
+        this.init();
+    }
+
+    init() {
+        if (this.isInitialized) return;
+
+        this.setupEventListeners();
+        this.isInitialized = true;
+        console.log('AddToCartManager initialisiert');
+    }
+
+    setupEventListeners() {
+        // Delegierter Event-Listener für alle Add-to-Cart Formulare
+        document.addEventListener('submit', (event) => {
+            const form = event.target;
+
+            // Prüfe ob es ein Add-to-Cart Formular ist
+            if (this.isAddToCartForm(form)) {
+                event.preventDefault();
+                event.stopPropagation();
+                this.handleAddToCart(form);
+            }
+        });
+
+        // Event-Listener für Cart-Updates
+        document.addEventListener('cart:item:removed', (event) => {
+            this.handleCartItemRemoved(event);
+        });
+
+        document.addEventListener('drawer:closed', (event) => {
+            this.handleDrawerClosed(event);
+        });
+    }
+
+    isAddToCartForm(form) {
+        // Verschiedene Add-to-Cart Formular-Typen erkennen
+        return form.classList.contains('card-product__add-form') ||
+               form.querySelector('[name="id"]') ||
+               form.closest('product-form') ||
+               form.dataset.type === 'add-to-cart-form' ||
+               form.querySelector('button[type="submit"]')?.textContent?.toLowerCase().includes('warenkorb');
+    }
+
+    async handleAddToCart(form) {
+        const submitButton = form.querySelector('button[type="submit"]');
+        if (!submitButton) return;
+
+        // Button-State setzen
+        this.setButtonLoading(submitButton, true);
+
+        try {
+            // Produkt- und Varianten-IDs ermitteln
+            const { productId, variantId } = this.getProductIds(form);
+
+            if (!productId || !variantId) {
+                throw new Error('Keine gültige Produkt-ID oder Varianten-ID gefunden');
+            }
+
+            console.log('AddToCartManager: IDs gefunden', { productId, variantId });
+
+            // Prüfe ob bereits im Warenkorb
+            const isInCart = await this.checkIfInCart(productId, variantId);
+
+            if (isInCart) {
+                // Nur Cart-Drawer öffnen
+                this.openCartDrawer();
+                this.updateButtonToViewCart(form);
+            } else {
+                // Zum Warenkorb hinzufügen
+                const response = await this.addToCart(form, variantId);
+                await this.handleAddToCartSuccess(form, response, productId, variantId);
+            }
+
+        } catch (error) {
+            console.error('AddToCartManager: Fehler:', error);
+            this.handleAddToCartError(form, error);
+        } finally {
+            this.setButtonLoading(submitButton, false);
+        }
+    }
+
+    getProductIds(form) {
+        let productId = null;
+        let variantId = null;
+
+        // Varianten-ID ermitteln
+        variantId = parseInt(
+            form.dataset.variantId ||
+            form.querySelector('[name="id"]')?.value ||
+            form.closest('[data-variant-id]')?.dataset.variantId
+        );
+
+        // Produkt-ID ermitteln
+        productId = parseInt(
+            form.dataset.productId ||
+            form.closest('[data-product-id]')?.dataset.productId ||
+            form.querySelector('button[data-product-id]')?.dataset.productId
+        );
+
+        return { productId, variantId };
+    }
+
+    async checkIfInCart(productId, variantId) {
+        // Verwende CartStateManager wenn verfügbar
+        if (window.cartStateManager && window.cartStateManager.getCartData()) {
+            const cartData = window.cartStateManager.getCartData();
+            return cartData.items.some(item =>
+                item.product_id === productId || item.variant_id === variantId
+            );
+        }
+
+        // Fallback: API-Call
+        try {
+            const response = await fetch(`${routes.cart_url}.js`);
+            const cartData = await response.json();
+            return cartData.items.some(item =>
+                item.product_id === productId || item.variant_id === variantId
+            );
+        } catch (error) {
+            console.error('AddToCartManager: Fehler beim Cart-Check:', error);
+            return false;
+        }
+    }
+
+    async addToCart(form, variantId) {
+        // FormData erstellen und validieren
+        const formData = new FormData(form);
+
+        // Sicherstellen, dass alle erforderlichen Felder vorhanden sind
+        if (!formData.get('id')) {
+            formData.set('id', variantId);
+        }
+
+        formData.set('quantity', '1');
+        formData.set('form_type', 'product');
+        formData.set('utf8', '✓');
+        formData.set('sections', 'cart-drawer,cart-icon-bubble');
+        formData.set('sections_url', window.location.pathname);
+
+        // Zu URLSearchParams konvertieren
+        const params = new URLSearchParams();
+        for (let [key, value] of formData.entries()) {
+            params.append(key, value);
+        }
+
+        console.log('AddToCartManager: Request Body:', params.toString());
+
+        const response = await fetch(`${routes.cart_add_url}.js`, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: params.toString()
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const result = await response.json();
+
+        if (result.status) {
+            throw new Error(result.description || 'Fehler beim Hinzufügen zum Warenkorb');
+        }
+
+        return result;
+    }
+
+    async handleAddToCartSuccess(form, response, productId, variantId) {
+        // CartStateManager aktualisieren
+        if (window.cartStateManager) {
+            window.cartStateManager.updateCartData(response);
+        }
+
+        // Button zu "View Cart" ändern
+        this.updateButtonToViewCart(form);
+
+        // Cart-Drawer aktualisieren und öffnen
+        this.updateCartDrawer(response);
+        this.openCartDrawer();
+
+        // Events auslösen
+        this.dispatchCartEvents(response, productId, variantId);
+    }
+
+    handleAddToCartError(form, error) {
+        console.error('AddToCartManager: Add-to-Cart Fehler:', error);
+        // Hier könnte eine Benutzer-Benachrichtigung angezeigt werden
+    }
+
+    setButtonLoading(button, isLoading) {
+        if (isLoading) {
+            button.setAttribute('disabled', 'disabled');
+            button.classList.add('loading');
+            const spinner = button.querySelector('.loading__spinner');
+            if (spinner) spinner.classList.remove('hidden');
+        } else {
+            button.removeAttribute('disabled');
+            button.classList.remove('loading');
+            const spinner = button.querySelector('.loading__spinner');
+            if (spinner) spinner.classList.add('hidden');
+        }
+    }
+
+    updateButtonToViewCart(form) {
+        const actionsContainer = form.closest('.card-product__actions');
+        if (!actionsContainer) return;
+
+        // Prüfe ob bereits ein View-Cart Button existiert
+        let viewCartButton = actionsContainer.querySelector('.card-product__view-cart');
+
+        if (!viewCartButton) {
+            // Erstelle neuen View-Cart Button
+            viewCartButton = document.createElement('button');
+            viewCartButton.className = 'button button--full-width card-product__view-cart';
+            viewCartButton.type = 'button';
+            viewCartButton.innerHTML = `
+                <span>${window.cartStrings?.viewCart || 'Zum Warenkorb'}</span>
+                <div class="loading__spinner hidden">
+                    <svg aria-hidden="true" focusable="false" class="spinner" viewBox="0 0 66 66">
+                        <circle class="path" fill="none" stroke-width="6" cx="33" cy="33" r="30"></circle>
+                    </svg>
+                </div>
+            `;
+
+            viewCartButton.addEventListener('click', () => this.openCartDrawer());
+            actionsContainer.appendChild(viewCartButton);
+        }
+
+        // Original-Form verstecken
+        form.style.display = 'none';
+        viewCartButton.style.display = 'block';
+    }
+
+    updateCartDrawer(response) {
+        const cartDrawer = document.querySelector('cart-drawer');
+        if (cartDrawer && typeof cartDrawer.renderContents === 'function') {
+            cartDrawer.renderContents(response);
+        }
+    }
+
+    openCartDrawer() {
+        const cartDrawer = document.querySelector('cart-drawer');
+        if (cartDrawer && typeof cartDrawer.open === 'function') {
+            cartDrawer.open();
+        }
+    }
+
+    dispatchCartEvents(response, productId, variantId) {
+        document.dispatchEvent(new CustomEvent('cart:updated', {
+            detail: { cartData: response }
+        }));
+
+        document.dispatchEvent(new CustomEvent('cart:item:added', {
+            detail: { productId, variantId }
+        }));
+    }
+
+    handleCartItemRemoved(event) {
+        // Alle View-Cart Buttons für das entfernte Produkt zurücksetzen
+        const { productId, variantId } = event.detail || {};
+
+        if (productId || variantId) {
+            this.resetButtonsForProduct(productId, variantId);
+        }
+    }
+
+    handleDrawerClosed(event) {
+        // Optional: Zusätzliche Logik beim Schließen des Drawers
+    }
+
+    resetButtonsForProduct(productId, variantId) {
+        // Finde alle relevanten Formulare und setze sie zurück
+        const forms = document.querySelectorAll('.card-product__add-form');
+
+        forms.forEach(form => {
+            const formProductId = parseInt(form.dataset.productId || form.closest('[data-product-id]')?.dataset.productId);
+            const formVariantId = parseInt(form.dataset.variantId || form.querySelector('[name="id"]')?.value);
+
+            if ((productId && formProductId === productId) || (variantId && formVariantId === variantId)) {
+                const actionsContainer = form.closest('.card-product__actions');
+                if (actionsContainer) {
+                    const viewCartButton = actionsContainer.querySelector('.card-product__view-cart');
+                    if (viewCartButton) {
+                        viewCartButton.remove();
+                    }
+                    form.style.display = 'block';
+                }
+            }
+        });
+    }
+}
+
+// Globale Instanz erstellen
+window.addToCartManager = new AddToCartManager();
+
 // Slick Slider Initialization
 function initializeSlickSlider() {
     if ($('#collection-slider').length > 0) {

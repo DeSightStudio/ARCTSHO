@@ -320,6 +320,16 @@ if (!customElements.get('product-form')) {
 
         const formData = new FormData(this.form);
 
+        // Sections für Cart-Updates hinzufügen
+        const cartDrawer = document.querySelector('cart-drawer');
+        if (cartDrawer && typeof cartDrawer.getSectionsToRender === 'function') {
+          const sections = cartDrawer.getSectionsToRender().map(section => section.id).join(',');
+          formData.set('sections', sections);
+        } else {
+          formData.set('sections', 'cart-drawer,cart-icon-bubble');
+        }
+        formData.set('sections_url', window.location.pathname);
+
         // Prüfen, ob Menge > 1 und auf 1 setzen
         const quantity = parseInt(formData.get('quantity'));
         if (quantity > 1) {
@@ -337,26 +347,9 @@ if (!customElements.get('product-form')) {
         }
         config.body = formData;
 
-        // Optimiert: Verwende CartStateManager wenn verfügbar, sonst direkter API-Call
-        const checkCartAndProceed = () => {
-          let cartData = null;
-
-          // Versuche zuerst CartStateManager Daten zu verwenden
-          if (window.cartStateManager && window.cartStateManager.getCartData()) {
-            cartData = window.cartStateManager.getCartData();
-            processCartCheck(cartData);
-          } else {
-            // Fallback: API-Call
-            fetch(`${routes.cart_url}.js`)
-              .then(response => response.json())
-              .then(cart => processCartCheck(cart))
-              .catch(error => {
-                console.error('ProductForm: Fehler beim Warenkorb-Check:', error);
-                // Bei Fehler: Versuche trotzdem hinzuzufügen
-                processCartCheck({ items: [] });
-              });
-          }
-        };
+        // HINWEIS: Diese Logik wird jetzt vom AddToCartManager übernommen
+        // Für ProductForm-Elemente wird der normale Submit-Flow verwendet
+        // und der AddToCartManager fängt das Event ab
 
         const processCartCheck = (cart) => {
           // Prüfen, ob das Produkt bereits im Warenkorb ist (entweder durch Produkt-ID oder Varianten-ID)
@@ -382,7 +375,9 @@ if (!customElements.get('product-form')) {
             }
 
             // Event auslösen, um andere Komponenten zu informieren
-            document.dispatchEvent(new CustomEvent('cart:updated'));
+            document.dispatchEvent(new CustomEvent('cart:updated', {
+              detail: { cartData: window.cartStateManager?.getCartData() || {} }
+            }));
           } else {
             // Wenn nicht im Warenkorb, zum Warenkorb hinzufügen
             fetch(`${routes.cart_add_url}`, config)
@@ -427,6 +422,9 @@ if (!customElements.get('product-form')) {
                   window.cartStateManager.updateCartData(response);
                 }
 
+                // Sofortige Aktualisierung der Cart-Icon-Bubble
+                this.updateCartIconBubble(response);
+
                 const quickAddModal = this.closest('quick-add-modal');
                 if (quickAddModal) {
                   document.body.addEventListener(
@@ -440,8 +438,24 @@ if (!customElements.get('product-form')) {
                   );
                   quickAddModal.hide(true);
                 } else {
-                  this.cart.renderContents(response);
+                  // Cart-Drawer finden und aktualisieren
+                  const cartDrawer = document.querySelector('cart-drawer');
+                  if (cartDrawer) {
+                    cartDrawer.renderContents(response);
+                    cartDrawer.open();
+                  } else if (this.cart) {
+                    this.cart.renderContents(response);
+                  }
                 }
+
+                // Zusätzliche Events für bessere Synchronisation
+                document.dispatchEvent(new CustomEvent('cart:item:added', {
+                  detail: {
+                    cartData: response,
+                    productId: this.form.dataset.productId,
+                    variantId: formData.get('id')
+                  }
+                }));
               })
               .catch((e) => {
                 console.error('ProductForm: Fehler beim Add-to-Cart:', e);
@@ -1230,6 +1244,36 @@ if (!customElements.get('product-form')) {
         button.parentNode.replaceChild(newButton, button);
         this.submitButton = newButton;
         return newButton;
+      }
+
+      // Neue Methode zur direkten Cart-Icon-Bubble-Aktualisierung
+      updateCartIconBubble(cartData) {
+        try {
+          const cartIconBubble = document.getElementById('cart-icon-bubble');
+          if (cartIconBubble && cartData) {
+            const itemCount = cartData.item_count || 0;
+
+            // Bubble-Text aktualisieren
+            const bubbleText = cartIconBubble.querySelector('.cart-count-bubble span[aria-hidden="true"]');
+            if (bubbleText) {
+              bubbleText.textContent = itemCount;
+            }
+
+            // Bubble anzeigen/verstecken
+            const bubble = cartIconBubble.querySelector('.cart-count-bubble');
+            if (bubble) {
+              if (itemCount > 0) {
+                bubble.style.display = 'block';
+              } else {
+                bubble.style.display = 'none';
+              }
+            }
+
+            console.log('ProductForm: Cart-Icon-Bubble aktualisiert', { itemCount });
+          }
+        } catch (error) {
+          console.error('ProductForm: Fehler beim Aktualisieren der Cart-Icon-Bubble:', error);
+        }
       }
     }
   );
