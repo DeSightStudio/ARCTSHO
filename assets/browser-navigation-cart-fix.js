@@ -181,12 +181,23 @@ class BrowserNavigationCartFix {
           bubbleText.textContent = itemCount;
         }
 
-        // Bubble-Sichtbarkeit
+        // WICHTIG: Cart-Icon NIEMALS verstecken - nur die Bubble bei 0 Artikeln
         if (itemCount > 0) {
-          cartIconBubble.classList.remove('hidden');
+          const bubble = cartIconBubble.querySelector('.cart-count-bubble');
+          if (bubble) {
+            bubble.style.display = 'block';
+          }
         } else {
-          cartIconBubble.classList.add('hidden');
+          const bubble = cartIconBubble.querySelector('.cart-count-bubble');
+          if (bubble) {
+            bubble.style.display = 'none';
+          }
         }
+
+        // Cart-Icon selbst IMMER sichtbar halten
+        cartIconBubble.style.display = '';
+        cartIconBubble.style.visibility = '';
+        cartIconBubble.classList.remove('hidden');
 
         console.log('BrowserNavigationCartFix: Cart-Icon aktualisiert', { itemCount });
       }
@@ -194,6 +205,8 @@ class BrowserNavigationCartFix {
       console.warn('BrowserNavigationCartFix: Fehler beim Aktualisieren des Cart-Icons:', error);
     }
   }
+
+
 }
 
 // Globale Instanz erstellen

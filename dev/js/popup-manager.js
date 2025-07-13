@@ -687,14 +687,26 @@
     document.addEventListener('click', function(e) {
       const requestOnlyButton = e.target.closest('.request-only-button');
       if (requestOnlyButton) {
-        console.log('Request-Only-Button geklickt - speichere Button-Referenz:', requestOnlyButton);
-        console.log('Button data attributes:', requestOnlyButton.dataset);
+        console.log('🔥 REQUEST-ONLY BUTTON GEKLICKT!', requestOnlyButton);
+        console.log('🔥 Button data attributes:', requestOnlyButton.dataset);
+        console.log('🔥 MicroModal verfügbar:', typeof MicroModal !== 'undefined');
 
         // Speichere den Button für den onShow Callback
         lastClickedRequestOnlyButton = requestOnlyButton;
 
-        // Lass MicroModal das Modal normal öffnen
-        // Das data-micromodal-trigger Attribut wird von MicroModal automatisch verarbeitet
+        // Explizit das Modal öffnen (nicht nur auf MicroModal verlassen)
+        const modalId = requestOnlyButton.getAttribute('data-micromodal-trigger');
+        if (modalId) {
+          console.log('🔥 Versuche Modal zu öffnen:', modalId);
+          try {
+            MicroModal.show(modalId);
+            console.log('🔥 Modal erfolgreich geöffnet!');
+          } catch (error) {
+            console.error('🔥 FEHLER beim Öffnen des Modals:', error);
+          }
+        } else {
+          console.error('🔥 FEHLER: Kein data-micromodal-trigger gefunden!');
+        }
       }
     }, true); // useCapture = true, um das Event vor anderen Listenern zu fangen
 

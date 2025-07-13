@@ -247,14 +247,19 @@
                     {{ settings.cart_popup_vat_id_success_message }}
                   </div>
                   <script>
-                    // Sofortiges Leeren des Warenkorbs bei erfolgreicher Formularübermittlung
+                    // Sofortiges Leeren des Warenkorbs bei erfolgreicher VAT-ID Formularübermittlung
                     (function () {
-                      // Prüfen, ob wir durch URL-Parameter erkennen können, dass das Formular erfolgreich gesendet wurde
+                      // Prüfen, ob wir durch URL-Parameter erkennen können, dass das VAT-ID Formular erfolgreich gesendet wurde
                       const urlParams = new URLSearchParams(window.location.search);
                       const isFormSuccess = urlParams.get('form_submission') === 'success';
+                      const isVatIdForm =
+                        urlParams.get('form_type') === 'vat_id' ||
+                        document.querySelector('#vatIdForm') !== null ||
+                        window.location.pathname.includes('vat-id') ||
+                        document.querySelector('form[action*="vat"]') !== null;
 
-                      // Einmaliger Aufruf zur Vermeidung von Schleifen
-                      if (!sessionStorage.getItem('vatIdFormProcessed')) {
+                      // Nur bei VAT-ID Formularen ausführen, nicht bei anderen Formularen wie Request-Only
+                      if (isFormSuccess && isVatIdForm && !sessionStorage.getItem('vatIdFormProcessed')) {
                         console.log('VAT-ID Formular erfolgreich gesendet - leere Warenkorb');
 
                         // Markieren, dass wir diesen Prozess bereits durchgeführt haben
