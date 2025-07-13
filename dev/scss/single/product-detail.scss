@@ -175,27 +175,50 @@ product-recommendations {
         font-size: $fontSizeSmall !important; // 16px statt 22px
     }
 
-    // Ensure 2 columns on mobile for related products
+    // Mobile Layout für Related Products - überschreibt base.css Regeln
     .grid.product-grid {
-        @media screen and (max-width: 749px) and (min-width: 481px) {
-            &.grid--2-col-tablet-down .grid__item {
-                width: calc(50% - var(--grid-mobile-horizontal-spacing) / 2) !important;
-                max-width: calc(50% - var(--grid-mobile-horizontal-spacing) / 2) !important;
-            }
-            // Force 2 columns even if set to 1 column
-            &.grid--1-col-tablet-down .grid__item {
-                width: calc(50% - var(--grid-mobile-horizontal-spacing) / 2) !important;
-                max-width: calc(50% - var(--grid-mobile-horizontal-spacing) / 2) !important;
-            }
-        }
-
-        // 1 column for very small phones
-        @media screen and (max-width: 480px) {
-            &.grid--2-col-tablet-down .grid__item,
+        @media screen and (max-width: 749px) {
+            // 1 Spalte wenn als 1-col-tablet-down gesetzt (respektiert Shopify Setting)
             &.grid--1-col-tablet-down .grid__item {
                 width: 100% !important;
                 max-width: 100% !important;
+                flex-basis: 100% !important;
             }
+
+            // 2 Spalten nur wenn explizit als 2-col-tablet-down gesetzt
+            &.grid--2-col-tablet-down .grid__item {
+                width: calc(50% - var(--grid-mobile-horizontal-spacing) / 2) !important;
+                max-width: calc(50% - var(--grid-mobile-horizontal-spacing) / 2) !important;
+                flex-basis: calc(50% - var(--grid-mobile-horizontal-spacing) / 2) !important;
+            }
+        }
+    }
+
+    // Zusätzliche Sicherheit: Überschreibe base.css Regeln direkt
+    @media screen and (max-width: 749px) {
+        .related-products .grid--1-col-tablet-down .grid__item,
+        product-recommendations .grid--1-col-tablet-down .grid__item {
+            width: 100% !important;
+            max-width: 100% !important;
+            flex-basis: 100% !important;
+        }
+
+        // Verhindere, dass base.css die 2-Spalten-Regel überschreibt
+        .related-products .grid--2-col-tablet-down .grid__item,
+        product-recommendations .grid--2-col-tablet-down .grid__item {
+            width: calc(50% - var(--grid-mobile-horizontal-spacing) / 2) !important;
+            max-width: calc(50% - var(--grid-mobile-horizontal-spacing) / 2) !important;
+            flex-basis: calc(50% - var(--grid-mobile-horizontal-spacing) / 2) !important;
+        }
+    }
+
+    // Höchste Priorität: Spezifische Regel für custom-related-products Sektion
+    @media screen and (max-width: 749px) {
+        .page-width product-recommendations.related-products .grid.product-grid.grid--1-col-tablet-down .grid__item {
+            width: 100% !important;
+            max-width: 100% !important;
+            flex-basis: 100% !important;
+            min-width: 100% !important;
         }
     }
 

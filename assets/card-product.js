@@ -781,6 +781,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
+  // Stelle sicher, dass alle Add-to-Cart Buttons sichtbar sind
+  ensureAddToCartButtonsVisible();
+
   // Initialisiere Produktkarten-Status basierend auf dem aktuellen Warenkorb
   initializeProductCardStates();
 
@@ -1232,14 +1235,29 @@ function updateProductCardsWithCartData(cartProductIds) {
     }
 
     if (!productId || !addForm || !actionsContainer) {
+      console.log(`Fehlende Daten für Produktkarte: productId=${productId}, addForm=${!!addForm}, actionsContainer=${!!actionsContainer}`);
+      return;
+    }
+
+    // Prüfen, ob Produkt verfügbar ist (nicht sold-out)
+    const productWrapper = container.closest('.product-card-wrapper, .card-wrapper');
+    const isSoldOut = productWrapper?.querySelector('.badge--sold-out') ||
+                     addForm.querySelector('button[disabled]') ||
+                     addForm.classList.contains('disabled');
+
+    if (isSoldOut) {
+      console.log(`Produkt ${productId} ist ausverkauft - überspringe Button-Update`);
       return;
     }
 
     // Prüfen, ob im Warenkorb
     const isInCart = cartProductIds.includes(productId);
-    console.log(`Produkt ${productId}: isInCart=${isInCart}, formVisible=${addForm.style.display !== 'none'}`);
+    const formVisible = addForm.style.display !== 'none' &&
+                       (!addForm.closest('product-form') || addForm.closest('product-form').style.display !== 'none');
 
-    if (isInCart && addForm.style.display !== 'none') {
+    console.log(`Produkt ${productId}: isInCart=${isInCart}, formVisible=${formVisible}`);
+
+    if (isInCart && formVisible) {
       // Wenn im Warenkorb, aber Form sichtbar - ändern zu "View Cart"
       console.log(`Ändere Produkt ${productId} zu "View Cart"`);
 
@@ -1262,7 +1280,7 @@ function updateProductCardsWithCartData(cartProductIds) {
         actionsContainer.appendChild(viewCartButton);
         console.log(`View Cart Button für Produkt ${productId} erstellt`);
       }
-    } else if (!isInCart && (addForm.style.display === 'none' || addForm.closest('product-form')?.style.display === 'none')) {
+    } else if (!isInCart && !formVisible) {
       // Zurücksetzen auf "In den Warenkorb"
       console.log(`Setze Produkt ${productId} zurück auf "Add to Cart"`);
 
@@ -1282,6 +1300,36 @@ function updateProductCardsWithCartData(cartProductIds) {
   });
 
   console.log('updateProductCardsWithCartData: Update abgeschlossen');
+}
+
+// Stelle sicher, dass alle Add-to-Cart Buttons sichtbar sind (außer bei sold-out Produkten)
+function ensureAddToCartButtonsVisible() {
+  console.log('Stelle sicher, dass Add-to-Cart Buttons sichtbar sind...');
+
+  const productCards = document.querySelectorAll('.product-card-wrapper, .card-wrapper');
+  productCards.forEach(card => {
+    const addForm = card.querySelector('.card-product__add-form, form[data-type="add-to-cart-form"]');
+    const actionsContainer = card.querySelector('.card-product__actions, .card__actions, .quick-add');
+    const isSoldOut = card.querySelector('.badge--sold-out') ||
+                     addForm?.querySelector('button[disabled]') ||
+                     addForm?.classList.contains('disabled');
+
+    if (addForm && actionsContainer && !isSoldOut) {
+      // Stelle sicher, dass das Formular sichtbar ist
+      const productForm = addForm.closest('product-form');
+      if (productForm && productForm.style.display === 'none') {
+        productForm.style.display = 'block';
+      } else if (addForm.style.display === 'none') {
+        addForm.style.display = 'block';
+      }
+
+      // Entferne eventuell vorhandene View Cart Buttons (außer wenn wirklich im Warenkorb)
+      const viewCartButton = actionsContainer.querySelector('.card-product__view-cart');
+      if (viewCartButton) {
+        viewCartButton.remove();
+      }
+    }
+  });
 }
 
 // Aktualisiere den Status aller Produktkarten
