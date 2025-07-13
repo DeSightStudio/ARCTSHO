@@ -101,3 +101,39 @@
   text-align: right;
   font-weight: bold;
 }
+
+/* ===================================
+   PDP SPEZIFISCHE BADGE STYLING
+   =================================== */
+
+/* PDP Badge Container - natürlich im Layout fließend */
+.product__badge-container {
+  margin: 10px 0 15px 0;
+  display: flex;
+  justify-content: flex-start;
+}
+
+/* PDP Badge Styling - nicht absolut positioniert */
+.product__badge {
+  display: inline-block;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: bold;
+  font-family: 'Copperplate';
+  text-transform: uppercase;
+  border-radius: 4px;
+  line-height: 1;
+  text-align: center;
+}
+
+/* Verkauft Badge - Rot */
+.product__badge--sold-out {
+  background: #e53e3e;
+  color: white;
+}
+
+/* Sale Badge - Grün */
+.product__badge--sale {
+  background: #38a169;
+  color: white;
+}

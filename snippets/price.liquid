@@ -126,17 +126,20 @@
       </small>
     </div>
     {%- if show_badges -%}
-      {%- if compare_at_price > price and available -%}
-        <span class="badge price__badge-sale color-{{ settings.sale_badge_color_scheme }}">
-          {{ 'products.product.on_sale' | t }}
-        </span>
-      {%- endif -%}
+      {%- comment -%} Auf PDP werden Badges separat gerendert, nicht hier {%- endcomment -%}
+      {%- unless template.name == 'product' -%}
+        {%- if compare_at_price > price and available -%}
+          <span class="badge price__badge-sale color-{{ settings.sale_badge_color_scheme }}">
+            {{ 'products.product.on_sale' | t }}
+          </span>
+        {%- endif -%}
 
-      {%- if available == false -%}
-        <span class="verkauft-badge-rot">
-          {{ 'products.product.sold_out' | t }}
-        </span>
-      {%- endif -%}
+        {%- if available == false -%}
+          <span class="verkauft-badge-rot">
+            {{ 'products.product.sold_out' | t }}
+          </span>
+        {%- endif -%}
+      {%- endunless -%}
     {%- endif -%}
   </div>
 {% endunless %}

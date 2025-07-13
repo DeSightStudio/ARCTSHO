@@ -114,6 +114,22 @@
                     </h2>
                   </a>
                 </div>
+
+                {%- comment -%} PDP Badge - natürlich im Layout fließend {%- endcomment -%}
+                {%- if product.available == false -%}
+                  <div class="product__badge-container">
+                    <span class="product__badge product__badge--sold-out">
+                      {{ 'products.product.sold_out' | t }}
+                    </span>
+                  </div>
+                {%- elsif product.compare_at_price > product.price and product.available -%}
+                  <div class="product__badge-container">
+                    <span class="product__badge product__badge--sale">
+                      {{ 'products.product.on_sale' | t }}
+                    </span>
+                  </div>
+                {%- endif -%}
+
               {%- when 'price' -%}
                 <div id="price-{{ section.id }}" role="status" {{ block.shopify_attributes }}>
                   {%- render 'price',

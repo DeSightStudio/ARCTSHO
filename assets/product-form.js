@@ -144,7 +144,7 @@ window.autoFixCartButtons = function() {
           item.product_id === productId || item.variant_id === variantId
         ) : false;
 
-        if (!isInCart && submitButton.type === 'button') {
+        if (!isInCart && submitButton.type === 'button' && !submitButton.hasAttribute('disabled')) {
           console.log('Auto-Fix: Gefunden - View Cart Button bei Produkt das nicht im Warenkorb ist');
           if (form.updateButtonToAddToCart) {
             form.updateButtonToAddToCart();
@@ -201,8 +201,11 @@ window.debugPDPButton = function() {
       currentlyViewCart: submitButton?.type === 'button'
     });
 
-    // Automatische Korrektur
-    if (isInCart && submitButton?.type !== 'button') {
+    // Automatische Korrektur (nur wenn Button nicht deaktiviert ist)
+    const isButtonDisabled = submitButton?.hasAttribute('disabled');
+    if (isButtonDisabled) {
+      console.log('Button ist deaktiviert (sold-out), keine Korrektur');
+    } else if (isInCart && submitButton?.type !== 'button') {
       console.log('KORREKTUR: Setze Button auf View Cart');
       if (productForm.updateButtonToViewCart) {
         productForm.updateButtonToViewCart();
@@ -681,11 +684,21 @@ if (!customElements.get('product-form')) {
         // Aktueller Button-Status prüfen
         const currentlyShowingViewCart = this.submitButton && this.submitButton.type === 'button';
 
+        // Prüfen, ob der Button deaktiviert ist (z.B. sold-out Produkte)
+        const isButtonDisabled = this.submitButton && this.submitButton.hasAttribute('disabled');
+
         console.log('ProductForm: Aktueller Button-Status:', {
           isInCart,
           currentlyShowingViewCart,
-          shouldChange: isInCart !== currentlyShowingViewCart
+          isButtonDisabled,
+          shouldChange: isInCart !== currentlyShowingViewCart && !isButtonDisabled
         });
+
+        // Nur ändern, wenn der Button nicht deaktiviert ist
+        if (isButtonDisabled) {
+          console.log('ProductForm: Button ist deaktiviert (sold-out), keine Änderung');
+          return;
+        }
 
         if (isInCart && !currentlyShowingViewCart) {
           console.log('ProductForm: Wechsle zu View Cart Button');
@@ -704,6 +717,13 @@ if (!customElements.get('product-form')) {
         const requestOnlyButton = this.querySelector('.request-only-button');
         if (requestOnlyButton) {
           return; // Request-Only Buttons nicht ändern
+        }
+
+        // Prüfen, ob der Button deaktiviert ist (z.B. sold-out Produkte)
+        const submitButton = this.querySelector('button[type="submit"], button[name="add"]');
+        if (submitButton && submitButton.hasAttribute('disabled')) {
+          console.log('ProductForm: Button ist deaktiviert (sold-out), keine Änderung');
+          return; // Sold-out Buttons nicht ändern
         }
 
         // Cache DOM-Abfragen
@@ -775,6 +795,13 @@ if (!customElements.get('product-form')) {
         const requestOnlyButton = this.querySelector('.request-only-button');
         if (requestOnlyButton) {
           return; // Request-Only Buttons nicht ändern
+        }
+
+        // Prüfen, ob der Button deaktiviert ist (z.B. sold-out Produkte)
+        const submitButton = this.querySelector('button[type="submit"], button[name="add"]');
+        if (submitButton && submitButton.hasAttribute('disabled')) {
+          console.log('ProductForm: Button ist deaktiviert (sold-out), keine Änderung');
+          return; // Sold-out Buttons nicht ändern
         }
 
         // Cache DOM-Abfragen
