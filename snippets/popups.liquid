@@ -1588,6 +1588,9 @@
                 MicroModal.show('modal-request-success');
               }
 
+              // Zeige ehrlichen Hinweis nach dem Success-Popup
+              showNoEmailNotice();
+
               // Entferne den Parameter aus der URL (optional, für saubere URL)
               const newUrl = window.location.pathname + window.location.hash;
               window.history.replaceState({}, document.title, newUrl);
@@ -1595,8 +1598,47 @@
           }
         }
 
+        // Zeige ehrlichen Hinweis im Success-Popup
+        function showNoEmailNotice() {
+          const successModal = document.getElementById('modal-request-success');
+          if (successModal) {
+            const modalContent = successModal.querySelector('.modal__content .modal__text');
+            if (modalContent) {
+              const originalContent = modalContent.innerHTML;
+              const noEmailNoticeText = `{% liquid
+                case request.locale.iso_code
+                  when "de"
+                    echo "ℹ️ <strong>Hinweis:</strong><br>Wir haben Ihre Anfrage erhalten. Sie erhalten <strong>keine gesonderte E-Mail</strong>."
+                  when "en"
+                    echo "ℹ️ <strong>Notice:</strong><br>We have received your inquiry. You will <strong>not receive a separate email</strong>."
+                  when "it"
+                    echo "ℹ️ <strong>Avviso:</strong><br>Abbiamo ricevuto la vostra richiesta. <strong>Non riceverete un'email separata</strong>."
+                  when "es"
+                    echo "ℹ️ <strong>Aviso:</strong><br>Hemos recibido su consulta. <strong>No recibirá un email por separado</strong>."
+                  when "fr"
+                    echo "ℹ️ <strong>Avis:</strong><br>Nous avons reçu votre demande. Vous <strong>ne recevrez pas d'email séparé</strong>."
+                  else
+                    echo "ℹ️ <strong>Hinweis:</strong><br>Wir haben Ihre Anfrage erhalten. Sie erhalten <strong>keine gesonderte E-Mail</strong>."
+                endcase
+              %}`;
+
+              const additionalInfo = `
+                <div style="margin-top: 20px; padding: 15px; background-color: #f9f9f9; border-left: 4px solid #666; border-radius: 4px;">
+                  <p style="margin: 0; font-size: 14px; color: #333;">
+                    ${noEmailNoticeText}
+                  </p>
+                </div>
+              `;
+              modalContent.innerHTML = originalContent + additionalInfo;
+            }
+          }
+        }
+
         // Führe die Prüfung beim Laden der Seite aus
         checkForContactSuccess();
+
+        // Einfache Lösung: Kein komplexes Email-System mehr benötigt
+        console.log('Request-Only System bereit - ehrlicher Hinweis wird im Success-Popup angezeigt');
 
         // Reset-Funktion für Modal-Close
         function resetRequestOnlyModal() {
