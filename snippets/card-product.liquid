@@ -146,6 +146,13 @@
             id="CardLink-{{ section_id }}-{{ card_product.id }}"
             class="card-product__link full-unstyled-link"
             aria-labelledby="CardLink-{{ section_id }}-{{ card_product.id }} Badge-{{ section_id }}-{{ card_product.id }}"
+            onclick="
+              if (event.target.closest('.is-view-cart, [name=view-cart], [data-cart-action=open]')) {
+                event.preventDefault();
+                event.stopPropagation();
+                return false;
+              }
+            "
           >
             <div class="card-product__content card-product__content--initial">
               <div class="card-product__headline-container">
@@ -396,8 +403,10 @@
                     {%- if product_in_cart -%}
                       <button
                         type="button"
-                        class="card-product__view-cart button button--full-width button--primary"
-                        onclick="event.stopPropagation(); event.preventDefault(); document.querySelector('cart-drawer').open();"
+                        class="card-product__view-cart button button--full-width button--primary is-view-cart"
+                        name="view-cart"
+                        data-cart-action="open"
+                        onclick="event.stopPropagation(); event.stopImmediatePropagation(); event.preventDefault(); console.log('View Cart clicked'); const cartDrawer = document.querySelector('cart-drawer'); if (cartDrawer) cartDrawer.open(); return false;"
                       >
                         <span>{{ 'products.product.view_cart_button' | t }}</span>
                       </button>

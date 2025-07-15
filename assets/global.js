@@ -1154,6 +1154,9 @@ class ProductRecommendations extends HTMLElement {
 
           // Nach dem Laden der Related Products: Request-Only Buttons initialisieren
           this.initializeRequestOnlyButtons();
+
+          // Initialisiere neue ProductCard-Komponenten
+          this.initializeProductCards();
         }
 
         if (!this.querySelector('slideshow-component') && this.classList.contains('complementary-products')) {
@@ -1165,20 +1168,46 @@ class ProductRecommendations extends HTMLElement {
         }
       })
       .catch((e) => {
-        console.error(e);
+        // console.error(e);
       });
+  }
+
+  initializeProductCards() {
+    // Initialisiere alle Produktkarten in den neu geladenen Empfehlungen
+    this.querySelectorAll('.product-card-wrapper').forEach(wrapper => {
+      if (!wrapper.hasAttribute('is-product-card')) {
+        const productCard = document.createElement('product-card');
+        // Alle Kinder-Elemente in die Web Component verschieben
+        while (wrapper.firstChild) {
+          productCard.appendChild(wrapper.firstChild);
+        }
+        // Web Component in den DOM einfügen
+        wrapper.appendChild(productCard);
+        wrapper.setAttribute('is-product-card', 'true');
+      }
+    });
+
+    // Aktualisiere Button-Status basierend auf aktuellem Warenkorb
+    if (window.cartStateManager) {
+      const cartData = window.cartStateManager.getCartData();
+      if (cartData) {
+        document.dispatchEvent(new CustomEvent('cart:updated', {
+          detail: { cartData }
+        }));
+      }
+    }
   }
 
   initializeRequestOnlyButtons() {
     // Stelle sicher, dass MicroModal verfügbar ist
     if (typeof MicroModal === 'undefined') {
-      console.warn('MicroModal nicht verfügbar für Request-Only Buttons');
+      // console.warn('MicroModal nicht verfügbar für Request-Only Buttons');
       return;
     }
 
     // Finde alle Request-Only Buttons in den neu geladenen Related Products
     const requestOnlyButtons = this.querySelectorAll('.request-only-button');
-    console.log(`Initialisiere ${requestOnlyButtons.length} Request-Only Buttons in Related Products`);
+    // console.log(`Initialisiere ${requestOnlyButtons.length} Request-Only Buttons in Related Products`);
 
     requestOnlyButtons.forEach(button => {
       // Entferne bestehende Event-Listener (falls vorhanden)
@@ -1194,7 +1223,7 @@ class ProductRecommendations extends HTMLElement {
     event.stopPropagation();
 
     const button = event.currentTarget;
-    console.log('Request-Only Button in Related Products geklickt:', button);
+    // console.log('Request-Only Button in Related Products geklickt:', button);
 
     // Produktdaten aus den data-Attributen extrahieren
     const productData = {
@@ -1205,13 +1234,13 @@ class ProductRecommendations extends HTMLElement {
       price: button.dataset.productPrice
     };
 
-    console.log('Produktdaten für Request-Only (Related Products):', productData);
+    // console.log('Produktdaten für Request-Only (Related Products):', productData);
 
     // Formular mit Produktdaten aktualisieren
     if (typeof window.updateRequestOnlyForm === 'function') {
       window.updateRequestOnlyForm(productData);
     } else {
-      console.warn('updateRequestOnlyForm Funktion nicht gefunden');
+      // console.warn('updateRequestOnlyForm Funktion nicht gefunden');
     }
 
     // Modal öffnen

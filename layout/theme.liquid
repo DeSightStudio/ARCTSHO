@@ -345,7 +345,7 @@
       <script>
         // Sofortige Umleitung von der Cart-Seite
         (function () {
-          console.log('Cart-Seite erkannt - leite sofort um');
+          // console.log('Cart-Seite erkannt - leite sofort um');
           // Seite verstecken
           document.body.style.display = 'none';
           document.documentElement.style.display = 'none';
@@ -396,10 +396,13 @@
       window.cartStrings = {
         error: `{{ 'sections.cart.cart_error' | t }}`,
         quantityError: `{{ 'sections.cart.cart_quantity_error_html' | t: quantity: '[quantity]' }}`,
+        empty: `{{ 'sections.cart.empty' | t }}`,
+        close: `{{ 'accessibility.close' | t }}`,
       };
 
       window.variantStrings = {
         addToCart: {{ 'products.product.add_to_cart' | t | json }},
+        add_to_cart_button: {{ 'products.product.add_to_cart_button' | t | json }},
         soldOut: {{ 'products.product.sold_out' | t | json }},
         newProduct: {{ 'products.product.new_product' | t | json }},
         unavailable: {{ 'products.product.unavailable' | t | json }},
@@ -441,9 +444,6 @@
     <!-- Browser Navigation Cart Fix - speziell für Browser-Zurück-Button -->
     <script src="{{ 'browser-navigation-cart-fix.js' | asset_url }}" defer="defer"></script>
 
-    <!-- Cart Debug System (nur bei Bedarf) -->
-    <script src="{{ 'cart-debug.js' | asset_url }}" defer="defer"></script>
-
     <script src="{{ 'cart.js' | asset_url }}" defer="defer"></script>
 
     {%- if settings.cart_type == 'drawer' -%}
@@ -471,13 +471,13 @@
     <script defer>
       // Definition der fixVatIdButton Funktion
       window.fixVatIdButton = function () {
-        console.log('fixVatIdButton: VAT-ID Button wird über popup-manager.js verwaltet');
+        // console.log('fixVatIdButton: VAT-ID Button wird über popup-manager.js verwaltet');
         // Diese Funktion ist jetzt ein Platzhalter, da die Funktionalität in popup-manager.js verwaltet wird
       };
 
       document.addEventListener('DOMContentLoaded', function () {
         // VAT-ID Button wird jetzt zentral über popup-manager.js verwaltet
-        console.log('VAT-ID Button wird über popup-manager.js verwaltet');
+        // console.log('VAT-ID Button wird über popup-manager.js verwaltet');
 
         // Auch bei Nutzung des Cart-Icons neu initialisieren
         document.addEventListener('click', function (e) {
@@ -487,7 +487,7 @@
         });
 
         // VAT-Info-Badges werden jetzt zentral über popup-manager.js verwaltet
-        console.log('VAT-Info-Badges werden über popup-manager.js verwaltet');
+        // console.log('VAT-Info-Badges werden über popup-manager.js verwaltet');
       });
     </script>
   </body>

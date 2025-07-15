@@ -399,10 +399,10 @@ $(document).ready(function() {
     // Debug-Funktion für Entwicklung
     function debugColorMapping() {
         if (window.location.search.includes('debug_colors=true')) {
-            console.log('🎨 Color Mapping Debug Info:');
-            console.log('Current Language:', getCurrentLanguage());
-            console.log('Available Languages:', Object.keys(multilingualColorMap));
-            console.log('---');
+            // console.log('🎨 Color Mapping Debug Info:');
+            // console.log('Current Language:', getCurrentLanguage());
+            // console.log('Available Languages:', Object.keys(multilingualColorMap));
+            // console.log('---');
 
             $('.facets__label').each(function() {
                 const $textLabel = $(this).find('.facet-checkbox__text-label');
@@ -414,12 +414,12 @@ $(document).ready(function() {
                 console.log(`Original: "${originalColorName}" | Displayed: "${displayedColorName}" | Translated: "${translatedName}" | HEX: ${colorHex || 'NOT FOUND'}`);
             });
 
-            console.log('---');
-            console.log('Active Filters:');
-            $('.active-facets__button-inner').each(function() {
-                const filterText = $(this).clone().children().remove().end().text().trim();
-                console.log(`Active Filter: "${filterText}"`);
-            });
+            // console.log('---');
+            // console.log('Active Filters:');
+            // $('.active-facets__button-inner').each(function() {
+            //     const filterText = $(this).clone().children().remove().end().text().trim();
+            //     console.log(`Active Filter: "${filterText}"`);
+            // });
         }
     }
 

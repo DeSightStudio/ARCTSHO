@@ -26,8 +26,12 @@ if (!customElements.get('product-info')) {
 
         this.setupCartUpdateListeners();
 
-        this.productForm = this.querySelector(`product-form[data-section-id="${this.sectionId}"]`) || this.querySelector('product-form');
-        this.submitButton = this.productForm?.querySelector('[type="submit"]');
+        // Verwende querySelector ohne Zuweisungen an schreibgeschützte Eigenschaften
+        const productFormElement = this.querySelector(`product-form[data-section-id="${this.sectionId}"]`) || this.querySelector('product-form');
+        if (productFormElement) {
+          this.productFormElement = productFormElement;
+        }
+        this.submitButton = this.productFormElement?.querySelector('[type="submit"]');
         this.variantPicker = this.querySelector('variant-picker');
       }
 

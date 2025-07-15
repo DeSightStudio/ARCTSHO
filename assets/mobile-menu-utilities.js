@@ -1,0 +1,1 @@
+document.addEventListener("DOMContentLoaded",function(){console.log("Mobile Menu Utilities loaded - BUCKS Currency Converter active")});

@@ -47,15 +47,47 @@ gulp.task('scss', gulp.series('clean:css', function() {
 }));
 
 /**
- * JS task
+ * Clean JS task - löscht bestehende JavaScript-Dateien vor der Neukompilierung
+ */
+gulp.task('clean:js', async function() {
+  return deleteAsync([
+    `${assetsDir}dist.js`,
+    `${assetsDir}cart-drawer.js`,
+    `${assetsDir}cart.js`,
+    `${assetsDir}card-product.js`,
+    `${assetsDir}infinite-scroll.js`,
+    `${assetsDir}cart-icon-updater.js`,
+    `${assetsDir}cart-redirect.js`,
+    `${assetsDir}cart-state-manager.js`,
+    `${assetsDir}auto-language-detection.js`,
+    `${assetsDir}browser-navigation-cart-fix.js`,
+    `${assetsDir}external-links.js`,
+    `${assetsDir}unit-converter.js`,
+    `${assetsDir}master-cart-system.js`,
+    `${assetsDir}simple-cart.js`,
+    `${assetsDir}product-form.js`,
+    `${assetsDir}simple-add-to-cart.js`,
+
+    `${assetsDir}back-button.js`,
+    `${assetsDir}animations.js`
+  ], { force: true });
+});
+
+/**
+ * JS task - kompiliert dist.js aus allen Dateien
  */
 const jsFiles = [
   './node_modules/babel-polyfill/dist/polyfill.js',
   './js/vendor/**/*.js',  // Vendor-Skripte zuerst laden (einschließlich MicroModal)
   srcJS,
+  '!./js/animations.js',  // Animations.js ausschließen - wird separat geladen
+  '!./js/browser-navigation-cart-fix.js',  // Browser-Navigation-Cart-Fix ausschließen - wird separat geladen
 ];
 
-gulp.task('js', () => {
+/**
+ * JS dist task ohne clean (für parallele Ausführung)
+ */
+gulp.task('js:dist-only', () => {
   return gulp.src(jsFiles)
     .pipe(babel({
       presets: ['@babel/env']
@@ -64,6 +96,33 @@ gulp.task('js', () => {
     .pipe(uglify())
     .pipe(gulp.dest(assetsDir));
 });
+
+/**
+ * Individual JS files task ohne clean (für parallele Ausführung)
+ */
+gulp.task('js:individual-only', () => {
+  return gulp.src(['js/*.js', '!js/dist.js'])
+    .pipe(babel({
+      presets: ['@babel/env']
+    }))
+    .pipe(uglify())
+    .pipe(gulp.dest(assetsDir));
+});
+
+/**
+ * JS dist task mit clean
+ */
+gulp.task('js:dist', gulp.series('clean:js', 'js:dist-only'));
+
+/**
+ * Individual JS files task mit clean
+ */
+gulp.task('js:individual', gulp.series('clean:js', 'js:individual-only'));
+
+/**
+ * Combined JS task - beide Tasks laufen sequenziell nach clean:js
+ */
+gulp.task('js', gulp.series('clean:js', gulp.parallel('js:dist-only', 'js:individual-only')));
 
 /**
  * Images task
@@ -100,9 +159,14 @@ gulp.task('watch', () => {
 });
 
 /**
+ * Build task - kompiliert alle Assets
+ */
+gulp.task('build', gulp.parallel('scss', 'js', 'images', 'fonts'));
+
+/**
  * Default task
  */
-gulp.task('default', gulp.series(gulp.parallel('scss', 'js', 'images', 'fonts', 'watch')));
+gulp.task('default', gulp.series('build', 'watch'));
 
 /**
  * Lint task

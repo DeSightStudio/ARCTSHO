@@ -294,15 +294,17 @@
                             id="Remove-{{ item.index | plus: 1 }}"
                             data-index="{{ item.index | plus: 1 }}"
                           >
-                            <a
-                              href="{{ item.url_to_remove }}"
-                              class="button button--tertiary"
+                            <button
+                              type="button"
+                              class="button button--tertiary cart-remove-button"
                               aria-label="{{ 'sections.cart.remove_title' | t: title: item.title | escape }}"
+                              data-variant-id="{{ item.variant.id }}"
+                              data-product-id="{{ item.product_id }}"
                             >
                               <span class="svg-wrapper">
                                 {{- 'icon-remove.svg' | inline_asset_content -}}
                               </span>
-                            </a>
+                            </button>
                           </cart-remove-button>
                         </div>
                         {%- if has_qty_rules or has_vol_pricing -%}

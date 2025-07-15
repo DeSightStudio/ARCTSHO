@@ -1,7 +1,7 @@
 /**
  * Back Button Functionality für Arctic Antique
  * Intelligente Navigation zur zuletzt besuchten Seite oder zur Startseite
- * 
+ *
  * Features:
  * - Erkennt ob eine vorherige Seite in der History existiert
  * - Fallback zur Startseite wenn keine History vorhanden
@@ -34,7 +34,7 @@
     setupButtons() {
       // Finde alle Zurück-Buttons
       const buttons = document.querySelectorAll('[data-back-button]');
-      
+
       buttons.forEach(button => {
         if (!this.buttons.includes(button)) {
           this.setupButton(button);
@@ -42,13 +42,13 @@
         }
       });
 
-      console.log(`Back Button Manager: ${buttons.length} Buttons initialisiert`);
+      // console.log(`Back Button Manager: ${buttons.length} Buttons initialisiert`);
     }
 
     setupButton(button) {
       // Event Listener für Klick
       button.addEventListener('click', (e) => this.handleButtonClick(e, button));
-      
+
       // Keyboard Support
       button.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') {
@@ -65,7 +65,7 @@
 
     handleButtonClick(event, button) {
       event.preventDefault();
-      
+
       // Verhindere mehrfache Navigation
       if (this.isNavigating) {
         return;
@@ -106,8 +106,8 @@
 
     canUseHistory() {
       // Prüfe ob Browser History verfügbar ist und mehr als 1 Eintrag hat
-      return window.history && 
-             window.history.length > 1 && 
+      return window.history &&
+             window.history.length > 1 &&
              !this.isDirectEntry();
     }
 
@@ -115,9 +115,9 @@
       // Prüfe ob Referrer verfügbar und von derselben Domain ist
       const referrer = document.referrer;
       const currentDomain = window.location.hostname;
-      
+
       if (!referrer) return false;
-      
+
       try {
         const referrerUrl = new URL(referrer);
         return referrerUrl.hostname === currentDomain;
@@ -128,7 +128,7 @@
 
     isDirectEntry() {
       // Verschiedene Methoden um direkten Eintrag zu erkennen
-      return !document.referrer || 
+      return !document.referrer ||
              window.history.length <= 1 ||
              performance.navigation?.type === 0; // TYPE_NAVIGATE
     }
@@ -186,7 +186,7 @@
                 this.setupButton(node);
                 this.buttons.push(node);
               }
-              
+
               // Prüfe Kinder-Elemente
               const childButtons = node.querySelectorAll && node.querySelectorAll('[data-back-button]');
               if (childButtons) {

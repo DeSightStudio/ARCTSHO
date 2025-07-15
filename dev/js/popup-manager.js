@@ -310,7 +310,7 @@
 
     // Erweiterte Funktion zum Erkennen und Reparieren von durch Translate App veränderten Links
     function repairTranslatedPopupLinks() {
-      console.log('Starte Reparatur von übersetzten Popup-Links...');
+      // console.log('Starte Reparatur von übersetzten Popup-Links...');
 
       // Definiere Popup-Typen und ihre möglichen Textvarianten in verschiedenen Sprachen
       const popupPatterns = {
@@ -362,7 +362,7 @@
           const spanText = span.textContent.toLowerCase().trim();
           let matchedPopupType = null;
 
-          console.log(`Prüfe unterstrichenen Span: "${spanText}"`);
+          // console.log(`Prüfe unterstrichenen Span: "${spanText}"`);
 
           // Prüfe gegen alle Popup-Pattern
           for (const [popupType, patterns] of Object.entries(popupPatterns)) {
@@ -410,7 +410,7 @@
               }
             });
 
-            console.log(`Popup-Link repariert: "${span.textContent.trim()}" -> ${matchedPopupType}`);
+            // console.log(`Popup-Link repariert: "${span.textContent.trim()}" -> ${matchedPopupType}`);
           }
         }
       });
@@ -470,12 +470,12 @@
         }
       });
 
-      console.log('Popup-Link Reparatur abgeschlossen');
+      // console.log('Popup-Link Reparatur abgeschlossen');
     }
 
     // Zusätzliche Funktion zur Erkennung von Hash-URL Spans
     function repairHashUrlSpans() {
-      console.log('Suche nach Hash-URL Spans...');
+      // console.log('Suche nach Hash-URL Spans...');
 
       // Suche nach Spans, die wie Hash-URLs aussehen oder sich verhalten
       const allSpans = document.querySelectorAll('span');
@@ -537,7 +537,7 @@
               }
             });
 
-            console.log(`Hash-URL Span repariert: "${spanText}" -> ${popupType}`);
+            // console.log(`Hash-URL Span repariert: "${spanText}" -> ${popupType}`);
           }
         }
       });

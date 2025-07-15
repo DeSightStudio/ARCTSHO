@@ -48,7 +48,7 @@ cart-drawer.is-empty .drawer__inner {
   display: grid;
   grid-template-rows: 1fr;
   align-items: center;
-  padding: 0;
+  padding: 0 1.5rem;
 }
 
 cart-drawer.is-empty .drawer__header {
@@ -60,11 +60,14 @@ cart-drawer:not(.is-empty) .cart-drawer__collection {
   display: none;
 }
 
+/* ENTFERNT: cart-drawer:not(.is-empty) .drawer__inner-empty - diese Regel verhinderte die Anzeige des leeren Cart-Zustands */
+
 .cart-drawer__warnings--has-collection .cart__login-title {
   margin-top: 2.5rem;
 }
 
-.drawer.active .drawer__inner {
+.drawer.active .drawer__inner,
+cart-drawer.active .drawer__inner {
   transform: translateX(0);
 }
 
@@ -145,6 +148,17 @@ cart-drawer {
   left: 0;
   width: 100vw;
   height: 100%;
+  display: flex;
+  justify-content: flex-end;
+  background-color: rgba(var(--color-foreground), 0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-default) ease;
+}
+
+cart-drawer.active {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .cart-drawer__overlay {

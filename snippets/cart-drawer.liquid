@@ -8,10 +8,9 @@
 {{ 'quantity-popover.css' | asset_url | stylesheet_tag }}
 {{ 'component-card.css' | asset_url | stylesheet_tag }}
 
-<!-- CartStateManager muss vor allen anderen Cart-Scripts geladen werden -->
-<script src="{{ 'cart-state-manager.js' | asset_url }}" defer="defer"></script>
-<script src="{{ 'cart.js' | asset_url }}" defer="defer"></script>
+<!-- EINFACHE CART LÖSUNG - Getrennte, bewährte Scripts -->
 <script src="{{ 'cart-drawer.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'simple-cart.js' | asset_url }}" defer="defer"></script>
 <script src="{{ 'quantity-popover.js' | asset_url }}" defer="defer"></script>
 
 <!-- Versteckte Warenkorb-Daten für schnellen Zugriff -->
@@ -665,17 +664,49 @@
 
           // Funktion zum Aktualisieren des Warenkorbs
           function refreshCart() {
+            console.log('refreshCart: Starte Cart-Aktualisierung...');
+
+            // Versuche zuerst den AddToCartManager zu verwenden
+            if (window.addToCartManager && typeof window.addToCartManager.fetchAndRenderCartDrawer === 'function') {
+              console.log('refreshCart: Verwende AddToCartManager');
+              window.addToCartManager.fetchAndRenderCartDrawer();
+              return;
+            }
+
+            // Fallback: Manuelle Section-Aktualisierung
+            console.log('refreshCart: Verwende Fallback-Methode');
             fetch(`${window.location.origin}/cart?section_id=cart-drawer`)
               .then((response) => response.text())
               .then((responseText) => {
+                console.log('refreshCart: Section-Response erhalten');
                 const html = new DOMParser().parseFromString(responseText, 'text/html');
-                const selectors = ['cart-drawer-items', '.cart-drawer__footer'];
+
+                // Erweiterte Selektoren für bessere Abdeckung
+                const selectors = [
+                  'cart-drawer-items',
+                  '.cart-drawer__footer',
+                  '#CartDrawer-CartItems',
+                  '.drawer__contents'
+                ];
+
                 for (const selector of selectors) {
                   const targetElement = document.querySelector(selector);
                   const sourceElement = html.querySelector(selector);
                   if (targetElement && sourceElement) {
+                    console.log('refreshCart: Aktualisiere Selector:', selector);
                     targetElement.replaceWith(sourceElement);
+                  } else if (!targetElement) {
+                    console.warn('refreshCart: Target-Element nicht gefunden:', selector);
+                  } else if (!sourceElement) {
+                    console.warn('refreshCart: Source-Element nicht gefunden:', selector);
                   }
+                }
+
+                // Cart-Drawer is-empty Klasse entfernen
+                const cartDrawer = document.querySelector('cart-drawer');
+                if (cartDrawer) {
+                  cartDrawer.classList.remove('is-empty');
+                  console.log('refreshCart: is-empty Klasse entfernt');
                 }
 
                 // Prüfen, ob das Ursprungszeugnis im Warenkorb ist und entsprechend das Element ein-/ausblenden

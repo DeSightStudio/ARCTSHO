@@ -70,7 +70,7 @@
                     classList.forEach(function(className) {
                         if (className.indexOf('-width-') !== -1) {
                             var width = className.split('-width-')[1];
-                            console.log('Anwenden der dynamischen Breite für ' + className + ': ' + width + '%');
+                            // console.log('Anwenden der dynamischen Breite für ' + className + ': ' + width + '%');
 
                             // Breite direkt anwenden, falls nötig
                             if ($element.css('width') === 'auto' || !$element.css('width')) {
@@ -481,29 +481,29 @@
                         // Update body data-locale attribute
                         document.body.setAttribute('data-locale', detectedLang);
 
-                        console.log('Language flags initialized for detected locale:', detectedLang, 'from button text:', buttonText);
+                        // console.log('Language flags initialized for detected locale:', detectedLang, 'from button text:', buttonText);
                     }
                 }, 500); // Wait a bit for the external app to load
 
-                console.log('Language flags initialized for locale:', currentLanguage);
+                // console.log('Language flags initialized for locale:', currentLanguage);
             }
 
             // Initialize external links manager
             function initExternalLinks() {
                 // External Links Manager wird automatisch über das separate Modul geladen
                 // Diese Funktion kann für zusätzliche Konfigurationen verwendet werden
-                console.log('External Links Manager wird initialisiert...');
+                // console.log('External Links Manager wird initialisiert...');
             }
 
             // Initialize predictive search results limiter
             function initPredictiveSearchLimiter() {
                 // Predictive Search Limiter wird automatisch über das separate Modul geladen
-                console.log('Predictive Search Limiter wird initialisiert...');
+                // console.log('Predictive Search Limiter wird initialisiert...');
             }
 
             // Textarea Resize ist komplett deaktiviert
             function disableTextareaResize() {
-                console.log('Textarea Resize wird deaktiviert...');
+                // console.log('Textarea Resize wird deaktiviert...');
 
                 // Warte bis DOM geladen ist
                 setTimeout(function() {
@@ -520,7 +520,7 @@
                         textarea.style.resize = 'none';
                         textarea.style.overflow = 'hidden';
 
-                        console.log('Textarea Resize deaktiviert für:', textarea.id || 'unnamed textarea');
+                        // console.log('Textarea Resize deaktiviert für:', textarea.id || 'unnamed textarea');
                     });
                 }, 500);
             }
@@ -588,7 +588,7 @@
                             characterData: true
                         });
 
-                        console.log('BUCKS currency converter simple mobile styling initialized');
+                        // console.log('BUCKS currency converter simple mobile styling initialized');
                     }
                 }, 1000); // Wait 1 second for BUCKS to load
             }
@@ -597,23 +597,23 @@
             function initBackButtonManager() {
                 // Back Button Manager wird automatisch über das separate Modul geladen
                 // Diese Funktion kann für zusätzliche Konfigurationen verwendet werden
-                console.log('Back Button Manager wird initialisiert...');
+                // console.log('Back Button Manager wird initialisiert...');
 
                 // Prüfe ob der Back Button Manager verfügbar ist
                 if (typeof window.backButtonManager !== 'undefined') {
-                    console.log('Back Button Manager ist verfügbar');
+                    // console.log('Back Button Manager ist verfügbar');
                 } else {
-                    console.log('Back Button Manager wird geladen...');
+                    // console.log('Back Button Manager wird geladen...');
                 }
             }
 
             // Initialization
             function initialize() {
-                console.log('Initializing contact form components...');
+                // console.log('Initializing contact form components...');
 
                 // Warten bis die Bibliothek geladen ist
                 if (typeof window.intlTelInput === 'undefined') {
-                    console.log('intlTelInput not loaded yet, waiting...');
+                    // console.log('intlTelInput not loaded yet, waiting...');
                     setTimeout(initialize, 200);
                     return;
                 }
@@ -643,7 +643,7 @@
 
                 // Debounced resize event
                 $(window).on('resize', debounce(function() {
-                    console.log('Window resized!');
+                    // console.log('Window resized!');
                 }, 250));
 
                 // Smooth scroll on link click
@@ -653,7 +653,7 @@
                 });
 
                 // VAT-ID Button wird jetzt zentral über popup-manager.js verwaltet
-                console.log('VAT-ID Button wird über popup-manager.js verwaltet');
+                // console.log('VAT-ID Button wird über popup-manager.js verwaltet');
 
                 // Slick Slider Initialization
                 initializeSlickSlider();
@@ -676,32 +676,32 @@
 
             // Debug für VAT-ID-Button und Modal
             setTimeout(function() {
-                console.log('Debugging VAT-ID-Button und Modal:');
+                // console.log('Debugging VAT-ID-Button und Modal:');
 
                 // Überprüfen, ob MicroModal geladen ist
                 if (typeof window.MicroModal === 'undefined') {
-                    console.error('MicroModal ist nicht geladen!');
+                    // console.error('MicroModal ist nicht geladen!');
                 } else {
-                    console.log('MicroModal ist verfügbar:', window.MicroModal);
+                    // console.log('MicroModal ist verfügbar:', window.MicroModal);
                 }
 
                 // Überprüfen, ob das Modal existiert
                 const vatIdModal = document.getElementById('modal-cart-vat-id');
                 if (!vatIdModal) {
-                    console.error('Modal "modal-cart-vat-id" nicht gefunden!');
+                    // console.error('Modal "modal-cart-vat-id" nicht gefunden!');
                 } else {
-                    console.log('Modal "modal-cart-vat-id" gefunden:', vatIdModal);
+                    // console.log('Modal "modal-cart-vat-id" gefunden:', vatIdModal);
                 }
 
                 // Überprüfen, ob der Button existiert
                 const vatIdButton = document.getElementById('CartDrawer-VatIdButton');
                 if (!vatIdButton) {
-                    console.error('Button "CartDrawer-VatIdButton" nicht gefunden!');
+                    // console.error('Button "CartDrawer-VatIdButton" nicht gefunden!');
                 } else {
-                    console.log('Button "CartDrawer-VatIdButton" gefunden:', vatIdButton);
+                    // console.log('Button "CartDrawer-VatIdButton" gefunden:', vatIdButton);
 
                     // Direkt einen Click-Event simulieren
-                    console.log('Simuliere Klick-Event für VAT-ID-Button...');
+                    // console.log('Simuliere Klick-Event für VAT-ID-Button...');
                     vatIdButton.addEventListener('click', function(e) {
                         console.log('VAT-ID-Button wurde geklickt');
                         if (typeof window.MicroModal !== 'undefined') {
@@ -717,19 +717,19 @@
 
                 // Direkter Zugang zum Modal (für Tests)
                 window.openVatIdModal = function() {
-                    console.log('Manueller Aufruf von openVatIdModal');
+                    // console.log('Manueller Aufruf von openVatIdModal');
                     if (typeof window.MicroModal !== 'undefined') {
                         try {
                             window.MicroModal.show('modal-cart-vat-id');
-                            console.log('MicroModal.show für "modal-cart-vat-id" aufgerufen');
+                            // console.log('MicroModal.show für "modal-cart-vat-id" aufgerufen');
                         } catch (err) {
-                            console.error('Fehler beim Anzeigen des Modals:', err);
+                            // console.error('Fehler beim Anzeigen des Modals:', err);
                         }
                     }
                 };
 
                 // Prüfen der Event-Listener (getEventListeners ist nur in DevTools verfügbar)
-                console.log('VAT-ID Button Event-Listener werden über popup-manager.js verwaltet');
+                // console.log('VAT-ID Button Event-Listener werden über popup-manager.js verwaltet');
             }, 2000);
         }, 500);
     });
@@ -915,6 +915,8 @@ class AddToCartManager {
     }
 
     async handleAddToCartSuccess(form, response, productId, variantId) {
+        console.log('AddToCartManager: handleAddToCartSuccess called with response:', response);
+
         // CartStateManager aktualisieren
         if (window.cartStateManager) {
             window.cartStateManager.updateCartData(response);
@@ -923,9 +925,15 @@ class AddToCartManager {
         // Button zu "View Cart" ändern
         this.updateButtonToViewCart(form);
 
-        // Cart-Drawer aktualisieren und öffnen
-        this.updateCartDrawer(response);
-        this.openCartDrawer();
+        // Cart-Drawer aktualisieren und öffnen - mit Verzögerung für bessere Synchronisation
+        console.log('AddToCartManager: Updating cart drawer...');
+        await this.updateCartDrawer(response);
+
+        // Kurze Verzögerung vor dem Öffnen um sicherzustellen, dass Rendering abgeschlossen ist
+        setTimeout(() => {
+            console.log('AddToCartManager: Opening cart drawer...');
+            this.openCartDrawer();
+        }, 100);
 
         // Events auslösen
         this.dispatchCartEvents(response, productId, variantId);
@@ -963,7 +971,7 @@ class AddToCartManager {
             viewCartButton.className = 'button button--full-width card-product__view-cart';
             viewCartButton.type = 'button';
             viewCartButton.innerHTML = `
-                <span>${window.cartStrings?.viewCart || 'Zum Warenkorb'}</span>
+                <span>${window.variantStrings?.view_cart_button || window.variantStrings?.viewCartButton || 'Warenkorb ansehen'}</span>
                 <div class="loading__spinner hidden">
                     <svg aria-hidden="true" focusable="false" class="spinner" viewBox="0 0 66 66">
                         <circle class="path" fill="none" stroke-width="6" cx="33" cy="33" r="30"></circle>
@@ -980,10 +988,121 @@ class AddToCartManager {
         viewCartButton.style.display = 'block';
     }
 
-    updateCartDrawer(response) {
+    async updateCartDrawer(response) {
         const cartDrawer = document.querySelector('cart-drawer');
-        if (cartDrawer && typeof cartDrawer.renderContents === 'function') {
+        if (!cartDrawer) {
+            console.warn('AddToCartManager: Cart-Drawer nicht gefunden');
+            return;
+        }
+
+        console.log('AddToCartManager: updateCartDrawer called with response:', response);
+
+        // Entferne is-empty Klasse vom cart-drawer, da wir jetzt Produkte haben
+        cartDrawer.classList.remove('is-empty');
+
+        // Prüfe ob die Response bereits Sections enthält
+        if (response.sections && response.sections['cart-drawer']) {
+            console.log('AddToCartManager: Rendere Cart-Drawer mit Sections aus Response');
             cartDrawer.renderContents(response);
+        } else {
+            // Fallback: Hole aktuelle Cart-Daten und rendere den Drawer
+            console.log('AddToCartManager: Keine Sections in Response - hole Cart-Daten');
+            await this.fetchAndRenderCartDrawer(response);
+        }
+    }
+
+    async fetchAndRenderCartDrawer(originalCartData = null) {
+        try {
+            console.log('AddToCartManager: Hole Cart-Daten und Sections...');
+
+            // Verwende ursprüngliche Cart-Daten wenn verfügbar, sonst hole neue
+            let cartData = originalCartData;
+            if (!cartData) {
+                const cartResponse = await fetch(`${window.routes?.cart_url || '/cart'}.js`);
+                if (!cartResponse.ok) {
+                    throw new Error(`Cart API Error: ${cartResponse.status}`);
+                }
+                cartData = await cartResponse.json();
+            }
+
+            console.log('AddToCartManager: Cart-Daten erhalten:', cartData);
+
+            // Versuche verschiedene Section-URLs
+            let sectionsData = null;
+            const sectionUrls = [
+                `/?sections=cart-drawer,cart-icon-bubble`,
+                `${window.location.pathname}?sections=cart-drawer,cart-icon-bubble`,
+                `/?section_id=cart-drawer`,
+                `/cart?sections=cart-drawer,cart-icon-bubble`
+            ];
+
+            for (const url of sectionUrls) {
+                try {
+                    // console.log('AddToCartManager: Versuche Sections von:', url);
+                    const sectionsResponse = await fetch(url);
+                    if (sectionsResponse.ok) {
+                        const data = await sectionsResponse.json();
+                        // console.log('AddToCartManager: Sections erhalten von', url, ':', data);
+                        sectionsData = data;
+                        break;
+                    }
+                } catch (e) {
+                    console.warn('AddToCartManager: Fehler bei URL', url, ':', e);
+                }
+            }
+
+            if (!sectionsData) {
+                throw new Error('Keine Sections konnten geladen werden');
+            }
+
+            // Kombiniere die Daten
+            const combinedData = {
+                ...cartData,
+                sections: sectionsData
+            };
+
+            console.log('AddToCartManager: Kombinierte Daten:', combinedData);
+
+            const cartDrawer = document.querySelector('cart-drawer');
+            if (cartDrawer && typeof cartDrawer.renderContents === 'function') {
+                cartDrawer.renderContents(combinedData);
+            } else {
+                console.error('AddToCartManager: Cart-Drawer oder renderContents nicht verfügbar');
+            }
+        } catch (error) {
+            console.error('AddToCartManager: Fehler beim Rendern des Cart-Drawers:', error);
+            // Fallback: Versuche eine einfache Page-Reload des Cart-Drawers
+            this.fallbackCartDrawerUpdate();
+        }
+    }
+
+    async fallbackCartDrawerUpdate() {
+        try {
+            console.log('AddToCartManager: Fallback - lade Cart-Drawer über Section-Reload');
+
+            // Hole die komplette Cart-Drawer Section
+            const response = await fetch(`/?section_id=cart-drawer`);
+            if (!response.ok) {
+                throw new Error(`Section reload failed: ${response.status}`);
+            }
+
+            const html = await response.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+
+            // Finde das neue Cart-Drawer Element
+            const newCartDrawer = doc.querySelector('cart-drawer');
+            const currentCartDrawer = document.querySelector('cart-drawer');
+
+            if (newCartDrawer && currentCartDrawer) {
+                // Ersetze den Inhalt des aktuellen Cart-Drawers
+                currentCartDrawer.innerHTML = newCartDrawer.innerHTML;
+                currentCartDrawer.className = newCartDrawer.className;
+
+                console.log('AddToCartManager: Cart-Drawer erfolgreich über Fallback aktualisiert');
+            }
+        } catch (error) {
+            console.error('AddToCartManager: Fallback fehlgeschlagen:', error);
         }
     }
 
@@ -1554,3 +1673,9 @@ if (!window.infiniteScrollSetup) {
         }
     });
 }
+
+// AddToCartManager initialisieren
+document.addEventListener('DOMContentLoaded', function() {
+    window.addToCartManager = new AddToCartManager();
+    console.log('AddToCartManager: Global verfügbar als window.addToCartManager');
+});
