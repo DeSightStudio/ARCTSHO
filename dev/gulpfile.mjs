@@ -120,9 +120,9 @@ gulp.task('js:dist', gulp.series('clean:js', 'js:dist-only'));
 gulp.task('js:individual', gulp.series('clean:js', 'js:individual-only'));
 
 /**
- * Combined JS task - beide Tasks laufen sequenziell nach clean:js
+ * Combined JS task - nur dist.js (keine individuellen Dateien)
  */
-gulp.task('js', gulp.series('clean:js', gulp.parallel('js:dist-only', 'js:individual-only')));
+gulp.task('js', gulp.series('clean:js', 'js:dist-only'));
 
 /**
  * Images task

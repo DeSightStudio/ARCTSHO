@@ -27,7 +27,7 @@
   {{ 'quick-order-list.css' | asset_url | stylesheet_tag }}
   {{ 'quantity-popover.css' | asset_url | stylesheet_tag }}
   {{ 'component-card.css' | asset_url | stylesheet_tag }}
-  <script src="{{ 'card-product.js' | asset_url }}" defer></script>
+  <!-- Card product functionality is now in dist.js -->
 {%- endunless -%}
 {%- if card_product and card_product != empty -%}
   {%- liquid

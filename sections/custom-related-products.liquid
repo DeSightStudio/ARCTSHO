@@ -6,8 +6,7 @@
   {{ 'mask-blobs.css' | asset_url | stylesheet_tag }}
 {%- endif -%}
 
-<script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
-<script src="{{ 'card-product.js' | asset_url }}" defer="defer"></script>
+<!-- Product form and card functionality is now in dist.js -->
 
 {%- style -%}
   .section-{{ section.id }}-padding {

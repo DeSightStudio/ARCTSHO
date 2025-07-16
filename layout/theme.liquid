@@ -1,8 +1,14 @@
 <!doctype html>
 <html class="js" lang="{{ request.locale.iso_code }}">
   <head>
-    <!-- Cart-Redirect: Verhindert den Zugriff auf die /cart Seite - Muss am Anfang des Head-Bereichs geladen werden -->
-    <script src="{{ 'cart-redirect.js' | asset_url }}"></script>
+    <!-- Cart-Redirect: Verhindert den Zugriff auf die /cart Seite - Inline für bessere Performance -->
+    <script>
+      // Cart-Redirect: Sofortige Umleitung von /cart zur Startseite
+      // Aber nur wenn es kein AJAX Add-to-Cart war
+      if (window.location.pathname === '/cart' && !document.referrer.includes('/products/')) {
+        window.location.replace('/');
+      }
+    </script>
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -306,7 +312,6 @@
       crossorigin="anonymous"
       defer
     ></script>
-    <script src="{{ 'external-links.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'back-button.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'dist.js' | asset_url }}" defer="defer"></script>
     {{ 'dist.css' | asset_url | stylesheet_tag }}
@@ -438,17 +443,7 @@
       <script src="{{ 'predictive-search.js' | asset_url }}" defer="defer"></script>
     {%- endif -%}
 
-    <!-- CartStateManager muss vor allen anderen Cart-Scripts geladen werden -->
-    <script src="{{ 'cart-state-manager.js' | asset_url }}" defer="defer"></script>
-
-    <!-- Browser Navigation Cart Fix - speziell für Browser-Zurück-Button -->
-    <script src="{{ 'browser-navigation-cart-fix.js' | asset_url }}" defer="defer"></script>
-
-    <script src="{{ 'cart.js' | asset_url }}" defer="defer"></script>
-
-    {%- if settings.cart_type == 'drawer' -%}
-      <script src="{{ 'cart-drawer.js' | asset_url }}" defer="defer"></script>
-    {%- endif -%}
+    <!-- Alle Cart-Funktionalität ist jetzt in dist.js integriert -->
 
     <!-- intl-tel-input Bibliothek für internationale Telefonnummern -->
     <link

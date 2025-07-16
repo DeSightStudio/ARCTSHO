@@ -9,8 +9,8 @@
 {{ 'component-card.css' | asset_url | stylesheet_tag }}
 
 <!-- EINFACHE CART LÖSUNG - Getrennte, bewährte Scripts -->
-<script src="{{ 'cart-drawer.js' | asset_url }}" defer="defer"></script>
-<script src="{{ 'simple-cart.js' | asset_url }}" defer="defer"></script>
+<!-- Cart drawer functionality is now in dist.js -->
+<!-- Simple cart functionality is now in dist.js -->
 <script src="{{ 'quantity-popover.js' | asset_url }}" defer="defer"></script>
 
 <!-- Versteckte Warenkorb-Daten für schnellen Zugriff -->
@@ -640,8 +640,17 @@
               })
               .then((data) => {
                 console.log('Erfolgreich hinzugefügt:', data);
-                // Update cart drawer
-                refreshCart();
+
+                // KRITISCH: Informiere das MasterCartSystem über die Änderung
+                if (window.masterCartSystem && typeof window.masterCartSystem.loadCartData === 'function') {
+                  console.log('Certificate: Aktualisiere MasterCartSystem');
+                  window.masterCartSystem.loadCartData().then(() => {
+                    window.masterCartSystem.updateUI();
+                  });
+                } else {
+                  // Fallback: refreshCart
+                  refreshCart();
+                }
 
                 // Sofort das Ursprungszeugnis-Element ausblenden
                 const certificateElement = document.querySelector('.cart-drawer__origin-certificate');
@@ -666,7 +675,16 @@
           function refreshCart() {
             console.log('refreshCart: Starte Cart-Aktualisierung...');
 
-            // Versuche zuerst den AddToCartManager zu verwenden
+            // Versuche zuerst das MasterCartSystem zu verwenden
+            if (window.masterCartSystem && typeof window.masterCartSystem.loadCartData === 'function') {
+              console.log('refreshCart: Verwende MasterCartSystem');
+              window.masterCartSystem.loadCartData().then(() => {
+                window.masterCartSystem.updateUI();
+              });
+              return;
+            }
+
+            // Fallback: AddToCartManager
             if (window.addToCartManager && typeof window.addToCartManager.fetchAndRenderCartDrawer === 'function') {
               console.log('refreshCart: Verwende AddToCartManager');
               window.addToCartManager.fetchAndRenderCartDrawer();

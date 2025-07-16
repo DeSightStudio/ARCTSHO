@@ -30,6 +30,6 @@
   Kopple den erforderlichen JS-Code zum HTML, falls noch nicht geladen
 {% endcomment %}
 {% if unit_converter_loaded != true %}
-  <script src="{{ 'unit-converter.js' | asset_url }}" defer></script>
+  <!-- Unit converter functionality is now in dist.js -->
   {% assign unit_converter_loaded = true %}
 {% endif %}

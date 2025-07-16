@@ -21,7 +21,7 @@
     onload="this.media='all'"
   >
 
-  <script src="{{ 'unit-converter.js' | asset_url }}" defer="defer"></script>
+  <!-- Unit converter functionality is now in dist.js -->
 
   {% unless product.has_only_default_variant %}
     {{ 'component-product-variant-picker.css' | asset_url | stylesheet_tag }}
@@ -46,10 +46,8 @@
     }
   {%- endstyle -%}
 
-  <!-- CartStateManager muss vor product-form.js geladen werden -->
-  <script src="{{ 'cart-state-manager.js' | asset_url }}" defer="defer"></script>
+  <!-- Cart state management and product form functionality is now in dist.js -->
   <script src="{{ 'product-info.js' | asset_url }}" defer="defer"></script>
-  <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
   {%- if product.quantity_price_breaks_configured? -%}
     <script src="{{ 'show-more.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'price-per-item.js' | asset_url }}" defer="defer"></script>
@@ -865,25 +863,30 @@
                                     limit: block.settings.products_per_page
                                     offset: continue
                                   -%}
-                                    <li>
-                                      {%- if block.settings.enable_quick_add -%}
-                                        {% assign quick_add = 'standard' %}
-                                      {%- else -%}
-                                        {% assign quick_add = 'none' %}
-                                      {%- endif -%}
-                                      {% render 'card-product',
-                                        card_product: product,
-                                        media_aspect_ratio: block.settings.image_ratio,
-                                        show_secondary_image: false,
-                                        lazy_load: false,
-                                        skip_styles: skip_card_product_styles,
-                                        quick_add: quick_add,
-                                        section_id: section.id,
-                                        horizontal_class: true,
-                                        horizontal_quick_add: true
-                                      %}
-                                    </li>
-                                    {%- assign skip_card_product_styles = true -%}
+                                    {% comment %} KRITISCH: Certificate of Origin (SKU 2226) niemals in Produktempfehlungen anzeigen {% endcomment %}
+                                    {% unless product.selected_or_first_available_variant.sku == '2226'
+                                      or product.id == 46347117723862
+                                    %}
+                                      <li>
+                                        {%- if block.settings.enable_quick_add -%}
+                                          {% assign quick_add = 'standard' %}
+                                        {%- else -%}
+                                          {% assign quick_add = 'none' %}
+                                        {%- endif -%}
+                                        {% render 'card-product',
+                                          card_product: product,
+                                          media_aspect_ratio: block.settings.image_ratio,
+                                          show_secondary_image: false,
+                                          lazy_load: false,
+                                          skip_styles: skip_card_product_styles,
+                                          quick_add: quick_add,
+                                          section_id: section.id,
+                                          horizontal_class: true,
+                                          horizontal_quick_add: true
+                                        %}
+                                      </li>
+                                      {%- assign skip_card_product_styles = true -%}
+                                    {% endunless %}
                                   {%- endfor -%}
                                 </ul>
                               </div>
