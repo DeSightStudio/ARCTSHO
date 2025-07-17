@@ -1677,8 +1677,70 @@ if (!window.infiniteScrollSetup) {
     });
 }
 
+// Mobile Collection Grid Image Click Handler
+class MobileImageClickHandler {
+    constructor() {
+        this.init();
+    }
+
+    init() {
+        // Nur auf Mobile (max-width: 749px) aktivieren
+        if (window.innerWidth <= 749) {
+            this.bindImageClicks();
+        }
+
+        // Bei Resize prüfen
+        window.addEventListener('resize', () => {
+            if (window.innerWidth <= 749) {
+                this.bindImageClicks();
+            }
+        });
+    }
+
+    bindImageClicks() {
+        // Event Delegation für bessere Performance
+        document.addEventListener('click', (e) => {
+            // Prüfe ob es sich um ein Bild im Collection Grid handelt
+            const clickedImage = e.target.closest('img');
+            if (!clickedImage) return;
+
+            // Prüfe ob es in einem Collection Grid Container ist
+            const cardWrapper = clickedImage.closest('.card-wrapper.product-card-wrapper');
+            if (!cardWrapper) return;
+
+            // Prüfe ob es sich um das Hauptbild handelt (nicht um Icons, etc.)
+            const cardMedia = clickedImage.closest('.card__media');
+            if (!cardMedia) return;
+
+            // Prüfe ob wir uns im Mobile Layout befinden (Flexbox Row)
+            const card = clickedImage.closest('.card');
+            if (!card) return;
+
+            const cardStyle = window.getComputedStyle(card);
+            if (cardStyle.flexDirection !== 'row') return; // Nur im Mobile Layout (flex-direction: row)
+
+            // Finde den Produkt-Link
+            const productLink = cardWrapper.querySelector('.card-product__link');
+            if (!productLink) return;
+
+            const productUrl = productLink.getAttribute('href');
+            if (!productUrl) return;
+
+            // Verhindere Lightbox und andere Event Handler
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+
+            // Navigiere zur Produktseite
+            window.location.href = productUrl;
+        }, true); // Capture Phase für höhere Priorität
+    }
+}
+
 // AddToCartManager initialisieren
 document.addEventListener('DOMContentLoaded', function() {
     window.addToCartManager = new AddToCartManager();
+    window.mobileImageClickHandler = new MobileImageClickHandler();
     console.log('AddToCartManager: Global verfügbar als window.addToCartManager');
+    console.log('MobileImageClickHandler: Initialisiert für Collection Grid Mobile View');
 });

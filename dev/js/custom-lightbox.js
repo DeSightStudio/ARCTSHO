@@ -57,8 +57,15 @@ class CustomLightbox {
       return false;
     }
 
-    // Prüfe, ob es in einem Produktkontext ist
-    const productContext = img.closest('.product, .product-form, .product-media-modal, .media-gallery, [data-product-id]');
+    // WICHTIG: Lightbox nur auf Produkt-Detail-Seiten aktivieren, NICHT in Collection Grids
+    // Prüfe, ob es sich in einem Collection Grid befindet (card-product, card-wrapper, etc.)
+    const collectionGridContext = img.closest('.card-product, .card-wrapper, .product-grid, #ProductGridContainer, .grid.product-grid');
+    if (collectionGridContext) {
+      return false; // Keine Lightbox für Collection Grid Bilder
+    }
+
+    // Prüfe, ob es in einem echten Produktkontext ist (nur Produkt-Detail-Seiten)
+    const productContext = img.closest('.product, .product-form, .product-media-modal, .media-gallery');
     return !!productContext;
   }
 
