@@ -236,7 +236,12 @@
       {%- endif -%}
     </div>
 
-    {%- comment -%} 3. Währung (BUCKS) {%- endcomment -%}
+    {%- comment -%} 3. Währung (BUCKS) - Manuell wie im Mobile Menu {%- endcomment -%}
+    <div class="desktop-bucks-currency-wrapper small-hide medium-hide">
+      <div id="buckscc-currency-box" class="buckscc-currency-box"></div>
+    </div>
+
+    {%- comment -%} 4. Währung (BUCKS) - App Blocks als Fallback {%- endcomment -%}
     {%- for block in section.blocks -%}
       {%- case block.type -%}
         {%- when '@app' -%}
@@ -244,7 +249,7 @@
       {%- endcase -%}
     {%- endfor -%}
 
-    {%- comment -%} 4. Mein Konto {%- endcomment -%}
+    {%- comment -%} 5. Mein Konto {%- endcomment -%}
     {%- if shop.customer_accounts_enabled -%}
       <a
         href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}"

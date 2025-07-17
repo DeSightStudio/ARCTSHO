@@ -529,24 +529,27 @@
             function initBucksCurrencyConverter() {
                 // Wait for BUCKS app to load
                 setTimeout(function() {
-                    // Simple currency display for mobile drawer design
+                    // Currency display for both mobile drawer and desktop header
                     function updateCurrencyDisplay() {
-                        const selectedCurrency = document.querySelector('.bucks-selected');
+                        // Update all currency selectors (mobile and desktop)
+                        const selectedCurrencies = document.querySelectorAll('.bucks-selected');
 
-                        if (selectedCurrency) {
-                            const currencyText = selectedCurrency.textContent.trim();
+                        selectedCurrencies.forEach(function(selectedCurrency) {
+                            if (selectedCurrency) {
+                                const currencyText = selectedCurrency.textContent.trim();
 
-                            // Update currency display with symbols (einfach)
-                            if (currencyText === 'EUR' && !currencyText.includes('€')) {
-                                selectedCurrency.textContent = 'EUR/€';
-                            } else if (currencyText === 'USD' && !currencyText.includes('$')) {
-                                selectedCurrency.textContent = 'USD/$';
-                            } else if (currencyText === 'GBP' && !currencyText.includes('£')) {
-                                selectedCurrency.textContent = 'GBP/£';
-                            } else if (currencyText === 'CHF' && !currencyText.includes('CHF')) {
-                                selectedCurrency.textContent = 'CHF';
+                                // Update currency display with symbols (für Desktop und Mobile)
+                                if (currencyText === 'EUR' && !currencyText.includes('€')) {
+                                    selectedCurrency.textContent = 'EUR/€';
+                                } else if (currencyText === 'USD' && !currencyText.includes('$')) {
+                                    selectedCurrency.textContent = 'USD/$';
+                                } else if (currencyText === 'GBP' && !currencyText.includes('£')) {
+                                    selectedCurrency.textContent = 'GBP/£';
+                                } else if (currencyText === 'CHF' && !currencyText.includes('CHF')) {
+                                    selectedCurrency.textContent = 'CHF';
+                                }
                             }
-                        }
+                        });
 
                         // Update dropdown options (einfach, ohne Icons/Checkmarks)
                         const currencyItems = document.querySelectorAll('.bucksItem');
