@@ -109,13 +109,6 @@ class CustomLightbox {
       <div id="custom-lightbox" class="custom-lightbox">
         <div class="custom-lightbox__backdrop">
           <div class="custom-lightbox__container">
-            <!-- Close Button -->
-            <button type="button" class="custom-lightbox__close" aria-label="Close lightbox">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              </svg>
-            </button>
-
             <!-- Main Image Container -->
             <div class="custom-lightbox__image-container">
               <div class="custom-lightbox__image-wrapper">
@@ -146,6 +139,7 @@ class CustomLightbox {
               <div class="custom-lightbox__zoom-controls">
                 <button type="button" class="custom-lightbox__zoom-btn custom-lightbox__zoom-out" aria-label="Zoom out">−</button>
                 <button type="button" class="custom-lightbox__zoom-btn custom-lightbox__zoom-in" aria-label="Zoom in">+</button>
+                <button type="button" class="custom-lightbox__close-btn" aria-label="Close lightbox">Schließen</button>
               </div>
             </div>
           </div>
@@ -159,7 +153,6 @@ class CustomLightbox {
     // Cache DOM elements
     this.lightbox = document.getElementById('custom-lightbox');
     this.backdrop = this.lightbox.querySelector('.custom-lightbox__backdrop');
-    this.closeBtn = this.lightbox.querySelector('.custom-lightbox__close');
     this.imageWrapper = this.lightbox.querySelector('.custom-lightbox__image-wrapper');
     this.prevBtn = this.lightbox.querySelector('.custom-lightbox__nav--prev');
     this.nextBtn = this.lightbox.querySelector('.custom-lightbox__nav--next');
@@ -167,13 +160,14 @@ class CustomLightbox {
     this.totalSlidesEl = this.lightbox.querySelector('.total-slides');
     this.zoomInBtn = this.lightbox.querySelector('.custom-lightbox__zoom-in');
     this.zoomOutBtn = this.lightbox.querySelector('.custom-lightbox__zoom-out');
+    this.closeBtnBottom = this.lightbox.querySelector('.custom-lightbox__close-btn');
+
+    // Set multilingual text for close button
+    this.updateCloseButtonText();
     this.imageContainer = this.lightbox.querySelector('.custom-lightbox__image-container');
   }
 
   setupEventListeners() {
-    // Close button
-    this.closeBtn.addEventListener('click', () => this.close());
-
     // Backdrop click to close
     this.backdrop.addEventListener('click', (e) => {
       if (e.target === this.backdrop) {
@@ -188,6 +182,9 @@ class CustomLightbox {
     // Zoom controls
     this.zoomInBtn.addEventListener('click', () => this.zoomIn());
     this.zoomOutBtn.addEventListener('click', () => this.zoomOut());
+
+    // Bottom close button
+    this.closeBtnBottom.addEventListener('click', () => this.close());
 
     // Keyboard navigation
     this.keydownHandler = (e) => this.handleKeydown(e);
@@ -883,6 +880,26 @@ class CustomLightbox {
         }
       }
     });
+  }
+
+  updateCloseButtonText() {
+    if (!this.closeBtnBottom) return;
+
+    // Ermittle die aktuelle Sprache aus dem HTML lang-Attribut oder URL
+    const currentLang = document.documentElement.lang ||
+                       window.location.pathname.split('/')[1] ||
+                       'de';
+
+    // Mehrsprachige Texte für den Close-Button
+    const closeTexts = {
+      'de': 'Schließen',
+      'en': 'Close',
+      'fr': 'Fermer',
+      'it': 'Chiudi',
+      'es': 'Cerrar'
+    };
+
+    this.closeBtnBottom.textContent = closeTexts[currentLang] || closeTexts['de']; // Fallback auf Deutsch
   }
 }
 

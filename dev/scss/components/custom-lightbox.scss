@@ -67,34 +67,7 @@ modal-opener[data-lightbox-disabled] {
   flex-direction: column;
 }
 
-// Close Button (top right)
-.custom-lightbox__close {
-  position: absolute;
-  top: -50px;
-  right: 0;
-  background: rgba(255, 255, 255, 0.9);
-  border: none;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 10;
-  transition: all 0.2s ease;
-  color: #333;
 
-  &:hover {
-    background: white;
-    transform: scale(1.1);
-  }
-
-  svg {
-    width: 20px;
-    height: 20px;
-  }
-}
 
 // Main Image Container
 .custom-lightbox__image-container {
@@ -239,6 +212,30 @@ modal-opener[data-lightbox-disabled] {
   }
 }
 
+// Close Button (in bottom controls) - same height as zoom buttons, but wider
+.custom-lightbox__close-btn {
+  background: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0 12px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  &:hover:not(:disabled) {
+    background: #f0f0f0;
+    transform: scale(1.05);
+  }
+}
+
 // Mobile Responsive
 @media screen and (max-width: 768px) {
   .custom-lightbox__container {
@@ -285,6 +282,12 @@ modal-opener[data-lightbox-disabled] {
     width: 32px;
     height: 32px;
     font-size: 16px;
+  }
+
+  .custom-lightbox__close-btn {
+    padding: 0 8px;
+    height: 32px;
+    font-size: 12px;
   }
 
   .custom-lightbox__counter {
