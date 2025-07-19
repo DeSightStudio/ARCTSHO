@@ -72,3 +72,76 @@ input::-webkit-search-decoration {
 .template-search__results {
   position: relative;
 }
+
+/* FORCE search results to use Shopify's flexbox grid system like collections */
+.template-search__results .product-grid {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  column-gap: var(--grid-mobile-horizontal-spacing) !important;
+  row-gap: var(--grid-mobile-vertical-spacing) !important;
+}
+
+@media screen and (min-width: 750px) {
+  .template-search__results .product-grid {
+    column-gap: var(--grid-desktop-horizontal-spacing) !important;
+    row-gap: var(--grid-desktop-vertical-spacing) !important;
+  }
+}
+
+/* Force search grid items to behave like collection grid items */
+.template-search__results .product-grid .grid__item {
+  display: block !important;
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Mobile: 2 columns by default */
+.template-search__results .product-grid.grid--2-col-tablet-down .grid__item {
+  width: calc(50% - var(--grid-mobile-horizontal-spacing) / 2) !important;
+  max-width: calc(50% - var(--grid-mobile-horizontal-spacing) / 2) !important;
+  flex-grow: 0 !important;
+  flex-shrink: 0 !important;
+}
+
+/* Mobile: 1 column */
+.template-search__results .product-grid.grid--1-col-tablet-down .grid__item {
+  width: 100% !important;
+  max-width: 100% !important;
+  flex-grow: 0 !important;
+  flex-shrink: 0 !important;
+}
+
+/* Desktop: 3 columns by default */
+@media screen and (min-width: 750px) {
+  .template-search__results .product-grid.grid--3-col-desktop .grid__item {
+    width: calc(33.33% - var(--grid-desktop-horizontal-spacing) * 2 / 3) !important;
+    max-width: calc(33.33% - var(--grid-desktop-horizontal-spacing) * 2 / 3) !important;
+    flex-grow: 0 !important;
+    flex-shrink: 0 !important;
+  }
+
+  .template-search__results .product-grid.grid--2-col-desktop .grid__item {
+    width: calc(50% - var(--grid-desktop-horizontal-spacing) / 2) !important;
+    max-width: calc(50% - var(--grid-desktop-horizontal-spacing) / 2) !important;
+    flex-grow: 0 !important;
+    flex-shrink: 0 !important;
+  }
+
+  .template-search__results .product-grid.grid--4-col-desktop .grid__item {
+    width: calc(25% - var(--grid-desktop-horizontal-spacing) * 3 / 4) !important;
+    max-width: calc(25% - var(--grid-desktop-horizontal-spacing) * 3 / 4) !important;
+    flex-grow: 0 !important;
+    flex-shrink: 0 !important;
+  }
+
+  .template-search__results .product-grid.grid--1-col-desktop .grid__item {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex-grow: 0 !important;
+    flex-shrink: 0 !important;
+  }
+}

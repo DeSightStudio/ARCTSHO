@@ -1811,6 +1811,13 @@ if (!window.infiniteScrollSetup) {
             if (window.infiniteScroll) {
                 window.infiniteScroll.reset();
             }
+
+            // CRITICAL: Ensure search grid layout after AJAX updates
+            if (typeof FacetFiltersForm.ensureSearchGridLayout === 'function') {
+                setTimeout(() => {
+                    FacetFiltersForm.ensureSearchGridLayout();
+                }, 50);
+            }
         };
     }
 

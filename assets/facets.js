@@ -92,12 +92,27 @@ class FacetFiltersForm extends HTMLElement {
   }
 
   static renderProductGridContainer(html) {
-    document.getElementById('ProductGridContainer').innerHTML = new DOMParser()
+    const newContainer = new DOMParser()
       .parseFromString(html, 'text/html')
-      .getElementById('ProductGridContainer').innerHTML;
+      .getElementById('ProductGridContainer');
+
+    const currentContainer = document.getElementById('ProductGridContainer');
+
+    // Preserve the grid layout classes from the new HTML
+    if (newContainer && currentContainer) {
+      currentContainer.innerHTML = newContainer.innerHTML;
+
+      // Force search results to maintain grid layout like collections
+      FacetFiltersForm.ensureSearchGridLayout();
+    }
 
     // Sortiere Produkte nach Verfügbarkeit (verfügbare zuerst, dann ausverkaufte)
     FacetFiltersForm.sortProductsByAvailability();
+
+    // CRITICAL: Restore grid layout after sorting (sorting destroys the layout)
+    setTimeout(() => {
+      FacetFiltersForm.ensureSearchGridLayout();
+    }, 10);
 
     document
       .getElementById('ProductGridContainer')
@@ -112,6 +127,41 @@ class FacetFiltersForm extends HTMLElement {
     // Infinite Scroll nach Filter-Update zurücksetzen
     if (window.infiniteScroll) {
       window.infiniteScroll.reset();
+    }
+  }
+
+  static ensureSearchGridLayout() {
+    const searchResults = document.querySelector('.template-search__results');
+    if (searchResults) {
+      const productGrids = searchResults.querySelectorAll('.product-grid, ul.product-grid');
+      productGrids.forEach(productGrid => {
+        // FORCE flexbox layout like collections (not CSS grid)
+        productGrid.style.setProperty('display', 'flex', 'important');
+        productGrid.style.setProperty('flex-wrap', 'wrap', 'important');
+        productGrid.style.setProperty('list-style', 'none', 'important');
+        productGrid.style.setProperty('margin', '0', 'important');
+        productGrid.style.setProperty('padding', '0', 'important');
+
+        // Ensure grid classes are present
+        if (!productGrid.classList.contains('grid')) {
+          productGrid.classList.add('grid');
+        }
+
+        // Force list items to be grid items with proper flexbox styling
+        const listItems = productGrid.querySelectorAll('li');
+        listItems.forEach(item => {
+          if (!item.classList.contains('grid__item')) {
+            item.classList.add('grid__item');
+          }
+          // Force flexbox grid item styling
+          item.style.setProperty('display', 'block', 'important');
+          item.style.setProperty('list-style', 'none', 'important');
+          item.style.setProperty('margin', '0', 'important');
+          item.style.setProperty('padding', '0', 'important');
+          item.style.setProperty('flex-grow', '0', 'important');
+          item.style.setProperty('flex-shrink', '0', 'important');
+        });
+      });
     }
   }
 
@@ -381,7 +431,67 @@ FacetFiltersForm.setListeners();
 document.addEventListener('DOMContentLoaded', () => {
   FacetFiltersForm.sortProductsByAvailability();
   FacetFiltersForm.initializeRequestOnlyButtons();
+
+  // CRITICAL: Ensure grid layout after initial sorting
+  setTimeout(() => {
+    FacetFiltersForm.ensureSearchGridLayout();
+  }, 50);
+
+  // Additional safety net - apply grid layout multiple times
+  setTimeout(() => {
+    FacetFiltersForm.ensureSearchGridLayout();
+  }, 200);
+
+  setTimeout(() => {
+    FacetFiltersForm.ensureSearchGridLayout();
+  }, 500);
 });
+
+// Add continuous monitoring method
+FacetFiltersForm.startSearchGridMonitoring = function() {
+  // Monitor for any changes to the product grid
+  const observer = new MutationObserver((mutations) => {
+    let shouldUpdate = false;
+    mutations.forEach((mutation) => {
+      if (mutation.type === 'attributes' || mutation.type === 'childList') {
+        const target = mutation.target;
+        if (target.classList && (
+          target.classList.contains('product-grid') ||
+          target.classList.contains('template-search__results') ||
+          target.id === 'ProductGridContainer'
+        )) {
+          shouldUpdate = true;
+        }
+      }
+    });
+
+    if (shouldUpdate) {
+      setTimeout(() => FacetFiltersForm.ensureSearchGridLayout(), 50);
+    }
+  });
+
+  // Observe the entire search results area
+  const searchResults = document.querySelector('.template-search__results');
+  if (searchResults) {
+    observer.observe(searchResults, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['class', 'style']
+    });
+  }
+
+  // Also observe the product grid container
+  const productGridContainer = document.getElementById('ProductGridContainer');
+  if (productGridContainer) {
+    observer.observe(productGridContainer, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['class', 'style']
+    });
+  }
+};
 
 class PriceRange extends HTMLElement {
   constructor() {

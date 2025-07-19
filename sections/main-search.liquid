@@ -12,7 +12,95 @@
   {{ 'mask-blobs.css' | asset_url | stylesheet_tag }}
 {%- endif -%}
 
+{%- unless section.settings.quick_add == 'none' -%}
+  {{ 'quick-add.css' | asset_url | stylesheet_tag }}
+{%- endunless -%}
+
+{%- if section.settings.quick_add == 'standard' -%}
+  <script src="{{ 'quick-add.js' | asset_url }}" defer="defer"></script>
+  <!-- Product form functionality is now in dist.js -->
+{%- endif -%}
+
 <script src="{{ 'main-search.js' | asset_url }}" defer="defer"></script>
+
+<script>
+  // DEBUG: Search Grid Layout Problem
+  document.addEventListener('DOMContentLoaded', function () {
+    console.log('🔍 DEBUG: Search Grid Layout Debugging gestartet');
+
+    function logGridState() {
+      const searchResults = document.querySelector('.template-search__results');
+      const productGrid = searchResults?.querySelector('.product-grid');
+
+      if (productGrid) {
+        console.log('🔍 Grid State:', {
+          display: window.getComputedStyle(productGrid).display,
+          flexWrap: window.getComputedStyle(productGrid).flexWrap,
+          gridTemplateColumns: window.getComputedStyle(productGrid).gridTemplateColumns,
+          classes: Array.from(productGrid.classList),
+          tagName: productGrid.tagName,
+          childCount: productGrid.children.length,
+        });
+
+        // Log first few children
+        Array.from(productGrid.children)
+          .slice(0, 3)
+          .forEach((child, index) => {
+            console.log(`🔍 Child ${index}:`, {
+              display: window.getComputedStyle(child).display,
+              width: window.getComputedStyle(child).width,
+              classes: Array.from(child.classList),
+            });
+          });
+      } else {
+        console.log('🔍 Kein product-grid gefunden');
+      }
+    }
+
+    // Initial state
+    setTimeout(() => {
+      console.log('🔍 === INITIAL STATE ===');
+      logGridState();
+    }, 100);
+
+    // After 1 second (when sorting might happen)
+    setTimeout(() => {
+      console.log('🔍 === AFTER 1 SECOND ===');
+      logGridState();
+    }, 1000);
+
+    // After 2 seconds
+    setTimeout(() => {
+      console.log('🔍 === AFTER 2 SECONDS ===');
+      logGridState();
+    }, 2000);
+
+    // Monitor DOM changes
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'childList' || mutation.type === 'attributes') {
+          const target = mutation.target;
+          if (target.classList?.contains('product-grid') || target.id === 'ProductGridContainer') {
+            console.log('🔍 === DOM CHANGE DETECTED ===');
+            console.log('🔍 Mutation type:', mutation.type);
+            console.log('🔍 Target:', target);
+            setTimeout(logGridState, 50);
+          }
+        }
+      });
+    });
+
+    const productGridContainer = document.getElementById('ProductGridContainer');
+    if (productGridContainer) {
+      observer.observe(productGridContainer, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['class', 'style'],
+      });
+    }
+  });
+</script>
 
 <style>
   .template-search__header {
@@ -248,12 +336,12 @@
           {%- else -%}
             <div
               class="template-search__results collection{% if section.settings.filter_type != 'vertical' %} page-width{% endif %}"
-              id="product-grid"
-              data-id="{{ section.id }}"
             >
               <div class="loading-overlay gradient"></div>
               <ul
-                class="grid product-grid  grid--{{ section.settings.columns_mobile }}-col-tablet-down grid--{{ section.settings.columns_desktop }}-col-desktop"
+                id="product-grid"
+                data-id="{{ section.id }}"
+                class="grid product-grid grid--{{ section.settings.columns_mobile }}-col-tablet-down grid--{{ section.settings.columns_desktop }}-col-desktop{% if section.settings.quick_add == 'bulk' %} collection-quick-add-bulk{% endif %}"
                 role="list"
               >
                 {%- assign skip_card_product_styles = false -%}
@@ -294,7 +382,6 @@
                     >
                       {%- case item.object_type -%}
                         {%- when 'product' -%}
-                          {%- capture product_settings -%}{%- if section.settings.product_show_vendor -%}vendor,{%- endif -%}title,price{%- endcapture -%}
                           {% render 'card-product',
                             card_product: item,
                             media_aspect_ratio: section.settings.image_ratio,
@@ -303,7 +390,10 @@
                             show_vendor: section.settings.show_vendor,
                             show_rating: section.settings.show_rating,
                             lazy_load: lazy_load,
-                            skip_styles: skip_card_product_styles
+                            show_weight: true,
+                            skip_styles: skip_card_product_styles,
+                            quick_add: section.settings.quick_add,
+                            section_id: section.id
                           %}
                           {%- assign skip_card_product_styles = true -%}
                         {%- when 'article' -%}
@@ -455,6 +545,27 @@
       "default": false,
       "label": "t:sections.main-search.settings.show_rating.label",
       "info": "t:sections.main-search.settings.show_rating.info"
+    },
+    {
+      "type": "select",
+      "id": "quick_add",
+      "default": "standard",
+      "label": "t:sections.main-collection-product-grid.settings.quick_add.label",
+      "info": "t:sections.main-collection-product-grid.settings.quick_add.info",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:sections.main-collection-product-grid.settings.quick_add.options__1.label"
+        },
+        {
+          "value": "standard",
+          "label": "t:sections.main-collection-product-grid.settings.quick_add.options__2.label"
+        },
+        {
+          "value": "bulk",
+          "label": "t:sections.main-collection-product-grid.settings.quick_add.options__3.label"
+        }
+      ]
     },
     {
       "type": "header",
