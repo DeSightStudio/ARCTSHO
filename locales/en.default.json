@@ -629,6 +629,11 @@
       },
       "change_currency": {
         "conversion_rate": "asdasd"
+      },
+      "merchandise_unavailable_in_buyer_location": {
+        "banner_title": {
+          "all_products_one": "The products in your cart are not available for delivery to your state due to the current state ivory laws in the USA."
+        }
       }
     }
   }

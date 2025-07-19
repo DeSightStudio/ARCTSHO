@@ -529,8 +529,155 @@
             function initBucksCurrencyConverter() {
                 // Wait for BUCKS app to load
                 setTimeout(function() {
+                    // Add chevron icons to currency selectors
+                    function addChevronIcons() {
+                        // Desktop currency selector
+                        const desktopCurrencyButton = document.querySelector('.desktop-bucks-currency-wrapper .buckscc-select-styled');
+                        if (desktopCurrencyButton && !desktopCurrencyButton.querySelector('.custom-chevron')) {
+                            const chevronDesktop = document.createElement('span');
+                            chevronDesktop.className = 'custom-chevron custom-chevron-desktop';
+                            // CSS wird die Farbe über fill: $mainColor setzen
+                            chevronDesktop.innerHTML = '<svg class="icon icon-caret" viewBox="0 0 10 6"><path fill="currentColor" fill-rule="evenodd" d="M9.354.646a.5.5 0 0 0-.708 0L5 4.293 1.354.646a.5.5 0 0 0-.708.708l4 4a.5.5 0 0 0 .708 0l4-4a.5.5 0 0 0 0-.708" clip-rule="evenodd"/></svg>';
+                            desktopCurrencyButton.appendChild(chevronDesktop);
+                            console.log('✅ Desktop chevron added');
+                        }
+
+                        // Mobile currency selector - Bessere Struktur
+                        const mobileCurrencyButton = document.querySelector('.mobile-bucks-currency-wrapper .buckscc-select-styled');
+                        if (mobileCurrencyButton && !mobileCurrencyButton.querySelector('.custom-chevron')) {
+                            // Zuerst den Button-Inhalt umstrukturieren
+                            const bucksSelected = mobileCurrencyButton.querySelector('.bucks-selected');
+                            if (bucksSelected) {
+                                // Wrapper für bessere Kontrolle erstellen
+                                const contentWrapper = document.createElement('div');
+                                contentWrapper.className = 'mobile-currency-content';
+                                contentWrapper.style.cssText = 'display: flex !important; align-items: center !important; justify-content: space-between !important; width: 100% !important;';
+
+                                // Text-Container mit gleichen Styles wie andere Labels
+                                const textContainer = document.createElement('span');
+                                textContainer.className = 'mobile-currency-text bucks-selected';
+                                textContainer.style.cssText = 'flex: 1 !important; margin-right: 1rem !important; color: white !important; font-family: "Cormorant Garamond", serif !important; font-size: inherit !important; font-weight: inherit !important;';
+                                textContainer.textContent = bucksSelected.textContent;
+
+                                // Chevron erstellen
+                                const chevronMobile = document.createElement('span');
+                                chevronMobile.className = 'custom-chevron custom-chevron-mobile';
+                                chevronMobile.style.cssText = 'flex-shrink: 0 !important; width: 1rem !important; height: 1rem !important; display: flex !important; align-items: center !important; justify-content: center !important;';
+                                chevronMobile.innerHTML = '<svg class="icon icon-caret" viewBox="0 0 10 6" style="width: 1rem !important; height: 1rem !important; fill: white !important;"><path fill="currentColor" fill-rule="evenodd" d="M9.354.646a.5.5 0 0 0-.708 0L5 4.293 1.354.646a.5.5 0 0 0-.708.708l4 4a.5.5 0 0 0 .708 0l4-4a.5.5 0 0 0 0-.708" clip-rule="evenodd"/></svg>';
+
+                                // Zusammenbauen
+                                contentWrapper.appendChild(textContainer);
+                                contentWrapper.appendChild(chevronMobile);
+
+                                // Alten Inhalt ersetzen
+                                mobileCurrencyButton.innerHTML = '';
+                                mobileCurrencyButton.appendChild(contentWrapper);
+
+                                console.log('✅ Mobile chevron added with restructured layout');
+                            }
+                        }
+                    }
+
+                    // Watch for dropdown state changes to handle rotation
+                    function watchDropdownState() {
+                        // Function to toggle chevron rotation
+                        function toggleChevron(button, isOpen) {
+                            const chevron = button.querySelector('.custom-chevron');
+                            if (chevron) {
+                                if (isOpen) {
+                                    // Desktop: translateY + rotate, Mobile: nur rotate (da inline-flex)
+                                    if (button.closest('.desktop-bucks-currency-wrapper')) {
+                                        chevron.style.transform = 'translateY(-50%) rotate(180deg)';
+                                    } else {
+                                        chevron.style.transform = 'rotate(180deg)';
+                                    }
+                                    console.log('💫 Chevron rotated UP (dropdown opened)');
+                                } else {
+                                    // Desktop: translateY + rotate, Mobile: nur rotate
+                                    if (button.closest('.desktop-bucks-currency-wrapper')) {
+                                        chevron.style.transform = 'translateY(-50%) rotate(0deg)';
+                                    } else {
+                                        chevron.style.transform = 'rotate(0deg)';
+                                    }
+                                    console.log('💫 Chevron rotated DOWN (dropdown closed)');
+                                }
+                            }
+                        }
+
+                        // Watch for dropdown options visibility (better indicator than class changes)
+                        const observer = new MutationObserver(function(mutations) {
+                            mutations.forEach(function(mutation) {
+                                // Check if dropdown options appeared/disappeared
+                                if (mutation.type === 'childList') {
+                                    const addedNodes = Array.from(mutation.addedNodes);
+                                    const removedNodes = Array.from(mutation.removedNodes);
+
+                                    // Check for dropdown options
+                                    addedNodes.forEach(function(node) {
+                                        if (node.nodeType === 1 && node.classList && node.classList.contains('buckscc-select-options')) {
+                                            // Dropdown opened
+                                            const button = node.parentElement.querySelector('.buckscc-select-styled');
+                                            if (button) {
+                                                toggleChevron(button, true);
+                                            }
+                                        }
+                                    });
+
+                                    removedNodes.forEach(function(node) {
+                                        if (node.nodeType === 1 && node.classList && node.classList.contains('buckscc-select-options')) {
+                                            // Dropdown closed
+                                            const button = node.parentElement.querySelector('.buckscc-select-styled');
+                                            if (button) {
+                                                toggleChevron(button, false);
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+                        });
+
+                        // Watch the entire currency containers for changes
+                        const desktopContainer = document.querySelector('.desktop-bucks-currency-wrapper');
+                        const mobileContainer = document.querySelector('.mobile-bucks-currency-wrapper');
+
+                        if (desktopContainer) {
+                            observer.observe(desktopContainer, { childList: true, subtree: true });
+                        }
+                        if (mobileContainer) {
+                            observer.observe(mobileContainer, { childList: true, subtree: true });
+                        }
+
+                        // Also add click listeners as fallback
+                        const desktopButton = document.querySelector('.desktop-bucks-currency-wrapper .buckscc-select-styled');
+                        const mobileButton = document.querySelector('.mobile-bucks-currency-wrapper .buckscc-select-styled');
+
+                        if (desktopButton) {
+                            desktopButton.addEventListener('click', function() {
+                                setTimeout(function() {
+                                    const isOpen = document.querySelector('.desktop-bucks-currency-wrapper .buckscc-select-options');
+                                    toggleChevron(desktopButton, !!isOpen);
+                                }, 100);
+                            });
+                        }
+
+                        if (mobileButton) {
+                            mobileButton.addEventListener('click', function() {
+                                setTimeout(function() {
+                                    const isOpen = document.querySelector('.mobile-bucks-currency-wrapper .buckscc-select-options');
+                                    toggleChevron(mobileButton, !!isOpen);
+                                }, 100);
+                            });
+                        }
+                    }
+
                     // Currency display for both mobile drawer and desktop header
                     function updateCurrencyDisplay() {
+                        // Add chevron icons first
+                        addChevronIcons();
+
+                        // Watch for dropdown state changes
+                        watchDropdownState();
+
                         // Update all currency selectors (mobile and desktop)
                         const selectedCurrencies = document.querySelectorAll('.bucks-selected');
 
