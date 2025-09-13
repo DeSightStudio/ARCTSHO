@@ -5,7 +5,13 @@ body {
   }
 }
 
+// Pop-up Container z-index Override
+.pop-up-container {
+  z-index: 9999999999 !important;
+}
+
 .popup-container {
+  z-index: 9999999999 !important;
   .modal {
     // Versteckt standardmäßig
     &[aria-hidden='true'] {
