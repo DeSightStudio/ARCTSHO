@@ -41,7 +41,15 @@
           <div class="exhibition-calendar__content">
             <div class="exhibition-calendar__content__left">
               <div class="exhibition-calendar__dates">
-                {% if exhibition['from-date'] and exhibition['to-date'] %}
+                {% comment %}
+                  Neue Logik für Datumsanzeige:
+                  1. WENN Period ausgefüllt, IMMER die Period anzeigen (From/To ignorieren)
+                  2. WENN Period leer und From/To vorhanden, zeige From/To
+                  3. WENN alles leer, zeige nichts
+                {% endcomment %}
+                {% if exhibition.period_if_date_unknown != blank %}
+                  {{ exhibition.period_if_date_unknown }}
+                {% elsif exhibition['from-date'] and exhibition['to-date'] %}
                   {{ exhibition['from-date'] | date: '%-d' }} - {{ exhibition['to-date'] | date: '%-d %B %Y' }}
                 {% elsif exhibition['from-date'] %}
                   {{ exhibition['from-date'] | date: '%B %Y' }}
