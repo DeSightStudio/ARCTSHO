@@ -678,43 +678,8 @@
                         // Watch for dropdown state changes
                         watchDropdownState();
 
-                        // Update all currency selectors (mobile and desktop)
-                        const selectedCurrencies = document.querySelectorAll('.bucks-selected');
-
-                        selectedCurrencies.forEach(function(selectedCurrency) {
-                            if (selectedCurrency) {
-                                const currencyText = selectedCurrency.textContent.trim();
-
-                                // Update currency display with symbols (für Desktop und Mobile)
-                                if (currencyText === 'EUR' && !currencyText.includes('€')) {
-                                    selectedCurrency.textContent = 'EUR/€';
-                                } else if (currencyText === 'USD' && !currencyText.includes('$')) {
-                                    selectedCurrency.textContent = 'USD/$';
-                                } else if (currencyText === 'GBP' && !currencyText.includes('£')) {
-                                    selectedCurrency.textContent = 'GBP/£';
-                                } else if (currencyText === 'CHF' && !currencyText.includes('CHF')) {
-                                    selectedCurrency.textContent = 'CHF';
-                                }
-                            }
-                        });
-
-                        // Update dropdown options (einfach, ohne Icons/Checkmarks)
-                        const currencyItems = document.querySelectorAll('.bucksItem');
-
-                        currencyItems.forEach(function(item) {
-                            const itemText = item.textContent.trim();
-
-                            // Update item display with symbols (einfach)
-                            if (itemText === 'EUR' && !itemText.includes('€')) {
-                                item.textContent = 'EUR/€';
-                            } else if (itemText === 'USD' && !itemText.includes('$')) {
-                                item.textContent = 'USD/$';
-                            } else if (itemText === 'GBP' && !itemText.includes('£')) {
-                                item.textContent = 'GBP/£';
-                            } else if (itemText === 'CHF' && !itemText.includes('CHF')) {
-                                item.textContent = 'CHF';
-                            }
-                        });
+                        // Note: Currency labels are now kept as standard (no custom symbols added)
+                        // The BUCKS app will display standard currency codes (EUR, USD, GBP, CHF)
                     }
 
                     // Initial update
