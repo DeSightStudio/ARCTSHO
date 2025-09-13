@@ -748,6 +748,47 @@
                 // Setup Form Placeholders
                 setupFormPlaceholders();
 
+                // Initialize Cart Drawer Body Scroll Lock
+                initCartDrawerScrollLock();
+
+                // Initialize Cart Drawer Body Scroll Lock Function
+                function initCartDrawerScrollLock() {
+                    const cartDrawer = document.querySelector('cart-drawer');
+                    if (!cartDrawer) return;
+
+                    // Observer für cart-drawer active class
+                    const observer = new MutationObserver(function(mutations) {
+                        mutations.forEach(function(mutation) {
+                            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                                const isActive = cartDrawer.classList.contains('active');
+
+                                if (isActive) {
+                                    // Cart geöffnet - Body Scroll sperren (nur Mobile)
+                                    if (window.innerWidth <= 750) {
+                                        document.body.classList.add('cart-drawer-open');
+                                    }
+                                } else {
+                                    // Cart geschlossen - Body Scroll freigeben
+                                    document.body.classList.remove('cart-drawer-open');
+                                }
+                            }
+                        });
+                    });
+
+                    // Observer starten
+                    observer.observe(cartDrawer, {
+                        attributes: true,
+                        attributeFilter: ['class']
+                    });
+
+                    // Cleanup bei Window Resize
+                    window.addEventListener('resize', function() {
+                        if (window.innerWidth > 750) {
+                            document.body.classList.remove('cart-drawer-open');
+                        }
+                    });
+                }
+
                 // Formularfelder optimieren und dynamische Breite anwenden
                 optimizeFormFields();
 
