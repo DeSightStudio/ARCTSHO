@@ -819,39 +819,69 @@
           }
         </style>
 
-        {%- if settings.popup_clearance_certificate_enable -%}
+        {%- if settings.cart_certificate_origin_enable -%}
           <div class="cart-drawer__clearance-certificate">
             <div class="clearance-certificate-container">
               <span class="clearance-certificate-text">
-                {% if request.locale.iso_code == 'de' %}
-                  Clearance Certificate Information
-                {% elsif request.locale.iso_code == 'it' %}
-                  Informazioni sul Certificato di Sdoganamento
-                {% elsif request.locale.iso_code == 'es' %}
-                  Información sobre el Certificado de Despacho
-                {% elsif request.locale.iso_code == 'fr' %}
-                  Informations sur le Certificat de Dédouanement
-                {% else %}
-                  Clearance Certificate Information
-                {% endif %}
+                {% liquid
+                  assign current_lang = request.locale.iso_code
+                  case current_lang
+                    when 'de'
+                      echo settings.cart_certificate_origin_text_de
+                    when 'en'
+                      echo settings.cart_certificate_origin_text_en
+                    when 'es'
+                      echo settings.cart_certificate_origin_text_es
+                    when 'it'
+                      echo settings.cart_certificate_origin_text_it
+                    when 'fr'
+                      echo settings.cart_certificate_origin_text_fr
+                    else
+                      echo settings.cart_certificate_origin_text_en
+                  endcase
+                %}
               </span>
               <button
                 type="button"
                 class="clearance-certificate-read-button"
-                data-popup="clearance-certificate"
-                aria-label="{{ 'cart.clearance_certificate_info' | t | default: 'Clearance Certificate Information' }}"
+                data-popup="certificate-origin"
+                aria-label="
+                  {% liquid
+                    assign current_lang = request.locale.iso_code
+                    case current_lang
+                      when 'de'
+                        echo settings.cart_certificate_origin_text_de
+                      when 'en'
+                        echo settings.cart_certificate_origin_text_en
+                      when 'es'
+                        echo settings.cart_certificate_origin_text_es
+                      when 'it'
+                        echo settings.cart_certificate_origin_text_it
+                      when 'fr'
+                        echo settings.cart_certificate_origin_text_fr
+                      else
+                        echo settings.cart_certificate_origin_text_en
+                    endcase
+                  %}
+                "
               >
-                {% if request.locale.iso_code == 'de' %}
-                  Lesen
-                {% elsif request.locale.iso_code == 'it' %}
-                  Leggi
-                {% elsif request.locale.iso_code == 'es' %}
-                  Leer
-                {% elsif request.locale.iso_code == 'fr' %}
-                  Lire
-                {% else %}
-                  Read
-                {% endif %}
+                {% liquid
+                  assign current_lang = request.locale.iso_code
+                  case current_lang
+                    when 'de'
+                      echo settings.cart_certificate_origin_button_de
+                    when 'en'
+                      echo settings.cart_certificate_origin_button_en
+                    when 'es'
+                      echo settings.cart_certificate_origin_button_es
+                    when 'it'
+                      echo settings.cart_certificate_origin_button_it
+                    when 'fr'
+                      echo settings.cart_certificate_origin_button_fr
+                    else
+                      echo settings.cart_certificate_origin_button_en
+                  endcase
+                %}
               </button>
             </div>
           </div>

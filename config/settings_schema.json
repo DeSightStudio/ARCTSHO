@@ -1613,6 +1613,76 @@
         "id": "cart_color_scheme",
         "label": "t:sections.all.colors.label",
         "default": "scheme-1"
+      },
+      {
+        "type": "header",
+        "content": "Certificate of Origin Information"
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_certificate_origin_enable",
+        "label": "Certificate of Origin Information im Warenkorb anzeigen",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "cart_certificate_origin_text_de",
+        "label": "Text (DE)",
+        "default": "Certificate of Origin Information"
+      },
+      {
+        "type": "text",
+        "id": "cart_certificate_origin_text_en",
+        "label": "Text (EN)",
+        "default": "Certificate of Origin Information"
+      },
+      {
+        "type": "text",
+        "id": "cart_certificate_origin_text_es",
+        "label": "Text (ES)",
+        "default": "Información sobre el Certificado de Origen"
+      },
+      {
+        "type": "text",
+        "id": "cart_certificate_origin_text_it",
+        "label": "Text (IT)",
+        "default": "Informazioni sul Certificato di Origine"
+      },
+      {
+        "type": "text",
+        "id": "cart_certificate_origin_text_fr",
+        "label": "Text (FR)",
+        "default": "Informations sur le Certificat d'Origine"
+      },
+      {
+        "type": "text",
+        "id": "cart_certificate_origin_button_de",
+        "label": "Button Text (DE)",
+        "default": "Lesen"
+      },
+      {
+        "type": "text",
+        "id": "cart_certificate_origin_button_en",
+        "label": "Button Text (EN)",
+        "default": "Read"
+      },
+      {
+        "type": "text",
+        "id": "cart_certificate_origin_button_es",
+        "label": "Button Text (ES)",
+        "default": "Leer"
+      },
+      {
+        "type": "text",
+        "id": "cart_certificate_origin_button_it",
+        "label": "Button Text (IT)",
+        "default": "Leggi"
+      },
+      {
+        "type": "text",
+        "id": "cart_certificate_origin_button_fr",
+        "label": "Button Text (FR)",
+        "default": "Lire"
       }
     ]
   },
