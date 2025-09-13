@@ -4,17 +4,215 @@
  * Arbeitet mit dem bestehenden Shopify Drawer System - NUR Styling-Änderungen
  */
 
+// Z-Index Hierarchie für alle Overlays - NUR WENN AKTIV
+// 1. Mobile Filter (Facets) - HOHER Z-INDEX NUR WENN GEÖFFNET
+.mobile-facets__wrapper {
+    z-index: 1 !important; // Normal niedrig wenn geschlossen
+
+    // NUR wenn Filter geöffnet sind - dann höchste Priorität
+    details[open] & {
+        z-index: 999999999 !important; // Höchste Priorität nur wenn offen
+    }
+}
+
+// Filter-Inhalt nur bei geöffnetem Zustand
+.mobile-facets__wrapper details[open] {
+    .mobile-facets,
+    .mobile-facets__inner {
+        z-index: 999999999 !important; // Nur wenn offen
+        position: relative !important;
+    }
+}
+
+// 2. Header - darunter aber hoch
+.shopify-section-header {
+    z-index: 999999 !important; // Hoch aber unter Filter
+}
+
+// 3. Alle Cookie-Banner - universelle Selektoren
+// GetTerms CMP, Usercentrics, und andere Cookie-Banner
+[id*="cookie"],
+[class*="cookie"],
+[id*="consent"],
+[class*="consent"],
+[id*="banner"],
+[class*="banner"],
+[id*="cmp"],
+[class*="cmp"],
+[id*="getterms"],
+[class*="getterms"],
+[id*="usercentrics"],
+[class*="usercentrics"],
+div[style*="z-index"]:not(.mobile-facets):not(.mobile-facets__wrapper):not(.mobile-facets__inner) {
+    z-index: 999998 !important; // Unter Header
+}
+
+// Mobile Filter Layout und Scrolling - NUR WENN GEÖFFNET
+.mobile-facets__wrapper details[open] {
+    .mobile-facets {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100vh !important;
+        background: white !important;
+        z-index: 999999999 !important;
+    }
+
+    .mobile-facets__inner {
+        height: 100vh !important;
+        display: flex !important;
+        flex-direction: column !important;
+        overflow: hidden !important;
+    }
+
+    .mobile-facets__main {
+        flex: 1 !important;
+        overflow-y: auto !important;
+        padding: 1rem !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+
+    .mobile-facets__footer {
+        flex-shrink: 0 !important;
+        padding: 1rem !important;
+        border-top: 1px solid #e0e0e0 !important;
+        background: white !important;
+    }
+
+    // Mobile Filter Header mit Schließen-Button
+    .mobile-facets__header {
+        flex-shrink: 0 !important;
+        padding: 1.5rem !important;
+        border-bottom: 1px solid #e0e0e0 !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+    }
+
+    .mobile-facets__close {
+        cursor: pointer !important;
+        padding: 0.75rem !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        background: transparent !important;
+        border: none !important;
+        border-radius: 50% !important;
+        width: 30px !important;
+        height: 30px !important;
+        transition: all 0.2s ease !important;
+
+        &:hover {
+            background: rgba(0, 0, 0, 0.1) !important;
+        }
+
+        .svg-wrapper {
+            width: 20px !important;
+            height: 20px !important;
+
+            svg {
+                width: 100% !important;
+                height: 100% !important;
+                stroke: #333 !important;
+                stroke-width: 2 !important;
+            }
+        }
+    }
+
+    // Sort-Funktionen Styling - EINFACH WIE ANDERE FACETS
+    .mobile-facets__sort {
+
+
+        label {
+            display: block !important;
+            margin-bottom: 0.5rem !important;
+            // Gleiche Größe wie andere Facet-Überschriften
+            font-size: inherit !important;
+            font-weight: inherit !important;
+            color: inherit !important;
+            font-family: inherit !important;
+        }
+
+        .select {
+            .select__select {
+                width: 100% !important;
+                // Standard Shopify Dropdown Styling beibehalten
+            }
+        }
+    }
+
+    // WICHTIG: Sort-Summary wieder sichtbar machen
+    .mobile-facets__summary {
+        display: block !important; // Überschreibt das display: none
+        span {
+            display: none;
+        }
+    }
+}
+
+// 4. Mobile Menu - unter Cookie-Button
+.menu-drawer-container {
+    z-index: 999997 !important; // Unter Cookie-Button
+}
+
+.menu-drawer {
+    z-index: 999997 !important; // Unter Cookie-Button
+}
+
+header-drawer {
+    z-index: 999997 !important; // Unter Cookie-Button
+}
+
+// 5. Filter/Sort Button Label - unter Mobile Menu
+.mobile-facets__open-wrapper,
+.mobile-facets__open,
+.mobile-facets__open-label {
+    z-index: 999996 !important; // Unter Mobile Menu
+}
+
+// 6. Spezifische Überschreibungen für bekannte problematische Elemente
+// BUCKS Currency Converter
+.buckscc-currency-box,
+.buckscc-floating-box {
+    z-index: 999995 !important;
+}
+
+// Andere potentielle Störer
+iframe,
+[style*="position: fixed"],
+[style*="position: absolute"] {
+    z-index: 999995 !important;
+}
+
 // Mobile Menu Drawer - Grünes Design
 @include screen(med-small) {
 
     // Overlay Hintergrund anpassen
     menu-drawer > details[open] > summary::before {
         background: rgba(5, 71, 10, 0.4) !important;
+        z-index: 999999998 !important; // Unter dem Header
+
+        // Overlay soll auch an der richtigen Position sein
+        position: fixed !important;
+        top: var(--header-bottom-position, 100%) !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: calc(100vh - var(--header-bottom-position, 100%)) !important;
     }
 
     // Hauptcontainer des Mobile Menüs
     .menu-drawer {
         background-color: $mainColor !important;
+        z-index: 999999998 !important; // Unter dem Header
+
+        // WICHTIG: Menu soll sich immer an der aktuellen Header-Position öffnen
+        // Nicht an der ursprünglichen Position ganz oben
+        position: fixed !important;
+        top: var(--header-bottom-position, 100%) !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: calc(100vh - var(--header-bottom-position, 100%)) !important;
 
         // Inner Container
         .menu-drawer__inner-container {

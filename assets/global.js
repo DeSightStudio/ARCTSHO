@@ -481,14 +481,10 @@ class MenuDrawer extends HTMLElement {
   }
 
   openMenuDrawer(summaryElement) {
-    // Body-Scroll sperren
-    const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
-    document.documentElement.style.setProperty('--scroll-position', `-${scrollPosition}px`);
+    console.log('🍔 Mobile Menu öffnen - OHNE Body-Scroll-Sperrung');
+
+    // NUR overflow hidden - KEINE position: fixed auf Body
     document.body.style.overflow = 'hidden';
-    document.body.style.position = 'fixed';
-    document.body.style.top = `-${scrollPosition}px`;
-    document.body.style.width = '100%';
-    document.body.style.height = '100%';
     document.body.classList.add('menu-drawer-open');
     document.documentElement.style.overflow = 'hidden';
 
@@ -512,17 +508,12 @@ class MenuDrawer extends HTMLElement {
       submenu.classList.remove('submenu-open');
     });
 
-    // Body-Scroll entsperren
-    const scrollPosition = parseInt(document.body.style.top || '0') * -1;
+    console.log('🍔 Mobile Menu schließen - Body-Scroll entsperren');
+
+    // Body-Scroll entsperren - EINFACH
     document.body.style.overflow = '';
-    document.body.style.position = '';
-    document.body.style.top = '';
-    document.body.style.width = '';
-    document.body.style.height = '';
     document.body.classList.remove('menu-drawer-open');
     document.documentElement.style.overflow = '';
-    document.documentElement.style.removeProperty('--scroll-position');
-    window.scrollTo(0, scrollPosition);
 
     document.body.classList.remove(`overflow-hidden-${this.dataset.breakpoint}`);
     removeTrapFocus(elementToFocus);
@@ -584,14 +575,34 @@ class HeaderDrawer extends MenuDrawer {
   }
 
   openMenuDrawer(summaryElement) {
+    console.log('🍔 HeaderDrawer: Mobile Menu öffnen');
+
     this.header = this.header || document.querySelector('.section-header');
     this.borderOffset =
       this.borderOffset || this.closest('.header-wrapper').classList.contains('header-wrapper--border-bottom') ? 1 : 0;
+
+    // Header-Position BEVOR Body-Änderungen speichern
+    const headerRect = this.header.getBoundingClientRect();
+    const currentHeaderTop = headerRect.top;
+    console.log('🍔 Header aktuelle Position:', currentHeaderTop);
+
+    // Header an aktueller Position fixieren
+    this.header.style.position = 'fixed';
+    this.header.style.top = `${currentHeaderTop}px`;
+    this.header.style.left = '0';
+    this.header.style.right = '0';
+    this.header.style.width = '100%';
+    this.header.style.zIndex = '9999999999';
+
     document.documentElement.style.setProperty(
       '--header-bottom-position',
-      `${parseInt(this.header.getBoundingClientRect().bottom - this.borderOffset)}px`
+      `${parseInt(headerRect.bottom - this.borderOffset)}px`
     );
     this.header.classList.add('menu-open');
+
+    // NUR overflow hidden - KEINE position: fixed auf Body
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
 
     setTimeout(() => {
       this.mainDetailsToggle.classList.add('menu-opening');
@@ -605,9 +616,49 @@ class HeaderDrawer extends MenuDrawer {
 
   closeMenuDrawer(event, elementToFocus) {
     if (!elementToFocus) return;
+
+    console.log('🍔 HeaderDrawer: Mobile Menu schließen');
+
+    // Header-Position NICHT sofort zurücksetzen - erst nach Menu-Animation
     super.closeMenuDrawer(event, elementToFocus);
     this.header.classList.remove('menu-open');
     window.removeEventListener('resize', this.onResize);
+
+    // Header-Styles erst nach Menu-Schließ-Animation zurücksetzen
+    if (this.header) {
+      setTimeout(() => {
+        console.log('🍔 Header-Styles nach Menu-Animation zurücksetzen');
+
+        // Prüfe aktuelle Scroll-Position
+        const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+        const shouldBeSticky = scrollPosition > 100;
+
+        if (shouldBeSticky) {
+          // Direkt zu sticky wechseln ohne Lücke
+          this.header.style.position = 'sticky';
+          this.header.style.top = '0';
+          this.header.style.left = '';
+          this.header.style.right = '';
+          this.header.style.width = '';
+          this.header.style.zIndex = '';
+          this.header.classList.add('shopify-section-header-sticky');
+
+          // Nach weiteren 50ms alle inline-Styles entfernen
+          setTimeout(() => {
+            this.header.style.position = '';
+            this.header.style.top = '';
+          }, 50);
+        } else {
+          // Alle Styles entfernen
+          this.header.style.position = '';
+          this.header.style.top = '';
+          this.header.style.left = '';
+          this.header.style.right = '';
+          this.header.style.width = '';
+          this.header.style.zIndex = '';
+        }
+      }, 400); // Warten bis Menu-Animation fertig ist
+    }
   }
 
   onResize = () => {
