@@ -1,11 +1,11 @@
 /**
  * Back Button Functionality für Arctic Antique
- * Intelligente Navigation zur zuletzt besuchten Seite oder zur Startseite
+ * Einfache und robuste Navigation basierend auf document.referrer und Browser History
  *
  * Features:
- * - Erkennt ob eine vorherige Seite in der History existiert
+ * - Verwendet document.referrer als primäre Methode
+ * - Browser History als Fallback
  * - Fallback zur Startseite wenn keine History vorhanden
- * - Unterstützt sowohl Browser-History als auch document.referrer
  * - Loading-States und Error-Handling
  */
 
@@ -42,7 +42,7 @@
         }
       });
 
-      // console.log(`Back Button Manager: ${buttons.length} Buttons initialisiert`);
+      console.log(`Back Button Manager: ${buttons.length} Buttons initialisiert`);
     }
 
     setupButton(button) {
@@ -80,17 +80,21 @@
 
     performNavigation(button) {
       try {
-        // Methode 1: Browser History verwenden
-        if (this.canUseHistory()) {
-          console.log('Back Button: Verwende Browser History');
-          this.navigateBack(button);
-          return;
-        }
+        console.log('Back Button: Starte Navigation...');
+        console.log('Back Button: Document Referrer:', document.referrer);
+        console.log('Back Button: History Length:', window.history.length);
 
-        // Methode 2: Document Referrer prüfen
+        // Methode 1: Document Referrer verwenden (einfach und zuverlässig)
         if (this.canUseReferrer()) {
           console.log('Back Button: Verwende Document Referrer');
           this.navigateToReferrer(button);
+          return;
+        }
+
+        // Methode 2: Browser History als Fallback
+        if (this.canUseHistory()) {
+          console.log('Back Button: Verwende Browser History');
+          this.navigateWithBrowserHistory(button);
           return;
         }
 
@@ -106,9 +110,7 @@
 
     canUseHistory() {
       // Prüfe ob Browser History verfügbar ist und mehr als 1 Eintrag hat
-      return window.history &&
-             window.history.length > 1 &&
-             !this.isDirectEntry();
+      return window.history && window.history.length > 1;
     }
 
     canUseReferrer() {
@@ -116,25 +118,25 @@
       const referrer = document.referrer;
       const currentDomain = window.location.hostname;
 
-      if (!referrer) return false;
+      if (!referrer) {
+        console.log('Back Button: Kein Referrer vorhanden');
+        return false;
+      }
 
       try {
         const referrerUrl = new URL(referrer);
-        return referrerUrl.hostname === currentDomain;
+        const isSameDomain = referrerUrl.hostname === currentDomain;
+        console.log('Back Button: Referrer Domain Check:', referrerUrl.hostname, '===', currentDomain, '=', isSameDomain);
+        return isSameDomain;
       } catch (e) {
+        console.log('Back Button: Referrer URL parsing failed:', e);
         return false;
       }
     }
 
-    isDirectEntry() {
-      // Verschiedene Methoden um direkten Eintrag zu erkennen
-      return !document.referrer ||
-             window.history.length <= 1 ||
-             performance.navigation?.type === 0; // TYPE_NAVIGATE
-    }
-
-    navigateBack(button) {
-      // Verwende Browser History
+    navigateWithBrowserHistory(button) {
+      // Browser History verwenden
+      console.log('Back Button: Verwende window.history.back()');
       setTimeout(() => {
         window.history.back();
         this.resetNavigationState(button);
@@ -143,6 +145,7 @@
 
     navigateToReferrer(button) {
       // Navigiere zum Referrer
+      console.log('Back Button: Navigiere zu Referrer:', document.referrer);
       setTimeout(() => {
         window.location.href = document.referrer;
       }, 100);
@@ -150,6 +153,7 @@
 
     navigateToHome(button) {
       // Navigiere zur Startseite
+      console.log('Back Button: Navigiere zur Startseite');
       setTimeout(() => {
         window.location.href = '/';
       }, 100);

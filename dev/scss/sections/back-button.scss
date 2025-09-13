@@ -44,11 +44,27 @@
       }
     }
 
-    // Focus-State für Accessibility
-    &:focus {
-      outline: 2px solid $mainColor;
-      outline-offset: 2px;
-      border-radius: 2px;
+    // Focus-State für Accessibility - behält alle Button-Eigenschaften
+    &:focus,
+    &:focus-visible,
+    &:active {
+      outline: 2px solid $mainColor !important;
+      outline-offset: 2px !important;
+      border-radius: var(--buttons-radius-outset) !important;
+      color: $whiteColor !important;
+      background-color: $mainColor !important;
+
+      // Stelle sicher, dass Text und Icon weiß bleiben
+      .back-button__text,
+      .back-button__icon {
+        color: $whiteColor !important;
+      }
+
+      // Behalte border-radius auch bei :before und :after
+      &:before,
+      &:after {
+        border-radius: var(--buttons-radius-outset) !important;
+      }
     }
 
     // Disabled State
@@ -84,8 +100,12 @@
 .color-scheme-1 {
   .back-button-section {
     .back-button {
-      &:focus {
-        outline-color: $mainColor;
+      &:focus,
+      &:focus-visible,
+      &:active {
+        outline-color: $mainColor !important;
+        background-color: $mainColor !important;
+        color: $whiteColor !important;
       }
     }
   }
@@ -94,8 +114,12 @@
 .color-scheme-2 {
   .back-button-section {
     .back-button {
-      &:focus {
-        outline-color: $blackColor;
+      &:focus,
+      &:focus-visible,
+      &:active {
+        outline-color: $blackColor !important;
+        background-color: $blackColor !important;
+        color: $whiteColor !important;
       }
     }
   }
@@ -165,6 +189,49 @@
           animation: none;
         }
       }
+    }
+  }
+}
+
+// Zusätzliche Sicherheit für Button-Styling - überschreibt alle anderen Styles
+.back-button-section .back-button.button {
+  // Stelle sicher, dass border-radius IMMER erhalten bleibt
+  border-radius: var(--buttons-radius-outset) !important;
+
+  &:focus,
+  &:focus-visible,
+  &:active,
+  &:hover {
+    border-radius: var(--buttons-radius-outset) !important;
+    color: $whiteColor !important;
+
+    // Alle Kinder-Elemente auch weiß
+    * {
+      color: $whiteColor !important;
+    }
+
+    // Pseudo-Elemente
+    &:before,
+    &:after {
+      border-radius: var(--buttons-radius-outset) !important;
+    }
+  }
+
+  // Spezifische Behandlung für Primary/Secondary Buttons
+  &.button--primary {
+    &:focus,
+    &:focus-visible,
+    &:active {
+      background-color: $mainColor !important;
+    }
+  }
+
+  &.button--secondary {
+    &:focus,
+    &:focus-visible,
+    &:active {
+      background-color: $mainColor !important;
+      border-color: $mainColor !important;
     }
   }
 }
