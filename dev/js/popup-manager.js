@@ -41,13 +41,200 @@
     // Variable zum Speichern des zuletzt geklickten Request-Only Buttons
     let lastClickedRequestOnlyButton = null;
 
-    // Globale Funktion zum Zurücksetzen des Body-Scrollings
+    // Variable zum Speichern der Scroll-Position - global verfügbar
+    let scrollPosition = 0;
+
+    // Globale Scroll-Position-Verwaltung
+    window.savedScrollPosition = 0;
+
+    // Funktion zum Sperren des Body-Scrolls
+    const lockBodyScroll = () => {
+      // Aktuelle Scroll-Position speichern - mehrere Methoden für Kompatibilität
+      scrollPosition = window.pageYOffset ||
+                      document.documentElement.scrollTop ||
+                      document.body.scrollTop ||
+                      0;
+
+      // Global speichern für andere Event-Handler
+      window.savedScrollPosition = scrollPosition;
+
+      console.log('🔒 Sperre Body-Scroll, aktuelle Position:', scrollPosition);
+
+      // CSS Custom Property für Scroll-Position setzen
+      document.documentElement.style.setProperty('--scroll-position', `-${scrollPosition}px`);
+
+      // Speichere auch als data-Attribut für CSS-Zugriff
+      document.body.setAttribute('data-scroll-position', scrollPosition);
+
+      // Body-Scroll verhindern mit position: fixed
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollPosition}px`;
+      document.body.style.width = '100%';
+      document.body.style.height = '100%';
+      document.body.style.left = '0';
+      document.body.style.right = '0';
+      document.body.classList.add('modal-open');
+
+      // Zusätzlich HTML-Element sperren
+      document.documentElement.style.overflow = 'hidden';
+      document.documentElement.classList.add('modal-open');
+    };
+
+    // Funktion zum Entsperren des Body-Scrolls
+    const unlockBodyScroll = () => {
+      // Scroll-Position aus verschiedenen Quellen extrahieren
+      let savedScrollPosition = window.savedScrollPosition ||
+                               scrollPosition ||
+                               parseInt(document.body.getAttribute('data-scroll-position')) ||
+                               0;
+
+      console.log('🔓 Entsperre Body-Scroll, gespeicherte Position:', savedScrollPosition);
+
+      // Body-Scroll wiederherstellen
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      document.body.style.height = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      document.body.classList.remove('modal-open');
+      document.body.classList.remove('cart-drawer-open');
+      document.body.classList.remove('menu-drawer-open');
+      document.body.removeAttribute('data-scroll-position');
+
+      // HTML-Element entsperren
+      document.documentElement.style.overflow = '';
+      document.documentElement.classList.remove('modal-open');
+
+      // CSS Custom Property entfernen
+      document.documentElement.style.removeProperty('--scroll-position');
+
+      // Scroll-Position sofort wiederherstellen - OHNE requestAnimationFrame
+      window.scrollTo(0, savedScrollPosition);
+
+      // Zusätzliche Sicherheit: Nach kurzer Zeit nochmal prüfen
+      setTimeout(() => {
+        if (window.pageYOffset !== savedScrollPosition) {
+          console.log('🔄 Korrigiere Scroll-Position:', savedScrollPosition);
+          window.scrollTo(0, savedScrollPosition);
+        }
+      }, 50);
+
+      console.log('✅ Scroll-Position wiederhergestellt auf:', savedScrollPosition);
+    };
+
+    // Globale Funktion zum Zurücksetzen des Body-Scrollings (Fallback)
     const ensureBodyScrollEnabled = () => {
       // Entferne alle möglichen overflow-hidden Klassen und Styles
       document.body.classList.remove('overflow-hidden');
+      document.body.classList.remove('modal-open');
       document.body.style.overflow = '';
-      console.log('Body-Scrolling explizit wiederhergestellt');
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      console.log('Body-Scrolling explizit wiederhergestellt (Fallback)');
     };
+
+    // Globale Funktionen verfügbar machen
+    window.lockBodyScroll = lockBodyScroll;
+    window.unlockBodyScroll = unlockBodyScroll;
+    window.ensureBodyScrollEnabled = ensureBodyScrollEnabled;
+
+    // Globale Funktion für sofortige Scroll-Wiederherstellung
+    window.restoreScrollPosition = function() {
+      const savedPos = window.savedScrollPosition || 0;
+      const currentPos = window.pageYOffset || document.documentElement.scrollTop || 0;
+      console.log('🔄 Globale Scroll-Wiederherstellung:');
+      console.log('   - Gespeicherte Position:', savedPos);
+      console.log('   - Aktuelle Position:', currentPos);
+      console.log('   - scrollPosition Variable:', scrollPosition);
+
+      if (savedPos > 0) {
+        window.scrollTo(0, savedPos);
+        console.log('✅ Scroll-Position wiederhergestellt auf:', savedPos);
+      } else {
+        console.warn('⚠️ Keine gültige Scroll-Position gespeichert!');
+      }
+    };
+
+    // MutationObserver für Modal-Änderungen - NUR als Backup, nicht für normale Schließung
+    const modalObserver = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'aria-hidden') {
+          const modal = mutation.target;
+          const isHidden = modal.getAttribute('aria-hidden') === 'true';
+
+          if (isHidden) {
+            // Modal wurde geschlossen - aber nur als Backup nach längerer Zeit
+            setTimeout(() => {
+              const openModals = document.querySelectorAll('.modal[aria-hidden="false"]');
+              const bodyIsLocked = document.body.classList.contains('modal-open');
+
+              if (openModals.length === 0 && bodyIsLocked) {
+                console.log('🔍 MutationObserver BACKUP: Body noch gesperrt, entsperre jetzt');
+                unlockBodyScroll();
+              }
+            }, 1000); // Längere Wartezeit - nur als Backup
+          }
+        }
+      });
+    });
+
+    // Observer für alle Modals aktivieren
+    document.querySelectorAll('.modal').forEach(modal => {
+      modalObserver.observe(modal, {
+        attributes: true,
+        attributeFilter: ['aria-hidden']
+      });
+    });
+
+    // Event-Listener für Pop-up-Trigger - speichere Scroll-Position SOFORT beim Klick
+    document.addEventListener('click', (e) => {
+      // Verschiedene Trigger-Selektoren prüfen
+      const trigger = e.target.closest('[data-micromodal-trigger]') ||
+                     e.target.closest('a[href*="#"]') ||
+                     e.target.closest('button[onclick*="modal"]');
+
+      if (trigger) {
+        const currentScroll = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+        window.savedScrollPosition = currentScroll;
+        scrollPosition = currentScroll;
+        console.log(`🎯 TRIGGER GEKLICKT (${trigger.tagName}): Scroll-Position gespeichert:`, currentScroll);
+        console.log(`🎯 Trigger Element:`, trigger);
+      }
+    }, true); // useCapture = true für frühe Erfassung
+
+    // Zusätzlicher Event-Listener für Hash-Links (wie clearance-certificate)
+    document.addEventListener('click', (e) => {
+      const link = e.target.closest('a[href*="#"]');
+      if (link && link.href.includes('#')) {
+        const hash = link.href.split('#')[1];
+        if (hash && (hash.includes('modal') || hash.includes('certificate') || hash.includes('vat'))) {
+          const currentScroll = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+          window.savedScrollPosition = currentScroll;
+          scrollPosition = currentScroll;
+          console.log(`🎯 HASH-LINK GEKLICKT (#${hash}): Scroll-Position gespeichert:`, currentScroll);
+        }
+      }
+    }, true);
+
+    // Debug: Überwache Scroll-Position kontinuierlich
+    let lastScrollPosition = 0;
+    window.addEventListener('scroll', () => {
+      const currentScroll = window.pageYOffset || document.documentElement.scrollTop || 0;
+      if (Math.abs(currentScroll - lastScrollPosition) > 10) { // Nur bei größeren Änderungen loggen
+        lastScrollPosition = currentScroll;
+        console.log('📜 Scroll-Position geändert auf:', currentScroll);
+      }
+    });
+
+    // Initial Scroll-Position setzen
+    const initialScroll = window.pageYOffset || document.documentElement.scrollTop || 0;
+    window.savedScrollPosition = initialScroll;
+    scrollPosition = initialScroll;
+    console.log('🚀 Initial Scroll-Position:', initialScroll);
 
     // Verbesserte Funktion zum Schließen mit Animation
     const closeWithAnimation = (modalId) => {
@@ -77,14 +264,14 @@
           // Markiere als nicht mehr in Animation
           delete animatingModals[modalId];
 
-          // Stelle sicher, dass Body-Scrolling wiederhergestellt wird
-          ensureBodyScrollEnabled();
+          // Stelle Body-Scroll wieder her
+          unlockBodyScroll();
 
           console.log(`Animation zum Schließen von ${modalId} abgeschlossen`);
         } catch (error) {
           console.error(`Fehler beim Schließen von ${modalId}:`, error);
           // Fallback: Stelle sicher, dass Body-Scrolling wiederhergestellt wird
-          ensureBodyScrollEnabled();
+          unlockBodyScroll();
           delete animatingModals[modalId];
         }
       }, 300);
@@ -95,17 +282,27 @@
       MicroModal.init({
         openTrigger: 'data-micromodal-trigger',
         closeTrigger: 'data-custom-close',
-        disableScroll: true,
+        disableScroll: false, // Deaktiviert - wir verwenden eigene Body-Scroll-Sperrung
         disableFocus: false,
         awaitOpenAnimation: true,
         awaitCloseAnimation: false, // Deaktiviert, da wir eigene Animation verwenden
         // Callbacks vereinfacht
         onShow: modal => {
           console.log(`${modal.id} wird geöffnet`);
+
+          // SOFORT Scroll-Position speichern bevor irgendetwas anderes passiert
+          const currentScroll = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+          window.savedScrollPosition = currentScroll;
+          scrollPosition = currentScroll;
+          console.log(`🎯 MODAL ÖFFNET: Aktuelle Scroll-Position gespeichert:`, currentScroll);
+
           // Stelle sicher, dass keine Animations-Klasse vorhanden ist
           modal.classList.remove('is-closing');
           // Setze aria-hidden auf false für die Öffnen-Animation
           modal.setAttribute('aria-hidden', 'false');
+
+          // Verhindere Body-Scroll
+          lockBodyScroll();
 
           // Spezielle Behandlung für Request-Only Modal
           if (modal.id === 'modal-request-only') {
@@ -151,8 +348,8 @@
             }
           }
 
-          // Stelle immer sicher, dass Body-Scrolling wiederhergestellt wird
-          ensureBodyScrollEnabled();
+          // Stelle Body-Scroll wieder her
+          unlockBodyScroll();
           return true;
         }
       });
@@ -204,7 +401,7 @@
       });
 
       // Stelle Body-Scrolling sicher wieder her
-      ensureBodyScrollEnabled();
+      unlockBodyScroll();
 
       console.log('Alle Modals geschlossen und Body-Scrolling wiederhergestellt');
     };
@@ -291,6 +488,19 @@
         e.stopPropagation();
       });
     });
+
+    // Zusätzliche Event-Listener für Pop-up-Schließung - DEAKTIVIERT um Doppel-Entsperrung zu vermeiden
+    // Die Entsperrung erfolgt bereits über MicroModal onClose und closeWithAnimation
+
+    /*
+    document.addEventListener('click', (e) => {
+      // Diese Event-Listener sind deaktiviert, da sie zu doppelter Entsperrung führen
+      // Die Entsperrung erfolgt bereits über:
+      // 1. MicroModal onClose Callback
+      // 2. closeWithAnimation Funktion
+      // 3. MutationObserver als Backup
+    });
+    */
 
     // Event-Listener für data-popup Attribute (Event Delegation für dynamische Inhalte)
     document.addEventListener('click', (e) => {

@@ -481,6 +481,17 @@ class MenuDrawer extends HTMLElement {
   }
 
   openMenuDrawer(summaryElement) {
+    // Body-Scroll sperren
+    const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+    document.documentElement.style.setProperty('--scroll-position', `-${scrollPosition}px`);
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${scrollPosition}px`;
+    document.body.style.width = '100%';
+    document.body.style.height = '100%';
+    document.body.classList.add('menu-drawer-open');
+    document.documentElement.style.overflow = 'hidden';
+
     setTimeout(() => {
       this.mainDetailsToggle.classList.add('menu-opening');
     });
@@ -500,6 +511,19 @@ class MenuDrawer extends HTMLElement {
     this.mainDetailsToggle.querySelectorAll('.submenu-open').forEach((submenu) => {
       submenu.classList.remove('submenu-open');
     });
+
+    // Body-Scroll entsperren
+    const scrollPosition = parseInt(document.body.style.top || '0') * -1;
+    document.body.style.overflow = '';
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.width = '';
+    document.body.style.height = '';
+    document.body.classList.remove('menu-drawer-open');
+    document.documentElement.style.overflow = '';
+    document.documentElement.style.removeProperty('--scroll-position');
+    window.scrollTo(0, scrollPosition);
+
     document.body.classList.remove(`overflow-hidden-${this.dataset.breakpoint}`);
     removeTrapFocus(elementToFocus);
     this.closeAnimation(this.mainDetailsToggle);

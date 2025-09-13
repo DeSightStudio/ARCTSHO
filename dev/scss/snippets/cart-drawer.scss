@@ -1,4 +1,15 @@
+// Cart-Drawer z-index Override - MUSS über allem liegen!
+cart-drawer {
+    z-index: 9999999999 !important;
+}
+
+.drawer {
+    z-index: 9999999999 !important;
+}
+
 .cart-drawer {
+    z-index: 9999999999 !important;
+
     .cart-drawer__overlay {
         background-color: rgba(5, 71, 10, .2) !important;
     }
@@ -427,5 +438,15 @@ cart-drawer {
                 transition: transform 150ms cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 150ms ease-out !important;
             }
         }
+    }
+}
+
+// VAT ID Button - Mobile Schrift kleiner für einzeilige Darstellung
+#CartDrawer-VatIdButton {
+    @include screen(med-small) {
+        font-size: 14px !important;
+        line-height: 1.2 !important;
+        white-space: nowrap !important;
+        padding: 8px 12px !important;
     }
 }
