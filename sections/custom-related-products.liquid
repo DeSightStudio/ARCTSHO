@@ -14,6 +14,14 @@
     padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
   }
 
+  /* Mobile: Minimale Section-Paddings */
+  @media screen and (max-width: 749px) {
+    .section-{{ section.id }}-padding {
+      padding-top: 0px !important;
+      padding-bottom: 10px !important;
+    }
+  }
+
   @media screen and (min-width: 750px) {
     .section-{{ section.id }}-padding {
       padding-top: {{ section.settings.padding_top }}px;
@@ -43,15 +51,13 @@
 
     {%- comment -%} Conditional wrapper wie in der originalen Section {%- endcomment -%}
     {%- if products_shown > 0 or true -%}
-      <h2 class="related-products__heading inline-richtext {{ section.settings.heading_size }}">
-        {{ section.settings.heading }}
-      </h2>
       <ul
         class="grid product-grid grid--{{ section.settings.columns_desktop }}-col-desktop grid--{{ section.settings.columns_mobile }}-col-tablet-down"
         role="list"
       >
         {%- assign skip_card_product_styles = false -%}
 
+        {%- comment -%} Phase 1: Ein Produkt pro Collection (Diversität) {%- endcomment -%}
         {%- for collection in collections -%}
           {%- if products_shown < 10 and collection.published -%}
             {%- unless excluded_handles contains collection.handle or excluded_titles contains collection.title -%}
@@ -89,14 +95,57 @@
             {%- endunless -%}
           {%- endif -%}
         {%- endfor -%}
+
+        {%- comment -%} Phase 2: Fülle auf 10 Produkte auf (falls noch nicht erreicht) {%- endcomment -%}
+        {%- if products_shown < 10 -%}
+          {%- for collection in collections -%}
+            {%- if products_shown < 10 and collection.published -%}
+              {%- unless excluded_handles contains collection.handle or excluded_titles contains collection.title -%}
+                {%- for collection_product in collection.products -%}
+                  {%- if products_shown < 10 -%}
+                    {%- if collection_product.available
+                      and collection_product.id != product.id
+                      and collection_product.selected_or_first_available_variant.sku != '2226'
+                    -%}
+                      {%- assign product_id_check = ',' | append: collection_product.id | append: ',' -%}
+                      {%- unless used_product_ids contains product_id_check -%}
+                        <li class="grid__item">
+                          {% render 'card-product',
+                            card_product: collection_product,
+                            media_aspect_ratio: section.settings.image_ratio,
+                            image_shape: section.settings.image_shape,
+                            show_secondary_image: section.settings.show_secondary_image,
+                            show_vendor: section.settings.show_vendor,
+                            show_rating: section.settings.show_rating,
+                            skip_styles: skip_card_product_styles,
+                            section_id: section.id,
+                            quick_add: 'standard'
+                          %}
+                        </li>
+                        {%- assign skip_card_product_styles = true -%}
+                        {%- assign used_product_ids = used_product_ids | append: product_id_check -%}
+                        {%- assign products_shown = products_shown | plus: 1 -%}
+                      {%- endunless -%}
+                    {%- endif -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- endunless -%}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
       </ul>
     {%- endif -%}
 
+    {%- comment -%} Debug Info (nur für Entwicklung) {%- endcomment -%}
     {%- if products_shown == 0 -%}
       <div style="background: #ffeeee; padding: 20px; margin: 10px 0; border: 1px solid #ffcccc;">
         <strong>Keine Related Products gefunden!</strong><br>
         Mögliche Gründe: Keine verfügbaren Produkte in Collections oder alle Produkte sind ausverkauft.
       </div>
+    {%- elsif products_shown < 10 -%}
+      <!-- Debug: Nur {{ products_shown }} von 10 Produkten gefunden -->
+    {%- else -%}
+      <!-- Debug: Erfolgreich {{ products_shown }} Produkte angezeigt -->
     {%- endif -%}
   </product-recommendations>
   {% if section.settings.image_shape == 'arch' %}
@@ -112,7 +161,7 @@
   "settings": [
     {
       "type": "paragraph",
-      "content": "Shows exactly 10 products from different collections (max 1 per collection)"
+      "content": "Shows exactly 10 products: First tries 1 per collection for diversity, then fills up to 10 total products"
     },
     {
       "type": "richtext",

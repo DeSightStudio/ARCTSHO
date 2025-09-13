@@ -15,7 +15,7 @@ product-info {
         }
         .product__info-wrapper {
             @media screen and (max-width: 981px) {
-                margin: 30px 0 30px 0px;
+                margin: 30px 0 0 0px; // Nur oben 30px, unten 0px
             }
             .product__sku {
                 font-family: 'Copperplate';
@@ -138,10 +138,13 @@ product-recommendations {
         font-family: 'Cormorant Garamond';
         color: $mainColor;
         font-size: $fontSizeMedium !important; // Reduziert von $fontSizeLarge (36px) auf $fontSizeMedium (26px)
-        margin: 30px 0px 15px 0px;
+        margin: 30px 0px 15px 0px; // Desktop: 30px oben, 15px unten
         line-height: 1;
+
+        // Mobile: Minimale Abstände
         @include screen(med-small) {
             font-size: $fontSizeRegular; // Reduziert von $fontSizeMedium auf $fontSizeRegular für mobile
+            margin: 5px 0px 5px 0px !important; // Mobile: Nur 5px oben und unten
         }
     }
 

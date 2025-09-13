@@ -28,9 +28,6 @@
     data-product-id="{{ product.id }}"
   >
     {% if recommendations.performed and recommendations.products_count > 0 %}
-      <h2 class="related-products__heading inline-richtext {{ section.settings.heading_size }}">
-        {{ section.settings.heading }}
-      </h2>
       <ul
         class="grid product-grid grid--{{ section.settings.columns_desktop }}-col-desktop grid--{% if section.settings.columns_mobile == '1' %}2{% else %}{{ section.settings.columns_mobile }}{% endif %}-col-tablet-down"
         role="list"
