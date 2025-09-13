@@ -40,10 +40,6 @@
     "main": {
       "type": "main-product",
       "blocks": {
-        "product_specs_ABC123": {
-          "type": "product_specs",
-          "settings": {}
-        },
         "sku_KJfErU": {
           "type": "sku",
           "settings": {
@@ -56,6 +52,10 @@
         },
         "price": {
           "type": "price",
+          "settings": {}
+        },
+        "product_specs_ABC123": {
+          "type": "product_specs",
           "settings": {}
         },
         "description_XYhazL": {
@@ -71,10 +71,10 @@
         }
       },
       "block_order": [
-        "product_specs_ABC123",
         "sku_KJfErU",
         "title",
         "price",
+        "product_specs_ABC123",
         "description_XYhazL",
         "buy_buttons"
       ],
