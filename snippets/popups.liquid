@@ -242,6 +242,9 @@
                   </div>
                   <div id="vatIdValidationMessage" class="vat-id-validation-message"></div>
                 </div>
+
+                <!-- Verstecktes Feld für automatisch abgeleitetes Land aus VAT-Nummer -->
+                <input type="hidden" id="ContactForm-derived-country" name="contact[country_from_vat]" value="">
                 {% if form.posted_successfully? %}
                   <div class="form-success">
                     {{ settings.cart_popup_vat_id_success_message }}
@@ -480,21 +483,6 @@
                   </div>
                 </div>
 
-                <div class="form-field-group">
-                  <div class="form-field">
-                    <label for="ContactForm-country">
-                      {{- 'customer.vat_form.country' | t }}
-                      <span aria-hidden="true">*</span></label
-                    >
-                    <select id="ContactForm-country" name="contact[country]" required>
-                      <option value="">{{ 'customer.vat_form.select_country' | t }}</option>
-                      {% for country in shop.enabled_countries %}
-                        <option value="{{ country.iso_code }}">{{ country.name }}</option>
-                      {% endfor %}
-                    </select>
-                  </div>
-                </div>
-
                 <div class="form-submit-group">
                   <button type="button" class="button button--secondary btn-cancel" data-custom-close>
                     {{ settings.cart_popup_vat_id_cancel_label | default: 'Cancel' }}
@@ -556,6 +544,24 @@
 
                     console.log('Formular wird abgesendet - leere den Warenkorb');
 
+                    // Entferne alle automatisch erstellten Country Code Felder vor dem Absenden
+                    const existingCountryCodeFields = document.querySelectorAll(
+                      'input[name*="country_code"], input[name*="Country Code"], input[name="contact[country_code]"], input[name="contact[Country Code]"]'
+                    );
+                    existingCountryCodeFields.forEach((field) => {
+                      console.log('Entferne Country Code Feld:', field.name, field.value);
+                      if (field.id !== 'ContactForm-derived-country') {
+                        field.remove();
+                      }
+                    });
+
+                    // Zusätzlich: Alle Felder mit "country" im Namen prüfen und loggen
+                    const allCountryFields = document.querySelectorAll('input[name*="country"]');
+                    console.log('Alle Country-Felder im Formular:');
+                    allCountryFields.forEach((field) => {
+                      console.log('- Name:', field.name, 'Value:', field.value, 'ID:', field.id);
+                    });
+
                     // Warenkorb leeren
                     fetch('/cart/clear.js', {
                       method: 'POST',
@@ -566,6 +572,17 @@
                       .then((response) => response.json())
                       .then((data) => {
                         console.log('Warenkorb erfolgreich geleert:', data);
+
+                        // Letzte Prüfung: Entferne alle Country Code Felder direkt vor dem Submit
+                        const finalCountryCodeCheck = document.querySelectorAll(
+                          'input[name*="country_code"], input[name*="Country Code"], input[name="contact[country_code]"], input[name="contact[Country Code]"]'
+                        );
+                        finalCountryCodeCheck.forEach((field) => {
+                          console.log('FINAL: Entferne Country Code Feld:', field.name, field.value);
+                          if (field.id !== 'ContactForm-derived-country') {
+                            field.remove();
+                          }
+                        });
 
                         // Jetzt das Formular tatsächlich absenden
                         sessionStorage.setItem('vatIdFormSubmitted', 'true');
@@ -645,6 +662,19 @@
                     companyInfoElement.style.display = 'none';
                     companyInfoElement.innerHTML = '';
                   }
+
+                  // Entferne automatisch erstellte Country Code Felder nach jeder Validierung
+                  setTimeout(() => {
+                    const unwantedCountryFields = document.querySelectorAll(
+                      'input[name*="country_code"], input[name*="Country Code"], input[name="contact[country_code]"], input[name="contact[Country Code]"]'
+                    );
+                    unwantedCountryFields.forEach((field) => {
+                      console.log('Entferne Country Code Feld nach Validierung:', field.name, field.value);
+                      if (field.id !== 'ContactForm-derived-country') {
+                        field.remove();
+                      }
+                    });
+                  }, 100);
                 }
 
                 // Funktion zur Vorvalidierung (Formatprüfung)
@@ -840,9 +870,53 @@
                   validateVatId(value);
                 }, 500);
 
+                // Funktion zum Ableiten des Landes aus der VAT-Nummer
+                function deriveCountryFromVat(vatId) {
+                  const countryMapping = {
+                    AT: 'Austria',
+                    BE: 'Belgium',
+                    BG: 'Bulgaria',
+                    CY: 'Cyprus',
+                    CZ: 'Czech Republic',
+                    DE: 'Germany',
+                    DK: 'Denmark',
+                    EE: 'Estonia',
+                    ES: 'Spain',
+                    FI: 'Finland',
+                    FR: 'France',
+                    GR: 'Greece',
+                    HR: 'Croatia',
+                    HU: 'Hungary',
+                    IE: 'Ireland',
+                    IT: 'Italy',
+                    LT: 'Lithuania',
+                    LU: 'Luxembourg',
+                    LV: 'Latvia',
+                    MT: 'Malta',
+                    NL: 'Netherlands',
+                    PL: 'Poland',
+                    PT: 'Portugal',
+                    RO: 'Romania',
+                    SE: 'Sweden',
+                    SI: 'Slovenia',
+                    SK: 'Slovakia',
+                  };
+
+                  const countryCode = vatId.substring(0, 2).toUpperCase();
+                  return countryMapping[countryCode] || '';
+                }
+
                 // Event-Listener für Eingabe
                 vatIdInput.addEventListener('input', (e) => {
                   const value = e.target.value.trim();
+
+                  // Land aus VAT-Nummer ableiten und in verstecktes Feld setzen
+                  const derivedCountryField = document.getElementById('ContactForm-derived-country');
+                  if (derivedCountryField && value.length >= 2) {
+                    const country = deriveCountryFromVat(value);
+                    derivedCountryField.value = country;
+                  }
+
                   if (value.length >= 4) {
                     debouncedValidate(value);
                   } else {
@@ -870,6 +944,26 @@
                 );
                 submitButton.disabled = true;
                 submitButton.classList.add('disabled');
+
+                // Kontinuierliche Überwachung und Entfernung von Country Code Feldern
+                const countryCodeWatcher = setInterval(() => {
+                  const unwantedFields = document.querySelectorAll(
+                    'input[name*="country_code"], input[name*="Country Code"], input[name="contact[country_code]"], input[name="contact[Country Code]"]'
+                  );
+                  unwantedFields.forEach((field) => {
+                    if (field.id !== 'ContactForm-derived-country') {
+                      console.log('WATCHER: Entferne Country Code Feld:', field.name, field.value);
+                      field.remove();
+                    }
+                  });
+                }, 500);
+
+                // Stoppe den Watcher wenn das Modal geschlossen wird
+                document.addEventListener('click', (e) => {
+                  if (e.target.matches('[data-custom-close]')) {
+                    clearInterval(countryCodeWatcher);
+                  }
+                });
               }
             </script>
 
