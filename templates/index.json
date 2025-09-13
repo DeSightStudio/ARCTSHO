@@ -272,7 +272,7 @@
           "type": "column",
           "settings": {
             "title": "",
-            "text": "<p>Our mammoth ivory comes with relevant paperwork, including a German <a href=\"#popup-certificate-origin\" title=\"Certificate of Origin\">Certificate of Origin</a>. We also have the non-CITES confirmation: <a href=\"#popup-clearance-certificate\" title=\"Clearance Certificate\">Clearance Certificate</a>.</p>",
+            "text": "<p>Our mammoth ivory includes all relevant paperwork. A German <a href=\"#popup-certificate-origin\" title=\"Certificate of Origin\">Certificate of Origin</a> can be ordered separately for a fee. We also have the non-CITES confirmation: <a href=\"#popup-clearance-certificate\" title=\"Clearance Certificate\">Clearance Certificate</a>.</p>",
             "link_label": "",
             "link": ""
           }
@@ -281,7 +281,7 @@
           "type": "column",
           "settings": {
             "title": "",
-            "text": "<p>We are a German family business who has specialized in the worldwide trade of Siberian mammoth ivory (<em>Mammuthus primigenius</em>) for over 20 years.</p>",
+            "text": "<p>We are a German family business who has specialized in the worldwide trade of Siberian mammoth ivory (<em>Mammuthus primigenius</em>) for over 25 years.</p>",
             "link_label": "",
             "link": ""
           }
@@ -290,7 +290,7 @@
           "type": "column",
           "settings": {
             "title": "",
-            "text": "<p>Our mammoth ivory is sourced and imported to Germany in an ethical manner. We strictly comply with all regulatory requirements and inspect every piece to ensure the highest quality.</p>",
+            "text": "<p>Our mammoth ivory is sourced and imported to Germany in an ethical manner. We comply with all regulatory requirements and inspect every piece to ensure the highest quality.</p>",
             "link_label": "",
             "link": ""
           }
@@ -325,7 +325,7 @@
         "heading_87YFjQ": {
           "type": "heading",
           "settings": {
-            "heading": "<p>We offer fast, tracked, and insured worldwide shipping</p>",
+            "heading": "We offer fast, insured, and trackable worldwide shipping",
             "heading_size": "h1"
           }
         }
@@ -356,7 +356,7 @@
           "settings": {
             "image": "shopify://shop_images/Exclusivity_a1feb77c-df64-4eda-8fd2-8d67db65bd0d.png",
             "title": "<p>Exclusivity</p>",
-            "text": "<p>Exquisite colours<br>Unique character<br>Ancient aura<br>Magnificent structure<br>Luxurious material</p>",
+            "text": "<p>Luxurious material</p><p>Exquisite colours<br/>Unique character<br/>Ancient aura<br/>Magnificent structure</p>",
             "link_label": "",
             "link": ""
           }
