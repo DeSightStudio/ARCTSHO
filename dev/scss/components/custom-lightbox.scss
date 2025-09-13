@@ -67,6 +67,38 @@ modal-opener[data-lightbox-disabled] {
   flex-direction: column;
 }
 
+// Top Close Button (X) - rechts oben IM Bild mit 20px Abstand
+.custom-lightbox__close-x {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 15; // Höher als Bilder
+  transition: all 0.2s ease;
+  color: #333;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+
+  &:hover {
+    background: white;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
 
 
 // Main Image Container
@@ -243,8 +275,9 @@ modal-opener[data-lightbox-disabled] {
     height: 95vh;
   }
 
-  .custom-lightbox__close {
-    top: -40px;
+  .custom-lightbox__close-x {
+    top: 15px;
+    right: 15px;
     width: 36px;
     height: 36px;
 

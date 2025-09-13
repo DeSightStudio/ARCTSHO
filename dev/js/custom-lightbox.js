@@ -109,6 +109,13 @@ class CustomLightbox {
       <div id="custom-lightbox" class="custom-lightbox">
         <div class="custom-lightbox__backdrop">
           <div class="custom-lightbox__container">
+            <!-- Top Close Button (X) -->
+            <button type="button" class="custom-lightbox__close-x" aria-label="Close lightbox">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+
             <!-- Main Image Container -->
             <div class="custom-lightbox__image-container">
               <div class="custom-lightbox__image-wrapper">
@@ -161,6 +168,7 @@ class CustomLightbox {
     this.zoomInBtn = this.lightbox.querySelector('.custom-lightbox__zoom-in');
     this.zoomOutBtn = this.lightbox.querySelector('.custom-lightbox__zoom-out');
     this.closeBtnBottom = this.lightbox.querySelector('.custom-lightbox__close-btn');
+    this.closeBtnX = this.lightbox.querySelector('.custom-lightbox__close-x');
 
     // Set multilingual text for close button
     this.updateCloseButtonText();
@@ -185,6 +193,9 @@ class CustomLightbox {
 
     // Bottom close button
     this.closeBtnBottom.addEventListener('click', () => this.close());
+
+    // Top X close button
+    this.closeBtnX.addEventListener('click', () => this.close());
 
     // Keyboard navigation
     this.keydownHandler = (e) => this.handleKeydown(e);
