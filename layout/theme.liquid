@@ -488,5 +488,42 @@
         // console.log('VAT-Info-Badges werden über popup-manager.js verwaltet');
       });
     </script>
+
+    <!-- Cookie-Banner: Sprachspezifisch basierend auf aktueller Shop-Sprache -->
+    {% comment %}
+      Cookie-Banner Integration für GetTerms CMP
+      Lädt automatisch die richtige Sprache basierend auf request.locale.iso_code
+      Unterstützte Sprachen: DE, EN, FR, IT, ES
+    {% endcomment %}
+    <script type="text/javascript">
+      (function () {
+        // Aktuelle Sprache aus Shopify
+        const currentLanguage = '{{ request.locale.iso_code }}';
+
+        // Sprach-Mapping für GetTerms CMP
+        const languageMapping = {
+          de: 'de',
+          en: 'en-us',
+          fr: 'fr',
+          it: 'it',
+          es: 'es',
+        };
+
+        // Fallback auf Deutsch wenn Sprache nicht unterstützt
+        const cookieLanguage = languageMapping[currentLanguage] || 'de';
+
+        // Cookie-Banner Script dynamisch laden
+        const cookieScript = document.createElement('script');
+        cookieScript.type = 'text/javascript';
+        cookieScript.src = `https://gettermscmp.com/cookie-consent/embed/296a39b4-dbe4-4f72-9ac5-98156e87a6e0/${cookieLanguage}`;
+        cookieScript.async = true;
+
+        // Script zum Head hinzufügen
+        document.head.appendChild(cookieScript);
+
+        // Debug-Info (nur in Development)
+        console.log(`Cookie-Banner geladen für Sprache: ${currentLanguage} -> ${cookieLanguage}`);
+      })();
+    </script>
   </body>
 </html>
