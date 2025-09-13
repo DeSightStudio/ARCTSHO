@@ -5,7 +5,12 @@
     <script>
       // Cart-Redirect: Sofortige Umleitung von /cart zur Startseite
       // Aber nur wenn es kein AJAX Add-to-Cart war
-      if (window.location.pathname === '/cart' && !document.referrer.includes('/products/')) {
+      // UND nicht im Theme Editor (designMode)
+      if (
+        window.location.pathname === '/cart' &&
+        !document.referrer.includes('/products/') &&
+        !window.Shopify?.designMode
+      ) {
         window.location.replace('/');
       }
     </script>
@@ -43,10 +48,6 @@
     <script src="{{ 'details-disclosure.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'details-modal.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'search-form.js' | asset_url }}" defer="defer"></script>
-
-    {%- if settings.animations_reveal_on_scroll -%}
-      <script src="{{ 'animations.js' | asset_url }}" defer="defer"></script>
-    {%- endif -%}
 
     {{ content_for_header }}
 
@@ -289,7 +290,6 @@
     {%- if localization.available_countries.size > 1 or localization.available_languages.size > 1 -%}
       {{ 'component-localization-form.css' | asset_url | stylesheet_tag: preload: true }}
       <script src="{{ 'localization-form.js' | asset_url }}" defer="defer"></script>
-      <script src="{{ 'auto-language-detection.js' | asset_url }}" defer="defer"></script>
     {%- endif -%}
 
     {%- if settings.predictive_search_enabled -%}
@@ -312,7 +312,7 @@
       crossorigin="anonymous"
       defer
     ></script>
-    <script src="{{ 'back-button.js' | asset_url }}" defer="defer"></script>
+
     <script src="{{ 'dist.js' | asset_url }}" defer="defer"></script>
     {{ 'dist.css' | asset_url | stylesheet_tag }}
 
@@ -349,21 +349,24 @@
     {% if template == 'cart' %}
       <script>
         // Sofortige Umleitung von der Cart-Seite
-        (function () {
-          // console.log('Cart-Seite erkannt - leite sofort um');
-          // Seite verstecken
-          document.body.style.display = 'none';
-          document.documentElement.style.display = 'none';
+        // Aber nicht im Theme Editor (designMode)
+        if (!window.Shopify?.designMode) {
+          (function () {
+            // console.log('Cart-Seite erkannt - leite sofort um');
+            // Seite verstecken
+            document.body.style.display = 'none';
+            document.documentElement.style.display = 'none';
 
-          // Ladung stoppen
-          if (window.stop) window.stop();
+            // Ladung stoppen
+            if (window.stop) window.stop();
 
-          // Für die Drawer-Öffnung nach Umleitung
-          localStorage.setItem('openCartDrawer', 'true');
+            // Für die Drawer-Öffnung nach Umleitung
+            localStorage.setItem('openCartDrawer', 'true');
 
-          // Zur Startseite umleiten
-          window.location.replace('/');
-        })();
+            // Zur Startseite umleitung
+            window.location.replace('/');
+          })();
+        }
       </script>
     {% endif %}
 
