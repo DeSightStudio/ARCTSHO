@@ -1674,4 +1674,100 @@
       });
     </script>
   {% endif %}
+
+  {% comment %} Ankündigungs-Pop-Up {% endcomment %}
+  {% if settings.announcement_popup_enable %}
+    <div
+      class="modal micromodal-slide"
+      id="modal-announcement"
+      aria-hidden="true"
+      data-delay="{{ settings.announcement_popup_delay | default: 3 }}"
+      data-homepage-only="{{ settings.announcement_popup_homepage_only }}"
+      data-start-date="{{ settings.announcement_popup_start_date }}"
+      data-end-date="{{ settings.announcement_popup_end_date }}"
+    >
+      <div class="modal__overlay" tabindex="-1" data-custom-close>
+        <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-announcement-title">
+          <button class="modal__close" aria-label="Close modal" data-custom-close>x</button>
+          <header class="modal__header">
+            <h2 class="modal__title" id="modal-announcement-title">
+              {% liquid
+                assign current_lang = request.locale.iso_code
+                case current_lang
+                  when 'de'
+                    echo settings.announcement_popup_headline_de
+                  when 'en'
+                    echo settings.announcement_popup_headline_en
+                  when 'es'
+                    echo settings.announcement_popup_headline_es
+                  when 'it'
+                    echo settings.announcement_popup_headline_it
+                  when 'fr'
+                    echo settings.announcement_popup_headline_fr
+                  else
+                    echo settings.announcement_popup_headline_de
+                endcase
+              %}
+            </h2>
+          </header>
+          <main class="modal__content" id="modal-announcement-content">
+            <div class="modal__text">
+              {% liquid
+                assign current_lang = request.locale.iso_code
+                case current_lang
+                  when 'de'
+                    echo settings.announcement_popup_text_de
+                  when 'en'
+                    echo settings.announcement_popup_text_en
+                  when 'es'
+                    echo settings.announcement_popup_text_es
+                  when 'it'
+                    echo settings.announcement_popup_text_it
+                  when 'fr'
+                    echo settings.announcement_popup_text_fr
+                  else
+                    echo settings.announcement_popup_text_de
+                endcase
+              %}
+            </div>
+
+            {% liquid
+              assign current_lang = request.locale.iso_code
+              assign button_label = ''
+              assign button_url = ''
+
+              case current_lang
+                when 'de'
+                  assign button_label = settings.announcement_popup_button_label_de
+                  assign button_url = settings.announcement_popup_button_url_de
+                when 'en'
+                  assign button_label = settings.announcement_popup_button_label_en
+                  assign button_url = settings.announcement_popup_button_url_en
+                when 'es'
+                  assign button_label = settings.announcement_popup_button_label_es
+                  assign button_url = settings.announcement_popup_button_url_es
+                when 'it'
+                  assign button_label = settings.announcement_popup_button_label_it
+                  assign button_url = settings.announcement_popup_button_url_it
+                when 'fr'
+                  assign button_label = settings.announcement_popup_button_label_fr
+                  assign button_url = settings.announcement_popup_button_url_fr
+                else
+                  assign button_label = settings.announcement_popup_button_label_de
+                  assign button_url = settings.announcement_popup_button_url_de
+              endcase
+            %}
+
+            {% if button_label != blank and button_url != blank %}
+              <div class="modal__actions">
+                <a href="{{ button_url }}" class="button button--primary">
+                  {{ button_label }}
+                </a>
+              </div>
+            {% endif %}
+          </main>
+        </div>
+      </div>
+    </div>
+  {% endif %}
 </div>

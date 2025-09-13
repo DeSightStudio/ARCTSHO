@@ -309,7 +309,107 @@ body {
   }
 }
 
+// Ankündigungs-Pop-Up spezifisches Styling
+#modal-announcement {
+  .modal__container {
+    max-width: 600px;
+    text-align: center;
 
+    .modal__header {
+      .modal__title {
+        color: $mainColor;
+        font-family: 'Cormorant Garamond', serif;
+        font-size: $fontSizeLarge;
+        font-weight: 600;
+        margin-bottom: 1rem;
+      }
+    }
 
+    .modal__content {
+      .modal__text {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: $fontSizeRegular;
+        line-height: 1.6;
+        color: $blackColor;
+        margin-bottom: 1.5rem;
 
+        p {
+          margin-bottom: 1rem;
+
+          &:last-child {
+            margin-bottom: 0;
+          }
+        }
+
+        a {
+          color: $mainColor;
+          text-decoration: underline;
+
+          &:hover {
+            color: $mainColorDark;
+          }
+        }
+      }
+
+      .modal__actions {
+        margin-top: 2rem;
+
+        .button {
+          display: inline-block;
+          padding: 12px 24px;
+          background-color: $mainColor;
+          color: white;
+          text-decoration: none;
+          border-radius: 4px;
+          font-family: 'Cormorant Garamond', serif;
+          font-size: $fontSizeRegular;
+          font-weight: 600;
+          transition: background-color 0.3s ease;
+          border: none;
+          cursor: pointer;
+
+          &:hover {
+            background-color: $mainColorDark;
+            color: white;
+          }
+
+          &--primary {
+            background-color: $mainColor;
+
+            &:hover {
+              background-color: $mainColorDark;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Mobile Anpassungen
+  @include screen(small) {
+    .modal__container {
+      max-width: calc(100% - 20px);
+      padding: 20px;
+
+      .modal__header {
+        .modal__title {
+          font-size: $fontSizeMedium;
+        }
+      }
+
+      .modal__content {
+        .modal__text {
+          font-size: $fontSizeSmall;
+        }
+
+        .modal__actions {
+          .button {
+            padding: 10px 20px;
+            font-size: $fontSizeSmall;
+          }
+        }
+      }
+    }
+  }
+}
 

@@ -900,5 +900,98 @@
       console.log(`Collection Request-Only Buttons geladen: ${event.detail.count} Buttons`);
       // Event-Delegation sollte automatisch funktionieren, da sie auf document-Level registriert ist
     });
+
+    // Ankündigungs-Pop-Up Manager
+    function initAnnouncementPopup() {
+      // Prüfe ob Pop-Up aktiviert ist (wird über Liquid in HTML eingebettet)
+      const announcementModal = document.getElementById('modal-announcement');
+      if (!announcementModal) {
+        return; // Pop-Up ist nicht aktiviert
+      }
+
+      // Hole Einstellungen aus data-Attributen (werden über Liquid gesetzt)
+      const settings = {
+        delay: parseInt(announcementModal.dataset.delay) || 3,
+        homepageOnly: announcementModal.dataset.homepageOnly === 'true',
+        startDate: announcementModal.dataset.startDate || null,
+        endDate: announcementModal.dataset.endDate || null
+      };
+
+      console.log('Ankündigungs-Pop-Up Einstellungen:', settings);
+
+      // Prüfe ob nur auf Startseite angezeigt werden soll
+      if (settings.homepageOnly) {
+        const isHomepage = window.location.pathname === '/' ||
+                          window.location.pathname === '/de/' ||
+                          window.location.pathname === '/en/' ||
+                          window.location.pathname === '/it/' ||
+                          window.location.pathname === '/es/' ||
+                          window.location.pathname === '/fr/';
+
+        if (!isHomepage) {
+          console.log('Ankündigungs-Pop-Up: Nicht auf Startseite, wird nicht angezeigt');
+          return;
+        }
+      }
+
+      // Prüfe Zeitraum
+      const now = new Date();
+
+      if (settings.startDate) {
+        const startDate = new Date(settings.startDate);
+        if (now < startDate) {
+          console.log('Ankündigungs-Pop-Up: Startdatum noch nicht erreicht');
+          return;
+        }
+      }
+
+      if (settings.endDate) {
+        const endDate = new Date(settings.endDate);
+        endDate.setHours(23, 59, 59, 999); // Ende des Tages
+        if (now > endDate) {
+          console.log('Ankündigungs-Pop-Up: Enddatum überschritten');
+          return;
+        }
+      }
+
+      // Prüfe ob Pop-Up bereits heute angezeigt wurde (Cookie-basiert)
+      const cookieName = 'announcement_popup_shown';
+      const today = new Date().toDateString();
+      const lastShown = getCookie(cookieName);
+
+      if (lastShown === today) {
+        console.log('Ankündigungs-Pop-Up: Bereits heute angezeigt');
+        return;
+      }
+
+      // Zeige Pop-Up nach Verzögerung
+      setTimeout(() => {
+        try {
+          MicroModal.show('modal-announcement');
+          // Setze Cookie für heute
+          setCookie(cookieName, today, 1); // 1 Tag gültig
+          console.log('Ankündigungs-Pop-Up angezeigt');
+        } catch (error) {
+          console.error('Fehler beim Anzeigen des Ankündigungs-Pop-Ups:', error);
+        }
+      }, settings.delay * 1000);
+    }
+
+    // Cookie-Hilfsfunktionen
+    function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+      return null;
+    }
+
+    function setCookie(name, value, days) {
+      const expires = new Date();
+      expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+      document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Lax`;
+    }
+
+    // Initialisiere Ankündigungs-Pop-Up nach kurzer Verzögerung
+    setTimeout(initAnnouncementPopup, 1000);
   });
 })();

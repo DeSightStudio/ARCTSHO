@@ -2080,5 +2080,196 @@
         "default": "<p>Merci ! Votre demande a été envoyée avec succès. Nous vous contacterons dans les plus brefs délais.</p>"
       }
     ]
+  },
+  {
+    "name": "Ankündigungs-Pop-Up",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Ankündigungs-Pop-Up Einstellungen"
+      },
+      {
+        "type": "checkbox",
+        "id": "announcement_popup_enable",
+        "label": "Ankündigungs-Pop-Up aktivieren",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Zeitraum-Einstellungen"
+      },
+      {
+        "type": "text",
+        "id": "announcement_popup_start_date",
+        "label": "Startdatum (YYYY-MM-DD)",
+        "info": "Optional: Pop-Up nur ab diesem Datum anzeigen. Format: 2024-01-15"
+      },
+      {
+        "type": "text",
+        "id": "announcement_popup_end_date",
+        "label": "Enddatum (YYYY-MM-DD)",
+        "info": "Optional: Pop-Up nur bis zu diesem Datum anzeigen. Format: 2024-12-31"
+      },
+      {
+        "type": "header",
+        "content": "Anzeige-Einstellungen"
+      },
+      {
+        "type": "range",
+        "id": "announcement_popup_delay",
+        "min": 0,
+        "max": 30,
+        "step": 1,
+        "unit": "s",
+        "label": "Anzeigen nach X Sekunden",
+        "default": 3
+      },
+      {
+        "type": "checkbox",
+        "id": "announcement_popup_homepage_only",
+        "label": "Nur auf Startseite anzeigen",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Inhalt - Deutsch (DE)"
+      },
+      {
+        "type": "text",
+        "id": "announcement_popup_headline_de",
+        "label": "Headline (DE)",
+        "default": "Wichtige Ankündigung"
+      },
+      {
+        "type": "richtext",
+        "id": "announcement_popup_text_de",
+        "label": "Text (DE)",
+        "default": "<p>Hier steht der Text für Ihre Ankündigung.</p>"
+      },
+      {
+        "type": "text",
+        "id": "announcement_popup_button_label_de",
+        "label": "Button-Label (DE) - optional",
+        "info": "Leer lassen, um keinen Button anzuzeigen"
+      },
+      {
+        "type": "url",
+        "id": "announcement_popup_button_url_de",
+        "label": "Button-URL (DE) - optional",
+        "info": "Nur relevant wenn Button-Label ausgefüllt ist"
+      },
+      {
+        "type": "header",
+        "content": "Inhalt - English (EN)"
+      },
+      {
+        "type": "text",
+        "id": "announcement_popup_headline_en",
+        "label": "Headline (EN)",
+        "default": "Important Announcement"
+      },
+      {
+        "type": "richtext",
+        "id": "announcement_popup_text_en",
+        "label": "Text (EN)",
+        "default": "<p>Here is the text for your announcement.</p>"
+      },
+      {
+        "type": "text",
+        "id": "announcement_popup_button_label_en",
+        "label": "Button Label (EN) - optional",
+        "info": "Leave empty to hide button"
+      },
+      {
+        "type": "url",
+        "id": "announcement_popup_button_url_en",
+        "label": "Button URL (EN) - optional",
+        "info": "Only relevant if Button Label is filled"
+      },
+      {
+        "type": "header",
+        "content": "Inhalt - Español (ES)"
+      },
+      {
+        "type": "text",
+        "id": "announcement_popup_headline_es",
+        "label": "Headline (ES)",
+        "default": "Anuncio Importante"
+      },
+      {
+        "type": "richtext",
+        "id": "announcement_popup_text_es",
+        "label": "Text (ES)",
+        "default": "<p>Aquí está el texto de su anuncio.</p>"
+      },
+      {
+        "type": "text",
+        "id": "announcement_popup_button_label_es",
+        "label": "Etiqueta del Botón (ES) - opcional",
+        "info": "Dejar vacío para ocultar el botón"
+      },
+      {
+        "type": "url",
+        "id": "announcement_popup_button_url_es",
+        "label": "URL del Botón (ES) - opcional",
+        "info": "Solo relevante si la Etiqueta del Botón está llena"
+      },
+      {
+        "type": "header",
+        "content": "Inhalt - Italiano (IT)"
+      },
+      {
+        "type": "text",
+        "id": "announcement_popup_headline_it",
+        "label": "Headline (IT)",
+        "default": "Annuncio Importante"
+      },
+      {
+        "type": "richtext",
+        "id": "announcement_popup_text_it",
+        "label": "Text (IT)",
+        "default": "<p>Ecco il testo del vostro annuncio.</p>"
+      },
+      {
+        "type": "text",
+        "id": "announcement_popup_button_label_it",
+        "label": "Etichetta Pulsante (IT) - opzionale",
+        "info": "Lasciare vuoto per nascondere il pulsante"
+      },
+      {
+        "type": "url",
+        "id": "announcement_popup_button_url_it",
+        "label": "URL Pulsante (IT) - opzionale",
+        "info": "Rilevante solo se l'Etichetta Pulsante è compilata"
+      },
+      {
+        "type": "header",
+        "content": "Inhalt - Français (FR)"
+      },
+      {
+        "type": "text",
+        "id": "announcement_popup_headline_fr",
+        "label": "Headline (FR)",
+        "default": "Annonce Importante"
+      },
+      {
+        "type": "richtext",
+        "id": "announcement_popup_text_fr",
+        "label": "Text (FR)",
+        "default": "<p>Voici le texte de votre annonce.</p>"
+      },
+      {
+        "type": "text",
+        "id": "announcement_popup_button_label_fr",
+        "label": "Libellé du Bouton (FR) - optionnel",
+        "info": "Laisser vide pour masquer le bouton"
+      },
+      {
+        "type": "url",
+        "id": "announcement_popup_button_url_fr",
+        "label": "URL du Bouton (FR) - optionnel",
+        "info": "Pertinent uniquement si le Libellé du Bouton est rempli"
+      }
+    ]
   }
 ]
