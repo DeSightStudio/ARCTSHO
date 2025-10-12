@@ -57,6 +57,13 @@ class CustomLightbox {
       return false;
     }
 
+    // WICHTIG: Videos ausschließen - keine Lightbox für Video-Thumbnails
+    const videoContext = img.closest('deferred-media, product-model, .deferred-media, .product-model');
+    if (videoContext) {
+      console.log('Video context detected, excluding from lightbox:', img);
+      return false; // Keine Lightbox für Videos
+    }
+
     // WICHTIG: Lightbox nur auf Produkt-Detail-Seiten aktivieren, NICHT in Collection Grids
     // Prüfe, ob es sich in einem Collection Grid befindet (card-product, card-wrapper, etc.)
     const collectionGridContext = img.closest('.card-product, .card-wrapper, .product-grid, #ProductGridContainer, .grid.product-grid');
@@ -84,6 +91,13 @@ class CustomLightbox {
     modalOpeners.forEach(opener => {
       // Markiere als überschrieben
       opener.setAttribute('data-custom-lightbox', 'true');
+
+      // WICHTIG: Überspringe modal-opener für Videos
+      const videoContext = opener.querySelector('deferred-media, product-model, .deferred-media, .product-model');
+      if (videoContext) {
+        console.log('Video modal-opener detected, skipping lightbox override');
+        return; // Lasse Video-Modal normal funktionieren
+      }
 
       // Finde das Produktbild in diesem modal-opener
       const productImage = opener.querySelector('img[data-media-id], img');
@@ -216,6 +230,13 @@ class CustomLightbox {
       if (modalOpener) {
         // Bereits von disableShopifyLightbox() behandelt
         return;
+      }
+
+      // WICHTIG: Ignoriere Klicks auf Video-Play-Buttons und Video-Elemente
+      const videoElement = e.target.closest('deferred-media, product-model, .deferred-media, .product-model, .deferred-media__poster, .deferred-media__poster-button');
+      if (videoElement) {
+        console.log('Video element clicked, not opening lightbox');
+        return; // Lasse Video-Funktionalität normal arbeiten
       }
 
       // Normale Produktbild-Erkennung für direkte Bildklicks
