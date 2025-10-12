@@ -1,10 +1,11 @@
 /**
  * Back Button Functionality für Arctic Antique
- * Einfache und robuste Navigation basierend auf document.referrer und Browser History
+ * Intelligente Navigation mit Collection-Tracking zur Vermeidung von Produkt-Schleifen
  *
  * Features:
- * - Verwendet document.referrer als primäre Methode
- * - Browser History als Fallback
+ * - Trackt letzte Collection-URL in sessionStorage
+ * - Erkennt Produkt-zu-Produkt Navigation (z.B. "You May Also Like")
+ * - Überspringt Produktseiten-Ketten und geht direkt zur Collection
  * - Fallback zur Startseite wenn keine History vorhanden
  * - Loading-States und Error-Handling
  */
@@ -16,19 +17,78 @@
     constructor() {
       this.buttons = [];
       this.isNavigating = false;
+      this.STORAGE_KEY = 'arctic_last_collection_url';
       this.init();
     }
 
     init() {
       // Warte bis DOM geladen ist
       if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => this.setupButtons());
+        document.addEventListener('DOMContentLoaded', () => {
+          this.setupButtons();
+          this.trackCurrentPage();
+        });
       } else {
         this.setupButtons();
+        this.trackCurrentPage();
       }
 
       // Setup für dynamisch hinzugefügte Buttons
       this.setupMutationObserver();
+    }
+
+    /**
+     * Trackt die aktuelle Seite und speichert Collection-URLs
+     */
+    trackCurrentPage() {
+      const currentUrl = window.location.href;
+      const isProductPage = this.isProductPage();
+      const isCollectionPage = this.isCollectionPage();
+
+      console.log('Back Button: Tracking Page -', {
+        isProductPage,
+        isCollectionPage,
+        url: currentUrl
+      });
+
+      // Wenn wir auf einer Collection-Seite sind, speichere die URL
+      if (isCollectionPage) {
+        sessionStorage.setItem(this.STORAGE_KEY, currentUrl);
+        console.log('Back Button: Collection URL gespeichert:', currentUrl);
+      }
+
+      // Wenn wir auf einer Produktseite sind und einen Referrer haben
+      if (isProductPage && document.referrer) {
+        const referrerUrl = new URL(document.referrer);
+
+        // Wenn der Referrer eine Collection ist, speichere sie
+        if (this.isCollectionUrl(referrerUrl.pathname)) {
+          sessionStorage.setItem(this.STORAGE_KEY, document.referrer);
+          console.log('Back Button: Collection URL aus Referrer gespeichert:', document.referrer);
+        }
+      }
+    }
+
+    /**
+     * Prüft ob die aktuelle Seite eine Produktseite ist
+     */
+    isProductPage() {
+      return window.location.pathname.includes('/products/');
+    }
+
+    /**
+     * Prüft ob die aktuelle Seite eine Collection-Seite ist
+     */
+    isCollectionPage() {
+      return window.location.pathname.includes('/collections/') &&
+             !window.location.pathname.includes('/products/');
+    }
+
+    /**
+     * Prüft ob eine URL eine Collection-URL ist
+     */
+    isCollectionUrl(pathname) {
+      return pathname.includes('/collections/') && !pathname.includes('/products/');
     }
 
     setupButtons() {
@@ -84,7 +144,44 @@
         console.log('Back Button: Document Referrer:', document.referrer);
         console.log('Back Button: History Length:', window.history.length);
 
-        // Methode 1: Document Referrer verwenden (einfach und zuverlässig)
+        const isProductPage = this.isProductPage();
+        const lastCollectionUrl = sessionStorage.getItem(this.STORAGE_KEY);
+
+        console.log('Back Button: Navigation Context:', {
+          isProductPage,
+          lastCollectionUrl,
+          referrer: document.referrer
+        });
+
+        // INTELLIGENTE NAVIGATION FÜR PRODUKTSEITEN
+        if (isProductPage) {
+          // Methode 1: Gespeicherte Collection-URL verwenden (verhindert Produkt-Schleifen)
+          if (lastCollectionUrl) {
+            console.log('Back Button: Navigiere zu gespeicherter Collection:', lastCollectionUrl);
+            this.navigateToUrl(lastCollectionUrl, button);
+            return;
+          }
+
+          // Methode 2: Referrer prüfen - wenn es KEINE Produktseite ist, dorthin navigieren
+          if (document.referrer && this.canUseReferrer()) {
+            const referrerUrl = new URL(document.referrer);
+            const referrerIsProduct = referrerUrl.pathname.includes('/products/');
+
+            if (!referrerIsProduct) {
+              console.log('Back Button: Referrer ist keine Produktseite, navigiere dorthin');
+              this.navigateToReferrer(button);
+              return;
+            } else {
+              console.log('Back Button: Referrer ist Produktseite, überspringe und nutze History');
+              // Versuche mehrere Schritte zurück zu gehen um Produktseiten zu überspringen
+              this.navigateBackSkippingProducts(button);
+              return;
+            }
+          }
+        }
+
+        // STANDARD-NAVIGATION FÜR ANDERE SEITEN
+        // Methode 1: Document Referrer verwenden
         if (this.canUseReferrer()) {
           console.log('Back Button: Verwende Document Referrer');
           this.navigateToReferrer(button);
@@ -106,6 +203,21 @@
         console.error('Back Button Navigation Error:', error);
         this.navigateToHome(button);
       }
+    }
+
+    /**
+     * Navigiert zurück und überspringt dabei Produktseiten
+     * Nutzt history.go() um mehrere Schritte zurück zu gehen
+     */
+    navigateBackSkippingProducts(button) {
+      console.log('Back Button: Versuche Produktseiten zu überspringen...');
+
+      // Versuche 2 Schritte zurück (überspringt 1 Produktseite)
+      // Dies funktioniert für den häufigsten Fall: Collection -> Produkt A -> Produkt B
+      setTimeout(() => {
+        window.history.go(-2);
+        this.resetNavigationState(button);
+      }, 100);
     }
 
     canUseHistory() {
@@ -140,6 +252,14 @@
       setTimeout(() => {
         window.history.back();
         this.resetNavigationState(button);
+      }, 100);
+    }
+
+    navigateToUrl(url, button) {
+      // Navigiere zu einer spezifischen URL
+      console.log('Back Button: Navigiere zu URL:', url);
+      setTimeout(() => {
+        window.location.href = url;
       }, 100);
     }
 
@@ -228,16 +348,16 @@
   window.backButtonManager = backButtonManager;
 
   // Debug-Funktion für Entwicklung
-  if (window.location.hostname === 'localhost' || window.location.hostname.includes('ngrok')) {
-    window.debugBackButton = () => {
-      console.log('Back Button Debug Info:');
-      console.log('- History Length:', window.history.length);
-      console.log('- Document Referrer:', document.referrer);
-      console.log('- Is Direct Entry:', backButtonManager.isDirectEntry());
-      console.log('- Can Use History:', backButtonManager.canUseHistory());
-      console.log('- Can Use Referrer:', backButtonManager.canUseReferrer());
-      console.log('- Active Buttons:', backButtonManager.buttons.length);
-    };
-  }
+  window.debugBackButton = () => {
+    console.log('Back Button Debug Info:');
+    console.log('- History Length:', window.history.length);
+    console.log('- Document Referrer:', document.referrer);
+    console.log('- Is Product Page:', backButtonManager.isProductPage());
+    console.log('- Is Collection Page:', backButtonManager.isCollectionPage());
+    console.log('- Last Collection URL:', sessionStorage.getItem(backButtonManager.STORAGE_KEY));
+    console.log('- Can Use History:', backButtonManager.canUseHistory());
+    console.log('- Can Use Referrer:', backButtonManager.canUseReferrer());
+    console.log('- Active Buttons:', backButtonManager.buttons.length);
+  };
 
 })();
