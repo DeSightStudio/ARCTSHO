@@ -345,10 +345,29 @@
                     </li>
                   {% endif %}
 
-                  {% if card_product.metafields.next_cart.weight_m != blank %}
+                  {% comment %} Gewicht: Priorisiere natives Shopify-Gewicht, fallback auf Metafelder {% endcomment %}
+                  {% assign weight_value = 0 %}
+
+                  {% if card_product.weight > 0 %}
+                    {% comment %} Konvertiere natives Shopify-Gewicht zu Gramm {% endcomment %}
+                    {% assign weight_in_grams = card_product.weight %}
+                    {% if card_product.weight_unit == 'kg' %}
+                      {% assign weight_in_grams = card_product.weight | times: 1000 %}
+                    {% elsif card_product.weight_unit == 'lb' %}
+                      {% assign weight_in_grams = card_product.weight | times: 453.592 %}
+                    {% elsif card_product.weight_unit == 'oz' %}
+                      {% assign weight_in_grams = card_product.weight | times: 28.3495 %}
+                    {% endif %}
+                    {% assign weight_value = weight_in_grams | round %}
+                  {% elsif card_product.metafields.next_cart.weight_m != blank %}
+                    {% assign weight_value = card_product.metafields.next_cart.weight_m | plus: 0 %}
+                  {% elsif card_product.metafields.custom.weight_m != blank %}
+                    {% assign weight_value = card_product.metafields.custom.weight_m | plus: 0 %}
+                  {% endif %}
+
+                  {% if weight_value > 0 %}
                     <li class="card-product__specs-item">
                       <span class="card-product__specs-label">{{ 'products.product.product_specs.weight' | t }}</span>
-                      {% assign weight_value = card_product.metafields.next_cart.weight_m | plus: 0 %}
                       <span
                         class="card-product__specs-value"
                         data-spec-type="weight"
@@ -515,39 +534,28 @@
                 {% comment %} Preis und Gewicht - zweispaltig {% endcomment %}
                 <div class="card-product__price-container">
                   {% render 'price', product: card_product, price_class: '', show_compare_at_price: true %}
-                  {% if card_product.metafields.next_cart.weight_m != blank %}
-                    <div class="card-product__weight">
-                      {% assign weight_value = card_product.metafields.next_cart.weight_m | plus: 0 %}
-                      <span
-                        class="weight-value"
-                        data-original-value="{{ weight_value }}"
-                        data-unit="g"
-                      >
-                        {% if weight_value < 1000 %}
-                          {{- weight_value }} g
-                        {% else %}
-                          {{- weight_value | divided_by: 1000.0 | round: 2 }} kg
-                        {% endif %}
-                      </span>
-                    </div>
+                  {% comment %} Gewicht: Priorisiere natives Shopify-Gewicht, fallback auf Metafelder {% endcomment %}
+                  {% assign weight_value = 0 %}
+
+                  {% if card_product.weight > 0 %}
+                    {% comment %} Konvertiere natives Shopify-Gewicht zu Gramm {% endcomment %}
+                    {% assign weight_in_grams = card_product.weight %}
+                    {% if card_product.weight_unit == 'kg' %}
+                      {% assign weight_in_grams = card_product.weight | times: 1000 %}
+                    {% elsif card_product.weight_unit == 'lb' %}
+                      {% assign weight_in_grams = card_product.weight | times: 453.592 %}
+                    {% elsif card_product.weight_unit == 'oz' %}
+                      {% assign weight_in_grams = card_product.weight | times: 28.3495 %}
+                    {% endif %}
+                    {% assign weight_value = weight_in_grams | round %}
+                  {% elsif card_product.metafields.next_cart.weight_m != blank %}
+                    {% assign weight_value = card_product.metafields.next_cart.weight_m | plus: 0 %}
                   {% elsif card_product.metafields.custom.weight_m != blank %}
+                    {% assign weight_value = card_product.metafields.custom.weight_m | plus: 0 %}
+                  {% endif %}
+
+                  {% if weight_value > 0 %}
                     <div class="card-product__weight">
-                      {% assign weight_value = card_product.metafields.custom.weight_m | plus: 0 %}
-                      <span
-                        class="weight-value"
-                        data-original-value="{{ weight_value }}"
-                        data-unit="g"
-                      >
-                        {% if weight_value < 1000 %}
-                          {{- weight_value }} g
-                        {% else %}
-                          {{- weight_value | divided_by: 1000.0 | round: 2 }} kg
-                        {% endif %}
-                      </span>
-                    </div>
-                  {% elsif card_product.weight > 0 %}
-                    <div class="card-product__weight">
-                      {% assign weight_value = card_product.weight | plus: 0 %}
                       <span
                         class="weight-value"
                         data-original-value="{{ weight_value }}"
@@ -728,10 +736,29 @@
                   </li>
                 {% endif %}
 
-                {% if card_product.metafields.next_cart.weight_m != blank %}
+                {% comment %} Gewicht: Priorisiere natives Shopify-Gewicht, fallback auf Metafelder {% endcomment %}
+                {% assign weight_value = 0 %}
+
+                {% if card_product.weight > 0 %}
+                  {% comment %} Konvertiere natives Shopify-Gewicht zu Gramm {% endcomment %}
+                  {% assign weight_in_grams = card_product.weight %}
+                  {% if card_product.weight_unit == 'kg' %}
+                    {% assign weight_in_grams = card_product.weight | times: 1000 %}
+                  {% elsif card_product.weight_unit == 'lb' %}
+                    {% assign weight_in_grams = card_product.weight | times: 453.592 %}
+                  {% elsif card_product.weight_unit == 'oz' %}
+                    {% assign weight_in_grams = card_product.weight | times: 28.3495 %}
+                  {% endif %}
+                  {% assign weight_value = weight_in_grams | round %}
+                {% elsif card_product.metafields.next_cart.weight_m != blank %}
+                  {% assign weight_value = card_product.metafields.next_cart.weight_m | plus: 0 %}
+                {% elsif card_product.metafields.custom.weight_m != blank %}
+                  {% assign weight_value = card_product.metafields.custom.weight_m | plus: 0 %}
+                {% endif %}
+
+                {% if weight_value > 0 %}
                   <li class="card-product__specs-item">
                     <span class="card-product__specs-label">{{ 'products.product.product_specs.weight' | t }}</span>
-                    {% assign weight_value = card_product.metafields.next_cart.weight_m | plus: 0 %}
                     <span
                       class="card-product__specs-value"
                       data-spec-type="weight"
