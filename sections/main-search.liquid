@@ -361,10 +361,10 @@
                 {% assign sorted_results = available_products | concat: soldout_products | concat: other_results %}
 
                 {%- for item in sorted_results -%}
-                  {% comment %} KRITISCH: Certificate of Origin (SKU 2226) niemals in Suchergebnissen anzeigen {% endcomment %}
+                  {% comment %} KRITISCH: Certificate of Origin niemals in Suchergebnissen anzeigen {% endcomment %}
                   {% assign is_certificate = false %}
                   {% if item.object_type == 'product' %}
-                    {% if item.selected_or_first_available_variant.sku == '2226' or item.id == 46347117723862 %}
+                    {% if item.metafields.next_cart.is_certificate == true %}
                       {% assign is_certificate = true %}
                     {% endif %}
                   {% endif %}

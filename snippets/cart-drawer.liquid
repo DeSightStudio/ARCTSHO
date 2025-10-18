@@ -506,7 +506,7 @@
         {% comment %}Ursprungszeugnis-Check{% endcomment %}
         {% assign certificate_in_cart = false %}
         {% for item in cart.items %}
-          {% if item.sku == '2226' or item.product_id == 46347117723862 %}
+          {% if item.product.metafields.next_cart.is_certificate == true %}
             {% assign certificate_in_cart = true %}
             {% break %}
           {% endif %}
@@ -731,6 +731,8 @@
                 const certificateElement = document.querySelector('.cart-drawer__origin-certificate');
                 if (certificateElement) {
                   // Prüfen, ob das Produkt im Warenkorb ist
+                  // HINWEIS: Inline JavaScript hat keinen Zugriff auf Metafelder, daher Prüfung über Produkt-ID und Titel
+                  // Das Liquid-Template oben verwendet das Metafeld next_cart.is_certificate
                   let certificateInCart = false;
                   const items = document.querySelectorAll('.cart-item');
                   items.forEach((item) => {
@@ -738,7 +740,7 @@
                     if (removeButton && removeButton.dataset.variantId) {
                       const variantId = removeButton.getAttribute('data-variant-id');
                       const productTitle = item.querySelector('.cart-item__name');
-                      // Prüfen auf die Produkt-ID des Ursprungszeugnisses oder SKU 2226
+                      // Prüfen auf die Produkt-ID des Ursprungszeugnisses (46347117723862)
                       if (
                         removeButton.closest('.cart-item').querySelector('[data-product-id="46347117723862"]') ||
                         (productTitle &&
