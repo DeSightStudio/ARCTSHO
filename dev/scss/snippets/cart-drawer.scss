@@ -185,11 +185,8 @@ cart-drawer {
                     img {
                         width: 100%;
                         object-fit: cover;
-
-                        // Mobile: Border-Radius für Bild
-                        @include screen(med-small) {
-                            border-radius: 8px;
-                        }
+                        max-height: 200px;
+                        border-radius: 8px;
                     }
                 }
                 .cart-item__totals {
