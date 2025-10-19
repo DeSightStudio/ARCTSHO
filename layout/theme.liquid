@@ -525,5 +525,77 @@
         console.log(`Cookie-Banner geladen für Sprache: ${currentLanguage} -> ${cookieLanguage}`);
       })();
     </script>
+
+    <!-- GetTerms Cookie Reopen Button verstecken (Shadow DOM) -->
+    <script>
+      (function () {
+        'use strict';
+
+        /**
+         * Injiziert CSS in Shadow Root SOFORT wenn verfügbar
+         * Verhindert das kurze Aufblitzen des Reopen Buttons
+         */
+        let cssInjected = false;
+
+        const injectCSSIntoShadowRoot = () => {
+          const cookieWidget = document.querySelector('cookie-widget-wrapper');
+
+          if (!cookieWidget || !cookieWidget.shadowRoot) {
+            return false; // Noch nicht geladen
+          }
+
+          // CSS nur einmal injizieren
+          if (!cssInjected && !cookieWidget.shadowRoot.querySelector('#hide-reopen-btn-style')) {
+            const style = document.createElement('style');
+            style.id = 'hide-reopen-btn-style';
+            style.textContent = `
+              /* Verstecke NUR den Reopen Button, NICHT das Cookie-Banner selbst! */
+              .gt-cookie-reopen-btn {
+                display: none !important;
+                visibility: hidden !important;
+                opacity: 0 !important;
+                pointer-events: none !important;
+              }
+            `;
+            cookieWidget.shadowRoot.appendChild(style);
+            cssInjected = true;
+            console.log('✅ GetTerms Reopen Button CSS injiziert (kein Aufblitzen mehr)');
+            return true;
+          }
+
+          return cssInjected;
+        };
+
+        // MutationObserver: Injiziere CSS SOFORT wenn Shadow Root verfügbar ist
+        const observer = new MutationObserver(() => {
+          if (injectCSSIntoShadowRoot()) {
+            // CSS erfolgreich injiziert - Observer kann gestoppt werden
+            observer.disconnect();
+            console.log('🎯 MutationObserver gestoppt - CSS ist injiziert');
+          }
+        });
+
+        // Beobachte das gesamte Dokument auf Änderungen
+        observer.observe(document.body, {
+          childList: true,
+          subtree: true,
+        });
+
+        // Sofort versuchen (falls Shadow Root schon existiert)
+        injectCSSIntoShadowRoot();
+
+        // Mehrfach versuchen mit kurzen Intervallen (für schnelles Laden)
+        setTimeout(() => injectCSSIntoShadowRoot(), 10);
+        setTimeout(() => injectCSSIntoShadowRoot(), 50);
+        setTimeout(() => injectCSSIntoShadowRoot(), 100);
+        setTimeout(() => injectCSSIntoShadowRoot(), 200);
+        setTimeout(() => injectCSSIntoShadowRoot(), 500);
+
+        // Auch bei vollständigem Laden
+        window.addEventListener('load', () => {
+          injectCSSIntoShadowRoot();
+        });
+      })();
+    </script>
   </body>
 </html>
