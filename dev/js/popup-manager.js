@@ -1144,33 +1144,46 @@
         }
       }
 
-      // Prüfe Zeitraum
+      // Prüfe Zeitraum (in CET/CEST Zeitzone - Europe/Vienna)
       const now = new Date();
+      const nowCET = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/Vienna' }));
+
+      console.log('Aktuelle Zeit (CET/CEST):', nowCET.toLocaleString('de-AT'));
 
       if (settings.startDate) {
-        const startDate = new Date(settings.startDate);
-        if (now < startDate) {
-          console.log('Ankündigungs-Pop-Up: Startdatum noch nicht erreicht');
+        // Startdatum in CET interpretieren (00:00:00 Uhr)
+        const startDateCET = new Date(settings.startDate + 'T00:00:00');
+        const startDateCETLocal = new Date(startDateCET.toLocaleString('en-US', { timeZone: 'Europe/Vienna' }));
+
+        if (nowCET < startDateCETLocal) {
+          console.log('Ankündigungs-Pop-Up: Startdatum noch nicht erreicht', {
+            jetzt: nowCET.toLocaleString('de-AT'),
+            start: startDateCETLocal.toLocaleString('de-AT')
+          });
           return;
         }
       }
 
       if (settings.endDate) {
-        const endDate = new Date(settings.endDate);
-        endDate.setHours(23, 59, 59, 999); // Ende des Tages
-        if (now > endDate) {
-          console.log('Ankündigungs-Pop-Up: Enddatum überschritten');
+        // Enddatum in CET interpretieren (23:59:59 Uhr)
+        const endDateCET = new Date(settings.endDate + 'T23:59:59');
+        const endDateCETLocal = new Date(endDateCET.toLocaleString('en-US', { timeZone: 'Europe/Vienna' }));
+
+        if (nowCET > endDateCETLocal) {
+          console.log('Ankündigungs-Pop-Up: Enddatum überschritten', {
+            jetzt: nowCET.toLocaleString('de-AT'),
+            ende: endDateCETLocal.toLocaleString('de-AT')
+          });
           return;
         }
       }
 
-      // Prüfe ob Pop-Up bereits heute angezeigt wurde (Cookie-basiert)
-      const cookieName = 'announcement_popup_shown';
-      const today = new Date().toDateString();
-      const lastShown = getCookie(cookieName);
+      // Prüfe ob Pop-Up bereits in dieser SESSION angezeigt wurde (sessionStorage)
+      const sessionKey = 'announcement_popup_shown';
+      const alreadyShown = sessionStorage.getItem(sessionKey);
 
-      if (lastShown === today) {
-        console.log('Ankündigungs-Pop-Up: Bereits heute angezeigt');
+      if (alreadyShown === 'true') {
+        console.log('Ankündigungs-Pop-Up: Bereits in dieser Session angezeigt');
         return;
       }
 
@@ -1178,9 +1191,9 @@
       setTimeout(() => {
         try {
           MicroModal.show('modal-announcement');
-          // Setze Cookie für heute
-          setCookie(cookieName, today, 1); // 1 Tag gültig
-          console.log('Ankündigungs-Pop-Up angezeigt');
+          // Setze Session-Flag (bleibt nur bis Browser geschlossen wird)
+          sessionStorage.setItem(sessionKey, 'true');
+          console.log('Ankündigungs-Pop-Up angezeigt (Session-Flag gesetzt)');
         } catch (error) {
           console.error('Fehler beim Anzeigen des Ankündigungs-Pop-Ups:', error);
         }
