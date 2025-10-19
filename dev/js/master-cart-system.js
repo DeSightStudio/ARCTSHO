@@ -772,8 +772,33 @@ class MasterCartSystem {
       }
     });
 
-    // Initial unit display basierend auf Cookie
+    // Initial unit display basierend auf Cookie - mit Verzögerung für DOM-Bereitschaft
     this.updateUnitDisplay();
+
+    // Zusätzlicher Check nach kurzer Verzögerung (falls Checkbox später geladen wird)
+    setTimeout(() => {
+      this.syncCheckboxWithCookie();
+    }, 100);
+  }
+
+  /**
+   * Synchronisiere Checkbox-Status mit Cookie (ohne Konvertierung)
+   */
+  syncCheckboxWithCookie() {
+    const preferredUnit = this.getPreferredUnit();
+    this.isUpdatingCheckbox = true;
+
+    // Finde ALLE Checkboxen (kann mehrere auf der Seite geben)
+    const unitCheckboxes = document.querySelectorAll('.unit-switcher__checkbox, .js-unit-switcher-input');
+    unitCheckboxes.forEach(checkbox => {
+      const shouldBeChecked = (preferredUnit === 'imperial');
+      if (checkbox.checked !== shouldBeChecked) {
+        checkbox.checked = shouldBeChecked;
+        console.log('🚀 Checkbox synchronized to:', shouldBeChecked);
+      }
+    });
+
+    this.isUpdatingCheckbox = false;
   }
 
   /**
@@ -838,13 +863,17 @@ class MasterCartSystem {
     const preferredUnit = this.getPreferredUnit();
     console.log('🚀 Updating unit display to:', preferredUnit);
 
-    // Update checkbox state OHNE Event zu triggern
+    // Update ALLE Checkboxen OHNE Event zu triggern (kann mehrere auf der Seite geben)
     this.isUpdatingCheckbox = true;
-    const unitCheckbox = document.querySelector('.unit-switcher__checkbox, .js-unit-switcher-input');
-    if (unitCheckbox) {
-      const shouldBeChecked = (preferredUnit === 'imperial');
-      unitCheckbox.checked = shouldBeChecked;
-      console.log('🚀 Checkbox updated to:', shouldBeChecked);
+    const unitCheckboxes = document.querySelectorAll('.unit-switcher__checkbox, .js-unit-switcher-input');
+    const shouldBeChecked = (preferredUnit === 'imperial');
+
+    unitCheckboxes.forEach(checkbox => {
+      checkbox.checked = shouldBeChecked;
+    });
+
+    if (unitCheckboxes.length > 0) {
+      console.log('🚀 Updated', unitCheckboxes.length, 'checkbox(es) to:', shouldBeChecked);
     }
     this.isUpdatingCheckbox = false;
 
@@ -882,16 +911,27 @@ class MasterCartSystem {
     // Convert modern product card specs (data-spec-type approach)
     document.querySelectorAll('[data-spec-type]').forEach(element => {
       const specType = element.dataset.specType;
-      const originalValue = parseFloat(element.dataset.originalValue);
-      const unit = element.dataset.unit;
+      // Unterstütze beide Attribute: data-original-value (Collections) und data-metric-value (PDP)
+      const originalValue = parseFloat(element.dataset.originalValue || element.dataset.metricValue);
+      const unit = element.dataset.unit || element.dataset.metricUnit;
 
       if (!isNaN(originalValue)) {
-        if ((specType === 'length' || specType === 'width' || specType === 'height' || specType === 'diameter') && unit === 'mm') {
+        // Speichere Original-Wert falls noch nicht vorhanden
+        if (!element.dataset.originalValue && element.dataset.metricValue) {
+          element.dataset.originalValue = element.dataset.metricValue;
+        }
+        if (!element.dataset.unit && element.dataset.metricUnit) {
+          element.dataset.unit = element.dataset.metricUnit;
+        }
+
+        if ((specType === 'length' || specType === 'width' || specType === 'height' || specType === 'thickness' || specType === 'diameter') && unit === 'mm') {
           const inchValue = (originalValue * mmToInch).toFixed(2);
           element.textContent = inchValue + ' in';
         } else if (specType === 'weight' && unit === 'g') {
-          const lbValue = (originalValue * gToLb).toFixed(3);
-          element.textContent = lbValue + ' lb';
+          const lbValue = originalValue * gToLb;
+          // Intelligente Formatierung: 1-2 Dezimalstellen je nach Größe
+          const formattedValue = lbValue >= 10 ? lbValue.toFixed(1) : lbValue.toFixed(2);
+          element.textContent = formattedValue + ' lb';
         }
       }
     });
@@ -955,14 +995,15 @@ class MasterCartSystem {
    * Reset all values to metric (original values)
    */
   resetToMetricValues() {
-    // Reset modern product card specs
-    document.querySelectorAll('[data-spec-type][data-original-value]').forEach(element => {
+    // Reset modern product card specs (unterstützt beide Attribute)
+    document.querySelectorAll('[data-spec-type]').forEach(element => {
       const specType = element.dataset.specType;
-      const originalValue = parseFloat(element.dataset.originalValue);
-      const unit = element.dataset.unit;
+      // Unterstütze beide Attribute: data-original-value (Collections) und data-metric-value (PDP)
+      const originalValue = parseFloat(element.dataset.originalValue || element.dataset.metricValue);
+      const unit = element.dataset.unit || element.dataset.metricUnit;
 
       if (!isNaN(originalValue)) {
-        if ((specType === 'length' || specType === 'width' || specType === 'height' || specType === 'diameter') && unit === 'mm') {
+        if ((specType === 'length' || specType === 'width' || specType === 'height' || specType === 'thickness' || specType === 'diameter') && unit === 'mm') {
           if (originalValue < 10) {
             element.textContent = originalValue + ' mm';
           } else {
@@ -1054,9 +1095,31 @@ class MasterCartSystem {
           this.updateUnitDisplay();
         }, 100);
       }
+
+      // Prüfe ob neue Unit-Switcher hinzugefügt wurden
+      let hasNewSwitcher = false;
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'childList') {
+          mutation.addedNodes.forEach((node) => {
+            if (node.nodeType === Node.ELEMENT_NODE) {
+              if (node.matches('.unit-switcher, unit-switcher') ||
+                  node.querySelector('.unit-switcher, unit-switcher')) {
+                hasNewSwitcher = true;
+              }
+            }
+          });
+        }
+      });
+
+      if (hasNewSwitcher) {
+        console.log('🚀 New unit-switcher detected, syncing checkbox...');
+        setTimeout(() => {
+          this.syncCheckboxWithCookie();
+        }, 50);
+      }
     });
 
-    // Observer starten
+    // Observer starten für Product Grid
     const productGrid = document.querySelector('#product-grid, .product-grid');
     if (productGrid) {
       observer.observe(productGrid, {
@@ -1064,6 +1127,46 @@ class MasterCartSystem {
         subtree: true
       });
     }
+
+    // Observer auch für PDP Product Specs starten
+    const productSpecs = document.querySelector('.product__specs');
+    if (productSpecs) {
+      observer.observe(productSpecs, {
+        childList: true,
+        subtree: true
+      });
+    }
+
+    // Globaler Observer für den gesamten Body (für neue Unit-Switcher)
+    const globalObserver = new MutationObserver((mutations) => {
+      let hasNewSwitcher = false;
+
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'childList') {
+          mutation.addedNodes.forEach((node) => {
+            if (node.nodeType === Node.ELEMENT_NODE) {
+              if (node.matches('.unit-switcher, unit-switcher') ||
+                  node.querySelector('.unit-switcher, unit-switcher')) {
+                hasNewSwitcher = true;
+              }
+            }
+          });
+        }
+      });
+
+      if (hasNewSwitcher) {
+        console.log('🚀 New unit-switcher detected globally, syncing...');
+        setTimeout(() => {
+          this.syncCheckboxWithCookie();
+        }, 50);
+      }
+    });
+
+    // Globalen Observer auf Body starten
+    globalObserver.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
 
     // Zusätzlich: Event-Listener für Filter-Änderungen
     document.addEventListener('click', (e) => {

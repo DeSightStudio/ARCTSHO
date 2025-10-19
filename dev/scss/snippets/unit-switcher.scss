@@ -79,15 +79,48 @@
     opacity: 0;
     width: 0;
     height: 0;
-  
+
     &:checked ~ .unit-switcher__label {
       .unit-switcher__metric {
         background-color: #ffffff;
       }
-  
+
       .unit-switcher__imperial {
         background-color: #e9e9e9;
       }
     }
   }
-  
+
+  /* PDP-spezifische Styles - volle Breite, schmaler in der Höhe */
+
+  .product__specs {
+    .unit-switcher-container {
+      margin: 0 0 1rem 0;
+      padding: 0;
+      justify-content: stretch;
+    }
+
+    .unit-switcher {
+      width: 100%;
+      display: flex;
+    }
+
+    .unit-switcher__label {
+      width: 100%;
+    }
+
+    .unit-switcher__metric,
+    .unit-switcher__imperial {
+      flex: 1;
+      padding: 6px 12px; // Reduzierte Höhe (vorher 8px)
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .unit-switcher__subtext {
+      font-size: $fontSizeSmall;
+      margin-top: 2px;
+    }
+  }

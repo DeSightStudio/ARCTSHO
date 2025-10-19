@@ -233,6 +233,10 @@
 
                 {%- if has_specs -%}
                   <div class="product__specs product__specs--compact" {{ block.shopify_attributes }}>
+                    {% comment %} Unit Switcher für Product Specs {% endcomment %}
+                    <div class="unit-switcher-container">
+                      {% render 'unit-switcher', class: 'product__unit-switcher' %}
+                    </div>
                     <div class="product__specs-grid">
                       {%- if product.metafields.next_cart.ts_dimensions_length_m != blank -%}
                         <div class="product__specs-item">
