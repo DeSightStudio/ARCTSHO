@@ -149,7 +149,7 @@
 
               {%- for product in sorted_products -%}
                 {% comment %} KRITISCH: Certificate of Origin (SKU 2226) niemals in Produktlisten anzeigen {% endcomment %}
-                {% unless product.selected_or_first_available_variant.sku == '2226' or product.id == 46347117723862 %}
+                {% unless product.selected_or_first_available_variant.sku == '2226' or product.id == 9124358062294 %}
                   {% assign lazy_load = false %}
                   {%- if forloop.index > 2 -%}
                     {%- assign lazy_load = true -%}

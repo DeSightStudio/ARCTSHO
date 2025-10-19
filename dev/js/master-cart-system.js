@@ -724,7 +724,7 @@ class MasterCartSystem {
 
     // Prüfe ob Certificate of Origin bereits im Cart ist
     const certificateInCart = this.cartData.items.some(item =>
-      item.sku === '2226' || item.product_id === 46347117723862
+      item.sku === '2226' || item.product_id === 9124358062294
     );
 
     if (certificateInCart) {

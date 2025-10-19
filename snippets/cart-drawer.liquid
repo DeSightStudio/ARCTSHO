@@ -506,7 +506,7 @@
         {% comment %}Ursprungszeugnis-Check{% endcomment %}
         {% assign certificate_in_cart = false %}
         {% for item in cart.items %}
-          {% if item.sku == '2226' or item.product_id == 46347117723862 %}
+          {% if item.sku == '2226' or item.product_id == 9124358062294 %}
             {% assign certificate_in_cart = true %}
             {% break %}
           {% endif %}
@@ -530,14 +530,14 @@
                   {% endif %}
                 </h3>
                 <div class="origin-certificate-price">
-                  {% comment %}Dynamischer Preis von Variant ID 8798869684438{% endcomment %}
+                  {% comment %}Dynamischer Preis von Variant ID 47380988756182{% endcomment %}
                   {% assign certificate_product = all_products['certificate-of-origin'] %}
                   {% assign certificate_variant = null %}
 
                   {% comment %}Debug: Prüfe ob Produkt gefunden wurde{% endcomment %}
                   {% if certificate_product %}
                     {% for variant in certificate_product.variants %}
-                      {% if variant.id == 8798869684438 %}
+                      {% if variant.id == 47380988756182 %}
                         {% assign certificate_variant = variant %}
                         {% break %}
                       {% endif %}
@@ -549,7 +549,7 @@
                     {% comment %}Debug: Variant gefunden - ID: {{ certificate_variant.id }}, Preis: {{ certificate_variant.price }}{% endcomment %}
                   {% else %}
                     {% comment %}Fallback falls Variant nicht gefunden wird (29€ = 2900 Cent){% endcomment %}
-                    {% comment %}Debug: Variant 8798869684438 nicht gefunden in Produkt {{ certificate_product.title }}{% endcomment %}
+                    {% comment %}Debug: Variant 47380988756182 nicht gefunden in Produkt {{ certificate_product.title }}{% endcomment %}
                     {% if shop.currency == 'EUR' %}
                       {{ 2900 | money }}
                     {% elsif shop.currency == 'USD' %}
@@ -566,7 +566,8 @@
                 type="button"
                 class="button button--primary origin-certificate-button"
                 id="CartDrawer-AddOriginCertificate"
-                data-product-id="46347117723862"
+                data-product-id="9124358062294"
+                data-variant-id="47380988756182"
                 data-sku="2226"
                 onclick="addOriginCertificateToCart(this)"
               >
@@ -583,7 +584,7 @@
             return fetch('/products/certificate-of-origin.js')
               .then(response => response.json())
               .then(productData => {
-                const variant = productData.variants.find(v => v.id === 8798869684438);
+                const variant = productData.variants.find(v => v.id === 47380988756182);
                 if (variant) {
                   console.log('Certificate of Origin Preis geladen:', variant.price);
                   return variant.price;
@@ -601,26 +602,22 @@
             button.classList.add('loading');
             button.disabled = true;
 
-            // Produkt-ID direkt aus dem data-product-id Attribut
+            // Varianten-ID direkt aus dem data-variant-id Attribut (WICHTIG: Nicht Produkt-ID!)
+            const variantId = button.dataset.variantId;
             const productId = button.dataset.productId;
 
-            // Dynamischen Preis laden
-            const certificatePrice = await getCertificatePrice();
-            console.log('Verwende Produktpreis:', certificatePrice);
-
+            // Einfaches Add-to-Cart ohne Properties (Preis kommt automatisch von Shopify)
             let formData = {
               items: [
                 {
-                  id: parseInt(productId, 10),
-                  quantity: 1,
-                  properties: {
-                    '_price': certificatePrice
-                  }
+                  id: parseInt(variantId, 10),
+                  quantity: 1
+                  // Keine Properties mehr - Preis wird automatisch von Shopify übernommen
                 },
               ],
             };
 
-            console.log('Füge Produkt hinzu:', formData);
+            console.log('Füge Certificate of Origin hinzu (Variant ID:', variantId, ', Product ID:', productId, '):', formData);
 
             fetch('/cart/add.js', {
               method: 'POST',
@@ -740,7 +737,7 @@
                       const productTitle = item.querySelector('.cart-item__name');
                       // Prüfen auf die Produkt-ID des Ursprungszeugnisses oder SKU 2226
                       if (
-                        removeButton.closest('.cart-item').querySelector('[data-product-id="46347117723862"]') ||
+                        removeButton.closest('.cart-item').querySelector('[data-product-id="9124358062294"]') ||
                         (productTitle &&
                           (productTitle.textContent.includes('Ursprungszeugnis') ||
                             productTitle.textContent.includes('Certificate of Origin')))
