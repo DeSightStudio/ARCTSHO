@@ -105,7 +105,7 @@
                   {%- if products_shown < 10 -%}
                     {%- if collection_product.available
                       and collection_product.id != product.id
-                      and collection_product.metafields.next_cart.is_certificate != true
+                      and collection_product.selected_or_first_available_variant.sku != '2226'
                     -%}
                       {%- assign product_id_check = ',' | append: collection_product.id | append: ',' -%}
                       {%- unless used_product_ids contains product_id_check -%}

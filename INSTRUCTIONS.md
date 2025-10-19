@@ -662,8 +662,8 @@ $fontSizeXLarge: 48px;   // Extra große Headlines
 {% assign excluded_handles = 'all,alle-produkte,tous-les-produits,todos-los-productos,tutti-i-prodotti,all-products' | split: ',' %}
 
 <!-- Ausgeschlossene Produkte -->
-{% unless product.metafields.next_cart.is_certificate == true %}
-  <!-- Certificate of Origin (niemals anzeigen) - identifiziert über Metafeld next_cart.is_certificate -->
+{% unless product.selected_or_first_available_variant.sku == '2226' %}
+  <!-- SKU 2226 = Certificate of Origin (niemals anzeigen) -->
 {% endunless %}
 ```
 

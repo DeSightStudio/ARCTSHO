@@ -717,20 +717,12 @@ class MasterCartSystem {
 
   /**
    * Update Certificate of Origin Visibility
-   *
-   * HINWEIS: Diese Funktion verwendet SKU/product_id statt Metafeld next_cart.is_certificate,
-   * da die Shopify Cart API (/cart.js) keine Metafelder zurückgibt.
-   * Die Liquid-Templates (cart-drawer.liquid, main-search.liquid) verwenden das Metafeld.
-   *
-   * WICHTIG: Bei Änderung der SKU/ID muss diese hier UND im Metafeld aktualisiert werden!
-   * Aktuell: SKU '2226' oder product_id 46347117723862
    */
   updateCertificateOfOriginVisibility() {
     const certificateElement = document.querySelector('.cart-drawer__origin-certificate');
     if (!certificateElement) return;
 
     // Prüfe ob Certificate of Origin bereits im Cart ist
-    // HINWEIS: Metafelder sind in Cart API nicht verfügbar, daher SKU/ID-Prüfung
     const certificateInCart = this.cartData.items.some(item =>
       item.sku === '2226' || item.product_id === 46347117723862
     );

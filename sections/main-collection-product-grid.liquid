@@ -148,8 +148,8 @@
               {% assign sorted_products = available_products | concat: soldout_products %}
 
               {%- for product in sorted_products -%}
-                {% comment %} KRITISCH: Certificate of Origin niemals in Produktlisten anzeigen {% endcomment %}
-                {% unless product.metafields.next_cart.is_certificate == true %}
+                {% comment %} KRITISCH: Certificate of Origin (SKU 2226) niemals in Produktlisten anzeigen {% endcomment %}
+                {% unless product.selected_or_first_available_variant.sku == '2226' or product.id == 46347117723862 %}
                   {% assign lazy_load = false %}
                   {%- if forloop.index > 2 -%}
                     {%- assign lazy_load = true -%}
