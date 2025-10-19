@@ -345,24 +345,13 @@
                     </li>
                   {% endif %}
 
-                  {% comment %} Gewicht: Priorisiere natives Shopify-Gewicht, fallback auf Metafelder {% endcomment %}
+                  {% comment %} Gewicht: Nur natives Shopify-Gewicht verwenden (von Variante) {% endcomment %}
                   {% assign weight_value = 0 %}
+                  {% assign variant_weight = card_product.selected_or_first_available_variant.weight %}
 
-                  {% if card_product.weight > 0 %}
-                    {% comment %} Konvertiere natives Shopify-Gewicht zu Gramm {% endcomment %}
-                    {% assign weight_in_grams = card_product.weight %}
-                    {% if card_product.weight_unit == 'kg' %}
-                      {% assign weight_in_grams = card_product.weight | times: 1000 %}
-                    {% elsif card_product.weight_unit == 'lb' %}
-                      {% assign weight_in_grams = card_product.weight | times: 453.592 %}
-                    {% elsif card_product.weight_unit == 'oz' %}
-                      {% assign weight_in_grams = card_product.weight | times: 28.3495 %}
-                    {% endif %}
-                    {% assign weight_value = weight_in_grams | round %}
-                  {% elsif card_product.metafields.next_cart.weight_m != blank %}
-                    {% assign weight_value = card_product.metafields.next_cart.weight_m | plus: 0 %}
-                  {% elsif card_product.metafields.custom.weight_m != blank %}
-                    {% assign weight_value = card_product.metafields.custom.weight_m | plus: 0 %}
+                  {% if variant_weight > 0 %}
+                    {% comment %} Shopify speichert Gewicht bereits in Gramm, unabhängig von der angezeigten Einheit {% endcomment %}
+                    {% assign weight_value = variant_weight | round %}
                   {% endif %}
 
                   {% if weight_value > 0 %}
@@ -534,24 +523,14 @@
                 {% comment %} Preis und Gewicht - zweispaltig {% endcomment %}
                 <div class="card-product__price-container">
                   {% render 'price', product: card_product, price_class: '', show_compare_at_price: true %}
-                  {% comment %} Gewicht: Priorisiere natives Shopify-Gewicht, fallback auf Metafelder {% endcomment %}
-                  {% assign weight_value = 0 %}
 
-                  {% if card_product.weight > 0 %}
-                    {% comment %} Konvertiere natives Shopify-Gewicht zu Gramm {% endcomment %}
-                    {% assign weight_in_grams = card_product.weight %}
-                    {% if card_product.weight_unit == 'kg' %}
-                      {% assign weight_in_grams = card_product.weight | times: 1000 %}
-                    {% elsif card_product.weight_unit == 'lb' %}
-                      {% assign weight_in_grams = card_product.weight | times: 453.592 %}
-                    {% elsif card_product.weight_unit == 'oz' %}
-                      {% assign weight_in_grams = card_product.weight | times: 28.3495 %}
-                    {% endif %}
-                    {% assign weight_value = weight_in_grams | round %}
-                  {% elsif card_product.metafields.next_cart.weight_m != blank %}
-                    {% assign weight_value = card_product.metafields.next_cart.weight_m | plus: 0 %}
-                  {% elsif card_product.metafields.custom.weight_m != blank %}
-                    {% assign weight_value = card_product.metafields.custom.weight_m | plus: 0 %}
+                  {% comment %} Gewicht: Nur natives Shopify-Gewicht verwenden (von Variante) {% endcomment %}
+                  {% assign weight_value = 0 %}
+                  {% assign variant_weight = card_product.selected_or_first_available_variant.weight %}
+
+                  {% if variant_weight > 0 %}
+                    {% comment %} Shopify speichert Gewicht bereits in Gramm, unabhängig von der angezeigten Einheit {% endcomment %}
+                    {% assign weight_value = variant_weight | round %}
                   {% endif %}
 
                   {% if weight_value > 0 %}
@@ -736,24 +715,13 @@
                   </li>
                 {% endif %}
 
-                {% comment %} Gewicht: Priorisiere natives Shopify-Gewicht, fallback auf Metafelder {% endcomment %}
+                {% comment %} Gewicht: Nur natives Shopify-Gewicht verwenden (von Variante) {% endcomment %}
                 {% assign weight_value = 0 %}
+                {% assign variant_weight = card_product.selected_or_first_available_variant.weight %}
 
-                {% if card_product.weight > 0 %}
-                  {% comment %} Konvertiere natives Shopify-Gewicht zu Gramm {% endcomment %}
-                  {% assign weight_in_grams = card_product.weight %}
-                  {% if card_product.weight_unit == 'kg' %}
-                    {% assign weight_in_grams = card_product.weight | times: 1000 %}
-                  {% elsif card_product.weight_unit == 'lb' %}
-                    {% assign weight_in_grams = card_product.weight | times: 453.592 %}
-                  {% elsif card_product.weight_unit == 'oz' %}
-                    {% assign weight_in_grams = card_product.weight | times: 28.3495 %}
-                  {% endif %}
-                  {% assign weight_value = weight_in_grams | round %}
-                {% elsif card_product.metafields.next_cart.weight_m != blank %}
-                  {% assign weight_value = card_product.metafields.next_cart.weight_m | plus: 0 %}
-                {% elsif card_product.metafields.custom.weight_m != blank %}
-                  {% assign weight_value = card_product.metafields.custom.weight_m | plus: 0 %}
+                {% if variant_weight > 0 %}
+                  {% comment %} Shopify speichert Gewicht bereits in Gramm, unabhängig von der angezeigten Einheit {% endcomment %}
+                  {% assign weight_value = variant_weight | round %}
                 {% endif %}
 
                 {% if weight_value > 0 %}

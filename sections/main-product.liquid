@@ -225,9 +225,7 @@
                   or product.metafields.custom.width_m != blank
                   or product.metafields.custom.thickness_m != blank
                   or product.metafields.custom.diameter_m != blank
-                  or product.weight > 0
-                  or product.metafields.next_cart.weight_m != blank
-                  or product.metafields.custom.weight_m != blank
+                  or product.selected_or_first_available_variant.weight > 0
                   or product.metafields.custom.color != blank
                 -%}
                   {%- assign has_specs = true -%}
@@ -426,24 +424,13 @@
                         </div>
                       {%- endif -%}
 
-                      {%- comment -%} Gewicht: Priorisiere natives Shopify-Gewicht, fallback auf Metafelder {%- endcomment -%}
+                      {%- comment -%} Gewicht: Nur natives Shopify-Gewicht verwenden (von Variante) {%- endcomment -%}
                       {%- assign weight_value = 0 -%}
+                      {%- assign variant_weight = product.selected_or_first_available_variant.weight -%}
 
-                      {%- if product.weight > 0 -%}
-                        {%- comment -%} Konvertiere natives Shopify-Gewicht zu Gramm {%- endcomment -%}
-                        {%- assign weight_in_grams = product.weight -%}
-                        {%- if product.weight_unit == 'kg' -%}
-                          {%- assign weight_in_grams = product.weight | times: 1000 -%}
-                        {%- elsif product.weight_unit == 'lb' -%}
-                          {%- assign weight_in_grams = product.weight | times: 453.592 -%}
-                        {%- elsif product.weight_unit == 'oz' -%}
-                          {%- assign weight_in_grams = product.weight | times: 28.3495 -%}
-                        {%- endif -%}
-                        {%- assign weight_value = weight_in_grams | round -%}
-                      {%- elsif product.metafields.next_cart.weight_m != blank -%}
-                        {%- assign weight_value = product.metafields.next_cart.weight_m | plus: 0 -%}
-                      {%- elsif product.metafields.custom.weight_m != blank -%}
-                        {%- assign weight_value = product.metafields.custom.weight_m | plus: 0 -%}
+                      {%- if variant_weight > 0 -%}
+                        {%- comment -%} Shopify speichert Gewicht bereits in Gramm, unabhängig von der angezeigten Einheit {%- endcomment -%}
+                        {%- assign weight_value = variant_weight | round -%}
                       {%- endif -%}
 
                       {%- if weight_value > 0 -%}

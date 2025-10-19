@@ -902,8 +902,10 @@ class MasterCartSystem {
       const unit = element.dataset.unit;
 
       if (!isNaN(originalValue) && unit === 'g') {
-        const lbValue = (originalValue * gToLb).toFixed(3);
-        element.textContent = lbValue + ' lb';
+        const lbValue = originalValue * gToLb;
+        // Intelligente Formatierung: 1-2 Dezimalstellen je nach Größe
+        const formattedValue = lbValue >= 10 ? lbValue.toFixed(1) : lbValue.toFixed(2);
+        element.textContent = formattedValue + ' lb';
       }
     });
 
