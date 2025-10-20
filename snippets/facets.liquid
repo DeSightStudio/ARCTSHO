@@ -17,7 +17,9 @@
 {{ 'component-swatch.css' | asset_url | stylesheet_tag }}
 
 {%- liquid
-  assign sort_by = results.sort_by | default: results.default_sort_by
+  # Standardsortierung: Price high to low (price-descending)
+  assign default_sort = 'price-descending'
+  assign sort_by = results.sort_by | default: default_sort
   assign total_active_values = 0
   assign total_active_filters = 0
   assign default_presentation = 'text'
@@ -42,6 +44,52 @@
 -%}
 
 <div class="facets-container{% if filter_type == 'drawer' %} facets-container-drawer{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}">
+  {% comment %} Sort By - oberhalb von Unit Switcher {% endcomment %}
+  {%- if enable_sorting and filter_type == 'vertical' -%}
+    <div class="facet-filters-sort-wrapper">
+      <facet-filters-form class="facets">
+        <form class="facets-vertical-form" id="FacetSortFormInline">
+          <div class="facet-filters sorting caption">
+            <div class="facet-filters__field">
+              <h2 class="facet-filters__label caption-large text-body">
+                <label for="SortByInline">{{ 'products.facets.sort_by_label' | t }}</label>
+              </h2>
+              <div class="select">
+                <select
+                  name="sort_by"
+                  class="facet-filters__sort select__select caption-large"
+                  id="SortByInline"
+                  aria-describedby="a11y-refresh-page-message"
+                >
+                  {%- for option in results.sort_options -%}
+                    {% unless option.value contains 'title-ascending'
+                      or option.value contains 'best-selling'
+                      or option.value contains 'title-descending'
+                      or option.value contains 'featured'
+                      or option.value contains 'manual'
+                    %}
+                      <option
+                        value="{{ option.value | escape }}"
+                        {% if option.value == sort_by %}
+                          selected="selected"
+                        {% endif %}
+                      >
+                        {{ option.name | escape }}
+                      </option>
+                    {% endunless %}
+                  {%- endfor -%}
+                </select>
+                <span class="svg-wrapper">
+                  {{- 'icon-caret.svg' | inline_asset_content -}}
+                </span>
+              </div>
+            </div>
+          </div>
+        </form>
+      </facet-filters-form>
+    </div>
+  {%- endif -%}
+
   {% comment %} Unit Switcher - außerhalb der Filter-Formulare, damit kein Reload ausgelöst wird {% endcomment %}
   <div class="unit-switcher-container">
     {% render 'unit-switcher', class: 'facets__unit-switcher' %}
@@ -445,7 +493,6 @@
                           id="SortBy-mobile"
                           aria-describedby="a11y-refresh-page-message"
                         >
-                          {%- assign sort_by = results.sort_by | default: results.default_sort_by -%}
                           {%- for option in results.sort_options -%}
                             {%- comment -%} Mobile zeigt ALLE Sort-Optionen - Desktop filtert zu viel weg {%- endcomment -%}
                             <option

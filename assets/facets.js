@@ -433,7 +433,7 @@ class FacetFiltersForm extends HTMLElement {
 
       sortFilterForms.forEach((form) => {
         if (!isMobile) {
-          if (form.id === 'FacetSortForm' || form.id === 'FacetFiltersForm' || form.id === 'FacetSortDrawerForm') {
+          if (form.id === 'FacetSortForm' || form.id === 'FacetSortFormInline' || form.id === 'FacetFiltersForm' || form.id === 'FacetSortDrawerForm') {
             forms.push(this.createSearchParams(form));
           }
         } else if (form.id === 'FacetFiltersFormMobile') {
@@ -461,8 +461,70 @@ FacetFiltersForm.searchParamsPrev = window.location.search.slice(1);
 customElements.define('facet-filters-form', FacetFiltersForm);
 FacetFiltersForm.setListeners();
 
+// Hilfsfunktion: Erstelle Skeleton Loading für Produkte
+function createProductSkeleton() {
+  return `
+    <li class="grid__item product-skeleton">
+      <div class="card-wrapper">
+        <div class="card card--standard card--media skeleton-loading">
+          <div class="card__inner color-background-2 gradient ratio skeleton-image" style="--ratio-percent: 100%;"></div>
+          <div class="card__content">
+            <div class="card__information">
+              <div class="skeleton-text skeleton-title"></div>
+              <div class="skeleton-text skeleton-price"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+  `;
+}
+
 // Sortiere Produkte beim ersten Laden der Seite
 document.addEventListener('DOMContentLoaded', () => {
+  // WICHTIG: Standardsortierung auf "price-descending" setzen, wenn kein sort_by Parameter vorhanden ist
+  const urlParams = new URLSearchParams(window.location.search);
+  const currentSortBy = urlParams.get('sort_by');
+
+  // Nur auf Collection-Seiten (nicht auf Search-Seiten)
+  const isCollectionPage = document.querySelector('#product-grid') && !window.location.pathname.includes('/search');
+
+  if (isCollectionPage && !currentSortBy) {
+    // Keine Sortierung in URL -> Setze Standardsortierung "price-descending" in den Dropdowns
+    console.log('🔄 Keine Sortierung gefunden - setze Standardsortierung: price-descending');
+
+    // Setze den Wert in allen Sort-Dropdowns
+    const sortSelects = document.querySelectorAll('select[name="sort_by"]');
+    sortSelects.forEach(select => {
+      select.value = 'price-descending';
+    });
+
+    // Zeige Skeleton Loading während des Ladens
+    const productGrid = document.querySelector('#product-grid');
+    if (productGrid) {
+      // Speichere die aktuellen Produkte
+      const currentProducts = productGrid.innerHTML;
+
+      // Zähle wie viele Produkte aktuell angezeigt werden
+      const productCount = productGrid.querySelectorAll('.grid__item').length;
+
+      // Ersetze mit Skeleton Loading
+      let skeletonHTML = '';
+      for (let i = 0; i < Math.min(productCount, 12); i++) {
+        skeletonHTML += createProductSkeleton();
+      }
+      productGrid.innerHTML = skeletonHTML;
+    }
+
+    // Trigger das Facets-Form Submit um die Produkte zu laden (OHNE URL zu ändern)
+    const facetForm = document.querySelector('#FacetSortFormInline, #FacetFiltersForm');
+    if (facetForm) {
+      const formData = new FormData(facetForm);
+      const searchParams = new URLSearchParams(formData).toString();
+      FacetFiltersForm.renderPage(searchParams, null, false);
+    }
+  }
+
   FacetFiltersForm.sortProductsByAvailability();
   FacetFiltersForm.initializeRequestOnlyButtons();
 

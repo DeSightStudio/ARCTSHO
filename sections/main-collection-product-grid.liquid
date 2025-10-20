@@ -37,51 +37,13 @@
 {%- endstyle -%}
 
 <div class="section-{{ section.id }}-padding gradient color-{{ section.settings.color_scheme }}">
+  {%- liquid
+    # Standardsortierung: Price high to low
+    assign default_sort = 'price-descending'
+    assign sort_by = collection.sort_by | default: default_sort
+  -%}
   {%- paginate collection.products by section.settings.products_per_page -%}
-    {% comment %} Sort is the first tabbable element when filter type is vertical {% endcomment %}
-    {%- if section.settings.enable_sorting and section.settings.filter_type == 'vertical' -%}
-      <facet-filters-form class="facets facets-vertical-sort page-width small-hide">
-        <form class="facets-vertical-form" id="FacetSortForm">
-          <div class="facet-filters sorting caption">
-            <div class="facet-filters__field">
-              <h2 class="facet-filters__label caption-large text-body">
-                <label for="SortBy">{{ 'products.facets.sort_by_label' | t }}</label>
-              </h2>
-              <div class="select">
-                {%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
-                <select
-                  name="sort_by"
-                  class="facet-filters__sort select__select caption-large"
-                  id="SortBy"
-                  aria-describedby="a11y-refresh-page-message"
-                >
-                  {%- for option in collection.sort_options -%}
-                    {% unless option.value contains 'title-ascending'
-                      or option.value contains 'best-selling'
-                      or option.value contains 'title-descending'
-                      or option.value contains 'featured'
-                      or option.value contains 'manual'
-                    %}
-                      <option
-                        value="{{ option.value | escape }}"
-                        {% if option.value == sort_by %}
-                          selected="selected"
-                        {% endif %}
-                      >
-                        {{ option.name | escape }}
-                      </option>
-                    {% endunless %}
-                  {%- endfor -%}
-                </select>
-                <span class="svg-wrapper">
-                  {{- 'icon-caret.svg' | inline_asset_content -}}
-                </span>
-              </div>
-            </div>
-          </div>
-        </form>
-      </facet-filters-form>
-    {%- endif -%}
+    {% comment %} Sort By wurde in die Facets verschoben (oberhalb von METRIC/IMPERIAL) {% endcomment %}
 
     <div class="{% if section.settings.filter_type == 'vertical' %} facets-vertical page-width{% endif %}">
       {{ 'component-facets.css' | asset_url | stylesheet_tag }}
