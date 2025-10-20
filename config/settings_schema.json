@@ -2341,5 +2341,177 @@
         "info": "Pertinent uniquement si le Libellé du Bouton est rempli"
       }
     ]
+  },
+  {
+    "name": "Wartungsmodus",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Wartungsmodus Einstellungen"
+      },
+      {
+        "type": "checkbox",
+        "id": "maintenance_mode_enable",
+        "label": "Wartungsmodus aktivieren",
+        "default": false,
+        "info": "Zeigt eine Wartungsseite für alle Besucher (außer eingeloggte Admins)"
+      },
+      {
+        "type": "header",
+        "content": "Inhalt - Deutsch (DE)"
+      },
+      {
+        "type": "text",
+        "id": "maintenance_headline_de",
+        "label": "Überschrift (DE)",
+        "default": "Wir sind gleich zurück!"
+      },
+      {
+        "type": "textarea",
+        "id": "maintenance_text_de",
+        "label": "Text (DE)",
+        "default": "Entschuldigung! Wir führen gerade eine geplante Wartung durch, um Ihre Benutzererfahrung mit uns zu verbessern. Wir erwarten, in etwa 24 Stunden zurück zu sein. Vielen Dank für Ihre Geduld!"
+      },
+      {
+        "type": "text",
+        "id": "maintenance_downtime_de",
+        "label": "Downtime-Text (DE)",
+        "default": "Erwartete Ausfallzeit: ~24 Stunden"
+      },
+      {
+        "type": "text",
+        "id": "maintenance_footer_de",
+        "label": "Footer-Text (DE)",
+        "default": "Für dringende Anfragen kontaktieren Sie uns bitte per E-Mail unter"
+      },
+      {
+        "type": "header",
+        "content": "Inhalt - English (EN)"
+      },
+      {
+        "type": "text",
+        "id": "maintenance_headline_en",
+        "label": "Headline (EN)",
+        "default": "We'll Be Right Back!"
+      },
+      {
+        "type": "textarea",
+        "id": "maintenance_text_en",
+        "label": "Text (EN)",
+        "default": "Sorry! We're down for a scheduled maintenance right now to improve your user experience with us. We expect to be back in about 24 hours. Thanks for your patience!"
+      },
+      {
+        "type": "text",
+        "id": "maintenance_downtime_en",
+        "label": "Downtime Text (EN)",
+        "default": "Expected downtime: ~24 hours"
+      },
+      {
+        "type": "text",
+        "id": "maintenance_footer_en",
+        "label": "Footer Text (EN)",
+        "default": "For urgent inquiries, please contact us by email at"
+      },
+      {
+        "type": "header",
+        "content": "Inhalt - Español (ES)"
+      },
+      {
+        "type": "text",
+        "id": "maintenance_headline_es",
+        "label": "Título (ES)",
+        "default": "¡Volveremos pronto!"
+      },
+      {
+        "type": "textarea",
+        "id": "maintenance_text_es",
+        "label": "Texto (ES)",
+        "default": "¡Lo sentimos! Estamos realizando un mantenimiento programado para mejorar su experiencia de usuario con nosotros. Esperamos volver en aproximadamente 24 horas. ¡Gracias por su paciencia!"
+      },
+      {
+        "type": "text",
+        "id": "maintenance_downtime_es",
+        "label": "Texto de Tiempo de Inactividad (ES)",
+        "default": "Tiempo de inactividad esperado: ~24 horas"
+      },
+      {
+        "type": "text",
+        "id": "maintenance_footer_es",
+        "label": "Texto de Pie de Página (ES)",
+        "default": "Para consultas urgentes, contáctenos por correo electrónico a"
+      },
+      {
+        "type": "header",
+        "content": "Inhalt - Italiano (IT)"
+      },
+      {
+        "type": "text",
+        "id": "maintenance_headline_it",
+        "label": "Titolo (IT)",
+        "default": "Torneremo presto!"
+      },
+      {
+        "type": "textarea",
+        "id": "maintenance_text_it",
+        "label": "Testo (IT)",
+        "default": "Scusa! Siamo in manutenzione programmata per migliorare la tua esperienza utente con noi. Ci aspettiamo di tornare tra circa 24 ore. Grazie per la pazienza!"
+      },
+      {
+        "type": "text",
+        "id": "maintenance_downtime_it",
+        "label": "Testo Tempo di Inattività (IT)",
+        "default": "Tempo di inattività previsto: ~24 ore"
+      },
+      {
+        "type": "text",
+        "id": "maintenance_footer_it",
+        "label": "Testo Piè di Pagina (IT)",
+        "default": "Per richieste urgenti, contattateci via email a"
+      },
+      {
+        "type": "header",
+        "content": "Inhalt - Français (FR)"
+      },
+      {
+        "type": "text",
+        "id": "maintenance_headline_fr",
+        "label": "Titre (FR)",
+        "default": "Nous revenons bientôt!"
+      },
+      {
+        "type": "textarea",
+        "id": "maintenance_text_fr",
+        "label": "Texte (FR)",
+        "default": "Désolé! Nous sommes en maintenance programmée pour améliorer votre expérience utilisateur avec nous. Nous prévoyons d'être de retour dans environ 24 heures. Merci pour votre patience!"
+      },
+      {
+        "type": "text",
+        "id": "maintenance_downtime_fr",
+        "label": "Texte Temps d'Arrêt (FR)",
+        "default": "Temps d'arrêt prévu: ~24 heures"
+      },
+      {
+        "type": "text",
+        "id": "maintenance_footer_fr",
+        "label": "Texte Pied de Page (FR)",
+        "default": "Pour les demandes urgentes, veuillez nous contacter par email à"
+      },
+      {
+        "type": "header",
+        "content": "Kontakt & Design"
+      },
+      {
+        "type": "text",
+        "id": "maintenance_email",
+        "label": "Kontakt E-Mail",
+        "default": "info@arcticantiques.com"
+      },
+      {
+        "type": "image_picker",
+        "id": "maintenance_logo",
+        "label": "Logo für Wartungsseite",
+        "info": "Optional: Verwendet das Standard-Logo wenn leer"
+      }
+    ]
   }
 ]

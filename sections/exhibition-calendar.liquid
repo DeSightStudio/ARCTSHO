@@ -45,12 +45,20 @@
                   Neue Logik für Datumsanzeige:
                   1. WENN Period ausgefüllt, IMMER die Period anzeigen (From/To ignorieren)
                   2. WENN Period leer und From/To vorhanden, zeige From/To
+                     - WENN Start- und Enddatum identisch: Nur ein Datum anzeigen
+                     - WENN unterschiedlich: Datumsbereich anzeigen
                   3. WENN alles leer, zeige nichts
                 {% endcomment %}
                 {% if exhibition.period_if_date_unknown != blank %}
                   {{ exhibition.period_if_date_unknown }}
                 {% elsif exhibition['from-date'] and exhibition['to-date'] %}
-                  {{ exhibition['from-date'] | date: '%-d' }} - {{ exhibition['to-date'] | date: '%-d %B %Y' }}
+                  {% assign from_date = exhibition['from-date'] | date: '%Y-%m-%d' %}
+                  {% assign to_date = exhibition['to-date'] | date: '%Y-%m-%d' %}
+                  {% if from_date == to_date %}
+                    {{ exhibition['from-date'] | date: '%-d %B %Y' }}
+                  {% else %}
+                    {{ exhibition['from-date'] | date: '%-d' }} - {{ exhibition['to-date'] | date: '%-d %B %Y' }}
+                  {% endif %}
                 {% elsif exhibition['from-date'] %}
                   {{ exhibition['from-date'] | date: '%B %Y' }}
                 {% endif %}

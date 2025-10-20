@@ -1,0 +1,227 @@
+<!doctype html>
+<html class="js" lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="">
+    <link rel="canonical" href="{{ canonical_url }}">
+
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+    {%- endif -%}
+
+    <title>
+      {{ shop.name }}
+      - Wartungsmodus
+    </title>
+
+    <meta name="robots" content="noindex, nofollow">
+
+    {%- unless settings.type_header_font.system? and settings.type_body_font.system? -%}
+      <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+    {%- endunless -%}
+
+    {{ content_for_header }}
+
+    <style>
+      :root {
+        --color-main: #05470a;
+        --color-white: #ffffff;
+        --color-text: #2a2a2a;
+        --color-gray: #666666;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        background-color: var(--color-main);
+        color: var(--color-text);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      .maintenance-container {
+        background: var(--color-white);
+        border-radius: 16px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        max-width: 600px;
+        width: 100%;
+        padding: 60px 40px;
+        text-align: center;
+      }
+
+      .maintenance-logo {
+        margin-bottom: 40px;
+      }
+
+      .maintenance-logo img {
+        max-width: 200px;
+        height: auto;
+      }
+
+      .maintenance-headline {
+        font-size: 32px;
+        font-weight: 700;
+        color: var(--color-text);
+        margin-bottom: 20px;
+        line-height: 1.2;
+      }
+
+      .maintenance-text {
+        font-size: 16px;
+        line-height: 1.6;
+        color: var(--color-text);
+        margin-bottom: 30px;
+      }
+
+      .maintenance-text strong {
+        font-weight: 700;
+        color: var(--color-main);
+      }
+
+      .maintenance-downtime {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--color-main);
+        color: var(--color-white);
+        padding: 12px 24px;
+        border-radius: 50px;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 40px;
+      }
+
+      .maintenance-downtime::before {
+        content: '⏱';
+        font-size: 18px;
+      }
+
+      .maintenance-footer {
+        font-size: 14px;
+        color: var(--color-gray);
+        line-height: 1.6;
+        padding-top: 30px;
+        border-top: 1px solid #e0e0e0;
+      }
+
+      .maintenance-footer strong {
+        display: block;
+        margin-bottom: 5px;
+        color: var(--color-text);
+      }
+
+      .maintenance-email {
+        color: var(--color-main);
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .maintenance-email:hover {
+        text-decoration: underline;
+      }
+
+      @media (max-width: 640px) {
+        .maintenance-container {
+          padding: 40px 24px;
+        }
+
+        .maintenance-headline {
+          font-size: 24px;
+        }
+
+        .maintenance-text {
+          font-size: 14px;
+        }
+
+        .maintenance-logo img {
+          max-width: 150px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <main role="main">
+      {{ content_for_layout }}
+
+      <div class="maintenance-container">
+        {%- comment -%} Logo {%- endcomment -%}
+        <div class="maintenance-logo">
+          {%- if settings.maintenance_logo != blank -%}
+            <img src="{{ settings.maintenance_logo | image_url: width: 400 }}" alt="{{ shop.name }}" loading="eager">
+          {%- elsif settings.logo != blank -%}
+            <img src="{{ settings.logo | image_url: width: 400 }}" alt="{{ shop.name }}" loading="eager">
+          {%- else -%}
+            <h1 style="font-size: 28px; color: var(--color-main);">{{ shop.name }}</h1>
+          {%- endif -%}
+        </div>
+
+        {%- comment -%} Mehrsprachiger Content {%- endcomment -%}
+        {%- liquid
+          assign current_lang = request.locale.iso_code
+
+          case current_lang
+            when 'de'
+              assign headline = settings.maintenance_headline_de
+              assign text = settings.maintenance_text_de
+              assign downtime = settings.maintenance_downtime_de
+              assign footer = settings.maintenance_footer_de
+            when 'en'
+              assign headline = settings.maintenance_headline_en
+              assign text = settings.maintenance_text_en
+              assign downtime = settings.maintenance_downtime_en
+              assign footer = settings.maintenance_footer_en
+            when 'es'
+              assign headline = settings.maintenance_headline_es
+              assign text = settings.maintenance_text_es
+              assign downtime = settings.maintenance_downtime_es
+              assign footer = settings.maintenance_footer_es
+            when 'it'
+              assign headline = settings.maintenance_headline_it
+              assign text = settings.maintenance_text_it
+              assign downtime = settings.maintenance_downtime_it
+              assign footer = settings.maintenance_footer_it
+            when 'fr'
+              assign headline = settings.maintenance_headline_fr
+              assign text = settings.maintenance_text_fr
+              assign downtime = settings.maintenance_downtime_fr
+              assign footer = settings.maintenance_footer_fr
+            else
+              assign headline = settings.maintenance_headline_de
+              assign text = settings.maintenance_text_de
+              assign downtime = settings.maintenance_downtime_de
+              assign footer = settings.maintenance_footer_de
+          endcase
+        -%}
+
+        {%- comment -%} Headline {%- endcomment -%}
+        <h1 class="maintenance-headline">{{ headline }}</h1>
+
+        {%- comment -%} Text {%- endcomment -%}
+        <p class="maintenance-text">{{ text }}</p>
+
+        {%- comment -%} Downtime Badge {%- endcomment -%}
+        <div class="maintenance-downtime">{{ downtime }}</div>
+
+        {%- comment -%} Footer {%- endcomment -%}
+        <div class="maintenance-footer">
+          <strong>{{ shop.name }} © {{ 'now' | date: '%Y' }}</strong>
+          {{ footer }}
+          <a href="mailto:{{ settings.maintenance_email }}" class="maintenance-email">
+            {{- settings.maintenance_email -}}
+          </a>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

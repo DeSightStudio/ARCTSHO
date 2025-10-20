@@ -12,7 +12,7 @@
         z-index: 1;
         @include screen(med-small) {
           padding: 20px 0 0 0;
-          font-size: $fontSizeLarge;
+          font-size: $fontSizeLarge/1.125;
         }
         &:before {
           display: block;

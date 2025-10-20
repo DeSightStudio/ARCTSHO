@@ -1,3 +1,27 @@
+{%- comment -%}
+  Wartungsmodus: Wenn aktiviert, zeige Wartungsseite für alle Besucher
+  AUSNAHME: Eingeloggte Shop-Mitarbeiter sehen die normale Seite
+{%- endcomment -%}
+{%- if settings.maintenance_mode_enable -%}
+  {%- unless request.design_mode or shop.metafields.maintenance.bypass_for_staff -%}
+    {%- liquid
+      comment
+        Prüfe ob der Besucher ein eingeloggter Shop-Mitarbeiter ist
+        Dies funktioniert nur wenn der Mitarbeiter über /admin eingeloggt ist
+      endcomment
+
+      assign is_staff = false
+      if request.origin contains '.myshopify.com' or request.origin contains 'admin'
+        assign is_staff = true
+      endif
+    -%}
+
+    {%- unless is_staff -%}
+      {%- layout 'maintenance' -%}
+    {%- endunless -%}
+  {%- endunless -%}
+{%- endif -%}
+
 <!doctype html>
 <html class="js" lang="{{ request.locale.iso_code }}">
   <head>

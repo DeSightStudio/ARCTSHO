@@ -45,13 +45,13 @@
                         &:before {
                             left: 100px;
                             @include screen(med-small) {
-                                left: 50px;
+                                left: 30px;
                             }
                         }
                         &:after {
                             right: 100px;
                             @include screen(med-small) {
-                                right: 50px;
+                                right: 30px;
                             }
                         }
                     }
