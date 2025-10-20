@@ -1260,14 +1260,8 @@ if (!customElements.get('cart-drawer')) {
         return;
       }
 
-      // Body-Scroll sperren
-      const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
-      document.documentElement.style.setProperty('--scroll-position', `-${scrollPosition}px`);
+      // Body-Scroll sperren - NUR overflow hidden, KEIN position fixed
       document.body.style.overflow = 'hidden';
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollPosition}px`;
-      document.body.style.width = '100%';
-      document.body.style.height = '100%';
       document.body.classList.add('cart-drawer-open');
       document.documentElement.style.overflow = 'hidden';
 
@@ -1310,17 +1304,10 @@ if (!customElements.get('cart-drawer')) {
         this.style.visibility = 'hidden';
         this.style.pointerEvents = 'none';
 
-        // Body-Scroll entsperren
-        const scrollPosition = parseInt(document.body.style.top || '0') * -1;
+        // Body-Scroll entsperren - NUR overflow zurücksetzen
         document.body.style.overflow = '';
-        document.body.style.position = '';
-        document.body.style.top = '';
-        document.body.style.width = '';
-        document.body.style.height = '';
         document.body.classList.remove('cart-drawer-open');
         document.documentElement.style.overflow = '';
-        document.documentElement.style.removeProperty('--scroll-position');
-        window.scrollTo(0, scrollPosition);
       }, 300);
 
       // Dispatch Event

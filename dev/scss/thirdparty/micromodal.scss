@@ -22,10 +22,7 @@ body {
   // Verhindere Body-Scroll wenn Cart-Drawer geöffnet ist
   &.cart-drawer-open {
     overflow: hidden !important;
-    position: fixed !important;
-    width: 100% !important;
-    height: 100% !important;
-    top: var(--scroll-position, 0) !important;
+    // KEIN position: fixed - verhindert dass Seite weiß wird
   }
 
   // Verhindere Body-Scroll wenn Menu-Drawer geöffnet ist

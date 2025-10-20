@@ -363,8 +363,7 @@ cart-drawer-items {
 body:has(cart-drawer.active) {
     @include screen(med-small) {
         overflow: hidden !important;
-        position: fixed !important;
-        width: 100% !important;
+        // KEIN position: fixed - verhindert dass Seite weiß wird
     }
 }
 
@@ -372,8 +371,7 @@ body:has(cart-drawer.active) {
 body.cart-drawer-open {
     @include screen(med-small) {
         overflow: hidden !important;
-        position: fixed !important;
-        width: 100% !important;
+        // KEIN position: fixed - verhindert dass Seite weiß wird
     }
 }
 
