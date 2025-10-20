@@ -1469,7 +1469,9 @@ class InfiniteScrollManager {
         this.hasMoreProducts = true;
         this.currentPage = 1;
         this.productsPerPage = 36;
-        this.loadingThreshold = 300; // Pixel vom Ende der Seite
+        // Mobile: Viel größerer Threshold für früheres Laden (1500px statt 300px)
+        // Desktop: 300px reicht aus
+        this.loadingThreshold = window.innerWidth <= 749 ? 1500 : 300;
 
         this.elements = {
             productGrid: document.getElementById('product-grid'),
@@ -1619,6 +1621,7 @@ class InfiniteScrollManager {
 
     setupScrollListener() {
         let ticking = false;
+        let lastScrollCheck = 0;
 
         const handleScroll = () => {
             if (!ticking) {
@@ -1631,9 +1634,37 @@ class InfiniteScrollManager {
         };
 
         // Entferne alte Event Listener
-        $(window).off('scroll.infiniteScroll');
-        // Füge neuen Event Listener hinzu
+        $(window).off('scroll.infiniteScroll touchmove.infiniteScroll touchend.infiniteScroll');
+
+        // Füge Scroll Event Listener hinzu
         $(window).on('scroll.infiniteScroll', handleScroll);
+
+        // Mobile: Zusätzlich Touch-Events für bessere Scroll-Erkennung
+        if (window.innerWidth <= 749) {
+            console.log('📱 Mobile Infinite Scroll: Aktiviere Touch-Events');
+
+            // TouchMove für während des Scrollens
+            $(window).on('touchmove.infiniteScroll', handleScroll);
+
+            // TouchEnd für nach dem Scrollen (wichtig für iOS)
+            $(window).on('touchend.infiniteScroll', () => {
+                setTimeout(handleScroll, 100);
+            });
+
+            // Zusätzlich: Regelmäßige Prüfung alle 500ms auf Mobile
+            setInterval(() => {
+                const now = Date.now();
+                if (now - lastScrollCheck > 400) {
+                    lastScrollCheck = now;
+                    this.checkScrollPosition();
+                }
+            }, 500);
+        }
+
+        // Initiale Prüfung nach kurzer Verzögerung (für Mobile wichtig)
+        setTimeout(() => {
+            this.checkScrollPosition();
+        }, 500);
 
         // Regelmäßige Button- und Text-Entfernung alle 2 Sekunden
         setInterval(() => {
@@ -1643,14 +1674,59 @@ class InfiniteScrollManager {
     }
 
     checkScrollPosition() {
-        if (this.isLoading || !this.hasMoreProducts) return;
+        if (this.isLoading) {
+            if (window.innerWidth <= 749) {
+                console.log('⏳ Bereits am Laden...');
+            }
+            return;
+        }
 
-        const scrollTop = $(window).scrollTop();
-        const windowHeight = $(window).height();
-        const documentHeight = $(document).height();
+        if (!this.hasMoreProducts) {
+            if (window.innerWidth <= 749) {
+                console.log('✅ Alle Produkte geladen');
+            }
+            return;
+        }
+
+        // Robustere Scroll-Berechnung für Mobile und Desktop
+        // Verwende native JavaScript APIs statt jQuery für bessere Mobile-Kompatibilität
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+        const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+        const documentHeight = Math.max(
+            document.body.scrollHeight || 0,
+            document.documentElement.scrollHeight || 0,
+            document.body.offsetHeight || 0,
+            document.documentElement.offsetHeight || 0,
+            document.body.clientHeight || 0,
+            document.documentElement.clientHeight || 0
+        );
+
+        const scrollPosition = scrollTop + windowHeight;
+        const triggerPoint = documentHeight - this.loadingThreshold;
+        const distanceFromBottom = documentHeight - scrollPosition;
+
+        // Debug-Logging für Mobile-Probleme (nur alle 2 Sekunden)
+        if (window.innerWidth <= 749) {
+            if (!this.lastMobileLog || Date.now() - this.lastMobileLog > 2000) {
+                console.log('📱 Mobile Scroll Check:', {
+                    scrollTop: Math.round(scrollTop),
+                    windowHeight: Math.round(windowHeight),
+                    documentHeight: Math.round(documentHeight),
+                    scrollPosition: Math.round(scrollPosition),
+                    triggerPoint: Math.round(triggerPoint),
+                    distanceFromBottom: Math.round(distanceFromBottom),
+                    threshold: this.loadingThreshold,
+                    shouldLoad: scrollPosition >= triggerPoint,
+                    currentPage: this.currentPage,
+                    hasMoreProducts: this.hasMoreProducts
+                });
+                this.lastMobileLog = Date.now();
+            }
+        }
 
         // Wenn wir uns dem Ende der Seite nähern
-        if (scrollTop + windowHeight >= documentHeight - this.loadingThreshold) {
+        if (scrollPosition >= triggerPoint) {
+            console.log('🔄 Trigger erreicht! Lade mehr Produkte... (Seite ' + (this.currentPage + 1) + ')');
             this.loadMoreProducts();
         }
     }
