@@ -125,15 +125,16 @@ class NewProductBadge {
   }
 
   /**
-   * Prüft ob ein Produkt als "neu" gilt (weniger als 48 Stunden alt)
+   * Prüft ob ein Produkt als "neu" gilt (weniger als 3 Tage alt)
    * @param {Date} createdAt - Das Erstellungsdatum
    * @returns {boolean} - True wenn das Produkt neu ist
    */
   isProductNew(createdAt) {
     const now = new Date();
     const diffInHours = (now - createdAt) / (1000 * 60 * 60); // Differenz in Stunden
+    const diffInDays = diffInHours / 24; // Differenz in Tagen
 
-    console.log(`NewProductBadge: Produkt erstellt vor ${diffInHours.toFixed(1)} Stunden`);
+    console.log(`NewProductBadge: Produkt erstellt vor ${diffInDays.toFixed(1)} Tagen (${diffInHours.toFixed(1)} Stunden)`);
 
     // TEST-MODUS: Für Produkt 10875 immer als "neu" anzeigen
     const productId = this.getProductIdFromCard(createdAt);
@@ -142,7 +143,8 @@ class NewProductBadge {
       return true;
     }
 
-    return diffInHours <= 48;
+    // 3 Tage = 72 Stunden
+    return diffInHours <= 72;
   }
 
   /**
@@ -167,6 +169,13 @@ class NewProductBadge {
   addNewBadge(card) {
     // Prüfe ob bereits eine "Neu"-Badge existiert
     if (card.querySelector('.badge--new')) {
+      return;
+    }
+
+    // WICHTIG: Prüfe ob Produkt "Sold Out" ist - dann KEIN "NEW" Badge anzeigen
+    const soldOutBadge = card.querySelector('.verkauft-badge-rot');
+    if (soldOutBadge) {
+      console.log('NewProductBadge: Produkt ist "Sold Out" - kein "NEW" Badge angezeigt');
       return;
     }
 

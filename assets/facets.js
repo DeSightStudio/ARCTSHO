@@ -328,18 +328,52 @@ class FacetFiltersForm extends HTMLElement {
     const productItems = Array.from(productGrid.querySelectorAll('.grid__item'));
     if (productItems.length === 0) return;
 
-    // Sortiere Produkte: verfügbare zuerst, dann ausverkaufte
-    const sortedItems = productItems.sort((a, b) => {
-      const aIsSoldOut = a.querySelector('.badge')?.textContent?.trim().toLowerCase().includes('ausverkauft') ||
-                        a.querySelector('.badge')?.textContent?.trim().toLowerCase().includes('sold out') ||
-                        a.querySelector('.product-form__buttons')?.style.display === 'none';
-      const bIsSoldOut = b.querySelector('.badge')?.textContent?.trim().toLowerCase().includes('ausverkauft') ||
-                        b.querySelector('.badge')?.textContent?.trim().toLowerCase().includes('sold out') ||
-                        b.querySelector('.product-form__buttons')?.style.display === 'none';
+    // Hilfsfunktion: Prüfe ob Produkt "Sold Out" seit mehr als 3 Tagen ist
+    const isSoldOutTooLong = (item) => {
+      const cardWrapper = item.querySelector('.card-wrapper, .product-card-wrapper');
+      if (!cardWrapper) return false;
 
-      // Verfügbare Produkte (false) kommen vor ausverkauften (true)
-      if (aIsSoldOut === bIsSoldOut) return 0;
-      return aIsSoldOut ? 1 : -1;
+      const createdAt = cardWrapper.dataset.createdAt;
+      if (!createdAt) return false;
+
+      const soldOutBadge = item.querySelector('.verkauft-badge-rot');
+      if (!soldOutBadge) return false; // Nicht sold out
+
+      // Berechne wie lange das Produkt schon existiert
+      const productCreatedDate = new Date(createdAt);
+      const now = new Date();
+      const diffInDays = (now - productCreatedDate) / (1000 * 60 * 60 * 24);
+
+      // Wenn Produkt sold out ist UND älter als 3 Tage, dann ausblenden
+      return diffInDays > 3;
+    };
+
+    // Filtere Produkte: Entferne "Sold Out" Produkte die älter als 3 Tage sind
+    const filteredItems = productItems.filter(item => {
+      if (isSoldOutTooLong(item)) {
+        console.log('🚫 Sold Out Produkt älter als 3 Tage - wird ausgeblendet');
+        item.style.display = 'none';
+        return false;
+      }
+      return true;
+    });
+
+    // Sortiere Produkte: NEW zuerst, dann verfügbare, dann ausverkaufte
+    const sortedItems = filteredItems.sort((a, b) => {
+      const aIsNew = a.querySelector('.badge--new') !== null;
+      const bIsNew = b.querySelector('.badge--new') !== null;
+      const aIsSoldOut = a.querySelector('.verkauft-badge-rot') !== null;
+      const bIsSoldOut = b.querySelector('.verkauft-badge-rot') !== null;
+
+      // Priorität 1: NEW Produkte ganz oben
+      if (aIsNew && !bIsNew) return -1;
+      if (!aIsNew && bIsNew) return 1;
+
+      // Priorität 2: Verfügbare vor ausverkauften
+      if (aIsSoldOut && !bIsSoldOut) return 1;
+      if (!aIsSoldOut && bIsSoldOut) return -1;
+
+      return 0;
     });
 
     // Füge die sortierten Elemente wieder in das Grid ein

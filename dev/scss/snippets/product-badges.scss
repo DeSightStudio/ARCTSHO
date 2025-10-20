@@ -22,7 +22,7 @@
   pointer-events: auto;
 }
 
-/* Neu Badge - Grün - Exakt wie das JavaScript Badge */
+/* Neu Badge - Grün - Horizontal (nebeneinander) statt vertikal */
 .badge--new,
 .badge--top-right.badge--new {
   position: absolute !important;
@@ -40,6 +40,8 @@
   line-height: 1 !important;
   text-align: center !important;
   pointer-events: auto !important;
+  letter-spacing: 0.05em !important; /* Kleiner Abstand zwischen Buchstaben */
+  white-space: nowrap !important; /* Text bleibt in einer Zeile */
 }
 
 /* VERKAUFT Badge - Exakt 1:1 kopiert vom JavaScript Neu Badge, nur rot statt grün */

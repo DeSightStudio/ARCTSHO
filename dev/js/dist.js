@@ -1795,6 +1795,13 @@ class InfiniteScrollManager {
             FacetFiltersForm.initializeRequestOnlyButtons();
         }
 
+        // WICHTIG: Sortiere Produkte nach dem Laden (NEW zuerst, dann verfügbare, dann sold out)
+        if (typeof FacetFiltersForm !== 'undefined' && FacetFiltersForm.sortProductsByAvailability) {
+            setTimeout(() => {
+                FacetFiltersForm.sortProductsByAvailability();
+            }, 100);
+        }
+
         // Custom Event für andere Scripts
         $(document).trigger('infiniteScroll:productsLoaded', {
             page: page,
