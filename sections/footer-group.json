@@ -18,7 +18,7 @@
           "type": "text",
           "settings": {
             "heading": "Do you have questions?",
-            "subtext": "<p>If you have any questions about our products, feel free to send us an email to info@arcticantiques.com with the SKU and your question!</p>",
+            "subtext": "<h2>Please send us an email to: info@arcticantiques.com</h2>",
             "column_width": 60
           }
         },
