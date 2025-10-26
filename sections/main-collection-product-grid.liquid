@@ -42,9 +42,12 @@
     assign default_sort = 'price-descending'
     assign sort_by = collection.sort_by | default: default_sort
   -%}
-  {%- paginate collection.products by section.settings.products_per_page -%}
-    {% comment %} Sort By wurde in die Facets verschoben (oberhalb von METRIC/IMPERIAL) {% endcomment %}
 
+  {% comment %}
+    WICHTIG: Shopify Native Pagination
+    Verwendet section.settings.products_per_page aus Theme Settings
+  {% endcomment %}
+  {%- paginate collection.products by section.settings.products_per_page -%}
     <div class="{% if section.settings.filter_type == 'vertical' %} facets-vertical page-width{% endif %}">
       {{ 'component-facets.css' | asset_url | stylesheet_tag }}
       <script src="{{ 'facets.js' | asset_url }}" defer="defer"></script>
@@ -70,6 +73,7 @@
       <div
         class="product-grid-container{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
         id="ProductGridContainer"
+        data-products-per-page="{{ section.settings.products_per_page }}"
         {% if settings.animations_reveal_on_scroll %}
           data-cascade
         {% endif %}
@@ -92,11 +96,12 @@
           <div
             class="collection{% if section.settings.filter_type != 'vertical' %} page-width{% endif %}"
           >
+            <div class="loading-overlay gradient"></div>
+            {% comment %} Pagination oberhalb der Produkte {% endcomment %}
             {%- if paginate.pages > 1 -%}
-              {% render 'pagination', paginate: paginate, anchor: '' %}
+              {%- render 'pagination', paginate: paginate -%}
             {%- endif -%}
 
-            <div class="loading-overlay gradient"></div>
             <ul
               id="product-grid"
               data-id="{{ section.id }}"
@@ -108,7 +113,12 @@
             >
               {% assign skip_card_product_styles = false %}
 
-              {% comment %} Sortiere Produkte: Verfügbare zuerst, dann ausverkaufte {% endcomment %}
+              {% comment %}
+                WICHTIG: Sortierung in Liquid
+                Sortierung: Verfügbar → Sold-Out (damit Sold-Out am Ende sind)
+                LIMITATION: Sortierung passiert NACH Shopify Pagination,
+                daher sind Sold-Out nur pro Seite am Ende, nicht global
+              {% endcomment %}
               {% assign available_products = collection.products | where: 'available', true %}
               {% assign soldout_products = collection.products | where: 'available', false %}
               {% assign sorted_products = available_products | concat: soldout_products %}
@@ -147,7 +157,7 @@
             </ul>
 
             {%- if paginate.pages > 1 -%}
-              {% render 'pagination', paginate: paginate, anchor: '' %}
+              {%- render 'pagination', paginate: paginate -%}
             {%- endif -%}
           </div>
         {%- endif -%}

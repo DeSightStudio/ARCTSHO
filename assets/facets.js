@@ -106,8 +106,8 @@ class FacetFiltersForm extends HTMLElement {
       FacetFiltersForm.ensureSearchGridLayout();
     }
 
-    // Sortiere Produkte nach Verfügbarkeit (verfügbare zuerst, dann ausverkaufte)
-    FacetFiltersForm.sortProductsByAvailability();
+    // Sortierung erfolgt jetzt in Liquid (Verfügbar → Sold-Out)
+    // Pagination erfolgt über Shopify's native Pagination
 
     // CRITICAL: Restore grid layout after sorting (sorting destroys the layout)
     setTimeout(() => {
@@ -525,7 +525,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  FacetFiltersForm.sortProductsByAvailability();
+  // HINWEIS: Sortierung wird jetzt von collection-pagination.js übernommen
+  // FacetFiltersForm.sortProductsByAvailability(); // Deaktiviert - wird von collection-pagination.js übernommen
+
   FacetFiltersForm.initializeRequestOnlyButtons();
 
   // CRITICAL: Ensure grid layout after initial sorting

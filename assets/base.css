@@ -481,6 +481,9 @@ h6:empty {
   display: none;
 }
 
+/* WICHTIG: li:empty wurde entfernt, da es Produktkacheln versteckt hat,
+   die durch Liquid-Filter (z.B. SKU 2226 Ausschluss) leer gerendert wurden */
+
 .link,
 .customer a {
   cursor: pointer;
