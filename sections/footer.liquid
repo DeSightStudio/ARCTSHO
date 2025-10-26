@@ -159,7 +159,15 @@
                     </div>
                   {%- when 'contact_form' -%}
                     <div class="footer-contact-form">
-                      {% render 'contact-form', form_id: 'FooterContactForm', contact_class: 'footer-form' %}
+                      {% render 'contact-form',
+                        form_id: 'FooterContactForm',
+                        contact_class: 'footer-form',
+                        success_message_de: block.settings.success_message_de,
+                        success_message_en: block.settings.success_message_en,
+                        success_message_fr: block.settings.success_message_fr,
+                        success_message_it: block.settings.success_message_it,
+                        success_message_es: block.settings.success_message_es
+                      %}
                     </div>
                 {%- endcase -%}
               </div>
@@ -443,6 +451,56 @@
           "unit": "%",
           "label": "Spaltenbreite",
           "default": 20
+        },
+        {
+          "type": "header",
+          "content": "Success Message (DE)"
+        },
+        {
+          "type": "text",
+          "id": "success_message_de",
+          "label": "Success Message (DE)",
+          "default": "Danke, dass du uns kontaktiert hast. Wir werden uns so schnell wie möglich bei dir melden."
+        },
+        {
+          "type": "header",
+          "content": "Success Message (EN)"
+        },
+        {
+          "type": "text",
+          "id": "success_message_en",
+          "label": "Success Message (EN)",
+          "default": "Thanks for contacting us. We will get back to you as soon as possible."
+        },
+        {
+          "type": "header",
+          "content": "Success Message (FR)"
+        },
+        {
+          "type": "text",
+          "id": "success_message_fr",
+          "label": "Success Message (FR)",
+          "default": "Merci de nous avoir contactés. Nous vous répondrons dans les plus brefs délais."
+        },
+        {
+          "type": "header",
+          "content": "Success Message (IT)"
+        },
+        {
+          "type": "text",
+          "id": "success_message_it",
+          "label": "Success Message (IT)",
+          "default": "Grazie per averci contattato. Ti risponderemo il prima possibile."
+        },
+        {
+          "type": "header",
+          "content": "Success Message (ES)"
+        },
+        {
+          "type": "text",
+          "id": "success_message_es",
+          "label": "Success Message (ES)",
+          "default": "Gracias por contactarnos. Nos pondremos en contacto contigo lo antes posible."
         }
       ]
     }

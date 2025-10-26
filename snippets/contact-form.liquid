@@ -3,13 +3,39 @@
   Akzeptiert Parameter:
   - form_id: Die ID des Formulars
   - contact_class: Zusätzliche CSS-Klassen
+  - success_message_de: Success Message (DE) - optional
+  - success_message_en: Success Message (EN) - optional
+  - success_message_fr: Success Message (FR) - optional
+  - success_message_it: Success Message (IT) - optional
+  - success_message_es: Success Message (ES) - optional
 {% endcomment %}
 
 {%- form 'contact', id: form_id, class: contact_class -%}
   {%- if form.posted_successfully? -%}
     <h2 class="form-status form-status-list form__message" tabindex="-1" autofocus>
       {{- 'icon-success.svg' | inline_asset_content -}}
-      {{ 'templates.contact.form.post_success' | t }}
+      {%- if success_message_de -%}
+        {%- comment -%} Use custom success messages from block settings {%- endcomment -%}
+        {%- liquid
+          case request.locale.iso_code
+            when 'de'
+              echo success_message_de
+            when 'en'
+              echo success_message_en
+            when 'fr'
+              echo success_message_fr
+            when 'it'
+              echo success_message_it
+            when 'es'
+              echo success_message_es
+            else
+              echo success_message_de
+          endcase
+        -%}
+      {%- else -%}
+        {%- comment -%} Fallback to translation file {%- endcomment -%}
+        {{ 'templates.contact.form.post_success' | t }}
+      {%- endif -%}
     </h2>
   {%- elsif form.errors -%}
     <div class="form__message">
