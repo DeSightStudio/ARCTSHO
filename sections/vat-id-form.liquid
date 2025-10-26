@@ -1,0 +1,978 @@
+{%- comment -%} Check if cart is empty {%- endcomment -%}
+{%- assign cart_item_count = cart.item_count | default: 0 -%}
+
+<div class="vat-id-form-page">
+  {%- if cart_item_count == 0 -%}
+    {%- comment -%} EMPTY CART STATE: Zeige Fehlermeldung {%- endcomment -%}
+    <div class="vat-id-form-empty-cart-wrapper">
+      <h1 class="form-error-headline">
+        {%- liquid
+          case request.locale.iso_code
+            when 'de'
+              echo section.settings.empty_cart_headline_de
+            when 'en'
+              echo section.settings.empty_cart_headline_en
+            when 'fr'
+              echo section.settings.empty_cart_headline_fr
+            when 'it'
+              echo section.settings.empty_cart_headline_it
+            when 'es'
+              echo section.settings.empty_cart_headline_es
+            else
+              echo section.settings.empty_cart_headline_de
+          endcase
+        -%}
+      </h1>
+      <p class="form-error-text">
+        {%- liquid
+          case request.locale.iso_code
+            when 'de'
+              echo section.settings.empty_cart_text_de
+            when 'en'
+              echo section.settings.empty_cart_text_en
+            when 'fr'
+              echo section.settings.empty_cart_text_fr
+            when 'it'
+              echo section.settings.empty_cart_text_it
+            when 'es'
+              echo section.settings.empty_cart_text_es
+            else
+              echo section.settings.empty_cart_text_de
+          endcase
+        -%}
+      </p>
+      <a href="{{ routes.root_url }}" class="button button--primary">
+        {%- liquid
+          case request.locale.iso_code
+            when 'de'
+              echo 'Zurück zum Shop'
+            when 'en'
+              echo 'Back to Shop'
+            when 'fr'
+              echo 'Retour à la boutique'
+            when 'it'
+              echo 'Torna al negozio'
+            when 'es'
+              echo 'Volver a la tienda'
+            else
+              echo 'Zurück zum Shop'
+          endcase
+        -%}
+      </a>
+    </div>
+  {%- else -%}
+    {%- comment -%} NORMAL STATE: Zeige Header und Formular {%- endcomment -%}
+    <div class="vat-id-form-page__header">
+      <h1>
+        {%- liquid
+          case request.locale.iso_code
+            when 'de'
+              echo section.settings.headline_de
+            when 'en'
+              echo section.settings.headline_en
+            when 'fr'
+              echo section.settings.headline_fr
+            when 'it'
+              echo section.settings.headline_it
+            when 'es'
+              echo section.settings.headline_es
+            else
+              echo section.settings.headline_de
+          endcase
+        -%}
+      </h1>
+      <div class="vat-id-form-page__text">
+        {%- liquid
+          case request.locale.iso_code
+            when 'de'
+              echo section.settings.text_de
+            when 'en'
+              echo section.settings.text_en
+            when 'fr'
+              echo section.settings.text_fr
+            when 'it'
+              echo section.settings.text_it
+            when 'es'
+              echo section.settings.text_es
+            else
+              echo section.settings.text_de
+          endcase
+        -%}
+      </div>
+    </div>
+
+    {%- form 'contact', class: 'vat-id-form' -%}
+      {%- if form.posted_successfully? -%}
+        {%- comment -%} SUCCESS STATE: Nur Erfolgsmeldung anzeigen {%- endcomment -%}
+        <script>
+          // Hide header and show success message
+          (function () {
+            // Verstecke Header
+            const header = document.querySelector('.vat-id-form-page__header');
+            if (header) {
+              header.style.display = 'none';
+            }
+
+            // Clear cart
+            if (!sessionStorage.getItem('vatIdFormProcessed')) {
+              sessionStorage.setItem('vatIdFormProcessed', 'true');
+
+              fetch('/cart/clear.js', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+              })
+                .then((response) => response.json())
+                .then((data) => {
+                  console.log('Cart cleared successfully:', data);
+                })
+                .catch((error) => {
+                  console.error('Error clearing cart:', error);
+                });
+            }
+          })();
+        </script>
+
+        <div class="vat-id-form-success-wrapper">
+          <h1 class="form-success-headline">
+            {%- liquid
+              case request.locale.iso_code
+                when 'de'
+                  echo section.settings.success_headline_de
+                when 'en'
+                  echo section.settings.success_headline_en
+                when 'fr'
+                  echo section.settings.success_headline_fr
+                when 'it'
+                  echo section.settings.success_headline_it
+                when 'es'
+                  echo section.settings.success_headline_es
+                else
+                  echo section.settings.success_headline_de
+              endcase
+            -%}
+          </h1>
+          <p class="form-success-text">
+            {%- liquid
+              case request.locale.iso_code
+                when 'de'
+                  echo section.settings.success_text_de
+                when 'en'
+                  echo section.settings.success_text_en
+                when 'fr'
+                  echo section.settings.success_text_fr
+                when 'it'
+                  echo section.settings.success_text_it
+                when 'es'
+                  echo section.settings.success_text_es
+                else
+                  echo section.settings.success_text_de
+              endcase
+            -%}
+          </p>
+        </div>
+      {%- elsif form.errors -%}
+        <div class="form-error">
+          <h2>{{ 'templates.contact.form.error_heading' | t }}</h2>
+          <ul>
+            {% for field in form.errors %}
+              <li>
+                <a href="#ContactForm-{{ field }}">
+                  {{ form.errors.translated_fields[field] | capitalize }}
+                  {{ form.errors.messages[field] }}
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+
+      <input type="hidden" name="contact[form_type]" value="VAT ID Form">
+
+      {%- comment -%} VAT ID Field with Validation {%- endcomment -%}
+      <div class="form-field vat-field-full-width">
+        <label for="ContactForm-vatId">
+          {{- 'customer.vat_form.vat_id' | t }}
+          <span aria-hidden="true">*</span>
+        </label>
+        <input
+          type="text"
+          id="ContactForm-vatId"
+          name="contact[vat_id]"
+          value="{% if form.vat_id %}{{ form.vat_id }}{% endif %}"
+          required
+        >
+        <div id="vatIdValidationMessage" class="vat-id-validation-message"></div>
+      </div>
+
+      {%- comment -%} Hidden field for derived country from VAT number {%- endcomment -%}
+      <input type="hidden" id="ContactForm-derived-country" name="contact[country_from_vat]" value="">
+
+      {%- comment -%} Hidden fields for cart data {%- endcomment -%}
+      <input type="hidden" id="vatIdForm-cart_items" name="contact[cart_items]" value="">
+      <input type="hidden" id="vatIdForm-cart_total" name="contact[cart_total]" value="">
+
+      {%- comment -%} Cart Items Summary Table {%- endcomment -%}
+      <div class="cart-items-summary" id="vatIdForm-cart-summary">
+        <h3>{{ 'sections.cart.caption' | t }}</h3>
+        <table class="cart-items-table">
+          <thead>
+            <tr>
+              <th>{{ 'sections.cart.headings.product' | t }}</th>
+              <th>{{ 'sections.cart.headings.quantity' | t }}</th>
+              <th>{{ 'sections.cart.headings.price' | t }}</th>
+            </tr>
+          </thead>
+          <tbody id="vatIdForm-cart-items">
+            {%- comment -%} Cart items will be loaded via JavaScript {%- endcomment -%}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="2">{{ 'sections.cart.estimated_total' | t }}:</td>
+              <td id="vatIdForm-cart-total-display">
+                <strong>-</strong>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      {%- comment -%} Form Fields - First Name & Last Name {%- endcomment -%}
+      <div class="form-field-group">
+        <div class="form-field">
+          <label for="ContactForm-firstName">
+            {{- 'customer.vat_form.first_name' | t }}
+            <span aria-hidden="true">*</span>
+          </label>
+          <input
+            type="text"
+            id="ContactForm-firstName"
+            name="contact[first_name]"
+            value="{% if form.first_name %}{{ form.first_name }}{% endif %}"
+            autocomplete="given-name"
+            required
+          >
+        </div>
+        <div class="form-field">
+          <label for="ContactForm-lastName">
+            {{- 'customer.vat_form.last_name' | t }}
+            <span aria-hidden="true">*</span>
+          </label>
+          <input
+            type="text"
+            id="ContactForm-lastName"
+            name="contact[last_name]"
+            value="{% if form.last_name %}{{ form.last_name }}{% endif %}"
+            autocomplete="family-name"
+            required
+          >
+        </div>
+      </div>
+
+      {%- comment -%} Email & Phone {%- endcomment -%}
+      <div class="form-field-group">
+        <div class="form-field">
+          <label for="ContactForm-email">
+            {{- 'customer.vat_form.email' | t }}
+            <span aria-hidden="true">*</span>
+          </label>
+          <input
+            type="email"
+            id="ContactForm-email"
+            name="contact[email]"
+            value="{% if form.email %}{{ form.email }}{% endif %}"
+            autocomplete="email"
+            spellcheck="false"
+            autocapitalize="off"
+            required
+          >
+        </div>
+        <div class="form-field">
+          <label for="ContactForm-phone">
+            {{- 'customer.vat_form.phone' | t }}
+          </label>
+          <input
+            type="tel"
+            id="ContactForm-phone"
+            name="contact[{{ 'customer.vat_form.phone' | t }}]"
+            pattern="[0-9\-]*"
+            value="{% if form.phone %}{{ form.phone }}{% elsif customer %}{{ customer.phone }}{% endif %}"
+            autocomplete="tel"
+          >
+        </div>
+      </div>
+
+      {%- comment -%} Company Field {%- endcomment -%}
+      <div class="form-field">
+        <label for="ContactForm-company">
+          {{- 'customer.vat_form.company' | t }}
+          <span aria-hidden="true">*</span>
+        </label>
+        <input
+          type="text"
+          id="ContactForm-company"
+          name="contact[company]"
+          value="{% if form.company %}{{ form.company }}{% endif %}"
+          required
+        >
+      </div>
+
+      {%- comment -%} Address Field {%- endcomment -%}
+      <div class="form-field">
+        <label for="ContactForm-address">
+          {{- 'customer.vat_form.address' | t }}
+          <span aria-hidden="true">*</span>
+        </label>
+        <input
+          type="text"
+          id="ContactForm-address"
+          name="contact[address]"
+          value="{% if form.address %}{{ form.address }}{% endif %}"
+          required
+        >
+      </div>
+
+      {%- comment -%} Postal Code & City {%- endcomment -%}
+      <div class="form-field-group">
+        <div class="form-field">
+          <label for="ContactForm-postalCode">
+            {{- 'customer.vat_form.postal_code' | t }}
+            <span aria-hidden="true">*</span>
+          </label>
+          <input
+            type="text"
+            id="ContactForm-postalCode"
+            name="contact[postal_code]"
+            value="{% if form.postal_code %}{{ form.postal_code }}{% endif %}"
+            required
+          >
+        </div>
+        <div class="form-field">
+          <label for="ContactForm-city">
+            {{- 'customer.vat_form.city' | t }}
+            <span aria-hidden="true">*</span>
+          </label>
+          <input
+            type="text"
+            id="ContactForm-city"
+            name="contact[city]"
+            value="{% if form.city %}{{ form.city }}{% endif %}"
+            required
+          >
+        </div>
+      </div>
+
+      {%- comment -%} Submit Buttons {%- endcomment -%}
+      <div class="form-submit-group">
+        <a href="javascript:history.back()" class="button button--secondary btn-cancel">
+          {%- liquid
+            case request.locale.iso_code
+              when 'de'
+                echo section.settings.cancel_label_de
+              when 'en'
+                echo section.settings.cancel_label_en
+              when 'fr'
+                echo section.settings.cancel_label_fr
+              when 'it'
+                echo section.settings.cancel_label_it
+              when 'es'
+                echo section.settings.cancel_label_es
+              else
+                echo section.settings.cancel_label_de
+            endcase
+          -%}
+        </a>
+        <button type="submit" class="button button--primary" id="vatIdForm-submit">
+          {%- liquid
+            case request.locale.iso_code
+              when 'de'
+                echo section.settings.submit_label_de
+              when 'en'
+                echo section.settings.submit_label_en
+              when 'fr'
+                echo section.settings.submit_label_fr
+              when 'it'
+                echo section.settings.submit_label_it
+              when 'es'
+                echo section.settings.submit_label_es
+              else
+                echo section.settings.submit_label_de
+            endcase
+          -%}
+        </button>
+      </div>
+    {%- endform -%}
+  {%- endif -%}
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Load cart data and populate the form
+    fetch('/cart.js')
+      .then((response) => response.json())
+      .then((cart) => {
+        const cartItemsContainer = document.getElementById('vatIdForm-cart-items');
+        const cartItemsField = document.getElementById('vatIdForm-cart_items');
+        const cartTotalField = document.getElementById('vatIdForm-cart_total');
+        const cartTotalDisplay = document.getElementById('vatIdForm-cart-total-display');
+
+        if (!cartItemsContainer || !cartItemsField || !cartTotalField) return;
+
+        // Clear existing items
+        cartItemsContainer.innerHTML = '';
+
+        // Helper function to format money
+        function formatMoney(cents) {
+          return new Intl.NumberFormat(window.Shopify?.locale || 'de-DE', {
+            style: 'currency',
+            currency: window.Shopify?.currency?.active || 'EUR',
+          }).format(cents / 100);
+        }
+
+        // Populate cart items table
+        cart.items.forEach((item) => {
+          const row = document.createElement('tr');
+
+          const productCell = document.createElement('td');
+          const productName = document.createElement('div');
+          productName.className = 'cart-item-name';
+          productName.textContent = item.product_title;
+          productCell.appendChild(productName);
+
+          if (item.variant_title && item.variant_title !== 'Default Title') {
+            const variantName = document.createElement('div');
+            variantName.className = 'cart-item-variant';
+            variantName.textContent = item.variant_title;
+            productCell.appendChild(variantName);
+          }
+
+          const skuDiv = document.createElement('div');
+          skuDiv.className = 'cart-item-sku';
+          skuDiv.textContent = 'SKU: ' + (item.sku || 'N/A');
+          productCell.appendChild(skuDiv);
+
+          const quantityCell = document.createElement('td');
+          quantityCell.textContent = item.quantity;
+
+          const priceCell = document.createElement('td');
+          priceCell.textContent = formatMoney(item.final_line_price);
+
+          row.appendChild(productCell);
+          row.appendChild(quantityCell);
+          row.appendChild(priceCell);
+          cartItemsContainer.appendChild(row);
+        });
+
+        // Update hidden fields
+        const cartItemsText = cart.items
+          .map(
+            (item) =>
+              `${item.product_title} (${item.sku || 'N/A'}) x ${item.quantity} = ${formatMoney(item.final_line_price)}`
+          )
+          .join(', ');
+
+        cartItemsField.value = cartItemsText;
+        cartTotalField.value = formatMoney(cart.total_price);
+
+        if (cartTotalDisplay) {
+          cartTotalDisplay.innerHTML = '<strong>' + formatMoney(cart.total_price) + '</strong>';
+        }
+      })
+      .catch((error) => {
+        console.error('Error loading cart data:', error);
+      });
+
+    // VAT ID Validation (optional - can be enhanced)
+    const vatIdInput = document.getElementById('ContactForm-vatId');
+    const vatIdMessage = document.getElementById('vatIdValidationMessage');
+    const derivedCountryField = document.getElementById('ContactForm-derived-country');
+    const submitButton = document.querySelector('.vat-id-form-page button[type="submit"]');
+    let vatIdIsValid = false;
+    let validationTimeout = null;
+
+    // Funktion zum Aktualisieren des Validierungsstatus
+    function updateValidationStatus(status, message) {
+      // Nachricht setzen
+      vatIdMessage.innerHTML = message;
+      vatIdMessage.className = 'vat-id-validation-message ' + status;
+
+      // Submit-Button aktivieren/deaktivieren
+      if (submitButton) {
+        if (status === 'invalid') {
+          submitButton.setAttribute('disabled', 'disabled');
+          submitButton.classList.add('disabled');
+        } else {
+          submitButton.removeAttribute('disabled');
+          submitButton.classList.remove('disabled');
+        }
+      }
+    }
+
+    // Funktion zur VAT-ID-Validierung über EU VIES API
+    function validateVatId() {
+      const vatId = vatIdInput.value.trim().toUpperCase();
+
+      // Prüfen, ob eine VAT-ID eingegeben wurde
+      if (!vatId) {
+        updateValidationStatus('neutral', '');
+        return;
+      }
+
+      // Einfache Formatvalidierung (2 Länderbuchstaben + Nummern)
+      const vatIdRegex = /^[A-Z]{2}[0-9A-Z]{2,12}$/;
+      if (!vatIdRegex.test(vatId)) {
+        updateValidationStatus('invalid', '✗ {{ "customer.vat_form.invalid_format" | t }}');
+        return;
+      }
+
+      // Status auf "wird geprüft" setzen
+      updateValidationStatus('checking', '⏳ {{ "customer.vat_form.validating" | t }}');
+
+      // Land und Nummer extrahieren
+      const countryCode = vatId.substring(0, 2);
+      const vatNumber = vatId.substring(2);
+
+      // EU VIES API verwenden (über CORS-Proxy)
+      const corsProxy = 'https://corsproxy.io/?';
+      const viesApiUrl = `${corsProxy}https://ec.europa.eu/taxation_customs/vies/rest-api/check-vat-number`;
+
+      const requestData = {
+        countryCode: countryCode,
+        vatNumber: vatNumber,
+      };
+
+      fetch(viesApiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then((data) => {
+          console.log('VAT validation result:', data);
+
+          // Prüfen ob API-Call erfolgreich war
+          if (data.actionSucceed === false || data.errorWrappers) {
+            // API-Fehler (z.B. Service nicht verfügbar, Rate Limit, etc.)
+            console.warn('VIES API error:', data.errorWrappers);
+            vatIdIsValid = true;
+            updateValidationStatus('error', '⚠ {{ "customer.vat_form.validation_error" | t }}');
+            return;
+          }
+
+          // Validierungsstatus aktualisieren
+          if (data.valid === true) {
+            // Gültige VAT-ID
+            vatIdIsValid = true;
+            let message = '✓ {{ "customer.vat_form.valid" | t }}';
+
+            // Firmennamen hinzufügen, wenn verfügbar (OHNE Box, nur wenn nicht leer oder "---")
+            if (data.name && data.name.trim() !== '' && data.name.trim() !== '---') {
+              message += ` - ${data.name}`;
+            }
+
+            updateValidationStatus('valid', message);
+            derivedCountryField.value = countryCode;
+          } else if (data.valid === false) {
+            // Ungültige VAT-ID
+            vatIdIsValid = false;
+            updateValidationStatus('invalid', '✗ {{ "customer.vat_form.invalid" | t }}');
+            derivedCountryField.value = '';
+          } else {
+            // Unbekannter Status
+            console.warn('Unknown validation status:', data);
+            vatIdIsValid = true;
+            updateValidationStatus('error', '⚠ {{ "customer.vat_form.validation_error" | t }}');
+          }
+        })
+        .catch((error) => {
+          console.error('Error validating VAT ID:', error);
+
+          // Bei Fehlern trotzdem fortfahren lassen
+          vatIdIsValid = true;
+          updateValidationStatus('error', '⚠ {{ "customer.vat_form.validation_error" | t }}');
+        });
+    }
+
+    if (vatIdInput && vatIdMessage) {
+      // Debounced input event - warte 500ms nach letzter Eingabe
+      vatIdInput.addEventListener('input', function () {
+        const vatId = this.value.trim().toUpperCase();
+        this.value = vatId;
+
+        // Clear previous timeout
+        if (validationTimeout) {
+          clearTimeout(validationTimeout);
+        }
+
+        if (vatId.length < 2) {
+          updateValidationStatus('neutral', '');
+          return;
+        }
+
+        // Warte 500ms nach letzter Eingabe, dann validiere
+        validationTimeout = setTimeout(validateVatId, 500);
+      });
+
+      // Form submit validation
+      const form = document.querySelector('.vat-id-form-page form');
+      if (form) {
+        form.addEventListener('submit', function (e) {
+          const vatId = vatIdInput.value.trim();
+
+          // Wenn das Feld leer ist, normale Validierung durchführen lassen
+          if (!vatId) return true;
+
+          // Wenn die VAT-ID ungültig ist, Absenden verhindern
+          if (vatIdMessage.classList.contains('invalid')) {
+            e.preventDefault();
+            vatIdMessage.scrollIntoView({ behavior: 'smooth' });
+            return false;
+          }
+
+          return true;
+        });
+      }
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "VAT ID Form",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Form Headline & Text (DE)"
+    },
+    {
+      "type": "text",
+      "id": "headline_de",
+      "label": "Headline (DE)",
+      "default": "Haben Sie eine gültige USt-IdNr.?"
+    },
+    {
+      "type": "richtext",
+      "id": "text_de",
+      "label": "Text (DE)",
+      "default": "<p>Wir können B2B-Bestellungen nur mit einer <em>gültigen</em> USt-IdNr. manuell bearbeiten.</p><p>Bitte füllen Sie das Formular aus und übermitteln Sie Ihre gewünschten Produkte aus Ihrem Warenkorb; wir werden Ihre Bestellung dann manuell bearbeiten.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Form Headline & Text (EN)"
+    },
+    {
+      "type": "text",
+      "id": "headline_en",
+      "label": "Headline (EN)",
+      "default": "Do you have a valid VAT registration number?"
+    },
+    {
+      "type": "richtext",
+      "id": "text_en",
+      "label": "Text (EN)",
+      "default": "<p>We can only process B2B orders with a <em>valid</em> VAT registration number manually.</p><p>Please fill out the form and submit your desired products from your shopping cart; we will then process your order manually.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Form Headline & Text (FR)"
+    },
+    {
+      "type": "text",
+      "id": "headline_fr",
+      "label": "Headline (FR)",
+      "default": "Avez-vous un numéro de TVA valide?"
+    },
+    {
+      "type": "richtext",
+      "id": "text_fr",
+      "label": "Text (FR)",
+      "default": "<p>Nous ne pouvons traiter les commandes B2B qu'avec un numéro de TVA <em>valide</em> manuellement.</p><p>Veuillez remplir le formulaire et soumettre les produits souhaités de votre panier; nous traiterons ensuite votre commande manuellement.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Form Headline & Text (IT)"
+    },
+    {
+      "type": "text",
+      "id": "headline_it",
+      "label": "Headline (IT)",
+      "default": "Hai un numero di partita IVA valido?"
+    },
+    {
+      "type": "richtext",
+      "id": "text_it",
+      "label": "Text (IT)",
+      "default": "<p>Possiamo elaborare gli ordini B2B solo con un numero di partita IVA <em>valido</em> manualmente.</p><p>Si prega di compilare il modulo e inviare i prodotti desiderati dal carrello; elaboreremo quindi il vostro ordine manualmente.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Form Headline & Text (ES)"
+    },
+    {
+      "type": "text",
+      "id": "headline_es",
+      "label": "Headline (ES)",
+      "default": "¿Tiene un número de IVA válido?"
+    },
+    {
+      "type": "richtext",
+      "id": "text_es",
+      "label": "Text (ES)",
+      "default": "<p>Solo podemos procesar pedidos B2B con un número de IVA <em>válido</em> manualmente.</p><p>Por favor complete el formulario y envíe los productos deseados de su carrito; luego procesaremos su pedido manualmente.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Empty Cart Message (DE)"
+    },
+    {
+      "type": "text",
+      "id": "empty_cart_headline_de",
+      "label": "Empty Cart Headline (DE)",
+      "default": "Ihr Warenkorb ist leer"
+    },
+    {
+      "type": "textarea",
+      "id": "empty_cart_text_de",
+      "label": "Empty Cart Text (DE)",
+      "default": "Bitte fügen Sie zuerst Produkte zu Ihrem Warenkorb hinzu, bevor Sie eine B2B-Anfrage stellen."
+    },
+    {
+      "type": "header",
+      "content": "Empty Cart Message (EN)"
+    },
+    {
+      "type": "text",
+      "id": "empty_cart_headline_en",
+      "label": "Empty Cart Headline (EN)",
+      "default": "Your Cart is Empty"
+    },
+    {
+      "type": "textarea",
+      "id": "empty_cart_text_en",
+      "label": "Empty Cart Text (EN)",
+      "default": "Please add products to your cart before submitting a B2B inquiry."
+    },
+    {
+      "type": "header",
+      "content": "Empty Cart Message (FR)"
+    },
+    {
+      "type": "text",
+      "id": "empty_cart_headline_fr",
+      "label": "Empty Cart Headline (FR)",
+      "default": "Votre panier est vide"
+    },
+    {
+      "type": "textarea",
+      "id": "empty_cart_text_fr",
+      "label": "Empty Cart Text (FR)",
+      "default": "Veuillez d'abord ajouter des produits à votre panier avant de soumettre une demande B2B."
+    },
+    {
+      "type": "header",
+      "content": "Empty Cart Message (IT)"
+    },
+    {
+      "type": "text",
+      "id": "empty_cart_headline_it",
+      "label": "Empty Cart Headline (IT)",
+      "default": "Il tuo carrello è vuoto"
+    },
+    {
+      "type": "textarea",
+      "id": "empty_cart_text_it",
+      "label": "Empty Cart Text (IT)",
+      "default": "Si prega di aggiungere prima i prodotti al carrello prima di inviare una richiesta B2B."
+    },
+    {
+      "type": "header",
+      "content": "Empty Cart Message (ES)"
+    },
+    {
+      "type": "text",
+      "id": "empty_cart_headline_es",
+      "label": "Empty Cart Headline (ES)",
+      "default": "Su carrito está vacío"
+    },
+    {
+      "type": "textarea",
+      "id": "empty_cart_text_es",
+      "label": "Empty Cart Text (ES)",
+      "default": "Por favor agregue productos a su carrito antes de enviar una consulta B2B."
+    },
+    {
+      "type": "header",
+      "content": "Success Message (DE)"
+    },
+    {
+      "type": "text",
+      "id": "success_headline_de",
+      "label": "Success Headline (DE)",
+      "default": "Vielen Dank für Ihre B2B-Anfrage"
+    },
+    {
+      "type": "textarea",
+      "id": "success_text_de",
+      "label": "Success Text (DE)",
+      "default": "Wir haben Ihre Anfrage erhalten und werden Ihre Bestellung manuell bearbeiten. Sie erhalten in Kürze eine Bestätigungs-E-Mail."
+    },
+    {
+      "type": "header",
+      "content": "Success Message (EN)"
+    },
+    {
+      "type": "text",
+      "id": "success_headline_en",
+      "label": "Success Headline (EN)",
+      "default": "Thank you for your B2B Inquiry"
+    },
+    {
+      "type": "textarea",
+      "id": "success_text_en",
+      "label": "Success Text (EN)",
+      "default": "We have received your inquiry and will process your order manually. You will receive a confirmation email shortly."
+    },
+    {
+      "type": "header",
+      "content": "Success Message (FR)"
+    },
+    {
+      "type": "text",
+      "id": "success_headline_fr",
+      "label": "Success Headline (FR)",
+      "default": "Merci pour votre demande B2B"
+    },
+    {
+      "type": "textarea",
+      "id": "success_text_fr",
+      "label": "Success Text (FR)",
+      "default": "Nous avons reçu votre demande et traiterons votre commande manuellement. Vous recevrez un e-mail de confirmation sous peu."
+    },
+    {
+      "type": "header",
+      "content": "Success Message (IT)"
+    },
+    {
+      "type": "text",
+      "id": "success_headline_it",
+      "label": "Success Headline (IT)",
+      "default": "Grazie per la vostra richiesta B2B"
+    },
+    {
+      "type": "textarea",
+      "id": "success_text_it",
+      "label": "Success Text (IT)",
+      "default": "Abbiamo ricevuto la vostra richiesta e elaboreremo il vostro ordine manualmente. Riceverete a breve un'e-mail di conferma."
+    },
+    {
+      "type": "header",
+      "content": "Success Message (ES)"
+    },
+    {
+      "type": "text",
+      "id": "success_headline_es",
+      "label": "Success Headline (ES)",
+      "default": "Gracias por su consulta B2B"
+    },
+    {
+      "type": "textarea",
+      "id": "success_text_es",
+      "label": "Success Text (ES)",
+      "default": "Hemos recibido su consulta y procesaremos su pedido manualmente. Recibirá un correo electrónico de confirmación en breve."
+    },
+    {
+      "type": "header",
+      "content": "Button Labels (DE)"
+    },
+    {
+      "type": "text",
+      "id": "submit_label_de",
+      "label": "Submit Button (DE)",
+      "default": "Absenden"
+    },
+    {
+      "type": "text",
+      "id": "cancel_label_de",
+      "label": "Cancel Button (DE)",
+      "default": "Abbrechen"
+    },
+    {
+      "type": "header",
+      "content": "Button Labels (EN)"
+    },
+    {
+      "type": "text",
+      "id": "submit_label_en",
+      "label": "Submit Button (EN)",
+      "default": "Submit"
+    },
+    {
+      "type": "text",
+      "id": "cancel_label_en",
+      "label": "Cancel Button (EN)",
+      "default": "Cancel"
+    },
+    {
+      "type": "header",
+      "content": "Button Labels (FR)"
+    },
+    {
+      "type": "text",
+      "id": "submit_label_fr",
+      "label": "Submit Button (FR)",
+      "default": "Envoyer"
+    },
+    {
+      "type": "text",
+      "id": "cancel_label_fr",
+      "label": "Cancel Button (FR)",
+      "default": "Annuler"
+    },
+    {
+      "type": "header",
+      "content": "Button Labels (IT)"
+    },
+    {
+      "type": "text",
+      "id": "submit_label_it",
+      "label": "Submit Button (IT)",
+      "default": "Invia"
+    },
+    {
+      "type": "text",
+      "id": "cancel_label_it",
+      "label": "Cancel Button (IT)",
+      "default": "Annulla"
+    },
+    {
+      "type": "header",
+      "content": "Button Labels (ES)"
+    },
+    {
+      "type": "text",
+      "id": "submit_label_es",
+      "label": "Submit Button (ES)",
+      "default": "Enviar"
+    },
+    {
+      "type": "text",
+      "id": "cancel_label_es",
+      "label": "Cancel Button (ES)",
+      "default": "Cancelar"
+    }
+  ],
+  "presets": [
+    {
+      "name": "VAT ID Form"
+    }
+  ]
+}
+{% endschema %}

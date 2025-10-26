@@ -38,8 +38,7 @@
     // Tracking für laufende Animationen
     const animatingModals = {};
 
-    // Variable zum Speichern des zuletzt geklickten Request-Only Buttons
-    let lastClickedRequestOnlyButton = null;
+
 
     // Variable zum Speichern der Scroll-Position - global verfügbar
     let scrollPosition = 0;
@@ -304,49 +303,17 @@
           // Verhindere Body-Scroll
           lockBodyScroll();
 
-          // Spezielle Behandlung für Request-Only Modal
-          if (modal.id === 'modal-request-only') {
-            console.log('Request-Only Modal wird geöffnet - verwende gespeicherten Button');
 
-            // Modal zurücksetzen (Success-Nachricht verstecken, Formular anzeigen)
-            if (typeof window.resetRequestOnlyModal === 'function') {
-              window.resetRequestOnlyModal();
-            }
 
-            if (lastClickedRequestOnlyButton) {
-              console.log('Gespeicherter Trigger-Button gefunden:', lastClickedRequestOnlyButton);
-              console.log('Button data attributes:', lastClickedRequestOnlyButton.dataset);
-
-              // Produktdaten aus den data-Attributen extrahieren
-              const productData = {
-                id: lastClickedRequestOnlyButton.dataset.productId,
-                title: lastClickedRequestOnlyButton.dataset.productTitle,
-                url: lastClickedRequestOnlyButton.dataset.productUrl,
-                sku: lastClickedRequestOnlyButton.dataset.productSku,
-                price: lastClickedRequestOnlyButton.dataset.productPrice
-              };
-
-              console.log('Produktdaten für Request-Only (onShow):', productData);
-
-              // Formular mit Produktdaten aktualisieren
-              updateRequestOnlyForm(productData);
-
-              // Button-Referenz zurücksetzen
-              lastClickedRequestOnlyButton = null;
-            } else {
-              console.warn('Kein gespeicherter Request-Only Button gefunden');
-            }
-          }
+          // Custom Event für Captcha-Initialisierung triggern (Fallback)
+          document.dispatchEvent(new CustomEvent('micromodal:show', {
+            detail: { modalId: modal.id }
+          }));
         },
         onClose: modal => {
           console.log(`${modal.id} wird durch MicroModal geschlossen`);
 
-          // Request-Only Modal spezielle Behandlung beim Schließen
-          if (modal.id === 'modal-request-only') {
-            if (typeof window.resetRequestOnlyModal === 'function') {
-              window.resetRequestOnlyModal();
-            }
-          }
+
 
           // Stelle Body-Scroll wieder her
           unlockBodyScroll();
@@ -786,139 +753,7 @@
       subtree: true
     });
 
-    // Funktion zum Aktualisieren des Request-Only Formulars
-    function updateRequestOnlyForm(productData) {
-      // Prüfen, ob das Modal und die Formulare existieren
-      const modal = document.getElementById('modal-request-only');
-      if (!modal) {
-        console.warn('Request-Only Modal nicht gefunden');
-        return;
-      }
 
-      console.log('Aktualisiere Request-Only Formular mit Produktdaten...', productData);
-
-      // Produktdaten in versteckte Felder eintragen
-      const productIdField = document.getElementById('requestOnlyForm-product_id');
-      const productTitleField = document.getElementById('requestOnlyForm-product_title');
-      const productUrlField = document.getElementById('requestOnlyForm-product_url');
-      const productSkuField = document.getElementById('requestOnlyForm-product_sku');
-      const productPriceField = document.getElementById('requestOnlyForm-product_price');
-
-      if (productIdField && productData.id) {
-        productIdField.value = productData.id;
-      }
-      if (productTitleField && productData.title) {
-        productTitleField.value = productData.title;
-      }
-      if (productUrlField && productData.url) {
-        productUrlField.value = window.location.origin + productData.url;
-      }
-      if (productSkuField && productData.sku) {
-        productSkuField.value = productData.sku;
-      }
-      if (productPriceField && productData.price) {
-        productPriceField.value = productData.price;
-      }
-
-      // Produktanzeige in der Tabelle aktualisieren
-      const displayTitle = document.getElementById('requestOnlyForm-display-title');
-      const displaySku = document.getElementById('requestOnlyForm-display-sku');
-      const displayPrice = document.getElementById('requestOnlyForm-display-price');
-
-      if (displayTitle && productData.title) {
-        displayTitle.textContent = productData.title;
-      }
-      if (displaySku && productData.sku) {
-        displaySku.textContent = productData.sku;
-      }
-      if (displayPrice && productData.price) {
-        // Formatiere den Preis
-        const price = parseFloat(productData.price);
-        if (!isNaN(price)) {
-          const formattedPrice = new Intl.NumberFormat(window.Shopify?.locale || 'de-DE', {
-            style: 'currency',
-            currency: window.Shopify?.currency?.active || 'EUR',
-          }).format(price);
-          displayPrice.textContent = formattedPrice;
-        } else {
-          displayPrice.textContent = productData.price;
-        }
-      }
-
-      // Nachricht vorausfüllen
-      const messageField = document.getElementById('RequestOnlyForm-message');
-      if (messageField && productData.title) {
-        const locale = document.documentElement.lang || 'de';
-        let messageText = `Hallo,\n\nich interessiere mich für das Produkt "${productData.title}"`;
-        if (productData.sku) {
-          messageText += ` (SKU: ${productData.sku})`;
-        }
-        messageText += '.\n\nBitte kontaktieren Sie mich für weitere Informationen.\n\nVielen Dank!';
-
-        switch (locale) {
-          case 'en':
-            messageText = `Hello,\n\nI am interested in the product "${productData.title}"`;
-            if (productData.sku) {
-              messageText += ` (SKU: ${productData.sku})`;
-            }
-            messageText += '.\n\nPlease contact me for more information.\n\nThank you!';
-            break;
-          case 'it':
-            messageText = `Ciao,\n\nsono interessato al prodotto "${productData.title}"`;
-            if (productData.sku) {
-              messageText += ` (SKU: ${productData.sku})`;
-            }
-            messageText += '.\n\nVi prego di contattarmi per ulteriori informazioni.\n\nGrazie!';
-            break;
-          case 'es':
-            messageText = `Hola,\n\nestoy interesado en el producto "${productData.title}"`;
-            if (productData.sku) {
-              messageText += ` (SKU: ${productData.sku})`;
-            }
-            messageText += '.\n\nPor favor contáctenme para más información.\n\n¡Gracias!';
-            break;
-          case 'fr':
-            messageText = `Bonjour,\n\nje suis intéressé par le produit "${productData.title}"`;
-            if (productData.sku) {
-              messageText += ` (SKU: ${productData.sku})`;
-            }
-            messageText += ".\n\nVeuillez me contacter pour plus d'informations.\n\nMerci !";
-            break;
-        }
-
-        messageField.value = messageText;
-      }
-    }
-
-    // Globale Funktion für andere Scripts verfügbar machen
-    window.updateRequestOnlyForm = updateRequestOnlyForm;
-
-    // Event-Listener zum Speichern des geklickten Request-Only Buttons
-    document.addEventListener('click', function(e) {
-      const requestOnlyButton = e.target.closest('.request-only-button');
-      if (requestOnlyButton) {
-        console.log('🔥 REQUEST-ONLY BUTTON GEKLICKT!', requestOnlyButton);
-        console.log('🔥 Button data attributes:', requestOnlyButton.dataset);
-        console.log('🔥 MicroModal verfügbar:', typeof MicroModal !== 'undefined');
-
-        // Speichere den Button für den onShow Callback
-        lastClickedRequestOnlyButton = requestOnlyButton;
-
-        // Explizit das Modal öffnen (nicht nur auf MicroModal verlassen)
-        const modalId = requestOnlyButton.getAttribute('data-micromodal-trigger');
-        if (modalId) {
-          console.log('🔥 Versuche Modal zu öffnen:', modalId);
-          try {
-            MicroModal.show(modalId);
-            console.log('🔥 Modal erfolgreich geöffnet!');
-          } catch (error) {
-            console.error('🔥 FEHLER beim Öffnen des Modals:', error);
-          }
-        } else {
-          console.error('🔥 FEHLER: Kein data-micromodal-trigger gefunden!');
-        }
-      }
-    }, true); // useCapture = true, um das Event vor anderen Listenern zu fangen
 
     // Zentrale Event-Delegation für reparierte Popup-Spans
     document.addEventListener('click', function(e) {
@@ -943,21 +778,7 @@
     // Zentrale Event-Delegation für alle VAT-Buttons und MicroModal-Trigger
     document.addEventListener('click', function(e) {
 
-      // VAT-ID-Button im Cart
-      const vatIdButton = e.target.closest('#CartDrawer-VatIdButton');
-      if (vatIdButton) {
-        e.preventDefault();
-        e.stopPropagation();
-        console.log('VAT-ID-Button im Cart wurde geklickt');
-        try {
-          MicroModal.show('modal-cart-vat-id');
-        } catch (error) {
-          console.error('Fehler beim Öffnen des VAT-ID-Modals:', error);
-        }
-        return;
-      }
-
-      // Alle anderen VAT-Info-Icons
+      // VAT-Info-Icons
       const vatInfoIcon = e.target.closest('.vat-info-icon[data-micromodal-trigger]');
       if (vatInfoIcon) {
         e.preventDefault();
@@ -975,9 +796,9 @@
         return;
       }
 
-      // Allgemeine MicroModal-Trigger (aber nicht für Request-Only Buttons)
+      // Allgemeine MicroModal-Trigger
       const microModalTrigger = e.target.closest('[data-micromodal-trigger]');
-      if (microModalTrigger && !microModalTrigger.classList.contains('request-only-button')) {
+      if (microModalTrigger) {
         e.preventDefault();
         e.stopPropagation();
 
@@ -1078,38 +899,7 @@
       }
     }
 
-    // Observer für dynamisch geladene Related Products
-    const observer = new MutationObserver(function(mutations) {
-      mutations.forEach(function(mutation) {
-        if (mutation.type === 'childList') {
-          mutation.addedNodes.forEach(function(node) {
-            if (node.nodeType === Node.ELEMENT_NODE) {
-              // Prüfe, ob neue Request-Only Buttons hinzugefügt wurden
-              const newRequestButtons = node.querySelectorAll ? node.querySelectorAll('.request-only-button') : [];
-              if (newRequestButtons.length > 0) {
-                console.log(`${newRequestButtons.length} neue Request-Only Buttons in Related Products gefunden`);
-                // Die Event-Delegation sollte automatisch funktionieren
-              }
-            }
-          });
-        }
-      });
-    });
 
-    // Observer für Related Products Container starten
-    const relatedProductsContainers = document.querySelectorAll('product-recommendations');
-    relatedProductsContainers.forEach(container => {
-      observer.observe(container, {
-        childList: true,
-        subtree: true
-      });
-    });
-
-    // Event-Listener für Collection Request-Only Buttons
-    document.addEventListener('collection:request-only-buttons:loaded', function(event) {
-      console.log(`Collection Request-Only Buttons geladen: ${event.detail.count} Buttons`);
-      // Event-Delegation sollte automatisch funktionieren, da sie auf document-Level registriert ist
-    });
 
     // Ankündigungs-Pop-Up Manager
     function initAnnouncementPopup() {

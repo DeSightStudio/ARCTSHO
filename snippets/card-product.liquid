@@ -386,16 +386,14 @@
                   -%}
 
                   {%- if is_request_only -%}
+                    {%- liquid
+                      assign product_sku = card_product.selected_or_first_available_variant.sku | default: card_product.variants.first.sku
+                      assign product_price = card_product.selected_or_first_available_variant.price | money_without_currency
+                    -%}
                     <button
                       type="button"
-                      class="card-product__request-only button button--full-width button--primary request-only-button"
-                      onclick="event.stopPropagation(); event.preventDefault();"
-                      data-micromodal-trigger="modal-request-only"
-                      data-product-id="{{ card_product.id }}"
-                      data-product-title="{{ card_product.title | escape }}"
-                      data-product-url="{{ card_product.url }}"
-                      data-product-sku="{{ card_product.selected_or_first_available_variant.sku | default: card_product.variants.first.sku }}"
-                      data-product-price="{{ card_product.selected_or_first_available_variant.price | money_without_currency }}"
+                      class="card-product__add-button button button--full-width button--primary"
+                      onclick="event.stopPropagation(); event.stopImmediatePropagation(); event.preventDefault(); window.location.href='/pages/request-only?product_id={{ card_product.id }}&title={{ card_product.title | url_encode }}&url={{ card_product.url | url_encode }}&sku={{ product_sku | url_encode }}&price={{ product_price | url_encode }}'; return false;"
                     >
                       <span>{{ 'products.product.request_only_button' | t }}</span>
                     </button>

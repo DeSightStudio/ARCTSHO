@@ -90,16 +90,14 @@
       <div {{ block.shopify_attributes }}>
         {%- if is_request_only -%}
           {%- comment -%} Request-Only Produkt: Zeige immer "Nur auf Anfrage" Button, unabhängig vom Verfügbarkeitsstatus {%- endcomment -%}
+          {%- liquid
+            assign product_sku = product.selected_or_first_available_variant.sku | default: product.variants.first.sku
+            assign product_price = product.selected_or_first_available_variant.price | money_without_currency
+          -%}
           <button
-            class="product-form__submit button button--full-width button--primary request-only-button"
             type="button"
-            name="request"
-            data-micromodal-trigger="modal-request-only"
-            data-product-id="{{ product.id }}"
-            data-product-title="{{ product.title | escape }}"
-            data-product-url="{{ product.url }}"
-            data-product-sku="{{ product.selected_or_first_available_variant.sku | default: product.variants.first.sku }}"
-            data-product-price="{{ product.selected_or_first_available_variant.price | money_without_currency }}"
+            class="product-form__submit button button--full-width button--primary"
+            onclick="window.location.href='/pages/request-only?product_id={{ product.id }}&title={{ product.title | url_encode }}&url={{ product.url | url_encode }}&sku={{ product_sku | url_encode }}&price={{ product_price | url_encode }}';"
           >
             <span>
               {{ 'products.product.request_only_button' | t }}

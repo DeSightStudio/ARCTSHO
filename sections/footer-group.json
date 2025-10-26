@@ -14,11 +14,11 @@
     "footer": {
       "type": "footer",
       "blocks": {
-        "text_6VfV66": {
-          "type": "text",
+        "contact_form_hFnQJa": {
+          "type": "contact_form",
           "settings": {
-            "heading": "Do you have questions?",
-            "subtext": "<h2>Please send us an email to: info@arcticantiques.com</h2>",
+            "heading": "Ask a question",
+            "heading_size": "h2",
             "column_width": 60
           }
         },
@@ -26,12 +26,12 @@
           "type": "brand_information",
           "settings": {
             "show_social": true,
-            "column_width": 20
+            "column_width": 40
           }
         }
       },
       "block_order": [
-        "text_6VfV66",
+        "contact_form_hFnQJa",
         "brand_information_ccRY3g"
       ],
       "settings": {

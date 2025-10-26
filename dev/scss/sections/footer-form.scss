@@ -112,9 +112,6 @@ footer {
     textarea:focus, textarea:not(:placeholder-shown), textarea:-webkit-autofill, .customer .field textarea:focus, .customer .field textarea:not(:placeholder-shown), .customer .field textarea:-webkit-autofill {
         padding: 12px !important;
     }
-    input#FooterContactForm-phone {
-        padding-left: 70px !important;
-    }
     &__input, textarea {
         width: 100%;
         padding: 0px 12px;
@@ -259,7 +256,7 @@ footer {
 }
 
 /* TEXTAREA RESIZE KOMPLETT DEAKTIVIERT */
-/* Alle Textareas haben resize: none */
+/* Alle Textareas haben resize: none, aber overflow: auto für Scrolling */
 textarea.text-area.field__input,
 .contact__form-container textarea.text-area,
 .footer-form textarea.text-area,
@@ -270,7 +267,7 @@ textarea#FooterContactForm-body,
 .field .text-area,
 textarea.field__input {
     resize: none !important;
-    overflow: hidden !important;
+    overflow: auto !important;
 }
 
 /* Fix für Platzhalterverschiebung im Safari und Firefox */

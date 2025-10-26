@@ -161,8 +161,17 @@ class MasterCartSystem {
 
     // Form Submit Handler
     const submitHandler = (e) => {
-      const form = e.target.closest('form[action*="/cart/add"]');
-      if (form && !this.syncInProgress) {
+      // CRITICAL: Ignore contact forms - only handle cart forms
+      const form = e.target;
+      if (!form || form.tagName !== 'FORM') return;
+
+      // Ignore contact forms
+      if (form.action && form.action.includes('/contact')) {
+        return; // Let contact forms submit naturally
+      }
+
+      // Only handle cart add forms
+      if (form.action && form.action.includes('/cart/add') && !this.syncInProgress) {
         e.preventDefault();
         e.stopPropagation();
         this.handleAddToCart(form);
@@ -171,10 +180,11 @@ class MasterCartSystem {
 
     // Event-Handler registrieren
     document.addEventListener('click', clickHandler, { capture: true, passive: false });
-    document.addEventListener('submit', submitHandler, { capture: true, passive: false });
+    // DISABLED: Submit handler was blocking contact forms
+    // document.addEventListener('submit', submitHandler, { capture: true, passive: false });
 
     this.eventHandlers.push({ type: 'click', handler: clickHandler });
-    this.eventHandlers.push({ type: 'submit', handler: submitHandler });
+    // this.eventHandlers.push({ type: 'submit', handler: submitHandler });
 
     // Page Navigation
     window.addEventListener('pageshow', () => {

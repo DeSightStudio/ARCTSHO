@@ -1,0 +1,646 @@
+<div class="request-only-form-page">
+  {%- comment -%} NORMAL STATE: Zeige Header und Formular (keine Cart-Prüfung, da Request-Only mit URL-Parametern arbeitet) {%- endcomment -%}
+  <div class="request-only-form-page__header">
+    <h1>
+      {%- liquid
+        case request.locale.iso_code
+          when 'de'
+            echo section.settings.headline_de
+          when 'en'
+            echo section.settings.headline_en
+          when 'it'
+            echo section.settings.headline_it
+          when 'es'
+            echo section.settings.headline_es
+          when 'fr'
+            echo section.settings.headline_fr
+          else
+            echo section.settings.headline_de
+        endcase
+      -%}
+    </h1>
+    <div class="request-only-form-page__text">
+      {%- liquid
+        case request.locale.iso_code
+          when 'de'
+            echo section.settings.text_de
+          when 'en'
+            echo section.settings.text_en
+          when 'it'
+            echo section.settings.text_it
+          when 'es'
+            echo section.settings.text_es
+          when 'fr'
+            echo section.settings.text_fr
+          else
+            echo section.settings.text_de
+        endcase
+      -%}
+    </div>
+  </div>
+
+  {%- form 'contact', id: 'requestOnlyForm', class: 'request-only-form' -%}
+    {%- if form.posted_successfully? -%}
+      {%- comment -%} SUCCESS STATE: Nur Erfolgsmeldung anzeigen {%- endcomment -%}
+      <script>
+        // Hide header and show success message
+        (function () {
+          // Verstecke Header
+          const header = document.querySelector('.request-only-form-page__header');
+          if (header) {
+            header.style.display = 'none';
+          }
+        })();
+      </script>
+
+      <div class="request-only-form-success-wrapper">
+        <h1 class="form-success-headline">
+          {%- liquid
+            case request.locale.iso_code
+              when 'de'
+                echo section.settings.success_headline_de
+              when 'en'
+                echo section.settings.success_headline_en
+              when 'fr'
+                echo section.settings.success_headline_fr
+              when 'it'
+                echo section.settings.success_headline_it
+              when 'es'
+                echo section.settings.success_headline_es
+              else
+                echo section.settings.success_headline_de
+            endcase
+          -%}
+        </h1>
+        <p class="form-success-text">
+          {%- liquid
+            case request.locale.iso_code
+              when 'de'
+                echo section.settings.success_text_de
+              when 'en'
+                echo section.settings.success_text_en
+              when 'fr'
+                echo section.settings.success_text_fr
+              when 'it'
+                echo section.settings.success_text_it
+              when 'es'
+                echo section.settings.success_text_es
+              else
+                echo section.settings.success_text_de
+            endcase
+          -%}
+        </p>
+      </div>
+    {%- elsif form.errors -%}
+      <div class="form-error">
+        <h2>
+          {% liquid
+            case request.locale.iso_code
+              when 'de'
+                echo 'Bitte korrigieren Sie folgende Fehler:'
+              when 'en'
+                echo 'Please correct the following errors:'
+              when 'it'
+                echo 'Si prega di correggere i seguenti errori:'
+              when 'es'
+                echo 'Por favor corrija los siguientes errores:'
+              when 'fr'
+                echo 'Veuillez corriger les erreurs suivantes:'
+              else
+                echo 'Bitte korrigieren Sie folgende Fehler:'
+            endcase
+          %}
+        </h2>
+        <ul>
+          {% for field in form.errors %}
+            <li>
+              <a href="#RequestOnlyForm-{{ field }}">
+                {{ form.errors.translated_fields[field] | capitalize }}
+                {{ form.errors.messages[field] }}
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+
+    <input type="hidden" name="contact[form_type]" value="Product Request Form">
+    <input type="hidden" name="return_to" value="/pages/request-only">
+
+    {%- comment -%} Hidden fields for product data {%- endcomment -%}
+    <input type="hidden" id="requestOnlyForm-product_id" name="contact[product_id]" value="">
+    <input type="hidden" id="requestOnlyForm-product_title" name="contact[product_title]" value="">
+    <input type="hidden" id="requestOnlyForm-product_url" name="contact[product_url]" value="">
+    <input type="hidden" id="requestOnlyForm-product_sku" name="contact[product_sku]" value="">
+    <input type="hidden" id="requestOnlyForm-product_price" name="contact[product_price]" value="">
+
+    {%- comment -%} Product Summary Table {%- endcomment -%}
+    <div class="product-summary" id="requestOnlyForm-product-summary">
+      <h3>
+        {% liquid
+          case request.locale.iso_code
+            when 'de'
+              echo 'Angefragtes Produkt'
+            when 'en'
+              echo 'Requested Product'
+            when 'it'
+              echo 'Prodotto Richiesto'
+            when 'es'
+              echo 'Producto Solicitado'
+            when 'fr'
+              echo 'Produit Demandé'
+            else
+              echo 'Angefragtes Produkt'
+          endcase
+        %}
+      </h3>
+      <table class="product-table">
+        <thead>
+          <tr>
+            <th>{{ 'sections.cart.headings.product' | t }}</th>
+            <th>{{ 'products.product.sku' | t }}</th>
+            <th>{{ 'sections.cart.headings.price' | t }}</th>
+          </tr>
+        </thead>
+        <tbody id="requestOnlyForm-product-details">
+          <tr>
+            <td>
+              <div class="product-item-name" id="requestOnlyForm-display-title">-</div>
+            </td>
+            <td id="requestOnlyForm-display-sku">-</td>
+            <td id="requestOnlyForm-display-price">-</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    {%- comment -%} Form Fields - First Name & Last Name {%- endcomment -%}
+    <div class="form-field-group">
+      <div class="form-field">
+        <label for="RequestOnlyForm-firstName">
+          {{- 'customer.vat_form.first_name' | t }}
+          <span aria-hidden="true">*</span>
+        </label>
+        <input
+          type="text"
+          id="RequestOnlyForm-firstName"
+          name="contact[first_name]"
+          value="{% if form.first_name %}{{ form.first_name }}{% endif %}"
+          autocomplete="given-name"
+          required
+        >
+      </div>
+      <div class="form-field">
+        <label for="RequestOnlyForm-lastName">
+          {{- 'customer.vat_form.last_name' | t }}
+          <span aria-hidden="true">*</span>
+        </label>
+        <input
+          type="text"
+          id="RequestOnlyForm-lastName"
+          name="contact[last_name]"
+          value="{% if form.last_name %}{{ form.last_name }}{% endif %}"
+          autocomplete="family-name"
+          required
+        >
+      </div>
+    </div>
+
+    {%- comment -%} Email & Phone {%- endcomment -%}
+    <div class="form-field-group">
+      <div class="form-field">
+        <label for="RequestOnlyForm-email">
+          {{- 'customer.vat_form.email' | t }}
+          <span aria-hidden="true">*</span>
+        </label>
+        <input
+          type="email"
+          id="RequestOnlyForm-email"
+          name="contact[email]"
+          value="{% if form.email %}{{ form.email }}{% endif %}"
+          autocomplete="email"
+          spellcheck="false"
+          autocapitalize="off"
+          required
+        >
+      </div>
+      <div class="form-field">
+        <label for="RequestOnlyForm-phone">
+          {{- 'customer.vat_form.phone' | t }}
+          <span aria-hidden="true">*</span>
+        </label>
+        <input
+          type="tel"
+          id="RequestOnlyForm-phone"
+          name="contact[phone]"
+          value="{% if form.phone %}{{ form.phone }}{% endif %}"
+          autocomplete="tel"
+          required
+        >
+      </div>
+    </div>
+
+    {%- comment -%} Message Field {%- endcomment -%}
+    <div class="form-field">
+      <label for="RequestOnlyForm-message">
+        {% liquid
+          case request.locale.iso_code
+            when 'de'
+              echo 'Nachricht'
+            when 'en'
+              echo 'Message'
+            when 'it'
+              echo 'Messaggio'
+            when 'es'
+              echo 'Mensaje'
+            when 'fr'
+              echo 'Message'
+            else
+              echo 'Nachricht'
+          endcase
+        %}
+      </label>
+      <textarea
+        id="RequestOnlyForm-message"
+        name="contact[body]"
+        rows="4"
+        placeholder="
+          {% liquid
+            case request.locale.iso_code
+              when 'de'
+                echo 'Ihre Nachricht bezüglich des Produkts...'
+              when 'en'
+                echo 'Your message regarding the product...'
+              when 'it'
+                echo 'Il vostro messaggio riguardo al prodotto...'
+              when 'es'
+                echo 'Su mensaje sobre el producto...'
+              when 'fr'
+                echo 'Votre message concernant le produit...'
+              else
+                echo 'Ihre Nachricht bezüglich des Produkts...'
+            endcase
+          %}
+        "
+      ></textarea>
+    </div>
+
+    {%- comment -%} Submit Buttons {%- endcomment -%}
+    <div class="form-submit-group">
+      <a href="javascript:history.back()" class="button button--secondary btn-cancel">
+        {%- liquid
+          case request.locale.iso_code
+            when 'de'
+              echo section.settings.cancel_label_de
+            when 'en'
+              echo section.settings.cancel_label_en
+            when 'it'
+              echo section.settings.cancel_label_it
+            when 'es'
+              echo section.settings.cancel_label_es
+            when 'fr'
+              echo section.settings.cancel_label_fr
+            else
+              echo section.settings.cancel_label_de
+          endcase
+        -%}
+      </a>
+      <button type="submit" class="button button--primary" id="requestOnlyForm-submit">
+        {%- liquid
+          case request.locale.iso_code
+            when 'de'
+              echo section.settings.submit_label_de
+            when 'en'
+              echo section.settings.submit_label_en
+            when 'it'
+              echo section.settings.submit_label_it
+            when 'es'
+              echo section.settings.submit_label_es
+            when 'fr'
+              echo section.settings.submit_label_fr
+            else
+              echo section.settings.submit_label_de
+          endcase
+        -%}
+      </button>
+    </div>
+  {%- endform -%}
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('product_id');
+    const productTitle = urlParams.get('title');
+    const productUrl = urlParams.get('url');
+    const productSku = urlParams.get('sku');
+    const productPrice = urlParams.get('price');
+
+    // Fill hidden fields
+    if (productId) document.getElementById('requestOnlyForm-product_id').value = productId;
+    if (productTitle) document.getElementById('requestOnlyForm-product_title').value = productTitle;
+    if (productUrl) document.getElementById('requestOnlyForm-product_url').value = window.location.origin + productUrl;
+    if (productSku) document.getElementById('requestOnlyForm-product_sku').value = productSku;
+    if (productPrice) document.getElementById('requestOnlyForm-product_price').value = productPrice;
+
+    // Display product info in table
+    if (productTitle) document.getElementById('requestOnlyForm-display-title').textContent = productTitle;
+    if (productSku) document.getElementById('requestOnlyForm-display-sku').textContent = productSku;
+    if (productPrice) document.getElementById('requestOnlyForm-display-price').textContent = productPrice;
+
+    // Auto-generate message based on language
+    const locale = document.documentElement.lang || 'de';
+    const messageField = document.getElementById('RequestOnlyForm-message');
+
+    if (messageField && productTitle) {
+      let messageText = '';
+
+      switch (locale) {
+        case 'de':
+          messageText = `Hallo,\n\nich interessiere mich für das Produkt "${productTitle}" (SKU: ${
+            productSku || 'N/A'
+          }).\n\nBitte senden Sie mir weitere Informationen und ein Angebot.\n\nMit freundlichen Grüßen`;
+          break;
+        case 'en':
+          messageText = `Hello,\n\nI am interested in the product "${productTitle}" (SKU: ${
+            productSku || 'N/A'
+          }).\n\nPlease send me more information and a quote.\n\nBest regards`;
+          break;
+        case 'it':
+          messageText = `Buongiorno,\n\nSono interessato al prodotto "${productTitle}" (SKU: ${
+            productSku || 'N/A'
+          }).\n\nVi prego di inviarmi ulteriori informazioni e un preventivo.\n\nCordiali saluti`;
+          break;
+        case 'es':
+          messageText = `Hola,\n\nEstoy interesado en el producto "${productTitle}" (SKU: ${
+            productSku || 'N/A'
+          }).\n\nPor favor envíeme más información y un presupuesto.\n\nSaludos cordiales`;
+          break;
+        case 'fr':
+          messageText = `Bonjour,\n\nJe suis intéressé par le produit "${productTitle}" (SKU: ${
+            productSku || 'N/A'
+          }).\n\nVeuillez m'envoyer plus d'informations et un devis.\n\nCordialement`;
+          break;
+        default:
+          messageText = `Hallo,\n\nich interessiere mich für das Produkt "${productTitle}" (SKU: ${
+            productSku || 'N/A'
+          }).\n\nBitte senden Sie mir weitere Informationen und ein Angebot.\n\nMit freundlichen Grüßen`;
+      }
+
+      messageField.value = messageText;
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Request Only Form",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Form Headline & Text (DE)"
+    },
+    {
+      "type": "text",
+      "id": "headline_de",
+      "label": "Headline (DE)",
+      "default": "Produktanfrage"
+    },
+    {
+      "type": "richtext",
+      "id": "text_de",
+      "label": "Text (DE)",
+      "default": "<p>Dieses Produkt ist nur auf Anfrage erhältlich. Bitte füllen Sie das Formular aus und wir werden uns schnellstmöglich bei Ihnen melden.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Form Headline & Text (EN)"
+    },
+    {
+      "type": "text",
+      "id": "headline_en",
+      "label": "Headline (EN)",
+      "default": "Product Inquiry"
+    },
+    {
+      "type": "richtext",
+      "id": "text_en",
+      "label": "Text (EN)",
+      "default": "<p>This product is available upon request only. Please fill out the form and we will contact you as soon as possible.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Form Headline & Text (FR)"
+    },
+    {
+      "type": "text",
+      "id": "headline_fr",
+      "label": "Headline (FR)",
+      "default": "Demande de Produit"
+    },
+    {
+      "type": "richtext",
+      "id": "text_fr",
+      "label": "Text (FR)",
+      "default": "<p>Ce produit n'est disponible que sur demande. Veuillez remplir le formulaire et nous vous contacterons dans les plus brefs délais.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Form Headline & Text (IT)"
+    },
+    {
+      "type": "text",
+      "id": "headline_it",
+      "label": "Headline (IT)",
+      "default": "Richiesta Prodotto"
+    },
+    {
+      "type": "richtext",
+      "id": "text_it",
+      "label": "Text (IT)",
+      "default": "<p>Questo prodotto è disponibile solo su richiesta. Si prega di compilare il modulo e vi contatteremo il prima possibile.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Form Headline & Text (ES)"
+    },
+    {
+      "type": "text",
+      "id": "headline_es",
+      "label": "Headline (ES)",
+      "default": "Consulta de Producto"
+    },
+    {
+      "type": "richtext",
+      "id": "text_es",
+      "label": "Text (ES)",
+      "default": "<p>Este producto está disponible solo bajo petición. Por favor complete el formulario y nos pondremos en contacto con usted lo antes posible.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Success Message (DE)"
+    },
+    {
+      "type": "text",
+      "id": "success_headline_de",
+      "label": "Success Headline (DE)",
+      "default": "Vielen Dank für Ihre Anfrage"
+    },
+    {
+      "type": "textarea",
+      "id": "success_text_de",
+      "label": "Success Text (DE)",
+      "default": "Wir haben Ihre Anfrage erhalten und werden uns schnellstmöglich bei Ihnen melden."
+    },
+    {
+      "type": "header",
+      "content": "Success Message (EN)"
+    },
+    {
+      "type": "text",
+      "id": "success_headline_en",
+      "label": "Success Headline (EN)",
+      "default": "Thank you for your inquiry"
+    },
+    {
+      "type": "textarea",
+      "id": "success_text_en",
+      "label": "Success Text (EN)",
+      "default": "We have received your inquiry and will contact you as soon as possible."
+    },
+    {
+      "type": "header",
+      "content": "Success Message (FR)"
+    },
+    {
+      "type": "text",
+      "id": "success_headline_fr",
+      "label": "Success Headline (FR)",
+      "default": "Merci pour votre demande"
+    },
+    {
+      "type": "textarea",
+      "id": "success_text_fr",
+      "label": "Success Text (FR)",
+      "default": "Nous avons reçu votre demande et vous contacterons dans les plus brefs délais."
+    },
+    {
+      "type": "header",
+      "content": "Success Message (IT)"
+    },
+    {
+      "type": "text",
+      "id": "success_headline_it",
+      "label": "Success Headline (IT)",
+      "default": "Grazie per la vostra richiesta"
+    },
+    {
+      "type": "textarea",
+      "id": "success_text_it",
+      "label": "Success Text (IT)",
+      "default": "Abbiamo ricevuto la vostra richiesta e vi contatteremo il prima possibile."
+    },
+    {
+      "type": "header",
+      "content": "Success Message (ES)"
+    },
+    {
+      "type": "text",
+      "id": "success_headline_es",
+      "label": "Success Headline (ES)",
+      "default": "Gracias por su consulta"
+    },
+    {
+      "type": "textarea",
+      "id": "success_text_es",
+      "label": "Success Text (ES)",
+      "default": "Hemos recibido su consulta y nos pondremos en contacto con usted lo antes posible."
+    },
+    {
+      "type": "header",
+      "content": "Button Labels (DE)"
+    },
+    {
+      "type": "text",
+      "id": "submit_label_de",
+      "label": "Submit Button (DE)",
+      "default": "Absenden"
+    },
+    {
+      "type": "text",
+      "id": "cancel_label_de",
+      "label": "Cancel Button (DE)",
+      "default": "Abbrechen"
+    },
+    {
+      "type": "header",
+      "content": "Button Labels (EN)"
+    },
+    {
+      "type": "text",
+      "id": "submit_label_en",
+      "label": "Submit Button (EN)",
+      "default": "Submit"
+    },
+    {
+      "type": "text",
+      "id": "cancel_label_en",
+      "label": "Cancel Button (EN)",
+      "default": "Cancel"
+    },
+    {
+      "type": "header",
+      "content": "Button Labels (FR)"
+    },
+    {
+      "type": "text",
+      "id": "submit_label_fr",
+      "label": "Submit Button (FR)",
+      "default": "Envoyer"
+    },
+    {
+      "type": "text",
+      "id": "cancel_label_fr",
+      "label": "Cancel Button (FR)",
+      "default": "Annuler"
+    },
+    {
+      "type": "header",
+      "content": "Button Labels (IT)"
+    },
+    {
+      "type": "text",
+      "id": "submit_label_it",
+      "label": "Submit Button (IT)",
+      "default": "Invia"
+    },
+    {
+      "type": "text",
+      "id": "cancel_label_it",
+      "label": "Cancel Button (IT)",
+      "default": "Annulla"
+    },
+    {
+      "type": "header",
+      "content": "Button Labels (ES)"
+    },
+    {
+      "type": "text",
+      "id": "submit_label_es",
+      "label": "Submit Button (ES)",
+      "default": "Enviar"
+    },
+    {
+      "type": "text",
+      "id": "cancel_label_es",
+      "label": "Cancel Button (ES)",
+      "default": "Cancelar"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Request Only Form"
+    }
+  ]
+}
+{% endschema %}

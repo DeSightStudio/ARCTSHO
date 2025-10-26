@@ -1,0 +1,27 @@
+{
+  "sections": {
+    "breadcrumb": {
+      "type": "breadcrumb",
+      "settings": {
+        "hide_breadcrumbs": false,
+        "home_text": "Home",
+        "show_collection_in_product": true,
+        "excluded_collection_handles": "all,alle-produkte,tous-les-produits,todos-los-productos,tutti-i-prodotti",
+        "show_tags_in_collection": true,
+        "show_tags_in_blog": true,
+        "color_scheme": "",
+        "padding_top": 20,
+        "padding_bottom": 20
+      }
+    },
+    "request-only-form": {
+      "type": "request-only-form",
+      "settings": {}
+    }
+  },
+  "order": [
+    "breadcrumb",
+    "request-only-form"
+  ]
+}
+

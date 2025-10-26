@@ -83,65 +83,7 @@
                 // Weitere Optimierungen können hier hinzugefügt werden
             }
 
-            // Initialize international telephone input
-            function initIntlTelInput() {
-                if (typeof window.intlTelInput !== 'undefined' && $('#FooterContactForm-phone').length) {
-                    var phoneInput = document.querySelector("#FooterContactForm-phone");
-                    var iti = window.intlTelInput(phoneInput, {
-                        initialCountry: "de",
-                        separateDialCode: true,
-                        preferredCountries: ["de", "at", "ch"],
-                        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js",
-                        allowDropdown: true,
-                        autoPlaceholder: "polite",
-                        customContainer: "phone-input-container",
-                        formatOnDisplay: true,
-                        dropdownContainer: document.body
-                    });
 
-                    // Store the full phone number including country code on form submission
-                    $('#FooterContactForm').on('submit', function() {
-                        if (iti) {
-                            const phoneNumber = iti.getNumber();
-                            $(phoneInput).val(phoneNumber);
-                        }
-                    });
-
-                    // Fix für eventuelles Styling-Problem mit dem Container
-                    setTimeout(function() {
-                        $('.iti').css('width', '100%');
-                    }, 100);
-                }
-
-                // Also initialize for regular contact form page if it exists
-                if (typeof window.intlTelInput !== 'undefined' && $('#ContactForm-phone').length) {
-                    var contactPhoneInput = document.querySelector("#ContactForm-phone");
-                    var contactIti = window.intlTelInput(contactPhoneInput, {
-                        initialCountry: "de",
-                        separateDialCode: true,
-                        preferredCountries: ["de", "at", "ch"],
-                        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js",
-                        allowDropdown: true,
-                        autoPlaceholder: "polite",
-                        customContainer: "phone-input-container",
-                        formatOnDisplay: true,
-                        dropdownContainer: document.body
-                    });
-
-                    // Store the full phone number including country code on form submission
-                    $('#ContactForm').on('submit', function() {
-                        if (contactIti) {
-                            const phoneNumber = contactIti.getNumber();
-                            $(contactPhoneInput).val(phoneNumber);
-                        }
-                    });
-
-                    // Fix für eventuelles Styling-Problem mit dem Container
-                    setTimeout(function() {
-                        $('.iti').css('width', '100%');
-                    }, 100);
-                }
-            }
 
             // Initialize country dropdown with all countries
             function initCountryDropdown() {
@@ -501,7 +443,7 @@
                 // console.log('Predictive Search Limiter wird initialisiert...');
             }
 
-            // Textarea Resize ist komplett deaktiviert
+            // Textarea Resize ist komplett deaktiviert, aber Scrolling erlaubt
             function disableTextareaResize() {
                 // console.log('Textarea Resize wird deaktiviert...');
 
@@ -516,9 +458,9 @@
                     );
 
                     textareas.forEach(function(textarea) {
-                        // Deaktiviere Resize komplett
+                        // Deaktiviere Resize komplett, aber erlaube Scrolling
                         textarea.style.resize = 'none';
-                        textarea.style.overflow = 'hidden';
+                        textarea.style.overflow = 'auto';
 
                         // console.log('Textarea Resize deaktiviert für:', textarea.id || 'unnamed textarea');
                     });
@@ -726,16 +668,6 @@
             function initialize() {
                 // console.log('Initializing contact form components...');
 
-                // Warten bis die Bibliothek geladen ist
-                if (typeof window.intlTelInput === 'undefined') {
-                    // console.log('intlTelInput not loaded yet, waiting...');
-                    setTimeout(initialize, 200);
-                    return;
-                }
-
-                // Initialize international telephone input
-                initIntlTelInput();
-
                 // Initialize country dropdown
                 initCountryDropdown();
 
@@ -936,12 +868,17 @@ class AddToCartManager {
     }
 
     isAddToCartForm(form) {
+        // CRITICAL: Ignore contact forms explicitly
+        if (form.action && form.action.includes('/contact')) {
+            return false;
+        }
+
         // Verschiedene Add-to-Cart Formular-Typen erkennen
         return form.classList.contains('card-product__add-form') ||
+               form.action?.includes('/cart/add') ||
                form.querySelector('[name="id"]') ||
                form.closest('product-form') ||
-               form.dataset.type === 'add-to-cart-form' ||
-               form.querySelector('button[type="submit"]')?.textContent?.toLowerCase().includes('warenkorb');
+               form.dataset.type === 'add-to-cart-form';
     }
 
     async handleAddToCart(form) {

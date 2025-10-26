@@ -14,9 +14,11 @@ footer {
                 align-items: center;
                 @media screen and (max-width: 749px) {
                     flex-direction: column;
-
                     .footer-block {
                         width: 100% !important; // Überschreibe die spezifische Breite auf Mobilgeräten
+                        .inline-richtext, .rte {
+                            text-align: center;
+                        }
                     }
                 }
                 .footer-block__brand-info {

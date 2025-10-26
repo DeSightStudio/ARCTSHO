@@ -367,7 +367,7 @@
   </head>
 
   <body
-    class="gradient{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}"
+    class="gradient{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}{% if request.page_type %} body-{{ request.page_type }}{% endif %}{% if page.handle %} body-{{ page.handle }}{% endif %}"
     data-locale="{{ request.locale.iso_code }}"
   >
     {% if template == 'cart' %}
@@ -471,16 +471,6 @@
     {%- endif -%}
 
     <!-- Alle Cart-Funktionalität ist jetzt in dist.js integriert -->
-
-    <!-- intl-tel-input Bibliothek für internationale Telefonnummern -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/css/intlTelInput.css"
-      media="print"
-      onload="this.media='all'"
-    >
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/intlTelInput.min.js" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js" defer></script>
 
     <!-- Pop-Up Komponenten -->
     {% render 'popups' %}
