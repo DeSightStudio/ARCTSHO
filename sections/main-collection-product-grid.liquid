@@ -44,10 +44,18 @@
   -%}
 
   {% comment %}
-    WICHTIG: Shopify Native Pagination
-    Verwendet section.settings.products_per_page aus Theme Settings
+    WICHTIG: Shopify Native Pagination - HYBRID-LÖSUNG
+    <100 Produkte: Zeige alle auf einer Seite (paginate by 1000)
+    ≥100 Produkte: Verwende section.settings.products_per_page
   {% endcomment %}
-  {%- paginate collection.products by section.settings.products_per_page -%}
+  {%- liquid
+    if collection.all_products_count < 100
+      assign paginate_by = 1000
+    else
+      assign paginate_by = section.settings.products_per_page
+    endif
+  -%}
+  {%- paginate collection.products by paginate_by -%}
     <div class="{% if section.settings.filter_type == 'vertical' %} facets-vertical page-width{% endif %}">
       {{ 'component-facets.css' | asset_url | stylesheet_tag }}
       <script src="{{ 'facets.js' | asset_url }}" defer="defer"></script>
@@ -74,6 +82,9 @@
         class="product-grid-container{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
         id="ProductGridContainer"
         data-products-per-page="{{ section.settings.products_per_page }}"
+        data-total-products="{{ collection.all_products_count }}"
+        data-current-page="{{ paginate.current_page }}"
+        data-total-pages="{{ paginate.pages }}"
         {% if settings.animations_reveal_on_scroll %}
           data-cascade
         {% endif %}
@@ -97,9 +108,14 @@
             class="collection{% if section.settings.filter_type != 'vertical' %} page-width{% endif %}"
           >
             <div class="loading-overlay gradient"></div>
-            {% comment %} Pagination oberhalb der Produkte {% endcomment %}
+            {% comment %} Pagination oberhalb der Produkte - nur bei ≥100 Produkten {% endcomment %}
             {%- if paginate.pages > 1 -%}
-              {%- render 'pagination', paginate: paginate -%}
+              <div
+                class="pagination-wrapper-top"
+                data-pagination-mode="{% if collection.all_products_count >= 100 %}standard{% else %}infinite{% endif %}"
+              >
+                {%- render 'pagination', paginate: paginate -%}
+              </div>
             {%- endif -%}
 
             <ul
@@ -156,9 +172,32 @@
               {%- endfor -%}
             </ul>
 
+            {% comment %} Pagination unterhalb der Produkte - nur bei ≥100 Produkten {% endcomment %}
             {%- if paginate.pages > 1 -%}
-              {%- render 'pagination', paginate: paginate -%}
+              <div
+                class="pagination-wrapper-bottom"
+                data-pagination-mode="{% if collection.all_products_count >= 100 %}standard{% else %}infinite{% endif %}"
+              >
+                {%- render 'pagination', paginate: paginate -%}
+              </div>
             {%- endif -%}
+
+            {% comment %} Infinite Scroll Loading Indicator {% endcomment %}
+            <div class="infinite-scroll-loading" style="display: none;">
+              <div class="loading-overlay gradient">
+                <div class="loading__spinner">
+                  <svg
+                    aria-hidden="true"
+                    focusable="false"
+                    class="spinner"
+                    viewBox="0 0 66 66"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle class="path" fill="none" stroke-width="6" cx="33" cy="33" r="30"></circle>
+                  </svg>
+                </div>
+              </div>
+            </div>
           </div>
         {%- endif -%}
       </div>

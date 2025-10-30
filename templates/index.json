@@ -33,7 +33,7 @@
         "collection_TLGUHH": {
           "type": "collection",
           "settings": {
-            "collection": "training"
+            "collection": "segments-ivory"
           }
         },
         "collection_BrGDqC": {
@@ -57,7 +57,7 @@
         "collection_DGNFwq": {
           "type": "collection",
           "settings": {
-            "collection": "collector-s-pieces"
+            "collection": "collectors-pieces"
           }
         },
         "collection_Er7dTB": {
@@ -151,7 +151,7 @@
         "featured_collection_hrxhNQ": {
           "type": "featured_collection",
           "settings": {
-            "collection": "training"
+            "collection": "segments-ivory"
           }
         },
         "featured_collection_4EKGm7": {
@@ -175,7 +175,7 @@
         "featured_collection_DizKEf": {
           "type": "featured_collection",
           "settings": {
-            "collection": "collector-s-pieces"
+            "collection": "collectors-pieces"
           }
         },
         "featured_collection_FCdkgK": {

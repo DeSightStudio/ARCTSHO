@@ -747,11 +747,27 @@ class MasterCartSystem {
   }
 
   /**
-   * Setup Infinite Scroll
+   * Setup Infinite Scroll - HYBRID-LÖSUNG (VEREINFACHT)
+   * <100 Produkte: Alle auf einer Seite (via Liquid paginate by 1000)
+   * ≥100 Produkte: Standard Pagination
+   *
+   * KEINE JavaScript-Logik mehr nötig - alles wird in Liquid gehandhabt!
    */
   setupInfiniteScroll() {
-    console.log('🚀 Setup Infinite Scroll...');
-    // Infinite Scroll Funktionalität hier
+    const container = document.querySelector('#ProductGridContainer');
+    if (!container) return;
+
+    const totalProducts = parseInt(container.dataset.totalProducts) || 0;
+    const totalPages = parseInt(container.dataset.totalPages) || 1;
+
+    console.log(`📊 Collection: ${totalProducts} Produkte, ${totalPages} Seiten`);
+
+    // Info-Log für Debugging
+    if (totalProducts < 100) {
+      console.log('✅ Alle Produkte auf einer Seite (<100 total)');
+    } else {
+      console.log('✅ Standard Pagination (≥100 Produkte)');
+    }
   }
 
   /**
