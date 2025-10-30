@@ -17,8 +17,14 @@
 {{ 'component-swatch.css' | asset_url | stylesheet_tag }}
 
 {%- liquid
-  # Standardsortierung: Price high to low (price-descending)
-  assign default_sort = 'price-descending'
+  # Dynamische Standardsortierung basierend auf Collection-Größe:
+  # - Kleine Collections (<100): price-descending → Liquid überschreibt mit NEU → Preis → SOLD
+  # - Große Collections (≥100): created-descending → Damit NEU Produkte auf Seite 1 sind
+  if collection.all_products_count >= 100
+    assign default_sort = 'created-descending'
+  else
+    assign default_sort = 'price-descending'
+  endif
   assign sort_by = results.sort_by | default: default_sort
   assign total_active_values = 0
   assign total_active_filters = 0

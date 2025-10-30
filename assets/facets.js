@@ -425,7 +425,9 @@ function createProductSkeleton() {
 
 // Sortiere Produkte beim ersten Laden der Seite
 document.addEventListener('DOMContentLoaded', () => {
-  // WICHTIG: Standardsortierung auf "price-descending" setzen, wenn kein sort_by Parameter vorhanden ist
+  // WICHTIG: Dynamische Standardsortierung basierend auf Collection-Größe
+  // - Kleine Collections (<100): price-descending → Liquid überschreibt mit NEU → Preis → SOLD
+  // - Große Collections (≥100): created-descending → Damit NEU Produkte auf Seite 1 sind
   const urlParams = new URLSearchParams(window.location.search);
   const currentSortBy = urlParams.get('sort_by');
 
@@ -433,13 +435,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const isCollectionPage = document.querySelector('#product-grid') && !window.location.pathname.includes('/search');
 
   if (isCollectionPage && !currentSortBy) {
-    // Keine Sortierung in URL -> Setze Standardsortierung "price-descending" in den Dropdowns
-    console.log('🔄 Keine Sortierung gefunden - setze Standardsortierung: price-descending');
+    // Prüfe Collection-Größe aus dem data-Attribut
+    const productGrid = document.querySelector('#product-grid');
+    const collectionSize = productGrid ? parseInt(productGrid.dataset.collectionSize || '0') : 0;
+
+    // Dynamische Sortierung
+    const defaultSort = collectionSize >= 100 ? 'created-descending' : 'price-descending';
 
     // Setze den Wert in allen Sort-Dropdowns
     const sortSelects = document.querySelectorAll('select[name="sort_by"]');
     sortSelects.forEach(select => {
-      select.value = 'price-descending';
+      select.value = defaultSort;
     });
 
     // Zeige Skeleton Loading während des Ladens
