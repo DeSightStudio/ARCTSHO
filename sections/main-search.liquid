@@ -346,21 +346,7 @@
               >
                 {%- assign skip_card_product_styles = false -%}
 
-                {% comment %} Sortiere Suchergebnisse: Verfügbare Produkte zuerst, dann ausverkaufte {% endcomment %}
-                {% assign product_results = search.results | where: 'object_type', 'product' %}
-                {% assign available_products = product_results | where: 'available', true %}
-                {% assign soldout_products = product_results | where: 'available', false %}
-                {% assign other_results = '' | split: ',' %}
-
-                {% for item in search.results %}
-                  {% unless item.object_type == 'product' %}
-                    {% assign other_results = other_results | concat: item %}
-                  {% endunless %}
-                {% endfor %}
-
-                {% assign sorted_results = available_products | concat: soldout_products | concat: other_results %}
-
-                {%- for item in sorted_results -%}
+                {%- for item in search.results -%}
                   {% comment %} KRITISCH: Certificate of Origin (SKU 2226) niemals in Suchergebnissen anzeigen {% endcomment %}
                   {% assign is_certificate = false %}
                   {% if item.object_type == 'product' %}

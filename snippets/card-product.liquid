@@ -43,7 +43,6 @@
   -%}
   <div
     class="card-wrapper product-card-wrapper underline-links-hover"
-    data-created-at="{{ card_product.created_at | date: '%Y-%m-%dT%H:%M:%SZ' }}"
     data-product-id="{{ card_product.id }}"
   >
     <div
@@ -66,7 +65,24 @@
           <div class="card__media{% if image_shape and image_shape != 'default' %} shape--{{ image_shape }} color-{{ settings.card_color_scheme }} gradient{% endif %}">
             {%- comment -%} Badge über dem Bild {%- endcomment -%}
             <div class="card__badge {{ settings.badge_position }}">
-              {%- if card_product.available == false -%}
+              {%- comment -%} Prüfe ob Produkt NEU ist (< 5 Tage alt) {%- endcomment -%}
+              {%- assign now_seconds = 'now' | date: '%s' | plus: 0 -%}
+              {%- assign product_created_seconds = card_product.created_at | date: '%s' | plus: 0 -%}
+              {%- assign product_age_seconds = now_seconds | minus: product_created_seconds -%}
+              {%- assign five_days_seconds = 432000 -%}
+              {%- assign is_new = false -%}
+              {%- if product_age_seconds <= five_days_seconds and card_product.available -%}
+                {%- assign is_new = true -%}
+              {%- endif -%}
+
+              {%- if is_new -%}
+                <span
+                  id="NewBadge-{{ section_id }}-{{ card_product.id }}"
+                  class="badge badge--new"
+                >
+                  {{ 'products.product.new' | t }}
+                </span>
+              {%- elsif card_product.available == false -%}
                 <span
                   id="StandardBadge-{{ section_id }}-{{ card_product.id }}"
                   class="verkauft-badge-rot"
@@ -81,8 +97,6 @@
                   {{- 'products.product.on_sale' | t -}}
                 </span>
               {%- endif -%}
-
-              {% comment %} Neu Badge wird jetzt durch JavaScript basierend auf created_at hinzugefügt {% endcomment %}
             </div>
             <div class="media media--transparent media--hover-effect">
               {% comment %}theme-check-disable ImgLazyLoading{% endcomment %}
