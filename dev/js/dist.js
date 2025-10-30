@@ -481,7 +481,6 @@
                             // CSS wird die Farbe über fill: $mainColor setzen
                             chevronDesktop.innerHTML = '<svg class="icon icon-caret" viewBox="0 0 10 6"><path fill="currentColor" fill-rule="evenodd" d="M9.354.646a.5.5 0 0 0-.708 0L5 4.293 1.354.646a.5.5 0 0 0-.708.708l4 4a.5.5 0 0 0 .708 0l4-4a.5.5 0 0 0 0-.708" clip-rule="evenodd"/></svg>';
                             desktopCurrencyButton.appendChild(chevronDesktop);
-                            console.log('✅ Desktop chevron added');
                         }
 
                         // Mobile currency selector - Bessere Struktur
@@ -514,8 +513,6 @@
                                 // Alten Inhalt ersetzen
                                 mobileCurrencyButton.innerHTML = '';
                                 mobileCurrencyButton.appendChild(contentWrapper);
-
-                                console.log('✅ Mobile chevron added with restructured layout');
                             }
                         }
                     }
@@ -533,7 +530,6 @@
                                     } else {
                                         chevron.style.transform = 'rotate(180deg)';
                                     }
-                                    console.log('💫 Chevron rotated UP (dropdown opened)');
                                 } else {
                                     // Desktop: translateY + rotate, Mobile: nur rotate
                                     if (button.closest('.desktop-bucks-currency-wrapper')) {
@@ -541,7 +537,6 @@
                                     } else {
                                         chevron.style.transform = 'rotate(0deg)';
                                     }
-                                    console.log('💫 Chevron rotated DOWN (dropdown closed)');
                                 }
                             }
                         }
@@ -791,11 +786,9 @@
                     // Direkt einen Click-Event simulieren
                     // console.log('Simuliere Klick-Event für VAT-ID-Button...');
                     vatIdButton.addEventListener('click', function(e) {
-                        console.log('VAT-ID-Button wurde geklickt');
                         if (typeof window.MicroModal !== 'undefined') {
                             try {
                                 window.MicroModal.show('modal-cart-vat-id');
-                                console.log('MicroModal.show für "modal-cart-vat-id" aufgerufen');
                             } catch (err) {
                                 console.error('Fehler beim Anzeigen des Modals:', err);
                             }
@@ -841,7 +834,6 @@ class AddToCartManager {
 
         this.setupEventListeners();
         this.isInitialized = true;
-        console.log('AddToCartManager initialisiert');
     }
 
     setupEventListeners() {
@@ -895,8 +887,6 @@ class AddToCartManager {
             if (!productId || !variantId) {
                 throw new Error('Keine gültige Produkt-ID oder Varianten-ID gefunden');
             }
-
-            console.log('AddToCartManager: IDs gefunden', { productId, variantId });
 
             // Prüfe ob bereits im Warenkorb
             const isInCart = await this.checkIfInCart(productId, variantId);
@@ -983,8 +973,6 @@ class AddToCartManager {
             params.append(key, value);
         }
 
-        console.log('AddToCartManager: Request Body:', params.toString());
-
         const response = await fetch(`${routes.cart_add_url}.js`, {
             method: 'POST',
             headers: {
@@ -1008,8 +996,6 @@ class AddToCartManager {
     }
 
     async handleAddToCartSuccess(form, response, productId, variantId) {
-        console.log('AddToCartManager: handleAddToCartSuccess called with response:', response);
-
         // CartStateManager aktualisieren
         if (window.cartStateManager) {
             window.cartStateManager.updateCartData(response);
@@ -1019,12 +1005,10 @@ class AddToCartManager {
         this.updateButtonToViewCart(form);
 
         // Cart-Drawer aktualisieren und öffnen - mit Verzögerung für bessere Synchronisation
-        console.log('AddToCartManager: Updating cart drawer...');
         await this.updateCartDrawer(response);
 
         // Kurze Verzögerung vor dem Öffnen um sicherzustellen, dass Rendering abgeschlossen ist
         setTimeout(() => {
-            console.log('AddToCartManager: Opening cart drawer...');
             this.openCartDrawer();
         }, 100);
 
@@ -1088,26 +1072,20 @@ class AddToCartManager {
             return;
         }
 
-        console.log('AddToCartManager: updateCartDrawer called with response:', response);
-
         // Entferne is-empty Klasse vom cart-drawer, da wir jetzt Produkte haben
         cartDrawer.classList.remove('is-empty');
 
         // Prüfe ob die Response bereits Sections enthält
         if (response.sections && response.sections['cart-drawer']) {
-            console.log('AddToCartManager: Rendere Cart-Drawer mit Sections aus Response');
             cartDrawer.renderContents(response);
         } else {
             // Fallback: Hole aktuelle Cart-Daten und rendere den Drawer
-            console.log('AddToCartManager: Keine Sections in Response - hole Cart-Daten');
             await this.fetchAndRenderCartDrawer(response);
         }
     }
 
     async fetchAndRenderCartDrawer(originalCartData = null) {
         try {
-            console.log('AddToCartManager: Hole Cart-Daten und Sections...');
-
             // Verwende ursprüngliche Cart-Daten wenn verfügbar, sonst hole neue
             let cartData = originalCartData;
             if (!cartData) {
@@ -1117,8 +1095,6 @@ class AddToCartManager {
                 }
                 cartData = await cartResponse.json();
             }
-
-            console.log('AddToCartManager: Cart-Daten erhalten:', cartData);
 
             // Versuche verschiedene Section-URLs
             let sectionsData = null;
@@ -1154,8 +1130,6 @@ class AddToCartManager {
                 sections: sectionsData
             };
 
-            console.log('AddToCartManager: Kombinierte Daten:', combinedData);
-
             const cartDrawer = document.querySelector('cart-drawer');
             if (cartDrawer && typeof cartDrawer.renderContents === 'function') {
                 cartDrawer.renderContents(combinedData);
@@ -1171,8 +1145,6 @@ class AddToCartManager {
 
     async fallbackCartDrawerUpdate() {
         try {
-            console.log('AddToCartManager: Fallback - lade Cart-Drawer über Section-Reload');
-
             // Hole die komplette Cart-Drawer Section
             const response = await fetch(`/?section_id=cart-drawer`);
             if (!response.ok) {
@@ -1191,8 +1163,6 @@ class AddToCartManager {
                 // Ersetze den Inhalt des aktuellen Cart-Drawers
                 currentCartDrawer.innerHTML = newCartDrawer.innerHTML;
                 currentCartDrawer.className = newCartDrawer.className;
-
-                console.log('AddToCartManager: Cart-Drawer erfolgreich über Fallback aktualisiert');
             }
         } catch (error) {
             console.error('AddToCartManager: Fallback fehlgeschlagen:', error);
@@ -1313,8 +1283,6 @@ function initializeSlickSlider() {
 
         // Clean up any problematic formatting from copy/paste (Word, etc.)
         cleanupCopyPasteFormatting();
-
-        console.log('Collection Slider initialized with autoplay:', autoplay, 'speed:', speed + 's');
     }
 }
 
@@ -1369,8 +1337,6 @@ function cleanupCopyPasteFormatting() {
                 $span.replaceWith($innerSpan.html());
             }
         });
-
-        console.log('Cleaned up copy/paste formatting in category-details');
     });
 }
 
@@ -1450,6 +1416,4 @@ class MobileImageClickHandler {
 document.addEventListener('DOMContentLoaded', function() {
     window.addToCartManager = new AddToCartManager();
     window.mobileImageClickHandler = new MobileImageClickHandler();
-    console.log('AddToCartManager: Global verfügbar als window.addToCartManager');
-    console.log('MobileImageClickHandler: Initialisiert für Collection Grid Mobile View');
 });

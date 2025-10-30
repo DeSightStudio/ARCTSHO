@@ -28,7 +28,6 @@
 
     // Prüfen, ob MicroModal bereits initialisiert wurde
     if (window._microModalInitialized) {
-      console.log('MicroModal bereits initialisiert, überspringe Initialisierung');
       return;
     }
 
@@ -56,8 +55,6 @@
 
       // Global speichern für andere Event-Handler
       window.savedScrollPosition = scrollPosition;
-
-      console.log('🔒 Sperre Body-Scroll, aktuelle Position:', scrollPosition);
 
       // CSS Custom Property für Scroll-Position setzen
       document.documentElement.style.setProperty('--scroll-position', `-${scrollPosition}px`);
@@ -88,8 +85,6 @@
                                parseInt(document.body.getAttribute('data-scroll-position')) ||
                                0;
 
-      console.log('🔓 Entsperre Body-Scroll, gespeicherte Position:', savedScrollPosition);
-
       // Body-Scroll wiederherstellen
       document.body.style.overflow = '';
       document.body.style.position = '';
@@ -116,12 +111,9 @@
       // Zusätzliche Sicherheit: Nach kurzer Zeit nochmal prüfen
       setTimeout(() => {
         if (window.pageYOffset !== savedScrollPosition) {
-          console.log('🔄 Korrigiere Scroll-Position:', savedScrollPosition);
           window.scrollTo(0, savedScrollPosition);
         }
       }, 50);
-
-      console.log('✅ Scroll-Position wiederhergestellt auf:', savedScrollPosition);
     };
 
     // Globale Funktion zum Zurücksetzen des Body-Scrollings (Fallback)
@@ -133,7 +125,6 @@
       document.body.style.position = '';
       document.body.style.top = '';
       document.body.style.width = '';
-      console.log('Body-Scrolling explizit wiederhergestellt (Fallback)');
     };
 
     // Globale Funktionen verfügbar machen
@@ -145,16 +136,9 @@
     window.restoreScrollPosition = function() {
       const savedPos = window.savedScrollPosition || 0;
       const currentPos = window.pageYOffset || document.documentElement.scrollTop || 0;
-      console.log('🔄 Globale Scroll-Wiederherstellung:');
-      console.log('   - Gespeicherte Position:', savedPos);
-      console.log('   - Aktuelle Position:', currentPos);
-      console.log('   - scrollPosition Variable:', scrollPosition);
 
       if (savedPos > 0) {
         window.scrollTo(0, savedPos);
-        console.log('✅ Scroll-Position wiederhergestellt auf:', savedPos);
-      } else {
-        console.warn('⚠️ Keine gültige Scroll-Position gespeichert!');
       }
     };
 
@@ -172,7 +156,6 @@
               const bodyIsLocked = document.body.classList.contains('modal-open');
 
               if (openModals.length === 0 && bodyIsLocked) {
-                console.log('🔍 MutationObserver BACKUP: Body noch gesperrt, entsperre jetzt');
                 unlockBodyScroll();
               }
             }, 1000); // Längere Wartezeit - nur als Backup
@@ -200,8 +183,6 @@
         const currentScroll = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
         window.savedScrollPosition = currentScroll;
         scrollPosition = currentScroll;
-        console.log(`🎯 TRIGGER GEKLICKT (${trigger.tagName}): Scroll-Position gespeichert:`, currentScroll);
-        console.log(`🎯 Trigger Element:`, trigger);
       }
     }, true); // useCapture = true für frühe Erfassung
 
@@ -214,7 +195,6 @@
           const currentScroll = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
           window.savedScrollPosition = currentScroll;
           scrollPosition = currentScroll;
-          console.log(`🎯 HASH-LINK GEKLICKT (#${hash}): Scroll-Position gespeichert:`, currentScroll);
         }
       }
     }, true);
@@ -223,9 +203,8 @@
     let lastScrollPosition = 0;
     window.addEventListener('scroll', () => {
       const currentScroll = window.pageYOffset || document.documentElement.scrollTop || 0;
-      if (Math.abs(currentScroll - lastScrollPosition) > 10) { // Nur bei größeren Änderungen loggen
+      if (Math.abs(currentScroll - lastScrollPosition) > 10) {
         lastScrollPosition = currentScroll;
-        console.log('📜 Scroll-Position geändert auf:', currentScroll);
       }
     });
 
@@ -233,14 +212,11 @@
     const initialScroll = window.pageYOffset || document.documentElement.scrollTop || 0;
     window.savedScrollPosition = initialScroll;
     scrollPosition = initialScroll;
-    console.log('🚀 Initial Scroll-Position:', initialScroll);
 
     // Verbesserte Funktion zum Schließen mit Animation
     const closeWithAnimation = (modalId) => {
       const modal = document.getElementById(modalId);
       if (!modal || animatingModals[modalId]) return;
-
-      console.log(`Animation zum Schließen von ${modalId} gestartet`);
 
       // Markiere dieses Modal als "in Animation"
       animatingModals[modalId] = true;
@@ -265,8 +241,6 @@
 
           // Stelle Body-Scroll wieder her
           unlockBodyScroll();
-
-          console.log(`Animation zum Schließen von ${modalId} abgeschlossen`);
         } catch (error) {
           console.error(`Fehler beim Schließen von ${modalId}:`, error);
           // Fallback: Stelle sicher, dass Body-Scrolling wiederhergestellt wird
@@ -287,13 +261,10 @@
         awaitCloseAnimation: false, // Deaktiviert, da wir eigene Animation verwenden
         // Callbacks vereinfacht
         onShow: modal => {
-          console.log(`${modal.id} wird geöffnet`);
-
           // SOFORT Scroll-Position speichern bevor irgendetwas anderes passiert
           const currentScroll = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
           window.savedScrollPosition = currentScroll;
           scrollPosition = currentScroll;
-          console.log(`🎯 MODAL ÖFFNET: Aktuelle Scroll-Position gespeichert:`, currentScroll);
 
           // Stelle sicher, dass keine Animations-Klasse vorhanden ist
           modal.classList.remove('is-closing');
@@ -311,10 +282,6 @@
           }));
         },
         onClose: modal => {
-          console.log(`${modal.id} wird durch MicroModal geschlossen`);
-
-
-
           // Stelle Body-Scroll wieder her
           unlockBodyScroll();
           return true;
@@ -323,7 +290,6 @@
 
     // Markiere als initialisiert
     window._microModalInitialized = true;
-    console.log('MicroModal erfolgreich initialisiert');
 
     } catch (error) {
       console.error('Fehler beim Initialisieren von MicroModal:', error);
@@ -355,8 +321,6 @@
 
     // Globale Funktion zum Schließen aller Modals und Zurücksetzen des Body-Scrollings
     window.closeAllModalsAndResetScroll = () => {
-      console.log('Schließe alle Modals und setze Body-Scrolling zurück');
-
       // Schließe alle geöffneten Modals
       const openModals = document.querySelectorAll('.modal[aria-hidden="false"]');
       openModals.forEach(modal => {
@@ -369,8 +333,6 @@
 
       // Stelle Body-Scrolling sicher wieder her
       unlockBodyScroll();
-
-      console.log('Alle Modals geschlossen und Body-Scrolling wiederhergestellt');
     };
 
     // Event-Listener für Page-Unload (Sicherheit)
@@ -386,7 +348,6 @@
     // Funktion zum Hinzufügen von Event-Listenern zu VAT-Info-Icons
     function attachVatIconListeners() {
       const vatInfoIcons = document.querySelectorAll('.vat-info-icon[data-micromodal-trigger]:not([data-listener-attached])');
-      console.log('Gefundene neue VAT-Info-Icons:', vatInfoIcons.length);
 
       vatInfoIcons.forEach(icon => {
         icon.addEventListener('click', function(e) {
@@ -394,7 +355,6 @@
           e.stopPropagation();
 
           const modalId = this.getAttribute('data-micromodal-trigger');
-          console.log('Direkter VAT-Info-Icon Klick:', modalId);
 
           if (modalId) {
             try {
@@ -426,7 +386,6 @@
         // Finde das übergeordnete Modal
         const modal = closeButton.closest('.modal');
         if (modal && modal.id) {
-          console.log(`Schließen-Button für ${modal.id} geklickt`);
           // Verwende die animierte Schließen-Funktion
           closeWithAnimation(modal.id);
         }
@@ -440,7 +399,6 @@
         if (e.target === overlay) {
           const modal = overlay.closest('.modal');
           if (modal && modal.id) {
-            console.log(`Overlay-Klick für ${modal.id}`);
             // Verwende die animierte Schließen-Funktion
             closeWithAnimation(modal.id);
           }
@@ -476,7 +434,6 @@
         e.preventDefault();
         e.stopPropagation();
         const popupType = popupTrigger.getAttribute('data-popup');
-        console.log('Data-popup Trigger geklickt:', popupType);
         try {
           MicroModal.show(`modal-${popupType}`);
         } catch (error) {
@@ -545,7 +502,6 @@
           for (const [popupType, patterns] of Object.entries(popupPatterns)) {
             for (const pattern of patterns) {
               if (spanText.includes(pattern.toLowerCase())) {
-                console.log(`Pattern-Match gefunden: "${spanText}" enthält "${pattern}" -> ${popupType}`);
                 matchedPopupType = popupType;
                 break;
               }
@@ -556,10 +512,8 @@
           // Spezielle Behandlung für französische Begriffe mit Apostrophen
           if (!matchedPopupType) {
             if (spanText.includes('certificat') && spanText.includes('origine')) {
-              console.log(`Spezielle Erkennung: Französisches Certificate of Origin -> ${spanText}`);
               matchedPopupType = 'certificate-origin';
             } else if (spanText.includes('certificat') && spanText.includes('décharge')) {
-              console.log(`Spezielle Erkennung: Französisches Clearance Certificate -> ${spanText}`);
               matchedPopupType = 'clearance-certificate';
             }
           }
@@ -579,7 +533,6 @@
             newSpan.addEventListener('click', (e) => {
               e.preventDefault();
               e.stopPropagation();
-              console.log('Reparierter Popup-Link geklickt:', matchedPopupType);
               try {
                 MicroModal.show(`modal-${matchedPopupType}`);
               } catch (error) {
@@ -634,15 +587,12 @@
             newSpan.addEventListener('click', (e) => {
               e.preventDefault();
               e.stopPropagation();
-              console.log('Hash-Span Popup-Link geklickt:', detectedPopupType);
               try {
                 MicroModal.show(`modal-${detectedPopupType}`);
               } catch (error) {
                 console.error('Fehler beim Öffnen des Hash-Span Popup-Modals:', detectedPopupType, error);
               }
             });
-
-            console.log(`Hash-Span Popup-Link repariert: "${span.textContent.trim()}" -> ${detectedPopupType}`);
           }
         }
       });
@@ -706,7 +656,6 @@
             newSpan.addEventListener('click', (e) => {
               e.preventDefault();
               e.stopPropagation();
-              console.log('Hash-URL Span geklickt:', popupType);
               try {
                 MicroModal.show(`modal-${popupType}`);
               } catch (error) {
@@ -764,7 +713,6 @@
         if (popupType) {
           e.preventDefault();
           e.stopPropagation();
-          console.log('Reparierter Span über Event-Delegation geklickt:', popupType);
           try {
             MicroModal.show(`modal-${popupType}`);
           } catch (error) {
@@ -786,7 +734,6 @@
 
         const modalId = vatInfoIcon.getAttribute('data-micromodal-trigger');
         if (modalId) {
-          console.log('VAT-Info-Icon geklickt, öffne Modal:', modalId);
           try {
             MicroModal.show(modalId);
           } catch (error) {
@@ -804,7 +751,6 @@
 
         const modalId = microModalTrigger.getAttribute('data-micromodal-trigger');
         if (modalId) {
-          console.log('MicroModal-Trigger geklickt, öffne Modal:', modalId);
           try {
             MicroModal.show(modalId);
           } catch (error) {
@@ -828,7 +774,6 @@
 
           // Prüfen, ob dieser Popup-Typ existiert
           if (popupTypes.includes(popupType)) {
-            console.log('Hash-URL Link geklickt:', popupType);
             MicroModal.show(`modal-${popupType}`);
           }
         }
@@ -858,7 +803,6 @@
           if (popupType && popupTypes.includes(popupType)) {
             e.preventDefault();
             e.stopPropagation();
-            console.log('Unreparierter Span-Link geklickt, öffne Popup:', popupType);
 
             // Markiere als repariert für zukünftige Klicks
             e.target.setAttribute('data-popup-repaired', 'true');
@@ -877,7 +821,6 @@
         const openModals = document.querySelectorAll('.modal[aria-hidden="false"]');
         openModals.forEach(modal => {
           if (modal.id && !animatingModals[modal.id]) {
-            console.log(`ESC-Taste gedrückt, schließe ${modal.id}`);
             // Verwende die animierte Schließen-Funktion
             closeWithAnimation(modal.id);
           }
@@ -917,8 +860,6 @@
         endDate: announcementModal.dataset.endDate || null
       };
 
-      console.log('Ankündigungs-Pop-Up Einstellungen:', settings);
-
       // Prüfe ob nur auf Startseite angezeigt werden soll
       if (settings.homepageOnly) {
         const isHomepage = window.location.pathname === '/' ||
@@ -929,7 +870,6 @@
                           window.location.pathname === '/fr/';
 
         if (!isHomepage) {
-          console.log('Ankündigungs-Pop-Up: Nicht auf Startseite, wird nicht angezeigt');
           return;
         }
       }
@@ -938,18 +878,12 @@
       const now = new Date();
       const nowCET = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/Vienna' }));
 
-      console.log('Aktuelle Zeit (CET/CEST):', nowCET.toLocaleString('de-AT'));
-
       if (settings.startDate) {
         // Startdatum in CET interpretieren (00:00:00 Uhr)
         const startDateCET = new Date(settings.startDate + 'T00:00:00');
         const startDateCETLocal = new Date(startDateCET.toLocaleString('en-US', { timeZone: 'Europe/Vienna' }));
 
         if (nowCET < startDateCETLocal) {
-          console.log('Ankündigungs-Pop-Up: Startdatum noch nicht erreicht', {
-            jetzt: nowCET.toLocaleString('de-AT'),
-            start: startDateCETLocal.toLocaleString('de-AT')
-          });
           return;
         }
       }
@@ -960,10 +894,6 @@
         const endDateCETLocal = new Date(endDateCET.toLocaleString('en-US', { timeZone: 'Europe/Vienna' }));
 
         if (nowCET > endDateCETLocal) {
-          console.log('Ankündigungs-Pop-Up: Enddatum überschritten', {
-            jetzt: nowCET.toLocaleString('de-AT'),
-            ende: endDateCETLocal.toLocaleString('de-AT')
-          });
           return;
         }
       }
@@ -973,7 +903,6 @@
       const alreadyShown = sessionStorage.getItem(sessionKey);
 
       if (alreadyShown === 'true') {
-        console.log('Ankündigungs-Pop-Up: Bereits in dieser Session angezeigt');
         return;
       }
 
@@ -983,7 +912,6 @@
           MicroModal.show('modal-announcement');
           // Setze Session-Flag (bleibt nur bis Browser geschlossen wird)
           sessionStorage.setItem(sessionKey, 'true');
-          console.log('Ankündigungs-Pop-Up angezeigt (Session-Flag gesetzt)');
         } catch (error) {
           console.error('Fehler beim Anzeigen des Ankündigungs-Pop-Ups:', error);
         }

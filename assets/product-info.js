@@ -147,9 +147,7 @@ if (!customElements.get('product-info')) {
             document.querySelector(`#${targetId}`)?.focus();
           })
           .catch((error) => {
-            if (error.name === 'AbortError') {
-              console.log('Fetch aborted by user');
-            } else {
+            if (error.name !== 'AbortError') {
               console.error(error);
             }
           });
@@ -450,14 +448,11 @@ if (!customElements.get('product-info')) {
 
       handleCartUpdate(event) {
         // Beim Warenkorb-Update den Produkt-Status aktualisieren
-        console.log('Warenkorb aktualisiert - aktualisiere Produktstatus...');
         this.checkProductInCart();
       }
 
       handleCartItemRemoved(event) {
         // Wenn ein Artikel aus dem Warenkorb entfernt wurde, Produktstatus aktualisieren
-        console.log('Artikel aus dem Warenkorb entfernt - aktualisiere Produktstatus...', event.detail);
-
         // Sofort den Button-Status aktualisieren, ohne auf den Server-Aufruf zu warten
         // Besonders wichtig für Add-Ons wie Certificate of Origin
         const productForms = document.querySelectorAll('product-form');
@@ -466,7 +461,6 @@ if (!customElements.get('product-info')) {
 
           // Wenn es die gleiche Variante ist, die entfernt wurde
           if (variantId === event.detail.variantId) {
-            console.log('Entfernter Artikel gefunden auf der aktuellen Seite:', variantId);
             if (typeof form.updateButtonToAddToCart === 'function') {
               form.updateButtonToAddToCart();
             }
@@ -479,12 +473,8 @@ if (!customElements.get('product-info')) {
 
       handleCartItemAdded(event) {
         // Wenn ein Artikel zum Warenkorb hinzugefügt wurde, Produktstatus aktualisieren
-        console.log('Artikel zum Warenkorb hinzugefügt - aktualisiere Produktstatus...', event.detail);
-
         // Sofortiges Update für PDP-Buttons
         if (this.productId && event.detail && event.detail.productId === this.productId) {
-          console.log('Dieses Produkt wurde zum Warenkorb hinzugefügt:', this.productId);
-
           // Submit-Button und Text aktualisieren, wenn das Produkt im Warenkorb ist
           const button = this.querySelector('button[type="submit"], button[name="add"], product-form button[name="add"]');
           if (button) {
@@ -523,7 +513,6 @@ if (!customElements.get('product-info')) {
               const productForm = button.closest('product-form');
 
               if (productInCart) {
-                console.log('Produkt ist im Warenkorb - aktualisiere Button');
                 if (productForm && typeof productForm.updateButtonToViewCart === 'function') {
                   // Nutze die Methode in product-form, wenn verfügbar
                   productForm.updateButtonToViewCart();
@@ -539,7 +528,6 @@ if (!customElements.get('product-info')) {
               } else {
                 // Nur zurücksetzen, wenn der Button nicht deaktiviert ist (z.B. ausverkauft)
                 if (!button.hasAttribute('disabled')) {
-                  console.log('Produkt ist nicht im Warenkorb - setze Button zurück');
                   if (productForm && typeof productForm.updateButtonToAddToCart === 'function') {
                     // Nutze die Methode in product-form, wenn verfügbar
                     productForm.updateButtonToAddToCart();

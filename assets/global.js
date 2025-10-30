@@ -481,8 +481,6 @@ class MenuDrawer extends HTMLElement {
   }
 
   openMenuDrawer(summaryElement) {
-    console.log('🍔 Mobile Menu öffnen - OHNE Body-Scroll-Sperrung');
-
     // NUR overflow hidden - KEINE position: fixed auf Body
     document.body.style.overflow = 'hidden';
     document.body.classList.add('menu-drawer-open');
@@ -507,8 +505,6 @@ class MenuDrawer extends HTMLElement {
     this.mainDetailsToggle.querySelectorAll('.submenu-open').forEach((submenu) => {
       submenu.classList.remove('submenu-open');
     });
-
-    console.log('🍔 Mobile Menu schließen - Body-Scroll entsperren');
 
     // Body-Scroll entsperren - EINFACH
     document.body.style.overflow = '';
@@ -575,8 +571,6 @@ class HeaderDrawer extends MenuDrawer {
   }
 
   openMenuDrawer(summaryElement) {
-    console.log('🍔 HeaderDrawer: Mobile Menu öffnen');
-
     this.header = this.header || document.querySelector('.section-header');
     this.borderOffset =
       this.borderOffset || this.closest('.header-wrapper').classList.contains('header-wrapper--border-bottom') ? 1 : 0;
@@ -584,7 +578,6 @@ class HeaderDrawer extends MenuDrawer {
     // Header-Position BEVOR Body-Änderungen speichern
     const headerRect = this.header.getBoundingClientRect();
     const currentHeaderTop = headerRect.top;
-    console.log('🍔 Header aktuelle Position:', currentHeaderTop);
 
     // Header an aktueller Position fixieren
     this.header.style.position = 'fixed';
@@ -617,8 +610,6 @@ class HeaderDrawer extends MenuDrawer {
   closeMenuDrawer(event, elementToFocus) {
     if (!elementToFocus) return;
 
-    console.log('🍔 HeaderDrawer: Mobile Menu schließen');
-
     // Header-Position NICHT sofort zurücksetzen - erst nach Menu-Animation
     super.closeMenuDrawer(event, elementToFocus);
     this.header.classList.remove('menu-open');
@@ -627,8 +618,6 @@ class HeaderDrawer extends MenuDrawer {
     // Header-Styles erst nach Menu-Schließ-Animation zurücksetzen
     if (this.header) {
       setTimeout(() => {
-        console.log('🍔 Header-Styles nach Menu-Animation zurücksetzen');
-
         // Prüfe aktuelle Scroll-Position
         const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
         const shouldBeSticky = scrollPosition > 100;
