@@ -149,9 +149,18 @@
               {% assign five_days_seconds = 432000 %}
               {% assign animation_counter = 0 %}
 
-              {% comment %} Prüfe ob wir alle Produkte auf einer Seite haben (für Liquid-Sortierung) {% endcomment %}
+              {% comment %}
+                WICHTIG: Custom Sortierung nur als FALLBACK verwenden!
+                - Wenn User manuell sortiert hat (sort_by in URL), verwende Shopify-Sortierung
+                - Sonst: Custom Sortierung für kleine Collections (<100 Produkte)
+              {% endcomment %}
               {% assign use_custom_sorting = false %}
-              {% if collection.all_products_count < 100 %}
+              {% assign has_manual_sort = false %}
+              {% if collection.sort_by != blank and collection.sort_by != collection.default_sort_by %}
+                {% assign has_manual_sort = true %}
+              {% endif %}
+
+              {% if collection.all_products_count < 100 and has_manual_sort == false %}
                 {% assign use_custom_sorting = true %}
               {% endif %}
 
@@ -244,112 +253,32 @@
                 {%- endfor -%}
 
               {% else %}
-                {% comment %} === GROSSE COLLECTION: created-descending mit NEU-Priorisierung === {% endcomment %}
+                {% comment %} === GROSSE COLLECTION oder MANUELLE SORTIERUNG: Verwende Shopify-Sortierung === {% endcomment %}
+                {% comment %} Zeige alle Produkte in der Reihenfolge, wie Shopify sie liefert {% endcomment %}
 
-                {% comment %} PHASE 1: Zeige NEU Produkte (< 5 Tage alt, verfügbar) ZUERST {% endcomment %}
                 {%- for product in collection.products -%}
-                  {% if product.available %}
-                    {% assign product_created_seconds = product.created_at | date: '%s' | plus: 0 %}
-                    {% assign product_age_seconds = now_seconds | minus: product_created_seconds %}
-
-                    {% if product_age_seconds <= five_days_seconds %}
-                      {% comment %} KRITISCH: Certificate of Origin (SKU 2226) niemals in Produktlisten anzeigen {% endcomment %}
-                      {% unless product.selected_or_first_available_variant.sku == '2226'
-                        or product.id == 9124358062294
-                      %}
-                        {% assign animation_counter = animation_counter | plus: 1 %}
-                        {% assign lazy_load = false %}
-                        {%- if animation_counter > 2 -%}
-                          {%- assign lazy_load = true -%}
-                        {%- endif -%}
-                        <li
-                          class="grid__item{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
-                          {% if settings.animations_reveal_on_scroll %}
-                            data-cascade
-                            style="--animation-order: {{ animation_counter }};"
-                          {% endif %}
-                        >
-                          {% render 'card-product',
-                            card_product: product,
-                            media_aspect_ratio: section.settings.image_ratio,
-                            image_shape: section.settings.image_shape,
-                            show_secondary_image: section.settings.show_secondary_image,
-                            show_vendor: section.settings.show_vendor,
-                            show_rating: section.settings.show_rating,
-                            lazy_load: lazy_load,
-                            show_weight: true,
-                            skip_styles: skip_card_product_styles,
-                            quick_add: section.settings.quick_add,
-                            section_id: section.id
-                          %}
-                        </li>
-                        {%- assign skip_card_product_styles = true -%}
-                      {% endunless %}
-                    {% endif %}
-                  {% endif %}
-                {%- endfor -%}
-
-                {% comment %} PHASE 2: Zeige REST der Produkte (≥ 5 Tage alt, verfügbar) {% endcomment %}
-                {%- for product in collection.products -%}
-                  {% if product.available %}
-                    {% assign product_created_seconds = product.created_at | date: '%s' | plus: 0 %}
-                    {% assign product_age_seconds = now_seconds | minus: product_created_seconds %}
-
-                    {% if product_age_seconds > five_days_seconds %}
-                      {% comment %} KRITISCH: Certificate of Origin (SKU 2226) niemals in Produktlisten anzeigen {% endcomment %}
-                      {% unless product.selected_or_first_available_variant.sku == '2226'
-                        or product.id == 9124358062294
-                      %}
-                        {% assign animation_counter = animation_counter | plus: 1 %}
-                        {% assign lazy_load = false %}
-                        {%- if animation_counter > 2 -%}
-                          {%- assign lazy_load = true -%}
-                        {%- endif -%}
-                        <li
-                          class="grid__item{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
-                          {% if settings.animations_reveal_on_scroll %}
-                            data-cascade
-                            style="--animation-order: {{ animation_counter }};"
-                          {% endif %}
-                        >
-                          {% render 'card-product',
-                            card_product: product,
-                            media_aspect_ratio: section.settings.image_ratio,
-                            image_shape: section.settings.image_shape,
-                            show_secondary_image: section.settings.show_secondary_image,
-                            show_vendor: section.settings.show_vendor,
-                            show_rating: section.settings.show_rating,
-                            lazy_load: lazy_load,
-                            show_weight: true,
-                            skip_styles: skip_card_product_styles,
-                            quick_add: section.settings.quick_add,
-                            section_id: section.id
-                          %}
-                        </li>
-                        {%- assign skip_card_product_styles = true -%}
-                      {% endunless %}
-                    {% endif %}
-                  {% endif %}
-                {%- endfor -%}
-              {% endif %}
-
-              {% comment %} PHASE 3: Zeige SOLD Produkte (nur wenn sold-out-timestamp < 5 Tage) {% endcomment %}
-              {%- for product in collection.products -%}
-                {% if product.available == false %}
                   {% comment %} KRITISCH: Certificate of Origin (SKU 2226) niemals in Produktlisten anzeigen {% endcomment %}
                   {% unless product.selected_or_first_available_variant.sku == '2226' or product.id == 9124358062294 %}
-                    {% assign sold_timestamp = product.metafields.custom['sold-out-timestamp'] %}
-                    {% assign show_sold = false %}
+                    {% assign show_product = false %}
 
-                    {% if sold_timestamp != blank %}
-                      {% assign sold_timestamp_seconds = sold_timestamp | date: '%s' | plus: 0 %}
-                      {% assign sold_age_seconds = now_seconds | minus: sold_timestamp_seconds %}
-                      {% if sold_age_seconds <= five_days_seconds %}
-                        {% assign show_sold = true %}
+                    {% comment %} Verfügbare Produkte immer anzeigen {% endcomment %}
+                    {% if product.available %}
+                      {% assign show_product = true %}
+                    {% endif %}
+
+                    {% comment %} SOLD Produkte nur anzeigen wenn sold-out-timestamp < 5 Tage {% endcomment %}
+                    {% if product.available == false %}
+                      {% assign sold_timestamp = product.metafields.custom['sold-out-timestamp'] %}
+                      {% if sold_timestamp != blank %}
+                        {% assign sold_seconds = sold_timestamp | date: '%s' | plus: 0 %}
+                        {% assign sold_age_seconds = now_seconds | minus: sold_seconds %}
+                        {% if sold_age_seconds <= five_days_seconds %}
+                          {% assign show_product = true %}
+                        {% endif %}
                       {% endif %}
                     {% endif %}
 
-                    {% if show_sold %}
+                    {% if show_product %}
                       {% assign animation_counter = animation_counter | plus: 1 %}
                       {% assign lazy_load = false %}
                       {%- if animation_counter > 2 -%}
@@ -379,8 +308,64 @@
                       {%- assign skip_card_product_styles = true -%}
                     {% endif %}
                   {% endunless %}
-                {% endif %}
-              {%- endfor -%}
+                {%- endfor -%}
+              {% endif %}
+
+              {% comment %}
+                PHASE 3: Zeige SOLD Produkte (nur für KLEINE Collections mit Custom Sortierung)
+                Bei GROSSEN Collections werden SOLD bereits in der Hauptschleife behandelt
+              {% endcomment %}
+              {% if use_custom_sorting %}
+                {%- for product in collection.products -%}
+                  {% if product.available == false %}
+                    {% comment %} KRITISCH: Certificate of Origin (SKU 2226) niemals in Produktlisten anzeigen {% endcomment %}
+                    {% unless product.selected_or_first_available_variant.sku == '2226'
+                      or product.id == 9124358062294
+                    %}
+                      {% assign sold_timestamp = product.metafields.custom['sold-out-timestamp'] %}
+                      {% assign show_sold = false %}
+
+                      {% if sold_timestamp != blank %}
+                        {% assign sold_timestamp_seconds = sold_timestamp | date: '%s' | plus: 0 %}
+                        {% assign sold_age_seconds = now_seconds | minus: sold_timestamp_seconds %}
+                        {% if sold_age_seconds <= five_days_seconds %}
+                          {% assign show_sold = true %}
+                        {% endif %}
+                      {% endif %}
+
+                      {% if show_sold %}
+                        {% assign animation_counter = animation_counter | plus: 1 %}
+                        {% assign lazy_load = false %}
+                        {%- if animation_counter > 2 -%}
+                          {%- assign lazy_load = true -%}
+                        {%- endif -%}
+                        <li
+                          class="grid__item{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+                          {% if settings.animations_reveal_on_scroll %}
+                            data-cascade
+                            style="--animation-order: {{ animation_counter }};"
+                          {% endif %}
+                        >
+                          {% render 'card-product',
+                            card_product: product,
+                            media_aspect_ratio: section.settings.image_ratio,
+                            image_shape: section.settings.image_shape,
+                            show_secondary_image: section.settings.show_secondary_image,
+                            show_vendor: section.settings.show_vendor,
+                            show_rating: section.settings.show_rating,
+                            lazy_load: lazy_load,
+                            show_weight: true,
+                            skip_styles: skip_card_product_styles,
+                            quick_add: section.settings.quick_add,
+                            section_id: section.id
+                          %}
+                        </li>
+                        {%- assign skip_card_product_styles = true -%}
+                      {% endif %}
+                    {% endunless %}
+                  {% endif %}
+                {%- endfor -%}
+              {% endif %}
             </ul>
 
             {% comment %} Pagination unterhalb der Produkte - nur bei ≥100 Produkten {% endcomment %}

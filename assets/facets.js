@@ -423,11 +423,13 @@ function createProductSkeleton() {
   `;
 }
 
-// Sortiere Produkte beim ersten Laden der Seite
+// Initialize page on load
 document.addEventListener('DOMContentLoaded', () => {
-  // WICHTIG: Dynamische Standardsortierung basierend auf Collection-Größe
-  // - Kleine Collections (<100): price-descending → Liquid überschreibt mit NEU → Preis → SOLD
-  // - Große Collections (≥100): created-descending → Damit NEU Produkte auf Seite 1 sind
+  // WICHTIG: Liquid übernimmt jetzt die Sortierung!
+  // - Kleine Collections (<100): Custom Sortierung in Liquid (NEU → Preis → SOLD)
+  // - Große Collections (≥100): Shopify-Sortierung (created-descending)
+  // - Manuelle Sortierung: Shopify-Sortierung überschreibt Custom Sortierung
+
   const urlParams = new URLSearchParams(window.location.search);
   const currentSortBy = urlParams.get('sort_by');
 
@@ -435,43 +437,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const isCollectionPage = document.querySelector('#product-grid') && !window.location.pathname.includes('/search');
 
   if (isCollectionPage && !currentSortBy) {
-    // Prüfe Collection-Größe aus dem data-Attribut
+    // Setze den Default-Wert in den Sort-Dropdowns (nur für UI, kein Reload)
     const productGrid = document.querySelector('#product-grid');
     const collectionSize = productGrid ? parseInt(productGrid.dataset.collectionSize || '0') : 0;
-
-    // Dynamische Sortierung
     const defaultSort = collectionSize >= 100 ? 'created-descending' : 'price-descending';
 
-    // Setze den Wert in allen Sort-Dropdowns
     const sortSelects = document.querySelectorAll('select[name="sort_by"]');
     sortSelects.forEach(select => {
       select.value = defaultSort;
     });
-
-    // Zeige Skeleton Loading während des Ladens
-    const productGrid = document.querySelector('#product-grid');
-    if (productGrid) {
-      // Speichere die aktuellen Produkte
-      const currentProducts = productGrid.innerHTML;
-
-      // Zähle wie viele Produkte aktuell angezeigt werden
-      const productCount = productGrid.querySelectorAll('.grid__item').length;
-
-      // Ersetze mit Skeleton Loading
-      let skeletonHTML = '';
-      for (let i = 0; i < Math.min(productCount, 12); i++) {
-        skeletonHTML += createProductSkeleton();
-      }
-      productGrid.innerHTML = skeletonHTML;
-    }
-
-    // Trigger das Facets-Form Submit um die Produkte zu laden (OHNE URL zu ändern)
-    const facetForm = document.querySelector('#FacetSortFormInline, #FacetFiltersForm');
-    if (facetForm) {
-      const formData = new FormData(facetForm);
-      const searchParams = new URLSearchParams(formData).toString();
-      FacetFiltersForm.renderPage(searchParams, null, false);
-    }
   }
 
   FacetFiltersForm.initializeRequestOnlyButtons();
