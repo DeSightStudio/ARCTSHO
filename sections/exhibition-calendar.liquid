@@ -37,7 +37,11 @@
 
     <div class="exhibition-calendar__grid">
       {% for exhibition in sortedExhibitions %}
-        <div class="exhibition-calendar__item">
+        <div
+          class="exhibition-calendar__item"
+          data-from-date="{% if exhibition['from-date'] %}{{ exhibition['from-date'] | date: '%Y-%m-%d' }}{% endif %}"
+          data-period="{{ exhibition.period_if_date_unknown | strip | escape }}"
+        >
           <div class="exhibition-calendar__content">
             <div class="exhibition-calendar__content__left">
               <div class="exhibition-calendar__dates">

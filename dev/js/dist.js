@@ -645,6 +645,152 @@
                 }, 1000); // Wait 1 second for BUCKS to load
             }
 
+            // Initialize Exhibition Calendar sorting (Veranstaltungen)
+            function initExhibitionCalendarSorting() {
+                var grid = document.querySelector('.exhibition-calendar__grid');
+                if (!grid) return;
+
+                var itemNodeList = grid.querySelectorAll('.exhibition-calendar__item');
+                if (!itemNodeList.length) return;
+
+                var items = Array.prototype.slice.call(itemNodeList);
+
+                var locale = (document.documentElement.lang || 'de').toLowerCase().split('-')[0];
+                var monthMaps = {
+                    de: {
+                        januar: 1,
+                        februar: 2,
+                        marz: 3,
+                        april: 4,
+                        mai: 5,
+                        juni: 6,
+                        juli: 7,
+                        august: 8,
+                        september: 9,
+                        oktober: 10,
+                        november: 11,
+                        dezember: 12
+                    },
+                    en: {
+                        january: 1,
+                        february: 2,
+                        march: 3,
+                        april: 4,
+                        may: 5,
+                        june: 6,
+                        july: 7,
+                        august: 8,
+                        september: 9,
+                        october: 10,
+                        november: 11,
+                        december: 12
+                    },
+                    fr: {
+                        janvier: 1,
+                        fevrier: 2,
+                        mars: 3,
+                        avril: 4,
+                        mai: 5,
+                        juin: 6,
+                        juillet: 7,
+                        aout: 8,
+                        septembre: 9,
+                        octobre: 10,
+                        novembre: 11,
+                        decembre: 12
+                    },
+                    it: {
+                        gennaio: 1,
+                        febbraio: 2,
+                        marzo: 3,
+                        aprile: 4,
+                        maggio: 5,
+                        giugno: 6,
+                        luglio: 7,
+                        agosto: 8,
+                        settembre: 9,
+                        ottobre: 10,
+                        novembre: 11,
+                        dicembre: 12
+                    },
+                    es: {
+                        enero: 1,
+                        febrero: 2,
+                        marzo: 3,
+                        abril: 4,
+                        mayo: 5,
+                        junio: 6,
+                        julio: 7,
+                        agosto: 8,
+                        septiembre: 9,
+                        octubre: 10,
+                        noviembre: 11,
+                        diciembre: 12
+                    }
+                };
+
+                var monthMap = monthMaps[locale] || monthMaps.de;
+
+                function normalizeString(value) {
+                    var lower = value.toLowerCase();
+                    if (typeof lower.normalize === 'function') {
+                        lower = lower.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                    }
+                    return lower;
+                }
+
+                function parsePeriod(period) {
+                    if (!period) return null;
+                    var normalized = normalizeString(period);
+                    var month = null;
+
+                    Object.keys(monthMap).some(function(name) {
+                        if (normalized.indexOf(name) !== -1) {
+                            month = monthMap[name];
+                            return true;
+                        }
+                        return false;
+                    });
+
+                    var yearMatch = normalized.match(/\b(20\d{2})\b/);
+                    var year = yearMatch ? parseInt(yearMatch[1], 10) : null;
+
+                    if (!month || !year) return null;
+
+                    return { year: year, month: month };
+                }
+
+                function buildSortKey(element) {
+                    var from = element.getAttribute('data-from-date');
+                    if (from) {
+                        return from + 'A';
+                    }
+
+                    var period = element.getAttribute('data-period');
+                    var parsed = parsePeriod(period);
+                    if (parsed) {
+                        var monthNumber = parsed.month;
+                        var monthString = monthNumber < 10 ? '0' + monthNumber : String(monthNumber);
+                        return parsed.year + '-' + monthString + '-99B';
+                    }
+
+                    return '9999-12-99Z';
+                }
+
+                items.sort(function(a, b) {
+                    var keyA = buildSortKey(a);
+                    var keyB = buildSortKey(b);
+
+                    if (keyA < keyB) return -1;
+                    if (keyA > keyB) return 1;
+                    return 0;
+                });
+
+                items.forEach(function(item) {
+                    grid.appendChild(item);
+                });
+            }
+
             // Initialize Back Button Manager
             function initBackButtonManager() {
                 // Back Button Manager wird automatisch über das separate Modul geladen
@@ -671,6 +817,9 @@
 
                 // Initialize BUCKS currency converter
                 initBucksCurrencyConverter();
+
+                // Initialize Exhibition Calendar sorting (Veranstaltungen)
+                initExhibitionCalendarSorting();
 
                 // Setup Form Placeholders
                 setupFormPlaceholders();
