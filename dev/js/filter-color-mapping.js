@@ -28,7 +28,27 @@ $(document).ready(function() {
             "Olive": "#808000",
             "Maroon": "#800000",
             "Silver": "#C0C0C0",
-            "Gold": "#FFD700"
+            "Gold": "#FFD700",
+            "Ivory": "#FFFFF0",
+            "Off White": "#FAF9F6",
+            "Sand": "#C2B280",
+            "Taupe": "#B2A89F",
+            "Khaki": "#F0E68C",
+            "Camel": "#C19A6B",
+            "Chocolate": "#7B3F00",
+            "Copper": "#B87333",
+            "Rust": "#B7410E",
+            "Ochre": "#CC7722",
+            "Coral": "#FF7F50",
+            "Salmon": "#FA8072",
+            "Teal": "#008080",
+            "Mint": "#98FF98",
+            "Light Blue": "#ADD8E6",
+            "Sky Blue": "#87CEEB",
+            "Light Green": "#90EE90",
+            "Dark Green": "#006400",
+            "Light Grey": "#D3D3D3",
+            "Dark Grey": "#A9A9A9"
         },
         // Deutsch
         "de": {
@@ -58,7 +78,27 @@ $(document).ready(function() {
             "Oliv": "#808000",
             "Kastanienbraun": "#800000",
             "Silber": "#C0C0C0",
-            "Gold": "#FFD700"
+            "Gold": "#FFD700",
+            "Elfenbein": "#FFFFF0",
+            "Offwhite": "#FAF9F6",
+            "Sand": "#C2B280",
+            "Taupe": "#B2A89F",
+            "Khaki": "#F0E68C",
+            "Camel": "#C19A6B",
+            "Schokolade": "#7B3F00",
+            "Kupfer": "#B87333",
+            "Rost": "#B7410E",
+            "Ocker": "#CC7722",
+            "Koralle": "#FF7F50",
+            "Lachs": "#FA8072",
+            "Petrol": "#008080",
+            "Mint": "#98FF98",
+            "Hellblau": "#ADD8E6",
+            "Himmelblau": "#87CEEB",
+            "Hellgrün": "#90EE90",
+            "Dunkelgrün": "#006400",
+            "Hellgrau": "#D3D3D3",
+            "Dunkelgrau": "#A9A9A9"
         },
         // Italienisch
         "it": {
@@ -86,7 +126,27 @@ $(document).ready(function() {
             "Oliva": "#808000",
             "Marrone scuro": "#800000",
             "Argento": "#C0C0C0",
-            "Oro": "#FFD700"
+            "Oro": "#FFD700",
+            "Avorio": "#FFFFF0",
+            "Bianco sporco": "#FAF9F6",
+            "Sabbia": "#C2B280",
+            "Tortora": "#B2A89F",
+            "Khaki": "#F0E68C",
+            "Cammello": "#C19A6B",
+            "Cioccolato": "#7B3F00",
+            "Rame": "#B87333",
+            "Ruggine": "#B7410E",
+            "Ocra": "#CC7722",
+            "Corallo": "#FF7F50",
+            "Salmone": "#FA8072",
+            "Verde petrolio": "#008080",
+            "Menta": "#98FF98",
+            "Azzurro chiaro": "#ADD8E6",
+            "Azzurro cielo": "#87CEEB",
+            "Verde chiaro": "#90EE90",
+            "Verde scuro": "#006400",
+            "Grigio chiaro": "#D3D3D3",
+            "Grigio scuro": "#A9A9A9"
         },
         // Spanisch
         "es": {
@@ -115,7 +175,30 @@ $(document).ready(function() {
             "Oliva": "#808000",
             "Granate": "#800000",
             "Plata": "#C0C0C0",
-            "Oro": "#FFD700"
+            "Oro": "#FFD700",
+            "Marfil": "#FFFFF0",
+            "Blanco roto": "#FAF9F6",
+            "Arena": "#C2B280",
+            "Topo": "#B2A89F",
+            "Caqui": "#F0E68C",
+            "Camel": "#C19A6B",
+            "Chocolate": "#7B3F00",
+            "Cobre": "#B87333",
+            "Óxido": "#B7410E",
+            "Salmón": "#FA8072",
+            "Azul petróleo": "#008080",
+
+            "Ocre": "#CC7722",
+            "Coral": "#FF7F50",
+
+
+            "Menta": "#98FF98",
+            "Azul claro": "#ADD8E6",
+            "Azul cielo": "#87CEEB",
+            "Verde claro": "#90EE90",
+            "Verde oscuro": "#006400",
+            "Gris claro": "#D3D3D3",
+            "Gris oscuro": "#A9A9A9"
         },
         // Französisch
         "fr": {
@@ -143,7 +226,27 @@ $(document).ready(function() {
             "Olive": "#808000",
             "Marron foncé": "#800000",
             "Argent": "#C0C0C0",
-            "Or": "#FFD700"
+            "Or": "#FFD700",
+            "Ivoire": "#FFFFF0",
+            "Blanc cassé": "#FAF9F6",
+            "Sable": "#C2B280",
+            "Taupe": "#B2A89F",
+            "Kaki": "#F0E68C",
+            "Camel": "#C19A6B",
+            "Chocolat": "#7B3F00",
+            "Cuivre": "#B87333",
+            "Rouille": "#B7410E",
+            "Ocre": "#CC7722",
+            "Corail": "#FF7F50",
+            "Saumon": "#FA8072",
+            "Canard": "#008080",
+            "Menthe": "#98FF98",
+            "Bleu clair": "#ADD8E6",
+            "Bleu ciel": "#87CEEB",
+            "Vert clair": "#90EE90",
+            "Vert foncé": "#006400",
+            "Gris clair": "#D3D3D3",
+            "Gris foncé": "#A9A9A9"
         }
     };
 
