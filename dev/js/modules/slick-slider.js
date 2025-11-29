@@ -1,6 +1,6 @@
 /**
  * Slick Slider Module
- * Collection Slider Initialisierung
+ * Collection slider initialization
  */
 
 const SlickSliderModule = {

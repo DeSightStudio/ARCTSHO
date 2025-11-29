@@ -15,8 +15,24 @@ This directory contains all source files for the Arctic Antiques Shopify theme. 
 ├── fonts/              # Font files (automatically copied to /assets/)
 ├── images/             # Image assets (automatically optimized and copied)
 ├── js/                 # JavaScript source files
-│   ├── dist.js         # Main JavaScript bundle
-│   └── popup-manager.js # Modal and popup management
+│   ├── app.js          # Main application entry point
+│   ├── dist.js         # jQuery-dependent legacy functions
+│   ├── modules/        # Feature modules
+│   │   ├── add-to-cart.js      # Add-to-cart manager
+│   │   ├── cart-drawer.js      # Cart drawer custom element
+│   │   ├── cart-system.js      # Central cart logic
+│   │   ├── exhibition-calendar.js # Event sorting
+│   │   ├── form-helpers.js     # Forms, country dropdown
+│   │   ├── image-loader.js     # Skeleton loading
+│   │   ├── language-currency.js # Language/Currency
+│   │   ├── mobile-handlers.js  # Mobile-specific handlers
+│   │   ├── slick-slider.js     # Slider initialization
+│   │   ├── ui-helpers.js       # VAT popup, external links
+│   │   └── unit-converter.js   # Metric/Imperial conversion
+│   ├── utils/          # Utility functions
+│   │   ├── cookies.js          # Cookie management
+│   │   └── dom-helpers.js      # DOM utilities
+│   └── vendor/         # Third-party libraries
 ├── scss/               # SCSS/Sass stylesheets
 │   ├── components/     # Reusable UI components
 │   ├── layout/         # Layout-specific styles
@@ -125,11 +141,17 @@ npx gulp build
 
 ### JavaScript Files (`/dev/js/`)
 
-See detailed documentation: [/dev/js/README.md](./js/README.md)
+**Architecture:**
+The JavaScript codebase follows a modular architecture with clear separation of concerns:
 
-**Main Files:**
-- `dist.js` - Core functionality (cart, lightbox, currency converter, etc.)
-- `popup-manager.js` - Modal and popup management with MicroModal
+- `app.js` - Main entry point that initializes all modules
+- `dist.js` - jQuery-dependent legacy functions (smooth scroll, VAT modal)
+- `modules/` - Feature-specific modules (cart, forms, UI, etc.)
+- `utils/` - Shared utility functions (cookies, DOM helpers)
+- `vendor/` - Third-party libraries (MicroModal, Slick, etc.)
+
+**Module Pattern:**
+Each module exports an object with an `init()` method that is called by `app.js` on DOMContentLoaded.
 
 ### SCSS Files (`/dev/scss/`)
 
@@ -371,8 +393,13 @@ Gulp processes these files while maintaining Liquid tags.
 
 ### Recent Updates
 
+**2025-11-29:**
+- Complete JavaScript refactoring: Split monolithic files into modular architecture
+- Removed all console.log statements for production
+- Translated all code comments to US-English
+- Added skeleton loading for product images
+
 **2025-10-30:**
-- Removed all console.log statements for production deployment
 - Implemented NEW/SOLD badge system with Liquid templates
 - Added product sorting (NEW → Most Expensive → Cheapest → SOLD)
 - Optimized cart drawer functionality
@@ -385,7 +412,7 @@ For questions or issues related to this development setup, please contact the de
 
 ---
 
-**Last Updated:** October 30, 2025  
-**Theme Version:** Arctic Antiques Custom Theme  
+**Last Updated:** November 29, 2025
+**Theme Version:** Arctic Antiques Custom Theme
 **Shopify Version:** Compatible with Shopify 2.0+
 

@@ -1,6 +1,6 @@
 /**
  * Add to Cart Manager Module
- * Zentrale Add-to-Cart Funktionalität
+ * Central add-to-cart functionality
  */
 
 class AddToCartManager {
@@ -44,7 +44,7 @@ class AddToCartManager {
 
     try {
       const { productId, variantId } = this.getProductIds(form);
-      if (!productId || !variantId) throw new Error('Keine gültige Produkt-ID');
+      if (!productId || !variantId) throw new Error('No valid product ID');
 
       const isInCart = await this.checkIfInCart(productId, variantId);
 
@@ -56,7 +56,7 @@ class AddToCartManager {
         await this.handleAddToCartSuccess(form, response, productId, variantId);
       }
     } catch (error) {
-      console.error('AddToCartManager: Fehler:', error);
+      // Silent fail
     } finally {
       this.setButtonLoading(submitButton, false);
     }
@@ -112,7 +112,7 @@ class AddToCartManager {
 
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const result = await response.json();
-    if (result.status) throw new Error(result.description || 'Fehler');
+    if (result.status) throw new Error(result.description || 'Error');
     return result;
   }
 
@@ -143,7 +143,7 @@ class AddToCartManager {
       viewCartButton = document.createElement('button');
       viewCartButton.className = 'button button--full-width card-product__view-cart';
       viewCartButton.type = 'button';
-      viewCartButton.innerHTML = `<span>${window.variantStrings?.view_cart_button || 'Warenkorb ansehen'}</span>`;
+      viewCartButton.innerHTML = `<span>${window.variantStrings?.view_cart_button || 'View Cart'}</span>`;
       viewCartButton.addEventListener('click', () => this.openCartDrawer());
       actionsContainer.appendChild(viewCartButton);
     }
@@ -175,7 +175,7 @@ class AddToCartManager {
         }
       }
     } catch (e) {
-      console.error('AddToCartManager: Drawer Update Fehler:', e);
+      // Silent fail
     }
   }
 

@@ -1,14 +1,14 @@
 /**
  * Cookie Utilities
- * Zentrale Cookie-Verwaltung für alle Module
+ * Central cookie management for all modules
  */
 
 const CookieUtils = {
   /**
-   * Cookie setzen
-   * @param {string} name - Cookie Name
-   * @param {string} value - Cookie Wert
-   * @param {number} days - Gültigkeit in Tagen
+   * Set cookie
+   * @param {string} name - Cookie name
+   * @param {string} value - Cookie value
+   * @param {number} days - Validity in days
    */
   set(name, value, days = 365) {
     const expires = new Date();
@@ -17,9 +17,9 @@ const CookieUtils = {
   },
 
   /**
-   * Cookie lesen
-   * @param {string} name - Cookie Name
-   * @returns {string|null} Cookie Wert oder null
+   * Get cookie
+   * @param {string} name - Cookie name
+   * @returns {string|null} Cookie value or null
    */
   get(name) {
     const nameEQ = name + "=";
@@ -33,15 +33,14 @@ const CookieUtils = {
   },
 
   /**
-   * Cookie löschen
-   * @param {string} name - Cookie Name
+   * Delete cookie
+   * @param {string} name - Cookie name
    */
   remove(name) {
     document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
   }
 };
 
-// Export für Module
 if (typeof window !== 'undefined') {
   window.CookieUtils = CookieUtils;
 }

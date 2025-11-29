@@ -1,6 +1,6 @@
 /**
  * Form Helpers Module
- * Country Dropdown, Form Placeholders, Textarea Resize
+ * Country dropdown, form placeholders, textarea resize
  */
 
 const FormHelpers = {

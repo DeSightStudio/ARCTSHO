@@ -1,6 +1,6 @@
 /**
  * Cart Drawer Custom Element
- * Slide-in Cart-Drawer Komponente
+ * Slide-in cart drawer component
  */
 
 if (!customElements.get('cart-drawer')) {
@@ -92,7 +92,6 @@ if (!customElements.get('cart-drawer')) {
           }
         }
       } catch (error) {
-        console.error('Cart Drawer fetch error:', error);
         window.location.reload();
       }
     }

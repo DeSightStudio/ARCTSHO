@@ -1,6 +1,6 @@
 /**
  * Unit Converter Module
- * Metrisch/Imperial Konvertierung für Produktspezifikationen
+ * Metric/Imperial conversion for product specifications
  */
 
 const UnitConverter = {

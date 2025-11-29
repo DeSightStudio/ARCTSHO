@@ -1,6 +1,6 @@
 /**
  * Cart System Module
- * Zentrale Cart-Verwaltung: Add, Remove, UI-Updates
+ * Central cart management: Add, Remove, UI Updates
  */
 
 class CartSystem {
@@ -34,7 +34,6 @@ class CartSystem {
       this.cartData = await response.json();
       return this.cartData;
     } catch (error) {
-      console.error('Cart load error:', error);
       this.cartData = { items: [], item_count: 0 };
       return this.cartData;
     }
@@ -124,7 +123,7 @@ class CartSystem {
       const productId = this.getProductId(form);
 
       if (!variantId || isNaN(variantId)) {
-        alert('Fehler: Keine gültige Produktvariante gefunden');
+        alert('Error: No valid product variant found');
         return;
       }
 
@@ -144,11 +143,10 @@ class CartSystem {
         this.updateUI();
         this.openCartDrawer();
       } else {
-        alert('Fehler beim Hinzufügen zum Warenkorb');
+        alert('Error adding to cart');
       }
     } catch (error) {
-      console.error('Add to cart error:', error);
-      alert('Fehler beim Hinzufügen zum Warenkorb');
+      alert('Error adding to cart');
     } finally {
       if (submitBtn) {
         submitBtn.classList.remove('loading');
@@ -171,7 +169,7 @@ class CartSystem {
     try {
       const cartIndex = this.getCartIndex(removeBtn);
       if (!cartIndex) {
-        alert('Fehler: Konnte das Produkt nicht aus dem Warenkorb entfernen.');
+        alert('Error: Could not remove product from cart.');
         return;
       }
 
@@ -193,11 +191,10 @@ class CartSystem {
           if (drawer?.handleEmptyCart) drawer.handleEmptyCart(true);
         }
       } else {
-        alert('Fehler beim Entfernen aus dem Warenkorb');
+        alert('Error removing from cart');
       }
     } catch (error) {
-      console.error('Remove from cart error:', error);
-      alert('Fehler beim Entfernen aus dem Warenkorb');
+      alert('Error removing from cart');
     } finally {
       if (button) {
         button.classList.remove('loading');
@@ -223,7 +220,7 @@ class CartSystem {
 
   isProductInCart(productId, variantId) {
     if (!this.cartData?.items) return false;
-    return this.cartData.items.some(item => 
+    return this.cartData.items.some(item =>
       item.product_id === productId || (variantId && item.variant_id === variantId)
     );
   }
@@ -232,7 +229,7 @@ class CartSystem {
     const cartContext = removeBtn.closest('.cart-item, cart-item, cart-drawer, .cart-drawer, #CartDrawer');
     if (!cartContext) return null;
 
-    let idx = removeBtn.dataset.index || removeBtn.getAttribute('data-index') || 
+    let idx = removeBtn.dataset.index || removeBtn.getAttribute('data-index') ||
               removeBtn.querySelector('button')?.dataset.index;
 
     if (!idx) {
@@ -417,7 +414,7 @@ class CartSystem {
       }
       this.updateCertificateOfOriginVisibility();
     } catch (error) {
-      console.error('Cart Drawer update error:', error);
+      // Silent fail
     }
   }
 

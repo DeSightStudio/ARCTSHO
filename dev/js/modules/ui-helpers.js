@@ -1,6 +1,6 @@
 /**
  * UI Helpers Module
- * VAT Popup, External Links und sonstige UI-Helfer
+ * VAT popup, external links and other UI helpers
  */
 
 const UIHelpers = {
@@ -10,7 +10,7 @@ const UIHelpers = {
   },
 
   /**
-   * External Links in neuem Tab öffnen
+   * Open external links in new tab
    */
   setupExternalLinks() {
     document.querySelectorAll('a[href^="http"]').forEach(link => {
@@ -23,7 +23,7 @@ const UIHelpers = {
   },
 
   /**
-   * VAT Popup Funktionalität
+   * VAT popup functionality
    */
   setupVatPopup() {
     const vatLinks = document.querySelectorAll('.vat-info-link, [data-vat-popup]');

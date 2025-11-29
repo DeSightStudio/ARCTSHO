@@ -1,15 +1,61 @@
-# Dawn
+# Arctic Antiques Shopify Theme
 
-[![Build status](https://github.com/shopify/dawn/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Shopify/dawn/actions/workflows/ci.yml?query=branch%3Amain)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?color=informational)](/.github/CONTRIBUTING.md)
+Custom Shopify theme based on Dawn, developed for Arctic Antiques.
 
-[Getting started](#getting-started) |
-[Staying up to date with Dawn changes](#staying-up-to-date-with-dawn-changes) |
-[Developer tools](#developer-tools) |
-[Contributing](#contributing) |
-[Code of conduct](#code-of-conduct) |
-[Theme Store submission](#theme-store-submission) |
-[License](#license)
+## Quick Start
+
+### Development Setup
+
+```bash
+cd dev
+npm install
+npx gulp
+```
+
+### Build for Production
+
+```bash
+cd dev
+npx gulp build
+```
+
+## Project Structure
+
+```
+/
+├── assets/           # Compiled assets (DO NOT EDIT DIRECTLY)
+├── config/           # Theme settings
+├── dev/              # Development source files
+│   ├── js/           # JavaScript modules
+│   │   ├── app.js    # Main entry point
+│   │   ├── modules/  # Feature modules
+│   │   └── utils/    # Utility functions
+│   └── scss/         # SCSS stylesheets
+├── layout/           # Theme layouts
+├── locales/          # Translation files (DE, EN, IT, ES, FR)
+├── sections/         # Shopify sections
+├── snippets/         # Reusable Liquid snippets
+└── templates/        # Page templates
+```
+
+## Key Features
+
+- **Modular JavaScript Architecture**: Clean separation of concerns with dedicated modules
+- **Cart System**: AJAX-based cart with drawer, max 1 quantity per product
+- **Product Badges**: Automatic NEW (48h) and SOLD badges
+- **Unit Converter**: Metric/Imperial conversion for product specifications
+- **Multilingual**: 5 languages (DE, EN, IT, ES, FR)
+- **Skeleton Loading**: Smooth image loading experience
+
+## Development
+
+All development work should be done in the `/dev/` folder. The Gulp build system automatically compiles and optimizes files for the `/assets/` folder.
+
+See [/dev/README.md](./dev/README.md) for detailed development documentation.
+
+---
+
+# Dawn (Base Theme)
 
 Dawn represents a HTML-first, JavaScript-only-as-needed approach to theme development. It's Shopify's first source available theme with performance, flexibility, and [Online Store 2.0 features](https://www.shopify.com/partners/blog/shopify-online-store) built-in and acts as a reference for building Shopify themes.
 

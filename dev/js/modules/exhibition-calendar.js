@@ -1,6 +1,6 @@
 /**
  * Exhibition Calendar Module
- * Sortierung der Veranstaltungen nach Datum
+ * Sort events by date
  */
 
 const ExhibitionCalendar = {

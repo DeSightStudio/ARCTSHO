@@ -1,19 +1,13 @@
 /**
  * ARCTSHO Shop - dist.js
- * Schlanker Entry-Point
- * 
- * Alle Module werden über separate Dateien geladen:
- * - app.js (Hauptinitialisierung)
- * - modules/*.js (Einzelne Module)
- * - utils/*.js (Hilfsfunktionen)
- * 
- * Diese Datei enthält nur jQuery-abhängige Legacy-Funktionen
+ * Slim entry point for jQuery-dependent legacy functions
+ * All modules are loaded via separate files (app.js, modules/*, utils/*)
  */
 
 (function($) {
     'use strict';
 
-    // MicroModal global verfügbar machen (falls über vendor geladen)
+    // Make MicroModal globally available if loaded via vendor
     if (typeof MicroModal !== 'undefined' && !window.MicroModal) {
         window.MicroModal = MicroModal;
     }
@@ -25,8 +19,7 @@
 
     ready(function() {
         setTimeout(function() {
-            
-            // Smooth scroll für Links
+            // Smooth scroll for links
             $('a.smooth-scroll').on('click', function(e) {
                 e.preventDefault();
                 const target = $(this).attr('href');
@@ -41,9 +34,7 @@
                 vatIdButton.addEventListener('click', function() {
                     try {
                         window.MicroModal.show('modal-cart-vat-id');
-                    } catch (err) {
-                        console.error('VAT Modal Fehler:', err);
-                    }
+                    } catch (e) { /* silent */ }
                 });
             }
 
@@ -52,12 +43,9 @@
                 if (typeof window.MicroModal !== 'undefined') {
                     try {
                         window.MicroModal.show('modal-cart-vat-id');
-                    } catch (err) {
-                        console.error('VAT Modal Fehler:', err);
-                    }
+                    } catch (e) { /* silent */ }
                 }
             };
-
         }, 500);
     });
 })(jQuery);

@@ -1,6 +1,6 @@
 /**
  * DOM Helpers Module
- * Utility-Funktionen für DOM-Operationen
+ * Utility functions for DOM operations
  */
 
 const DOMHelpers = {
