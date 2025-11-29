@@ -58,16 +58,16 @@
           "type": "product_specs",
           "settings": {}
         },
-        "description_XYhazL": {
-          "type": "description",
-          "settings": {}
-        },
         "buy_buttons": {
           "type": "buy_buttons",
           "settings": {
             "show_dynamic_checkout": false,
             "show_gift_card_recipient": false
           }
+        },
+        "description_XYhazL": {
+          "type": "description",
+          "settings": {}
         }
       },
       "block_order": [
@@ -75,8 +75,8 @@
         "title",
         "price",
         "product_specs_ABC123",
-        "description_XYhazL",
-        "buy_buttons"
+        "buy_buttons",
+        "description_XYhazL"
       ],
       "settings": {
         "enable_sticky_info": true,
