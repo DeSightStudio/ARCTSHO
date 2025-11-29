@@ -45,6 +45,7 @@ class MasterCartSystem {
     this.setupUnitConverter();
     this.setupExternalLinks();
     this.setupVatPopup();
+    this.setupImageSkeletonLoading();
 
     // 6. Setup Filter-Observer für Unit-Conversion
     this.setupFilterObserver();
@@ -747,26 +748,95 @@ class MasterCartSystem {
   }
 
   /**
-   * Setup Infinite Scroll - HYBRID-LÖSUNG (VEREINFACHT)
-   * <100 Produkte: Alle auf einer Seite (via Liquid paginate by 1000)
-   * ≥100 Produkte: Standard Pagination
-   *
-   * KEINE JavaScript-Logik mehr nötig - alles wird in Liquid gehandhabt!
+   * Setup Infinite Scroll - ENTFERNT
+   * Alle Produkte werden jetzt auf einer Seite geladen (max 250 durch Shopify Limit)
+   * Keine Paginierung mehr notwendig
    */
   setupInfiniteScroll() {
-    const container = document.querySelector('#ProductGridContainer');
-    if (!container) return;
+    // Paginierung wurde komplett entfernt
+    // Alle Produkte werden auf einer Seite geladen
+  }
 
-    const totalProducts = parseInt(container.dataset.totalProducts) || 0;
-    const totalPages = parseInt(container.dataset.totalPages) || 1;
+  /**
+   * Setup Image Skeleton Loading
+   * Zeigt Skeleton-Animation während Bilder laden
+   */
+  setupImageSkeletonLoading() {
+    // Funktion zum Initialisieren eines einzelnen Bildes
+    const initializeImage = (img) => {
+      if (img.dataset.skeletonInitialized) return;
+      img.dataset.skeletonInitialized = 'true';
 
-    console.log(`📊 Collection: ${totalProducts} Produkte, ${totalPages} Seiten`);
+      const mediaContainer = img.closest('.card__media');
+      if (!mediaContainer) return;
 
-    // Info-Log für Debugging
-    if (totalProducts < 100) {
-      console.log('✅ Alle Produkte auf einer Seite (<100 total)');
-    } else {
-      console.log('✅ Standard Pagination (≥100 Produkte)');
+      // Wenn Bild bereits geladen ist
+      if (img.complete && img.naturalHeight !== 0) {
+        img.classList.add('loaded');
+        mediaContainer.classList.add('image-loaded');
+        return;
+      }
+
+      // Event-Listener für Laden
+      img.addEventListener('load', () => {
+        img.classList.add('loaded');
+        mediaContainer.classList.add('image-loaded');
+      }, { once: true });
+
+      // Fallback: Falls Bild fehlerhaft
+      img.addEventListener('error', () => {
+        mediaContainer.classList.add('image-loaded');
+      }, { once: true });
+    };
+
+    // Initialisiere alle existierenden Bilder
+    const initializeAllImages = () => {
+      document.querySelectorAll('.card__media img').forEach(initializeImage);
+    };
+
+    // Initial ausführen
+    initializeAllImages();
+
+    // IntersectionObserver für Lazy-Loaded Bilder (bessere Performance)
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const mediaContainer = entry.target;
+            const img = mediaContainer.querySelector('img');
+            if (img) {
+              initializeImage(img);
+            }
+          }
+        });
+      }, { rootMargin: '100px' });
+
+      document.querySelectorAll('.card__media').forEach(media => {
+        observer.observe(media);
+      });
+    }
+
+    // MutationObserver für dynamisch hinzugefügte Produkte
+    const mutationObserver = new MutationObserver((mutations) => {
+      mutations.forEach(mutation => {
+        mutation.addedNodes.forEach(node => {
+          if (node.nodeType === 1) {
+            const images = node.querySelectorAll ? node.querySelectorAll('.card__media img') : [];
+            images.forEach(initializeImage);
+
+            // Falls das Node selbst ein card__media ist
+            if (node.classList && node.classList.contains('card__media')) {
+              const img = node.querySelector('img');
+              if (img) initializeImage(img);
+            }
+          }
+        });
+      });
+    });
+
+    const productGrid = document.querySelector('#product-grid');
+    if (productGrid) {
+      mutationObserver.observe(productGrid, { childList: true, subtree: true });
     }
   }
 
