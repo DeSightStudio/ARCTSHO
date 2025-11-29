@@ -62,14 +62,8 @@
       // Speichere auch als data-Attribut für CSS-Zugriff
       document.body.setAttribute('data-scroll-position', scrollPosition);
 
-      // Body-Scroll verhindern mit position: fixed
+      // Body-Scroll verhindern - OHNE position: fixed (verhindert weißen Hintergrund)
       document.body.style.overflow = 'hidden';
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollPosition}px`;
-      document.body.style.width = '100%';
-      document.body.style.height = '100%';
-      document.body.style.left = '0';
-      document.body.style.right = '0';
       document.body.classList.add('modal-open');
 
       // Zusätzlich HTML-Element sperren
