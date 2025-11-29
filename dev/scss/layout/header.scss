@@ -151,3 +151,20 @@ header {
         }
     }
 }
+
+// Hide currency selector when search modal is open
+details-modal.header__search {
+    details[open] ~ .desktop-bucks-currency-wrapper,
+    &:has(details[open]) ~ .desktop-bucks-currency-wrapper {
+        display: none !important;
+    }
+}
+
+// Alternative selector for sibling relationship
+.header__icons {
+    &:has(details-modal.header__search details[open]) {
+        .desktop-bucks-currency-wrapper {
+            display: none !important;
+        }
+    }
+}

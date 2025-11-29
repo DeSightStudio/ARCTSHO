@@ -378,6 +378,7 @@
     "collection_template": {
       "title": "Colección",
       "empty": "No se encontró ningún producto",
+      "no_products_in_category": "Actualmente no hay artículos disponibles en esta categoría de productos.",
       "use_fewer_filters_html": "Usa menos filtros o <a class=\"{{ class }}\" href=\"{{ link }}\">elimínalos todos</a>"
     },
     "video": {
