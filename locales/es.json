@@ -358,7 +358,8 @@
       "duties_included_taxes_at_checkout_shipping_at_checkout_with_policy_html": "Aranceles incluidos. Impuestos y <a href=\"{{ link }}\">envío</a> calculados al finalizar la compra.",
       "duties_included_taxes_at_checkout_shipping_at_checkout_without_policy": "Aranceles incluidos. Impuestos y envío calculados al finalizar la compra.",
       "taxes_at_checkout_shipping_at_checkout_with_policy_html": "Impuestos y <a href=\"{{ link }}\">envío</a> calculados al finalizar la compra.",
-      "taxes_at_checkout_shipping_at_checkout_without_policy": "Impuestos y envío calculados al finalizar la compra."
+      "taxes_at_checkout_shipping_at_checkout_without_policy": "Impuestos y envío calculados al finalizar la compra.",
+      "vat_id_button": "¿Tienes un número de IVA válido?"
     },
     "footer": {
       "payment": "Formas de pago"

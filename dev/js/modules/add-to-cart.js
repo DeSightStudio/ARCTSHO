@@ -3,6 +3,12 @@
  * Central add-to-cart functionality
  */
 
+// Helper function to get the locale-aware root URL
+function getLocaleRootUrl() {
+  const rootUrl = window.Shopify?.routes?.root || window.routes?.root || '/';
+  return rootUrl.endsWith('/') ? rootUrl : rootUrl + '/';
+}
+
 class AddToCartManager {
   constructor() {
     this.isInitialized = false;
@@ -166,7 +172,8 @@ class AddToCartManager {
 
   async fetchAndRenderCartDrawer(originalCartData) {
     try {
-      const sectionsResponse = await fetch('/?sections=cart-drawer,cart-icon-bubble');
+      const rootUrl = getLocaleRootUrl();
+      const sectionsResponse = await fetch(`${rootUrl}?sections=cart-drawer,cart-icon-bubble`);
       if (sectionsResponse.ok) {
         const sectionsData = await sectionsResponse.json();
         const cartDrawer = document.querySelector('cart-drawer');

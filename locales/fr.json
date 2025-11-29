@@ -358,7 +358,8 @@
       "duties_included_taxes_at_checkout_shipping_at_checkout_with_policy_html": "Frais de douane inclus. Taxes et <a href=\"{{ link }}\">frais de port</a> calculés au moment du paiement.",
       "duties_included_taxes_at_checkout_shipping_at_checkout_without_policy": "Frais de douane inclus. Taxes et frais de port calculés au moment du paiement.",
       "taxes_at_checkout_shipping_at_checkout_with_policy_html": "Taxes et <a href=\"{{ link }}\">frais de port</a> calculés au moment du paiement.",
-      "taxes_at_checkout_shipping_at_checkout_without_policy": "Taxes et frais de port calculés au moment du paiement."
+      "taxes_at_checkout_shipping_at_checkout_without_policy": "Taxes et frais de port calculés au moment du paiement.",
+      "vat_id_button": "Avez-vous un numéro de TVA valide ?"
     },
     "footer": {
       "payment": "Moyens de paiement"

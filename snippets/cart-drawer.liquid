@@ -495,9 +495,9 @@
               type="button"
               class="button button--secondary button--full-width"
               id="CartDrawer-VatIdButton"
-              onclick="window.location.href='/pages/vat-id-form';"
+              onclick="window.location.href='{{ pages['vat-id-form'].url }}';"
             >
-              {{ settings.cart_popup_vat_id_button_label | default: 'Add VAT ID' }}
+              {{ 'sections.cart.vat_id_button' | t }}
             </button>
           </div>
         {%- endif -%}

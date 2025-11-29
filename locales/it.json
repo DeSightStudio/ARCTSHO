@@ -358,7 +358,8 @@
       "duties_included_taxes_at_checkout_shipping_at_checkout_with_policy_html": "Dazi inclusi. Tasse e <a href=\"{{ link }}\">spedizione</a> calcolate al momento del pagamento.",
       "duties_included_taxes_at_checkout_shipping_at_checkout_without_policy": "Dazi inclusi. Tasse e spedizione calcolate al momento del pagamento.",
       "taxes_at_checkout_shipping_at_checkout_with_policy_html": "Tasse e <a href=\"{{ link }}\">spedizione</a> calcolate al momento del pagamento.",
-      "taxes_at_checkout_shipping_at_checkout_without_policy": "Tasse e spedizione calcolate al momento del pagamento."
+      "taxes_at_checkout_shipping_at_checkout_without_policy": "Tasse e spedizione calcolate al momento del pagamento.",
+      "vat_id_button": "Hai una partita IVA valida?"
     },
     "footer": {
       "payment": "Metodi di pagamento"

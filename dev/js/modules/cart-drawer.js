@@ -3,6 +3,13 @@
  * Slide-in cart drawer component
  */
 
+// Helper function to get the locale-aware root URL
+function getLocaleRootUrl() {
+  // Get locale from Shopify routes or window object
+  const rootUrl = window.Shopify?.routes?.root || window.routes?.root || '/';
+  return rootUrl.endsWith('/') ? rootUrl : rootUrl + '/';
+}
+
 if (!customElements.get('cart-drawer')) {
   class CartDrawer extends HTMLElement {
     constructor() {
@@ -63,7 +70,8 @@ if (!customElements.get('cart-drawer')) {
 
     async fetchCartDrawerContent() {
       try {
-        const response = await fetch('/?section_id=cart-drawer');
+        const rootUrl = getLocaleRootUrl();
+        const response = await fetch(`${rootUrl}?section_id=cart-drawer`);
         const html = await response.text();
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, 'text/html');

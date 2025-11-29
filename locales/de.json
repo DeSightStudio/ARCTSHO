@@ -363,7 +363,8 @@
       "duties_included_taxes_at_checkout_shipping_at_checkout_with_policy_html": "Inkl. Zollgebühren. Steuern und <a href=\"{{ link }}\">Versandkosten</a> werden an der Kasse berechnet.",
       "duties_included_taxes_at_checkout_shipping_at_checkout_without_policy": "Inkl. Zollgebühren. Steuern und Versandkosten werden an der Kasse berechnet.",
       "taxes_at_checkout_shipping_at_checkout_with_policy_html": "Steuern und <a href=\"{{ link }}\">Versandkosten</a> werden an der Kasse berechnet.",
-      "taxes_at_checkout_shipping_at_checkout_without_policy": "Steuern und Versandkosten werden an der Kasse berechnet."
+      "taxes_at_checkout_shipping_at_checkout_without_policy": "Steuern und Versandkosten werden an der Kasse berechnet.",
+      "vat_id_button": "Haben Sie eine gültige USt-IdNr.?"
     },
     "footer": {
       "payment": "Zahlungsmethoden"

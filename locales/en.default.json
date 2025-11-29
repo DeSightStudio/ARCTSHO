@@ -380,7 +380,8 @@
         "one_shipping_available": "There is one shipping rate available for your order.",
         "multiple_shipping_available": "There are {{ count }} shipping rates available for your order."
       },
-      "shipping_calculator_error_message": "Error: Please check your postal code"
+      "shipping_calculator_error_message": "Error: Please check your postal code",
+      "vat_id_button": "Do you have a valid VAT number?"
     },
     "footer": {
       "payment": "Payment methods"
