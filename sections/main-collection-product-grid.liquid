@@ -218,51 +218,55 @@
                 {% endif %}
               {%- endfor -%}
 
-              {% comment %} PHASE 3: Show SOLD products (< 5 days after sold-out-timestamp) {% endcomment %}
+              {% comment %} PHASE 3: Show ALL SOLD products (permanently until deleted) {% endcomment %}
               {%- for product in collection.products -%}
                 {% if product.available == false %}
                   {% comment %} CRITICAL: Never show Certificate of Origin (SKU 2226) in product lists {% endcomment %}
                   {% unless product.selected_or_first_available_variant.sku == '2226' or product.id == 9124358062294 %}
-                    {% assign sold_timestamp = product.metafields.custom['sold-out-timestamp'] %}
-                    {% assign show_sold = false %}
+                    {% comment %}
+                      OLD LOGIC: Show sold products only for 5 days after sold-out-timestamp
+                      Disabled per client request - now showing all sold products permanently
 
-                    {% if sold_timestamp != blank %}
-                      {% assign sold_timestamp_seconds = sold_timestamp | date: '%s' | plus: 0 %}
-                      {% assign sold_age_seconds = now_seconds | minus: sold_timestamp_seconds %}
-                      {% if sold_age_seconds <= five_days_seconds %}
-                        {% assign show_sold = true %}
-                      {% endif %}
-                    {% endif %}
-
-                    {% if show_sold %}
-                      {% assign animation_counter = animation_counter | plus: 1 %}
-                      {% assign lazy_load = false %}
-                      {%- if animation_counter > 2 -%}
-                        {%- assign lazy_load = true -%}
-                      {%- endif -%}
-                      <li
-                        class="grid__item{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
-                        {% if settings.animations_reveal_on_scroll %}
-                          data-cascade
-                          style="--animation-order: {{ animation_counter }};"
+                      {% assign sold_timestamp = product.metafields.custom['sold-out-timestamp'] %}
+                      {% assign show_sold = false %}
+                      {% if sold_timestamp != blank %}
+                        {% assign sold_timestamp_seconds = sold_timestamp | date: '%s' | plus: 0 %}
+                        {% assign sold_age_seconds = now_seconds | minus: sold_timestamp_seconds %}
+                        {% if sold_age_seconds <= five_days_seconds %}
+                          {% assign show_sold = true %}
                         {% endif %}
-                      >
-                        {% render 'card-product',
-                          card_product: product,
-                          media_aspect_ratio: section.settings.image_ratio,
-                          image_shape: section.settings.image_shape,
-                          show_secondary_image: section.settings.show_secondary_image,
-                          show_vendor: section.settings.show_vendor,
-                          show_rating: section.settings.show_rating,
-                          lazy_load: lazy_load,
-                          show_weight: true,
-                          skip_styles: skip_card_product_styles,
-                          quick_add: section.settings.quick_add,
-                          section_id: section.id
-                        %}
-                      </li>
-                      {%- assign skip_card_product_styles = true -%}
-                    {% endif %}
+                      {% endif %}
+                      {% if show_sold %}
+                    {% endcomment %}
+
+                    {% comment %} NEW LOGIC: Show all sold products permanently {% endcomment %}
+                    {% assign animation_counter = animation_counter | plus: 1 %}
+                    {% assign lazy_load = false %}
+                    {%- if animation_counter > 2 -%}
+                      {%- assign lazy_load = true -%}
+                    {%- endif -%}
+                    <li
+                      class="grid__item{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+                      {% if settings.animations_reveal_on_scroll %}
+                        data-cascade
+                        style="--animation-order: {{ animation_counter }};"
+                      {% endif %}
+                    >
+                      {% render 'card-product',
+                        card_product: product,
+                        media_aspect_ratio: section.settings.image_ratio,
+                        image_shape: section.settings.image_shape,
+                        show_secondary_image: section.settings.show_secondary_image,
+                        show_vendor: section.settings.show_vendor,
+                        show_rating: section.settings.show_rating,
+                        lazy_load: lazy_load,
+                        show_weight: true,
+                        skip_styles: skip_card_product_styles,
+                        quick_add: section.settings.quick_add,
+                        section_id: section.id
+                      %}
+                    </li>
+                    {%- assign skip_card_product_styles = true -%}
                   {% endunless %}
                 {% endif %}
               {%- endfor -%}
